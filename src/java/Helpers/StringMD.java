@@ -1,4 +1,4 @@
-/* metodo de encriptacion */
+/* metodo de encriptacion md5 */
 package Helpers;
 
 import java.security.MessageDigest;
