@@ -1,3 +1,4 @@
+/* metodo de encriptacion */
 package Helpers;
 
 import java.security.MessageDigest;
