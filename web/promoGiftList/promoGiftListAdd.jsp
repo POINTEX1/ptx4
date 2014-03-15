@@ -31,7 +31,6 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
     </head>
-</head>
 
 <body>
 

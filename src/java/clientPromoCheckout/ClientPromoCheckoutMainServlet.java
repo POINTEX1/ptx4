@@ -4,7 +4,6 @@
  */
 package clientPromoCheckout;
 
-import clientPromo.ClientPromo;
 import clientPromo.ClientPromoDAO;
 import java.io.IOException;
 import java.sql.Connection;

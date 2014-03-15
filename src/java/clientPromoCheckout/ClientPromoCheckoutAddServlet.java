@@ -2,12 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package clientPromo;
+package clientPromoCheckout;
 
 import Helpers.Rut;
+import clientPromo.ClientPromo;
+import clientPromo.ClientPromoDAO;
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,19 +17,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
-import place.Place;
-import place.PlaceDAO;
-import promo.Promo;
-import promo.PromoDAO;
 import userCard.UserCard;
 import userCard.UserCardDAO;
 
 /**
  *
- * @author patricio alberto
+ * @author patricio
  */
-@WebServlet(name = "PromoGiftListAddServlet", urlPatterns = {"/PromoGiftListAddServlet"})
-public class PromoGiftListAddServlet extends HttpServlet {
+@WebServlet(name = "ClientPromoCheckoutAddServlet", urlPatterns = {"/ClientPromoCheckoutAddServlet"})
+public class ClientPromoCheckoutAddServlet extends HttpServlet {
 
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
@@ -57,17 +54,14 @@ public class PromoGiftListAddServlet extends HttpServlet {
 
             conexion = ds.getConnection();
 
+            UserCardDAO userCardDAO = new UserCardDAO();
+            userCardDAO.setConexion(conexion);
+
             ClientPromoDAO pglDAO = new ClientPromoDAO();
             pglDAO.setConexion(conexion);
 
-            PlaceDAO placeDAO = new PlaceDAO();
-            placeDAO.setConexion(conexion);
-
-            PromoDAO promoDAO = new PromoDAO();
-            promoDAO.setConexion(conexion);
-
-            UserCardDAO usercardDAO = new UserCardDAO();
-            usercardDAO.setConexion(conexion);
+            ClientPromoCheckoutDAO clientPromoCheckoutDAO = new ClientPromoCheckoutDAO();
+            clientPromoCheckoutDAO.setConexion(conexion);
 
             //////////////////////////////////////////
             // COMPROBAR SESSION
@@ -88,41 +82,31 @@ public class PromoGiftListAddServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
+                    /////////////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETROS
+                    /////////////////////////////////////////
                     try {
-                        /////////////////////////////////////////
-                        // RECIBIR Y COMPROBAR PARAMETROS
-                        /////////////////////////////////////////
-
                         String btnAdd = request.getParameter("add");
-                        String sidPlace = request.getParameter("idPlace");
                         String sidPromo = request.getParameter("idPromo");
                         String srut = request.getParameter("rut");
 
-                        ClientPromo pglReg = new ClientPromo();
+                        ClientPromoCheckout checkout = new ClientPromoCheckout();
 
                         boolean error = false;
 
+                        /* comprobar add button */
                         if (btnAdd == null) {
                             request.setAttribute("msg", "Ingrese una promoción para un cliente.");
                         } else {
-                            /* comprobar id place */
-                            if (sidPlace == null || sidPlace.trim().equals("")) {
-                                error = true;
-                            } else {
-                                try {
-                                    pglReg.setIdPlace(Integer.parseInt(sidPlace));
-                                } catch (NumberFormatException n) {
-                                    error = true;
-                                }
-                            }
 
                             /* comprobar id promo */
                             if (sidPromo == null || sidPromo.trim().equals("")) {
                                 error = true;
                             } else {
+                                request.setAttribute("idPromo", sidPromo);
                                 try {
-                                    pglReg.setIdPromo(Integer.parseInt(sidPromo));
-                                    if (pglReg.getIdPromo() == 0) {
+                                    checkout.setIdPromo(Integer.parseInt(sidPromo));
+                                    if (checkout.getIdPromo() == 0) {
                                         request.setAttribute("msgErrorPromo", "Error: El id Promo debe ser mayor a cero. ");
                                         error = true;
                                     }
@@ -140,11 +124,11 @@ public class PromoGiftListAddServlet extends HttpServlet {
                                 request.setAttribute("rut", srut);
                                 try {
                                     if (!Rut.validateRut(srut)) {
-                                        request.setAttribute("msgErrorRut", "Error: Rut inválido. ");
                                         error = true;
+                                        request.setAttribute("msgErrorRut", "Error: Rut inválido. ");
                                     } else {
-                                        pglReg.setRut(Rut.getRut(srut));
-                                        pglReg.setDv(Rut.getDv(srut));
+                                        checkout.setRut(Rut.getRut(srut));
+                                        checkout.setDv(Rut.getDv(srut));
                                     }
                                 } catch (Exception ex) {
                                     request.setAttribute("msgErrorRut", "Error: Rut inválido. ");
@@ -153,63 +137,38 @@ public class PromoGiftListAddServlet extends HttpServlet {
                             }
 
                             if (!error) {
-                                /* obtener promo_gift de place */
-                                Promo promoReg = new Promo();
-
-                                promoReg.setIdPlace(pglReg.getIdPlace());
-                                promoReg.setIdPromo(pglReg.getIdPromo());
-
-                                /* verificar si existe el user_card */
-                                UserCard reg = usercardDAO.findByRut(pglReg.getRut());
-                                if (reg == null) {
-                                    request.setAttribute("msgErrorUserFound", "Error: No existe este usuario. ");
-                                    error = true;
-                                }
-
-                                /* verificar si existe promo */
-                                Promo pgReg = promoDAO.findbyPromo(promoReg);
-                                if (pgReg != null) {
-                                    /* verificar si esta duplicada en tabla client_promo */
-                                    ClientPromo aux = pglDAO.findbyRutIdPromo(pglReg.getRut(), pglReg.getIdPromo());
-                                    if (aux != null) {
-                                        request.setAttribute("msgErrorDup", "Error: ya existe esta Promoción para el cliente.");
-                                        error = true;
-                                    }
+                                /* comprobar si existe cliente */
+                                UserCard user = userCardDAO.findByRut(checkout.getRut());
+                                if (user == null) {
+                                    request.setAttribute("msgErrorRut", "Error: Cliente no encontrado.");
                                 } else {
-                                    request.setAttribute("msgErrorFound", "Error: No existe esta promoción en este lugar.");
-                                    error = true;
-                                }
-                            }
-                            if (!error) {
-                                try {
-                                    pglDAO.insert(pglReg);
-                                    request.setAttribute("msgOk", "Registro ingresado exitosamente! ");
-                                } catch (Exception sqlException) {
-                                    request.setAttribute("msgErrorDup", "Error de inserción: ya existe esta Promoción para el cliente.");
+                                    /* verificar si existe registro client_promo */
+                                    ClientPromo aux = pglDAO.findbyRutIdPromo(checkout.getRut(), checkout.getIdPromo());
+                                    if (aux == null) {
+                                        request.setAttribute("msgErrorFound", "Error: El cliente no posee asociada esta promoción.");
+                                    } else {
+                                        /* insertar registro */
+                                        try {
+                                            clientPromoCheckoutDAO.insert(checkout);
+                                            request.setAttribute("msgOk", "Registro ingresado exitosamente! ");
+                                        } catch (Exception sqlException) {
+                                            sqlException.printStackTrace();
+                                            request.setAttribute("msgErrorDup", "Error de inserción, verifique los campos.");
+                                        }
+                                    }
                                 }
                             }
                         }
-
-                        /* obtener lista de lugares */
-                        try {
-                            Collection<Place> listPlace = placeDAO.getAll();
-                            request.setAttribute("listPlace", listPlace);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-
-                        request.setAttribute("pglReg", pglReg);
-
                     } catch (Exception parameterException) {
                     } finally {
-                        request.getRequestDispatcher("/promoGiftList/promoGiftListAdd.jsp").forward(request, response);
+                        request.getRequestDispatcher("/clientPromoCheckout/clientPromoCheckoutAdd.jsp").forward(request, response);
                     }
                 }
             } catch (Exception sessionException) {
+                sessionException.printStackTrace();
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");
                 request.getRequestDispatcher("/login/login.jsp").forward(request, response);
-                sessionException.printStackTrace();
             }
         } catch (Exception connectionException) {
             connectionException.printStackTrace();

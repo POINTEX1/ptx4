@@ -80,7 +80,7 @@ public class ClientPromoDAO {
         return list;
     }
 
-    public ClientPromo findbyRutIdPromo(ClientPromo clientPromo) {
+    public ClientPromo findbyRutIdPromo(int rut, int idPromo) {
 
         Statement sentence = null;
         ResultSet result = null;
@@ -89,7 +89,7 @@ public class ClientPromoDAO {
 
         try {
             sentence = conexion.createStatement();
-            String sql = "select * from client_promo cp, place pl, promo pr where cp.id_promo = " + clientPromo.getIdPromo() + " and cp.rut = " + clientPromo.getRut() + " and cp.id_promo = pr.id_promo and pl.id_place = pr.id_place";
+            String sql = "select * from client_promo cp, place pl, promo pr where cp.id_promo = " + idPromo + " and cp.rut = " + rut + " and cp.id_promo = pr.id_promo and pl.id_place = pr.id_place";
             result = sentence.executeQuery(sql);
 
             while (result.next()) {
@@ -139,7 +139,7 @@ public class ClientPromoDAO {
 
             sentence = conexion.prepareStatement(sql);
 
-            sentence.setInt(1, reg.getIdPromo());            
+            sentence.setInt(1, reg.getIdPromo());
             sentence.setInt(2, reg.getRut());
             sentence.setString(3, reg.getDv());
 

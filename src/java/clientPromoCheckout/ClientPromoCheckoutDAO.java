@@ -133,6 +133,7 @@ public class ClientPromoCheckoutDAO {
     }
 
     public void insert(ClientPromoCheckout reg) {
+
         PreparedStatement sentence = null;
 
         try {
