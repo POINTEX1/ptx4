@@ -22,39 +22,44 @@
         <ul class="nav navbar-nav side-nav">
             <li class="active"><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
             <c:if test="${access == 777}" ><li><a href="#"><i class="fa fa-bar-chart-o"></i> Estadísticas</a></li></c:if>
+            <c:if test="${access == 777}" ><li><a href="AdminMainServlet"><i class="fa fa-user"></i> Administradores</a></li></c:if>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-square-o-down"></i> Mantenedores <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-square-o-down"></i> Clientes <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="ClientMainServlet">Clientes</a></li>
                     <c:if test="${access == 777 || access == 555 }" ><li><a href="PointMainServlet">Puntos Cliente</a></li></c:if>
                         <li><a href="CardMainServlet">Tarjetas</a></li>  
-                        <li><a href="OrderCardMainServlet">Solicitud Tarjetas</a></li>                                                                  
-                    <c:if test="${access == 777 || access == 555 }" ><li><a href="PromoGiftMainServlet">Promociones</a></li></c:if>
+                        <li><a href="OrderCardMainServlet">Solicitud Tarjetas</a></li> 
                     <c:if test="${access == 777 || access == 555 }" ><li><a href="ClientPromoGiftMainServlet">Promociones Cliente</a></li></c:if>
                     <c:if test="${access == 777 || access == 555 }" ><li><a href="ClientPromoCheckoutMainServlet">Compras Cliente</a></li></c:if>
+                    <c:if test="${access == 777 || access == 555 }" ><li><a href="ClientNewsMainServlet">Noticias clientes</a></li></c:if>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-square-o-down"></i> Lugares <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                    <c:if test="${access == 777 || access == 555 }" ><li><a href="PromoGiftMainServlet">Promociones</a></li></c:if>
                     <c:if test="${access == 777 || access == 555 }" ><li><a href="ExchangeableMainServlet">Productos Canjebles</a></li></c:if>
                     <c:if test="${access == 777 || access == 555 }" ><li><a href="EventMainServlet">Eventos</a></li></c:if>                    
-                    <c:if test="${access == 777 || access == 555 }" ><li><a href="EntryMainServlet">Registro Entradas</a></li></c:if>                                        
+                    <c:if test="${access == 777 || access == 555 }" ><li><a href="EntryMainServlet">Registro Entradas</a></li></c:if>    
+                    <c:if test="${access == 777 || access == 555 }" ><li><a href="PlaceNewsMainServlet">Noticias Lugares</a></li></c:if>
+                    <c:if test="${access == 777 || access == 555 }" ><li><a href="PlaceCategoryMainServlet">Categorías Lugar</a></li></c:if>
                     </ul>
                 </li>
+
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-square-o-down"></i> Configuración <b class="caret"></b></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-square-o-down"></i> Características <b class="caret"></b></a>
                     <ul class="dropdown-menu">                                                       
                     <c:if test="${access == 777 || access == 555 }" ><li><a href="CategoryMainServlet">Categorías</a></li></c:if>
-                    <c:if test="${access == 777 || access == 555 }" ><li><a href="PlaceCategoryMainServlet">Categorías Lugar</a></li></c:if>
                     <c:if test="${access == 777}" ><li><a href="PlaceMainServlet">Lugares</a></li></c:if>
-                    <c:if test="${access == 777 || access == 555 }" ><li><a href="NewsMainServlet">Noticias generales</a></li></c:if>
-                    <c:if test="${access == 777 || access == 555 }" ><li><a href="ClientNewsMainServlet">Noticias clientes</a></li></c:if>
-                    <c:if test="${access == 777 || access == 555 }" ><li><a href="PlaceNewsMainServlet">Noticias Lugares</a></li></c:if>
+                    <c:if test="${access == 777 || access == 555 }" ><li><a href="NewsMainServlet">Noticias generales</a></li></c:if>                    
                     <c:if test="${access == 777}" ><li><a href="UniversityMainServlet">Universidades</a></li></c:if>
                     <c:if test="${access == 777}" ><li><a href="DressCodeMainServlet">Código Vestir</a></li></c:if>
-                        <li><a href="CityMainServlet">Ciudad</a></li>
-                    <c:if test="${access == 777}" ><li><a href="ParameterGetServlet">Parámetros</a></li></c:if>
-                    <c:if test="${access == 777}" ><li><a href="AdminMainServlet">Admin</a></li></c:if>
+                        <li><a href="CityMainServlet">Ciudad</a></li>                                        
                     </ul>
                 </li>
-                <li><a href="#"><i class="fa fa-wrench"></i> Configuración</a></li>
-                <li><a href="#"><i class="fa fa-file"></i>  </a></li>
+                <li><a href="ParameterGetServlet"><i class="fa fa-wrench"></i> Configuración</a></li>                
             </ul>
 
             <ul class="nav navbar-nav navbar-right navbar-user">            
