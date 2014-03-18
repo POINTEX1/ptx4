@@ -54,7 +54,7 @@ public class LogoutServlet extends HttpServlet {
                 ////////////////////////////////////////////
                 // SALIR DE SESSION
                 ///////////////////////////////////////////
-                
+
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
 
@@ -64,10 +64,10 @@ public class LogoutServlet extends HttpServlet {
                 /* renovar el identificador */
                 session = request.getSession(true);
 
+            } catch (Exception sessionDestroyException) {
+            } finally {
                 System.out.println("saliendo de session...");
                 request.getRequestDispatcher("/login/login.jsp").forward(request, response);
-
-            } catch (Exception sessionDestroyException) {
             }
         } catch (Exception connectionException) {
             System.out.println("Error en la conexion");

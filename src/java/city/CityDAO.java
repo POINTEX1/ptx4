@@ -39,7 +39,7 @@ public class CityDAO {
 
         try {
             sentence = conexion.createStatement();
-            String sql = "select * from city";
+            String sql = "select * from city order by name_city asc";
             result = sentence.executeQuery(sql);
 
             while (result.next()) {

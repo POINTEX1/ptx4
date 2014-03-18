@@ -36,149 +36,148 @@
 
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
-        <script src="js/tablesorter/tables.js"></script>
+        <script src="js/tablesorter/tables.js"></script>        
 
-        <script type="text/javascript">
-            function changeDisplay() {
-                if (document.formFilter.filter.value == 1) {
-                    text.style.display = 'none';
+        <script>
+            function confirmar(url)
+            {
+                if (confirm('¿Está seguro de eliminar el registro?'))
+                {
+                    window.location = url;
                 }
-                if (document.formFilter.filter.value == 2) {
-                    text.style.display = 'block';
+                else
+                {
+                    return false;
                 }
             }
         </script>
     </head>
-</head>
 
-<body>
+    <body>
 
-    <div id="wrapper">
+        <div id="wrapper">
 
-        <!-- Sidebar -->
+            <!-- Sidebar -->
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <c:import var="menu" url="/mainMenu.jsp" />
-        <c:out value="${menu}" escapeXml="false" />
-        <!-- /.navbar-collapse -->
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <c:import var="menu" url="/mainMenu.jsp" />
+            <c:out value="${menu}" escapeXml="false" />
+            <!-- /.navbar-collapse -->
 
-        <div id="page-wrapper">
+            <div id="page-wrapper">
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>Mantenedor <small> Categorias</small></h1>
-                    <ol class="breadcrumb">
-                        <li class="active"><a href="CategoryMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
-                    </ol>
-                    <c:if test="${msg != null}" >
-                        <div class="alert alert-info alert-dismissable">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            <td><strong><c:out value="${msg}" /></strong></td>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgOk != null}" >
-                        <div class="alert alert-dismissable alert-success">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgOk}" /></strong>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorFound != null}" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorFound}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorReference != null}" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorReference}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgDel != null}" >
-                        <div class="alert alert-dismissable alert-warning">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgDel}" /></strong></br>
-                        </div>
-                    </c:if>
-                </div>
-            </div><!-- /.row -->
-            <div class="row">                  
-                <div class="col-lg-12"> 
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1>Mantenedor <small> Categorias</small></h1>
+                        <ol class="breadcrumb">
+                            <li class="active"><a href="CategoryMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
+                        </ol>
+                        <c:if test="${msg != null}" >
+                            <div class="alert alert-info alert-dismissable">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <td><strong><c:out value="${msg}" /></strong></td>
+                            </div>
+                        </c:if>
+                        <c:if test="${msgOk != null}" >
+                            <div class="alert alert-dismissable alert-success">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgOk}" /></strong>
+                            </div>
+                        </c:if>
+                        <c:if test="${msgErrorFound != null}" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorFound}" /></strong></br>
+                            </div>
+                        </c:if>
+                        <c:if test="${msgErrorReference != null}" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorReference}" /></strong></br>
+                            </div>
+                        </c:if>
+                        <c:if test="${msgDel != null}" >
+                            <div class="alert alert-dismissable alert-warning">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgDel}" /></strong></br>
+                            </div>
+                        </c:if>
+                    </div>
+                </div><!-- /.row -->
+                <div class="row">                  
+                    <div class="col-lg-12"> 
 
-                    <div class="table-responsive">
+                        <div class="table-responsive">
 
-                        <form action="CategoryMainServlet" method="POST" name="form">
-                            <div class="row-fluid">
-                                <div class="span12">                            
-                                    <div class="box">                                
-                                        <div class="box-title">
-                                            Datatable
-                                            <object align="right"> <button class="btn btn-primary btn-mini" name="btnAdd" type="button" onclick="location.href = 'CategoryAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button></object>
-                                            </br>DB
-                                        </div>
-                                        <div class="box-content nopadding">
-                                            <table id="datatable" class="table table-striped table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th><input class="check_all" type="checkbox" /></th>
-                                                        <th>Id Categoria <i class="fa fa-sort"></i></th>
-                                                        <th>Nombre Categoria <i class="fa fa-sort"></i></th>
-                                                        <th></th>
-                                                        <th></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-
-                                                    <c:forEach var="list" items="${list}"> 
+                            <form action="CategoryMainServlet" method="POST" name="form">
+                                <div class="row-fluid">
+                                    <div class="span12">                            
+                                        <div class="box">                                
+                                            <div class="box-title">
+                                                Datatable
+                                                <object align="right"> <button class="btn btn-primary btn-mini" name="btnAdd" type="button" onclick="location.href = 'CategoryAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button></object>
+                                                </br>DB
+                                            </div>
+                                            <div class="box-content nopadding">
+                                                <table id="datatable" class="table table-striped table-bordered">
+                                                    <thead>
                                                         <tr>
-                                                            <th><input type="checkbox" name="chk" value="<c:out value="${list.idCategory}" />"/></th>
-                                                            <td class="center"><c:out value="${list.idCategory}" /></td>
-                                                            <td class="center"><c:out value="${list.nameCategory}" /></td>
-                                                            <td class="center">
-                                                                <a href="CategoryGetServlet?idCategory=<c:out value="${list.idCategory}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">ACTUALIZAR</font></strong></button></a>                                                                
-                                                            </td>
-                                                            <td class="center">
-                                                                <form action="CategoryMainServlet" method="post"> 
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" type="submit"><strong><font size="1">ELIMINAR</font></strong></button>
-                                                                    <input type="hidden" name="idCategory" value="<c:out value="${list.idCategory}" />">
-                                                                </form>
-                                                            </td>
+                                                            <th><input class="check_all" type="checkbox" /></th>
+                                                            <th>Id Categoria <i class="fa fa-sort"></i></th>
+                                                            <th>Nombre Categoria <i class="fa fa-sort"></i></th>
+                                                            <th></th>
+                                                            <th></th>
                                                         </tr>
-                                                    </c:forEach>                                                                                		                                    		
-                                                </tbody>
-                                                <tfoot>
-                                                    <tr>
-                                                        <th><button class="btn btn-danger btn-mini delete" name="btnDelCol" type="submit"><font size="1">ELIMINAR</font></button></th>
-                                                        <th>Id Categoria</th>
-                                                        <th>Nombre Categoria</th>
-                                                        <th></th>
-                                                        <th></th>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        <c:forEach var="list" items="${list}"> 
+                                                            <tr>
+                                                                <th><input type="checkbox" name="chk" value="<c:out value="${list.idCategory}" />"/></th>
+                                                                <td class="center"><c:out value="${list.idCategory}" /></td>
+                                                                <td class="center"><c:out value="${list.nameCategory}" /></td>
+                                                                <td class="center">
+                                                                    <a href="CategoryGetServlet?idCategory=<c:out value="${list.idCategory}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">ACTUALIZAR</font></strong></button></a>                                                                
+                                                                </td>
+                                                                <td class="center">                                                                    
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('CategoryMainServlet?btnDelRow=x&idCategory=<c:out value="${list.idCategory}" />'); return false;"><strong><font size="1">ELIMINAR</font></strong></button>
+                                                                </td>
+                                                            </tr>
+                                                        </c:forEach>                                                                                		                                    		
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th><button class="btn btn-danger btn-mini delete" name="btnDelCol" type="submit"><font size="1">ELIMINAR</font></button></th>
+                                                            <th>Id Categoria</th>
+                                                            <th>Nombre Categoria</th>
+                                                            <th></th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
 
-                    </div> <!-- /.responsive -->
+                        </div> <!-- /.responsive -->
 
-                </div>
+                    </div>
 
-            </div><!-- /.row -->
-
-
-        </div><!-- /#page-wrapper -->
-
-    </div><!-- /#wrapper -->
+                </div><!-- /.row -->
 
 
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="js/imperiobootstrap.min.js"></script>
-    <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="js/imperio.general.js"></script>
-    <script type="text/javascript" src="js/imperio.tables.js"></script>
+            </div><!-- /#page-wrapper -->
 
-</body>
+        </div><!-- /#wrapper -->
+
+
+        <script type="text/javascript" src="js/jquery.min.js"></script>
+        <script type="text/javascript" src="js/imperiobootstrap.min.js"></script>
+        <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="js/imperio.general.js"></script>
+        <script type="text/javascript" src="js/imperio.tables.js"></script>
+
+    </body>
 </html>

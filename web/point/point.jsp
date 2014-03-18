@@ -37,6 +37,20 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
 
+        <script>
+            function confirmar(url)
+            {
+                if (confirm('¿Está seguro de eliminar el registro?'))
+                {
+                    window.location = url;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        </script>
+
     </head>
 
     <body>
@@ -133,12 +147,8 @@
                                                                 <td class="center">
                                                                     <a href="PointGetServlet?idPlace=<c:out value="${list.idPlace}" />&rut=<c:out value="${list.rut}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">ACTUALIZAR</font></strong></button></a>
                                                                 </td>
-                                                                <td class="center">
-                                                                    <form method="post" action="PointMainServlet">
-                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" type="submit"><strong><font size="1"> ELIMINAR </font></strong></button>
-                                                                        <input type="hidden" name="idPlace" value="<c:out value="${list.idPlace}" />"/>
-                                                                        <input type="hidden" name="rut" value="<c:out value="${list.rut}" />"/>
-                                                                    </form>
+                                                                <td class="center">                                                                    
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('PointMainServlet?btnDelRow=x&idPlace=<c:out value="${list.idPlace}" />&rut=<c:out value="${list.rut}" />'); return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>                                                                              		                                    		
@@ -152,7 +162,7 @@
                                                             <th>Nombres </th>
                                                             <th>Apellidos </th>
                                                             <th>Puntos </th>
-                                                            <th>Total Ptos </th
+                                                            <th>Total Ptos </th>
                                                             <th></th>
                                                             <th></th>
                                                         </tr>

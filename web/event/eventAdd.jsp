@@ -88,6 +88,12 @@
                             <strong><c:out value="${msgErrorDetails}" /></strong></br>
                         </div>
                     </c:if>
+                    <c:if test="${msgErrorUrlImage != null }" >
+                        <div class="alert alert-dismissable alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            <strong><c:out value="${msgErrorUrlImage}" /></strong></br>
+                        </div>
+                    </c:if>
                     <c:if test="${msgErrorDateBegin != null }" >
                         <div class="alert alert-dismissable alert-danger">
                             <button type="button" class="close" data-dismiss="alert">&times;</button>

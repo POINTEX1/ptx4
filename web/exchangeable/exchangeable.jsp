@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Productos Canjeables</title>
+        <title>POINTEX</title>
 
         <!-- imperio css -->
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
@@ -36,6 +36,20 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
+        
+        <script>
+            function confirmar(url)
+            {
+                if (confirm('¿Está seguro de eliminar el registro?'))
+                {
+                    window.location = url;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        </script>
 
     </head>
 
@@ -137,11 +151,8 @@
                                                                     <td class="center">
                                                                         <a href="ExchangeableGetServlet?idExchangeable=<c:out value="${list.idExchangeable}"/>"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">ACTUALIZAR</font></strong></button></a>
                                                                 </td>
-                                                                <td class="center">
-                                                                    <form action="ExchangeableMainServlet" method="post">
-                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" type="submit"><strong><font size="1">ELIMINAR</font></strong></button></a>                                                                        
-                                                                        <input type="hidden" name="idExchangeable" value="<c:out value="${list.idExchangeable}" />" />    
-                                                                    </form>
+                                                                <td class="center">                                                                    
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('ExchangeableMainServlet?btnDelRow=x&idExchangeable=<c:out value="${list.idExchangeable}" />'); return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>

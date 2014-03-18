@@ -51,10 +51,10 @@
 
         <div id="wrapper">
 
-                <!-- Collect the nav links, forms, and other content for toggling -->
-                <c:import var="menu" url="/mainMenu.jsp" />
-                <c:out value="${menu}" escapeXml="false" />
-                <!-- /.navbar-collapse -->
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <c:import var="menu" url="/mainMenu.jsp" />
+            <c:out value="${menu}" escapeXml="false" />
+            <!-- /.navbar-collapse -->
 
             <div id="page-wrapper">
 
@@ -113,20 +113,20 @@
                         <form role="form" action="AdminUpdateServlet" method="POST" name="formUpdate">
                             <div class="form-group">
                                 <label for="disabledSelect">ID Admin</label>
-                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${admin.idAdmin}" />" disabled>
-                                <input type="hidden" name="id" value="<c:out value="${admin.idAdmin}" />"/>
+                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${id}" />" disabled>
+                                <input type="hidden" name="id" value="<c:out value="${id}" />"/>
                             </div>
                             <c:choose>
                                 <c:when test="${msgErrorUsername == null}">
                                     <div class="form-group">
                                         <label>Username </label>
-                                        <input class="form-control" required="true" maxlength="30" name="username" value="<c:out value="${admin.username}" />">
+                                        <input class="form-control" required="true" maxlength="30" name="username" value="<c:out value="${username}" />">
                                     </div>
                                 </c:when>
                                 <c:otherwise>
                                     <div class="form-group has-error">
                                         <label class="control-label" for="inputError">Username </label>
-                                        <input class="form-control" required="true" maxlength="30" name="username" id="inputError" value="<c:out value="${admin.username}" />">
+                                        <input class="form-control" required="true" maxlength="30" name="username" id="inputError" value="<c:out value="${username}" />">
                                     </div>
                                 </c:otherwise>
                             </c:choose>
@@ -135,13 +135,13 @@
                                 <c:when test="${msgErrorEmail == null}">
                                     <div class="form-group input-group">
                                         <span class="input-group-addon">@</span>
-                                        <input type="email" required="true" name="email" maxlength="50" class="form-control" placeholder="Email" value="<c:out value="${admin.email}" />" >
+                                        <input type="email" required="true" name="email" maxlength="50" class="form-control" placeholder="Email" value="<c:out value="${email}" />" >
                                     </div>
                                 </c:when>
                                 <c:otherwise>
                                     <div class="form-group input-group has-error">
                                         <span class="input-group-addon" for="inputError">@</span>
-                                        <input type="email" required="true" name="email"  id="inputError" maxlength="50" class="form-control" placeholder="Email" value="<c:out value="${admin.email}" />" >
+                                        <input type="email" required="true" name="email"  id="inputError" maxlength="50" class="form-control" placeholder="Email" value="<c:out value="${email}" />" >
                                     </div>
                                 </c:otherwise>
                             </c:choose>
@@ -154,52 +154,33 @@
                                 <c:if test="${msgErrorPwd1 == null && msgErrorPwd2 == null }" >
                                     <div class="form-group">
                                         <label>Password (min 6 caracteres) </label>
-                                        <input class="form-control" type="password" maxlength="20" name="pwd1" value="<c:out value="${admin.pwd1}" />">
+                                        <input class="form-control" type="password" maxlength="20" name="pwd1" value="<c:out value="${pwd1}" />">
                                     </div>
                                     <div class="form-group">
                                         <label>Repetir Password </label>
-                                        <input class="form-control" type="password" maxlength="20" name="pwd2" value="<c:out value="${admin.pwd2}" />">
+                                        <input class="form-control" type="password" maxlength="20" name="pwd2" value="<c:out value="${pwd2}" />">
                                     </div>
                                 </c:if>
-                                <c:if test="${msgErrorPwd1 != null && msgErrorPwd2 == null}" >
+                                <c:if test="${msgErrorPwd1 != null || msgErrorPwd2 != null}" >
                                     <div class="form-group has-error">
                                         <label  class="control-label" for="inputError">Password (min 6 caracteres) </label>
-                                        <input class="form-control" type="password" maxlength="20" name="pwd1" id="inputError" value="<c:out value="${admin.pwd1}" />">
+                                        <input class="form-control" type="password" maxlength="20" name="pwd1" id="inputError" value="<c:out value="${pwd1}" />">
                                     </div>
                                     <div class="form-group has-error">
                                         <label  class="control-label" for="inputError">Repetir Password </label>
-                                        <input class="form-control" type="password" maxlength="20" name="pwd2" id="inputError" value="<c:out value="${admin.pwd2}" />">
+                                        <input class="form-control" type="password" maxlength="20" name="pwd2" id="inputError" value="<c:out value="${pwd2}" />">
                                     </div>
-                                </c:if>  
-                                <c:if test="${msgErrorPwd1 == null && msgErrorPwd2 != null}" >
-                                    <div class="form-group has-error">
-                                        <label  class="control-label" for="inputError">Password (min 6 caracteres) </label>
-                                        <input class="form-control" type="password" maxlength="20" name="pwd1" id="inputError" value="<c:out value="${admin.pwd1}" />">
-                                    </div>
-                                    <div class="form-group has-error">
-                                        <label  class="control-label" for="inputError">Repetir Password </label>
-                                        <input class="form-control" type="password" maxlength="20" name="pwd2" id="inputError" value="<c:out value="${admin.pwd2}" />">
-                                    </div>
-                                </c:if> 
-                                <c:if test="${msgErrorPwd1 != null && msgErrorPwd2 != null}" >
-                                    <div class="form-group has-error">
-                                        <label  class="control-label" for="inputError">Password (min 6 caracteres) </label>
-                                        <input class="form-control" type="password" maxlength="20" name="pwd1" id="inputError" value="<c:out value="${admin.pwd1}" />">
-                                    </div>
-                                    <div class="form-group has-error">
-                                        <label  class="control-label" for="inputError">Repetir Password </label>
-                                        <input class="form-control" type="password" maxlength="20" name="pwd2" id="inputError" value="<c:out value="${admin.pwd2}" />">
-                                    </div>
-                                </c:if>
+                                </c:if>                                  
                             </div>
                             <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>
                         </form>
                     </div>
                 </div><!-- /.row -->
-                <div class="row">                  
-                    <div class="col-lg-12">                        
-                    </div>
-                </div><!-- /.row -->
+
+                <p>&nbsp;</p>
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                
             </div><!-- /#page-wrapper -->
         </div><!-- /#wrapper -->
     </body>

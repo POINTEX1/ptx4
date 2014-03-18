@@ -149,6 +149,7 @@ public class EventAddServlet extends HttpServlet {
 
                             /* comprobar url image */
                             if (urlImage == null || urlImage.trim().equals("")) {
+                                request.setAttribute("msgErrorUrlImage", "Error: Debe ingresar la url de imagen.");
                                 error = true;
                             } else {
                                 event.setUrlImage(urlImage);

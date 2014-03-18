@@ -42,7 +42,7 @@
                     <c:if test="${access == 777 || access == 555 }" ><li><a href="PromoGiftMainServlet">Promociones</a></li></c:if>
                     <c:if test="${access == 777 || access == 555 }" ><li><a href="ExchangeableMainServlet">Productos Canjebles</a></li></c:if>
                     <c:if test="${access == 777 || access == 555 }" ><li><a href="EventMainServlet">Eventos</a></li></c:if>                    
-                    <c:if test="${access == 777 || access == 555 }" ><li><a href="EntryMainServlet">Registro Entradas</a></li></c:if>    
+                    <c:if test="${access == 777 || access == 555 }" ><li><a href="EntryMainServlet">Lista</a></li></c:if>    
                     <c:if test="${access == 777 || access == 555 }" ><li><a href="PlaceNewsMainServlet">Noticias Lugares</a></li></c:if>
                     <c:if test="${access == 777 || access == 555 }" ><li><a href="PlaceCategoryMainServlet">Categorías Lugar</a></li></c:if>
                     </ul>

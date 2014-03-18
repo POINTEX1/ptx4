@@ -21,7 +21,7 @@ import java.util.Collection;
  */
 public class ClientPromoCheckoutDAO {
 
-    Connection conexion;
+    private Connection conexion;
 
     public Connection getConexion() {
         return conexion;

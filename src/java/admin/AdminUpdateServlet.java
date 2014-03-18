@@ -7,7 +7,6 @@ package admin;
 import Helpers.StringMD;
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -44,11 +43,10 @@ public class AdminUpdateServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        /////////////////////////////////////////
+        // ESTABLECER CONEXION
+        /////////////////////////////////////////
         try {
-            /////////////////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////////////////
-
             conexion = ds.getConnection();
 
             AdminDAO adminDAO = new AdminDAO();
@@ -73,116 +71,137 @@ public class AdminUpdateServlet extends HttpServlet {
                     request.setAttribute("userJsp", user);
                     request.setAttribute("access", access);
 
-                    try {
-                        /////////////////////////////////////////
-                        // RECIBIR Y COMPROBAR PARAMETROS
-                        //////////////////////////////////////// 
+                    /////////////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETROS
+                    //////////////////////////////////////// 
 
-                        String chk = request.getParameter("chk");
-                        String sid = request.getParameter("id");
-                        String username = request.getParameter("username");
-                        String email = request.getParameter("email");
-                        String pwd1 = request.getParameter("pwd1");
-                        String pwd2 = request.getParameter("pwd2");
+                    String chk = request.getParameter("chk");
+                    String sid = request.getParameter("id");
+                    String username = request.getParameter("username");
+                    String email = request.getParameter("email");
+                    String pwd1 = request.getParameter("pwd1");
+                    String pwd2 = request.getParameter("pwd2");
 
-                        Admin admin = new Admin();
+                    Admin admin = new Admin();
 
-                        boolean error = false;
+                    boolean error = false;
 
-                        /* comprobar id admin */
-                        if (sid == null || sid.trim().equals("")) {
-                            request.setAttribute("msgErrorId", "Error al recibir id Admin.");
-                            error = true;
-                        } else {
-                            admin.setIdAdmin(Integer.parseInt(sid));
-                        }
+                    /* instanciar string url */
+                    String url = "";
 
-                        /* comprobar username */
-                        if (username == null || username.trim().equals("")) {
-                            request.setAttribute("msgErrorUsername", "Error al recibir username.");
-                            error = true;
-                        } else {
-                            admin.setUsername(username);
-                            /* comprobar username duplicado */
+                    /* comprobar id admin */
+                    if (sid == null || sid.trim().equals("")) {
+                        url = url + "&msgErrorId=Error al recibir id Admin.";
+                        error = true;
+                    } else {
+                        admin.setIdAdmin(Integer.parseInt(sid));
+                    }
+
+                    /* comprobar username */
+                    url = url + "&username=" + username;
+                    if (username == null || username.trim().equals("")) {
+                        url = url + "&msgErrorUsername=Error: Debe ingresar username.";
+                        error = true;
+                    } else {
+                        admin.setUsername(username);
+                        /* comprobar username duplicado */
+                        try {
                             boolean find = adminDAO.validateDuplicateUsername(admin);
                             if (find) {
-                                request.setAttribute("msgErrorUsername", "Error: ya existe un administrador con ese username. ");
+                                url = url + "&msgErrorUsername=Error: ya existe un administrador con ese username.";
                                 error = true;
                             }
-                        }
-                        /* comprobar email */
-                        if (email == null || email.trim().equals("")) {
-                            request.setAttribute("msgErrorEmail", "Error al recibir email.");
+                        } catch (Exception ex) {
+                            url = url + "msgErrorUsername=Error: no se pudo llevar a cabo la instrucción.";
                             error = true;
-                        } else {
-                            /* comprobar email duplicado */
-                            admin.setEmail(email);
+                        }
+                    }
+                    /* comprobar email */
+                    if (email == null || email.trim().equals("")) {
+                        url = url + "&msgErrorEmail=Error: Debe ingresar email.";
+                        error = true;
+                    } else {
+                        /* comprobar email duplicado */
+                        admin.setEmail(email);
+                        try {
                             boolean find = adminDAO.validateDuplicateEmail(admin);
                             if (find) {
-                                request.setAttribute("msgErrorEmail", "Error: ya existe un administrador con ese email. ");
+                                url = url + "&msgErrorEmail=Error: ya existe un administrador con ese email.";
                                 error = true;
                             }
+                        } catch (Exception ex) {
+                            url = url + "&msgErrorEmail=Error: No se pudo llevar a cabo la instrucción.";
+                            error = true;
                         }
-                        //////////////////////////////////////
-                        // EJECUTAR LÓGICA DE NEGOCIO
-                        /////////////////////////////////////
-
-                        /* buscar admin */
-                        Admin reg = adminDAO.findById(admin.getIdAdmin());
-
-                        if (chk != null) {
-                            /* comprobar pwd1 */
-                            if (pwd1 == null || pwd1.trim().equals("")) {
-                                request.setAttribute("msgErrorPwd1", "Error al recibir password.");
-                            } else {
-                                admin.setPwd1(pwd1);
-                                /* comprobar pwd2 */
-                                if (pwd2 == null || pwd2.trim().equals("")) {
-                                    request.setAttribute("msgErrorPwd1", "Error al recibir password.");
-                                } else {
-                                    admin.setPwd2(pwd2);
-                                    /* comprobar coincidencias */
-                                    if (!pwd1.equals(pwd2)) {
-                                        request.setAttribute("msgErrorPwd1", "Error: Las password's no coinciden");
-                                        error = true;
-                                    }
-                                    if (pwd1.length() < 6 || pwd2.length() < 6) {
-                                        request.setAttribute("msgErrorPwd2", "Error: La password debe poseer al menos 6 caracteres");
-                                        error = true;
-                                    }
-
-                                    if (!error) {
-                                        admin.setPassword(StringMD.getStringMessageDigest(pwd1, StringMD.MD5));
-                                        /* si admin fue encontrado */
-                                        if (reg != null) {
-                                            /* actualizar password */
-                                            adminDAO.updatePassword(admin);
-                                            request.setAttribute("msgOk", "Registro actualizado exitosamente! ");
-                                        } else {
-                                            request.setAttribute("msgErrorId", "Error: No se encontró el registro o ha sido eliminado mientras se actualizaba.");
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            if (!error) {
-                                /* si admin fue encontrado */
-                                if (reg != null) {
-                                    /* no actualizar password */
-                                    adminDAO.update(admin);
-                                    request.setAttribute("msgOk", "Registro actualizado exitosamente! ");
-                                } else {
-                                    request.setAttribute("msgErrorId", "Error: No se encontró el administrador o ha sido eliminado mientras se actualizaba.");
-                                }
-                            }
-                        }
-
-                        request.setAttribute("admin", admin);
-
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("/admin/adminUpdate.jsp").forward(request, response);
                     }
+                    /////////////////////////////////////
+                    // EJECUTAR LÓGICA DE NEGOCIO
+                    /////////////////////////////////////
+
+                    /* buscar admin */
+                    Admin reg = null;
+                    try {
+                        reg = adminDAO.findById(admin.getIdAdmin());
+                    } catch (Exception ex) {
+                        url = url + "&msgErrorId=Error: No se pudo llevar a cabo la instrucción findById).";
+                        error = true;
+                    }
+
+                    if (chk != null) {
+                        /* comprobar pwd1 */
+                        if (pwd1 == null || pwd1.trim().equals("")) {
+                            url = url + "&msgErrorPwd1=Error: Debe ingresar password.";
+                        } else {
+                            admin.setPwd1(pwd1);
+                            /* comprobar pwd2 */
+                            if (pwd2 == null || pwd2.trim().equals("")) {
+                                url = url + "&msgErrorPwd2=Error: Debe ingresar password.";
+                            } else {
+                                admin.setPwd2(pwd2);
+                                /* comprobar coincidencias */
+                                if (!pwd1.equals(pwd2)) {
+                                    url = url + "&msgErrorPwd1=Error: Las password's no coinciden.";
+                                    error = true;
+                                }
+                                if (pwd1.length() < 6 || pwd2.length() < 6) {
+                                    url = url + "&msgErrorPwd2=Error: La password debe poseer al menos 6 caracteres.";
+                                    error = true;
+                                }
+
+                                if (!error) {
+                                    admin.setPassword(StringMD.getStringMessageDigest(pwd1, StringMD.MD5));
+                                    /* si admin fue encontrado */
+                                    if (reg != null) {
+                                        /* actualizar password */
+                                        adminDAO.updatePassword(admin);
+                                        url = url + "&msgOk=Registro actualizado exitosamente!";
+                                    } else {
+                                        request.setAttribute("msgErrorId", "Error: No se encontró el registro o ha sido eliminado mientras se actualizaba.");
+
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        if (!error) {
+                            /* si admin fue encontrado */
+                            if (reg != null) {
+                                /* no actualizar password */
+                                try {
+                                    adminDAO.update(admin);
+                                    url = url + "&msgOk=Registro actualizado exitosamente!";
+                                } catch (Exception ex) {
+                                    url = url + "&msgErrorId=Error: No se pudo llevar a cabo la instrucción update.";
+                                }
+                            } else {
+                                url = url + "&msgErrorId=Error: No se ha encontrado el registro.";
+                            }
+                        }
+                    }
+
+                    request.setAttribute("admin", admin);
+
+                    response.sendRedirect("/POINTEX1/AdminGetServlet?id=" + admin.getIdAdmin() + url);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */

@@ -36,6 +36,20 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
 
+        <script>
+            function confirmar(url)
+            {
+                if (confirm('¿Está seguro de eliminar el registro?'))
+                {
+                    window.location = url;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        </script>
+        
     </head>
 
     <body>
@@ -128,12 +142,8 @@
                                                                 <td class="center"><c:out value="${list.nameCity}" /></td>
                                                                 <td class="center"><c:out value="${list.idCategory}" /></td>                                                                
                                                                 <td class="center"><c:out value="${list.nameCategory}" /></td>                                                                
-                                                                <td class="center">
-                                                                    <form action="PlaceCategoryMainServlet" method="post">                                                                        
-                                                                        <input type="hidden" name="idPlace" value="<c:out value="${list.idPlace}" />"/>
-                                                                        <input type="hidden" name="idCategory" value="<c:out value="${list.idCategory}" />" />
-                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" type="submit"><strong><font size="1">ELIMINAR</font></strong></button>
-                                                                    </form>
+                                                                <td class="center">                                                                    
+                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('PlaceCategoryMainServlet?btnDelRow=x&idPlace=<c:out value="${list.idPlace}" />&idCategory=<c:out value="${list.idCategory}" />'); return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>

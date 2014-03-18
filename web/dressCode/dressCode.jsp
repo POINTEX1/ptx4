@@ -38,6 +38,20 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
 
+        <script>
+            function confirmar(url)
+            {
+                if (confirm('¿Está seguro de eliminar el registro?'))
+                {
+                    window.location = url;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        </script>
+
     </head>
 
     <body>
@@ -126,11 +140,8 @@
                                                                 <td class="center">
                                                                     <a href="DressCodeGetServlet?idDressCode=<c:out value="${list.idDressCode}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">ACTUALIZAR</font></strong></button></a>                                                                
                                                                 </td>
-                                                                <td class="center">
-                                                                    <form action="DressCodeMainServlet" method="post"> 
-                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" type="submit"><strong><font size="1">ELIMINAR</font></strong></button>
-                                                                        <input type="hidden" name="idDressCode" value="<c:out value="${list.idDressCode}" />">
-                                                                    </form>
+                                                                <td class="center">                                                                    
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('DressCodeMainServlet?btnDelRow=x&idDressCode=<c:out value="${list.idDressCode}" />'); return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>                                                                                		                                    		

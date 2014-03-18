@@ -43,10 +43,10 @@ public class AdminMainServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        /////////////////////////////////////////
+        // ESTABLECER CONEXION
+        /////////////////////////////////////////
         try {
-            /////////////////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////////////////
             conexion = ds.getConnection();
 
             AdminDAO adminDAO = new AdminDAO();
@@ -72,57 +72,64 @@ public class AdminMainServlet extends HttpServlet {
                     /* obtener los valores de session y asignar valores a la jsp */
                     request.setAttribute("userJsp", user);
                     request.setAttribute("access", access);
-                    request.setAttribute("idUser", idUser); 
+                    request.setAttribute("idUser", idUser);
 
-                    try {
-                        //////////////////////////////////////////
-                        // RECIBIR Y COMPROBAR PARAMETROS
-                        //////////////////////////////////////////                      
+                    //////////////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETROS
+                    //////////////////////////////////////////                      
 
-                        String btnDelRow = request.getParameter("btnDelRow");
-                        String btnDelCol = request.getParameter("btnDelCol");
+                    String btnDelRow = request.getParameter("btnDelRow");
+                    String btnDelCol = request.getParameter("btnDelCol");
 
-                        //////////////////////////////////////////
-                        // ELIMINAR POR REGISTRO
-                        //////////////////////////////////////////
-                        if (btnDelRow != null) {
-                            /* recibir parametros */
-                            int id = Integer.parseInt(request.getParameter("id"));
+                    //////////////////////////////////////////
+                    // ELIMINAR POR REGISTRO
+                    //////////////////////////////////////////
+                    if (btnDelRow != null) {
+                        /* recibir parametros */
+                        int id = Integer.parseInt(request.getParameter("id"));
 
-                            /* comprobar auto eliminacion */
-                            if (id != idUser) {
+                        /* comprobar auto eliminacion */
+                        if (id != idUser) {
+                            try {
                                 adminDAO.delete(id);
                                 request.setAttribute("msgDel", "Un Administrador ha sido eliminado.");
-                            } else {
-                                request.setAttribute("msgErrorNoDel", "Error: El administrador no puede eliminarse a sí mismo.");
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                                request.setAttribute("msgErrorNoDel", "Error: No se pudo ejecutar la instrucción.");
                             }
+                        } else {
+                            request.setAttribute("msgErrorNoDel", "Error: El administrador no puede eliminarse a sí mismo.");
                         }
+                    }
 
-                        //////////////////////////////////////////
-                        // ELIMINAR VARIOS REGISTROS
-                        //////////////////////////////////////////
-                        if (btnDelCol != null) {
-                            try {
-                                /* recibir parametros */
-                                String[] outerArray = request.getParameterValues("chk");
-                                int i = 0;
-                                while (outerArray[i] != null) {
+                    //////////////////////////////////////////
+                    // ELIMINAR VARIOS REGISTROS
+                    //////////////////////////////////////////
+                    if (btnDelCol != null) {
+                        try {
+                            /* recibir parametros */
+                            String[] outerArray = request.getParameterValues("chk");
+                            int i = 0;
+                            while (outerArray[i] != null) {
+                                try {
                                     adminDAO.delete(Integer.parseInt(outerArray[i]));
                                     i++;
-                                    if (i == 1) {
-                                        request.setAttribute("msgDel", "Un registro ha sido eliminado.");
-                                    } else if (i > 1) {
-                                        request.setAttribute("msgDel", i + " registros han sido eliminados.");
-                                    }
+                                } catch (Exception ex) {
                                 }
-                            } catch (Exception ex) {
+                                if (i == 1) {
+                                    request.setAttribute("msgDel", "Un registro ha sido eliminado.");
+                                } else if (i > 1) {
+                                    request.setAttribute("msgDel", i + " registros han sido eliminados.");
+                                }
                             }
+                        } catch (Exception ex) {
                         }
+                    }
 
-                        //////////////////////////////////////////
-                        // OBTENER TOTAL DE REGISTROS
-                        //////////////////////////////////////////
+                    /* obtener lista de registros */
+                    try {
                         Collection< Admin> list = adminDAO.getAll();
+                        request.setAttribute("list", list);
 
                         if (list.size() == 1) {
                             request.setAttribute("msg", "1 registro encontrado en la base de datos.");
@@ -131,12 +138,11 @@ public class AdminMainServlet extends HttpServlet {
                         } else if (list.isEmpty()) {
                             request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
                         }
-                        request.setAttribute("list", list);
-
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("/admin/admin.jsp").forward(request, response);
+                    } catch (Exception ex) {
+                        request.setAttribute("msgError", "Existen errores, verifique instrucciones.");
                     }
+
+                    request.getRequestDispatcher("/admin/admin.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */

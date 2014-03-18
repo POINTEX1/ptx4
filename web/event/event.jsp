@@ -37,6 +37,20 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
 
+        <script>
+            function confirmar(url)
+            {
+                if (confirm('¿Está seguro de eliminar el registro?'))
+                {
+                    window.location = url;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        </script>
+
     </head>
 
     <body>
@@ -149,11 +163,8 @@
                                                                 <td class="center">
                                                                     <a href="EventGetServlet?idPlace=<c:out value="${list.idPlace}" />&idEvent=<c:out value="${list.idEvent}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">ACTUALIZAR</font></strong></button></a>
                                                                 </td>
-                                                                <td class="center">
-                                                                    <form method="post" action="EventMainServlet">
-                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" type="submit"><strong><font size="1"> ELIMINAR </font></strong></button>                                                                        
-                                                                        <input type="hidden" name="idEvent" value="<c:out value="${list.idEvent}" />"/>
-                                                                    </form>
+                                                                <td class="center">                                                                    
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('EventMainServlet?btnDelRow=x&idEvent=<c:out value="${list.idEvent}" />'); return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>                                                                              		                                    		

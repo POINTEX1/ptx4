@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Registro Entradas</title>
+        <title>POINTEX</title>
 
         <!-- imperio css -->
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
@@ -37,6 +37,20 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
+        
+        <script>
+            function confirmar(url)
+            {
+                if (confirm('¿Está seguro de eliminar el registro?'))
+                {
+                    window.location = url;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        </script>
 
     </head>
 
@@ -144,13 +158,8 @@
                                                                 <td class="center"><c:out value="${list.firstName}" /></td>
                                                                 <td class="center"><c:out value="${list.lastName}" /></td>
                                                                 <td class="center"><c:out value="${list.createTime}" /></td>
-                                                                <td class="center">
-                                                                    <form action="EntryMainServlet" method="post">                                                                        
-                                                                        <input type="hidden" name="idEvent" value="<c:out value="${list.idEvent}" />" />
-                                                                        <input type="hidden" name="rut" value="<c:out value="${list.rut}" />" />
-                                                                        <input type="hidden" name="barCode" value="<c:out value="${list.barCode}" />" />
-                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" type="submit"><strong><font size="1">ELIMINAR</font></strong></button>
-                                                                    </form>
+                                                                <td class="center">                                                                   
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('EntryMainServlet?btnDelRow=x&idEvent=<c:out value="${list.idEvent}" />&rut=<c:out value="${list.rut}" />&barCode=<c:out value="${list.barCode}" />'); return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>

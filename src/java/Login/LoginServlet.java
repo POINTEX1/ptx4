@@ -113,7 +113,8 @@ public class LoginServlet extends HttpServlet {
                 }
             }
         } catch (Exception connectionException) {
-            connectionException.printStackTrace();
+            request.setAttribute("msgErrorLogin", "ERROR DE CONEXION.");
+            request.getRequestDispatcher("/login/login.jsp").forward(request, response);
         } finally {
             /* cerrar conexion */
             try {

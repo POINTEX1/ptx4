@@ -5,7 +5,6 @@
 package card;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.Collection;
 import javax.annotation.Resource;
@@ -86,12 +85,15 @@ public class CardMainServlet extends HttpServlet {
                         try {
                             /* recibir parámetros */
                             int barcode = Integer.parseInt(request.getParameter("barCode"));
+                            System.out.println(barcode);
                             try {
                                 cardDAO.delete(barcode);
                                 request.setAttribute("msgDel", "Un registro ha sido eliminado.");
                             } catch (Exception deleteException) {
+                                request.setAttribute("msgErrorDel", "Error: No se puede eliminar un registro, existen referencias asociadas.");
                             }
                         } catch (Exception parameterException) {
+                            System.out.println("error valor numerico");
                         }
                     }
                     //////////////////////////////////////////
@@ -108,6 +110,7 @@ public class CardMainServlet extends HttpServlet {
                                     cont++;
                                     request.setAttribute("msgDel", cont + " registro(s) han sido eliminado(s).");
                                 } catch (Exception deleteException) {
+                                    request.setAttribute("msgErrorDel", "Error: No se puede eliminar un registro, existen referencias asociadas.");
                                 }
                                 i++;
                             }

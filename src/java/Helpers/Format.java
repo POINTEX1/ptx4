@@ -44,8 +44,7 @@ public class Format {
         String sMinute = (minute < 10) ? "0" + minute : "" + minute;
         String sSecond = (second < 10) ? "0" + second : "" + second;
 
-        String cd = year + "-" + sMonth + "-" + sDay + "T" + sHour + ":" + sMinute;
-        System.out.println("Current date: " + cd);
+        String cd = year + "-" + sMonth + "-" + sDay + "T" + sHour + ":" + sMinute;        
 
         return cd;
     }

@@ -36,6 +36,20 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
 
+        <script>
+            function confirmar(url)
+            {
+                if (confirm('¿Está seguro de eliminar el registro?'))
+                {
+                    window.location = url;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        </script>
+        
     </head>
 
     <body>
@@ -130,12 +144,8 @@
 
                                                                 <td class="center"><c:out value="${list.rut}" />-<c:out value="${list.dv}" /></td>                                                                
                                                                 <td class="center"><c:out value="${list.points}" /></td>                                                                
-                                                                <td class="center">
-                                                                    <form action="ClientPromoGiftMainServlet" method="post">
-                                                                        <input type="hidden" name="rut" value="<c:out value="${list.rut}" />"/>                                                                        
-                                                                        <input type="hidden" name="idPromo" value="<c:out value="${list.idPromo}" />" />
-                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" type="submit"><strong><font size="1">ELIMINAR</font></strong></button>
-                                                                    </form>
+                                                                <td class="center">                                                                  
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('ClientPromoGiftMainServlet?btnDelRow=x&idPromo=<c:out value="${list.idPromo}" />&rut=<c:out value="${list.rut}" />'); return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>
