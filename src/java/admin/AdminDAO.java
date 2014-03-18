@@ -281,7 +281,7 @@ public class AdminDAO {
             sentence.setString(1, admin.getUsername());
             sentence.setString(2, admin.getEmail());
             sentence.setInt(3, admin.getIdAdmin());
-
+            
             sentence.executeUpdate();
 
         } catch (MySQLSyntaxErrorException ex) {

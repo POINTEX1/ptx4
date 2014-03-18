@@ -322,7 +322,7 @@ public class UserCardDAO {
             sentence.setString(7, user.getFacebook());
             sentence.setString(8, user.getDateBirth());
             sentence.setInt(9, user.getIdUniversity());
-            sentence.setInt(10, user.getRut());
+            sentence.setInt(10, user.getRut());            
             
             sentence.executeUpdate();
 
