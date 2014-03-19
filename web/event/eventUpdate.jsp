@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Eventos</title>
+        <title>POINTEX</title>
 
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.css" rel="stylesheet">
@@ -55,135 +55,174 @@
 
                 <div class="row">
                     <div class="col-lg-12">
+                        <!-- TITULO MANTENEDOR -->
                         <h1>Mantenedor <small> Eventos</small></h1>
                         <ol class="breadcrumb">
                             <li><a href="EventMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                             <li class="active"><i class="fa fa-edit"></i> Actualizar</li>
                         </ol>
+                        <!-- /TITULO MANTENEDOR -->
+
+                        <!-- MENSAJE DE EXITO -->
                         <c:if test="${msgOk != null}" >
                             <div class="alert alert-dismissable alert-success">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgOk}" /></strong>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE EXITO -->
+
+                        <!-- MENSAJE DE ERROR FECHA -->
                         <c:if test="${msgErrorDate != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorDate}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR FECHA -->
+
+                        <!-- MENSAJE DE ERROR ID LUGAR -->
                         <c:if test="${msgErrorIdPlace != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorIdPlace}" /></strong></br>
                             </div>
                         </c:if> 
+                        <!-- /MENSAJE DE ERROR ID LUGAR -->
                         <c:if test="${msgErrorIdEvent != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorIdEvent}" /></strong></br>
                             </div>
-                        </c:if>    
+                        </c:if>  
+                        <!-- /MENSAJE DE ERROR ID LUGAR -->
+
+                        <!-- MENSAJE DE ERROR IMAGE -->
                         <c:if test="${msgErrorUrlImage != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorUrlImage}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR IMAGE -->
+
+                        <!-- MENSAJE DE ERROR NOMBRE LUGAR -->
                         <c:if test="${msgErrorNamePlace != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorNamePlace}" /></strong></br>
                             </div>
                         </c:if> 
+                        <!-- /MENSAJE DE ERROR NOMBRE LUGAR -->
+
+                        <!-- MENSAJE DE ERROR DE TITULO -->
                         <c:if test="${msgErrorTittle != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorTittle}" /></strong></br>
                             </div>
                         </c:if> 
+                        <!-- /MENSAJE DE ERROR DE TITULO -->
+
+                        <!-- MENSAJE DE ERROR DETALLE -->
                         <c:if test="${msgErrorDetails != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorDetails}" /></strong></br>
                             </div>
                         </c:if> 
+                        <!-- /MENSAJE DE ERROR DETALLE -->
+
+                        <!-- MENSAJE DE ERROR FECHA DE INICIO -->
                         <c:if test="${msgErrorDateBegin != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorDateBegin}" /></strong></br>
                             </div>
                         </c:if> 
+                        <!-- /MENSAJE DE ERROR FECHA DE INICIO -->
+
+                        <!-- MENSAJE DE ERROR FECHA DE TERMINO -->
                         <c:if test="${msgErrorDateEnd != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorDateEnd}" /></strong></br>
                             </div>
                         </c:if> 
+                        <!-- /MENSAJE DE ERROR FECHA DE TERMINO -->
+
+                        <!-- MENSAJE DE ERROR REGISTRO DUPLICADO -->
                         <c:if test="${msgErrorDupEvent != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorDupEvent}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR REGISTRO DUPLICADO -->
+
+                        <!-- MENSAJE DE ERROR REGISTRO NO ENCONTRADO -->
                         <c:if test="${msgErrorFound != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorFound}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR REGISTRO NO ENCONTRADO -->
+
+                        <!-- MENSAJE DE ERROR PUNTOS -->
                         <c:if test="${msgErrorPoints != null }" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorPoints}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR PUNTOS -->
+
+                        <!-- MENSAJE DE ERROR DE SOLICITUD -->
                         <c:if test="${msgErrorRequest != null }" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorRequest}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR DE SOLICITUD -->
                     </div>
                     <div class="col-lg-4">
+                        <!-- FORMULARIO -->
                         <form role="form" action="EventUpdateServlet" method="POST" name="formUpdate">
+                            <!-- LUGARES -->
                             <div class="form-group">
-                                <label for="disabledSelect">Plaza</label>
+                                <label for="disabledSelect">Lugar</label>
                                 <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${event.namePlace}" />" disabled>
                                 <input type="hidden" name="namePlace" value="<c:out value="${event.namePlace}" />"/>
                                 <input type="hidden" name="idPlace" value="<c:out value="${event.idPlace}" />"/>
                             </div>
+                            <!-- /LUGARES -->
+
+                            <!-- ID EVENTO -->
                             <div class="form-group">
                                 <label for="disabledSelect">id Evento</label>
                                 <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${event.idEvent}" />" disabled>
                                 <input type="hidden" name="idEvent" value="<c:out value="${event.idEvent}" />"/>
                             </div>
-                            <c:choose>
-                                <c:when test="${msgErrorEvent == null && msgErrorTittle == null}">
-                                    <div class="form-group">
-                                        <label>Título de Evento</label>
-                                        <input class="form-control" required="true" maxlength="100" name="tittle" value="<c:out value="${event.tittle}" />">
-                                    </div>
-                                </c:when>
-                                <c:when test="${msgErrorEvent != null && msgErrorTittle == null}">
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">Título de Evento</label>
-                                        <input type="text" class="form-control" required="true" name="tittle" id="inputError" value="<c:out value="${event.tittle}" />">
-                                    </div>
-                                </c:when>
-                                <c:when test="${msgErrorEvent == null && msgErrorTittle != null}">
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">Título de Evento</label>
-                                        <input type="text" class="form-control" required="true" name="tittle" id="inputError" value="<c:out value="${event.tittle}" />">
-                                    </div>
-                                </c:when>
-                                <c:otherwise>
-                                    <div class="form-group">
-                                        <label>Título de Evento</label>
-                                        <input class="form-control" required="true" maxlength="100" name="tittle" value="<c:out value="${event.tittle}" />">
-                                    </div>
-                                </c:otherwise>
-                            </c:choose>
+                            <!-- /ID EVENTO -->
+
+                            <!-- TITULO EVENTO -->
+                            <c:if test="${msgErrorEvent == null && msgErrorTittle == null}">
+                                <div class="form-group">
+                                    <label>Título de Evento</label>
+                                    <input class="form-control" required="true" maxlength="100" name="tittle" value="<c:out value="${event.tittle}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorEvent != null || msgErrorTittle != null}">
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Título de Evento</label>
+                                    <input type="text" class="form-control" required="true" name="tittle" id="inputError" value="<c:out value="${event.tittle}" />">
+                                </div>
+                            </c:if>
+                            <!-- /TITULO EVENTO -->
+
+                            <!-- DETALLES -->
                             <c:if test="${msgErrorDetails == null}" >
                                 <div class="form-group">                            
                                     <label>Detalles</label>
@@ -196,6 +235,9 @@
                                     <input class="form-control" required="true" maxlength="100" id="inputError" name="details" value="<c:out value="${event.details}" />">                            
                                 </div>
                             </c:if>
+                            <!-- /DETALLES -->
+
+                            <!-- CODIGO VESTIR -->
                             <div class="form-group">
                                 <label>Código de Vestir</label>
                                 <select class="form-control" name="idDressCode">
@@ -204,6 +246,9 @@
                                     </c:forEach>
                                 </select>                                
                             </div>
+                            <!-- /CODIGO VESTIR -->
+
+                            <!-- PUNTOS -->
                             <c:if test="${msgErrorPoints != null }" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Puntos</label>
@@ -216,6 +261,9 @@
                                     <input type="number" class="form-control" min="0" max="99999" name="points" value="<c:out value="${event.points}" />">
                                 </div>
                             </c:if>
+                            <!-- /PUNTOS -->
+
+                            <!-- IMAGE -->
                             <c:if test="${msgErrorUrlImage == null}" >
                                 <div class="form-group">
                                     <label>URL de Imagen</label>
@@ -228,48 +276,32 @@
                                     <input class="form-control" required="true" maxlength="100" id="inputError" name="urlImage" value="<c:out value="${event.urlImage}" />">
                                 </div> 
                             </c:if>
-                            <c:choose>
-                                <c:when test="${msgErrorEvent == null && msgErrorDate == null }">
-                                    <div class="form-group">
-                                        <label>Fecha de Inicio</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateBegin" value="<c:out value="${event.dateBegin}" />">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Fecha de Término</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateEnd" value="<c:out value="${event.dateEnd}" />">
-                                    </div>
-                                </c:when>
-                                <c:when test="${msgErrorEvent != null && msgErrorDate == null }">
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">Fecha de Inicio</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateBegin" id="inputError" value="<c:out value="${event.dateBegin}" />">
-                                    </div>
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">Fecha de Término</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateEnd" id="inputError" value="<c:out value="${event.dateEnd}" />">
-                                    </div>
-                                </c:when>
-                                <c:when test="${msgErrorEvent == null && msgErrorDate != null }">
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">Fecha de Inicio</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateBegin" id="inputError" value="<c:out value="${event.dateBegin}" />">
-                                    </div>
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">Fecha de Término</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateEnd" id="inputError" value="<c:out value="${event.dateEnd}" />">
-                                    </div>
-                                </c:when>
-                                <c:otherwise>
-                                    <div class="form-group">
-                                        <label>Fecha de Inicio</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateBegin" value="<c:out value="${event.dateBegin}" />">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Fecha de Término</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateEnd" value="<c:out value="${event.dateEnd}" />">
-                                    </div>
-                                </c:otherwise>
-                            </c:choose>
+                            <!-- /IMAGE -->
+
+                            <!-- FECHAS -->
+                            <c:if test="${msgErrorEvent == null && msgErrorDate == null}">
+                                <div class="form-group">
+                                    <label>Fecha de Inicio</label>
+                                    <input class="form-control" type="datetime-local" required="true" name="dateBegin" value="<c:out value="${event.dateBegin}" />">
+                                </div>
+                                <div class="form-group">
+                                    <label>Fecha de Término</label>
+                                    <input class="form-control" type="datetime-local" required="true" name="dateEnd" value="<c:out value="${event.dateEnd}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorEvent == null && msgErrorDate == null}">
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Fecha de Inicio</label>
+                                    <input class="form-control" type="datetime-local" required="true" name="dateBegin" id="inputError" value="<c:out value="${event.dateBegin}" />">
+                                </div>
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Fecha de Término</label>
+                                    <input class="form-control" type="datetime-local" required="true" name="dateEnd" id="inputError" value="<c:out value="${event.dateEnd}" />">
+                                </div>
+                            </c:if>
+                            <!-- /FECHAS -->
+
+                            <!-- SOLICITUD -->
                             <div class="form-group">
                                 <label>Solicitud: </label>
                                 <select class="form-control" id="eventRequest" name="eventRequest" onchange="changeDisplay()">                                
@@ -278,20 +310,26 @@
                                     <option value="2" <c:if test="${event.request == 2}">selected</c:if>>Rechazada</option>
                                     </select>                                
                                 </div>
+                                <!-- /SOLICITUD -->
+
+                                <!-- RAZON RECHAZO -->
                                 <div class="form-group" id="reason">
                                     <label>Razón de rechazo</label>
                                     <textarea class="form-control" name="reason" maxlength="255" rows="4"><c:out value="${event.reason}" /></textarea>
                             </div>
+                            <!-- /RAZON RECHAZO -->
                             <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>
                         </form>
-
+                        <!-- FORMULARIO -->
                     </div>
                 </div><!-- /.row -->
-                <div class="row">                  
-                    <div class="col-lg-12">                        
 
-                    </div>
-                </div><!-- /.row -->
+                <!-- FOOTER -->
+                <p>&nbsp;</p>
+
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
 
             </div><!-- /#page-wrapper -->
 

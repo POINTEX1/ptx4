@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL</title>
+        <title>POINTEX</title>
 
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.css" rel="stylesheet">
@@ -30,129 +30,176 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
+
     </head>
-</head>
 
-<body>
+    <body>
 
-    <div id="wrapper">
+        <div id="wrapper">
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <c:import var="menu" url="/mainMenu.jsp" />
-        <c:out value="${menu}" escapeXml="false" />
-        <!-- /.navbar-collapse -->
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <c:import var="menu" url="/mainMenu.jsp" />
+            <c:out value="${menu}" escapeXml="false" />
+            <!-- /.navbar-collapse -->
 
-        <div id="page-wrapper">
+            <div id="page-wrapper">
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>Mantenedor <small> Código de Vestir</small></h1>
-                    <ol class="breadcrumb">
-                        <li><a href="DressCodeMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
-                        <li class="active"><i class="fa fa-edit"></i> Agregar</li>
-                    </ol>
-                    <c:if test="${msg != null}" >
-                        <div class="alert alert-info alert-dismissable">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            <td><strong><c:out value="${msg}" /></strong></td>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgOk != null}" >
-                        <div class="alert alert-dismissable alert-success">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgOk}" /></strong>
-                        </div>
-                    </c:if>                    
-                    <c:if test="${msgErrorDup != null }" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorDup}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorTittle != null }" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorTittle}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorMenDetails != null }" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorMenDetails}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorWomenDetails != null }" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorWomenDetails}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorUrlImage != null }" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorUrlImage}" /></strong></br>
-                        </div>
-                    </c:if>
-                </div>
-                <div class="col-lg-4">
-                    <form role="form" action="DressCodeAddServlet" method="POST" name="formAdd">   
-                        <c:if test="${msgErrorDup == null && msgErrorTittle == null}" >
-                            <div class="form-group">
-                                <label>Título</label>
-                                <input class="form-control" required="true" maxlength="30" name="nameDressCode" value="<c:out value="${nameDressCode}" />">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <!-- TITULO MANTENEDOR -->
+                        <h1>Mantenedor <small> Código de Vestir</small></h1>
+                        <ol class="breadcrumb">
+                            <li><a href="DressCodeMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
+                            <li class="active"><i class="fa fa-edit"></i> Agregar</li>
+                        </ol>
+                        <!-- /TITULO MANTENEDOR -->
+
+                        <!-- MENSAJE INFORMATIVO -->
+                        <c:if test="${msg != null}" >
+                            <div class="alert alert-info alert-dismissable">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <td><strong><c:out value="${msg}" /></strong></td>
                             </div>
                         </c:if>
-                        <c:if test="${msgErrorDup != null || msgErrorTittle != null }" >
-                            <div class="form-group has-error">
-                                <label class="control-label" for="inputError">Título</label>
-                                <input class="form-control" required="true" maxlength="30" name="nameDressCode" id="inputError" value="<c:out value="${nameDressCode}" />">
+                        <!-- /MENSAJE INFORMATIVO -->
+
+                        <!-- MENSAJE DE EXITO -->
+                        <c:if test="${msgOk != null}" >
+                            <div class="alert alert-dismissable alert-success">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgOk}" /></strong>
                             </div>
                         </c:if>
-                        <c:if test="${msgErrorMenDetails == null}" >
-                            <div class="form-group">
-                                <label>Descripción para Hombres</label>
-                                <input class="form-control" required="true" maxlength="255" name="menDetails" value="<c:out value="${menDetails}" />">
+                        <!-- /MENSAJE DE EXITO -->
+
+                        <!-- MENSAJE DE ERROR DE REGISTRO DUPLICADO -->
+                        <c:if test="${msgErrorDup != null }" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorDup}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR DE REGISTRO DUPLICADO -->
+
+                        <!-- MENSAJE DE ERROR DE TITULO -->
+                        <c:if test="${msgErrorTittle != null }" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorTittle}" /></strong></br>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE DE ERROR DE TITULO -->
+
+                        <!-- MENSAJE DE ERROR DE DETALLE HOMBRES -->
                         <c:if test="${msgErrorMenDetails != null }" >
-                            <div class="form-group has-error">
-                                <label class="control-label" for="inputError">Descripción para Hombres</label>
-                                <input class="form-control" required="true" maxlength="255" name="menDetails" id="inputError" value="<c:out value="${menDetails}" />">
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorMenDetails}" /></strong></br>
                             </div>
                         </c:if>
-                        <c:if test="${msgErrorWomenDetails == null}" >
-                            <div class="form-group">
-                                <label>Descripción para Mujeres</label>
-                                <input class="form-control" required="true" maxlength="255" name="womenDetails" value="<c:out value="${womenDetails}" />">
-                            </div>
-                        </c:if>
+                        <!-- /MENSAJE DE ERROR DE DETALLE HOMBRES -->
+
+                        <!-- MENSAJE DE ERROR DE DETALLE MUJERES -->
                         <c:if test="${msgErrorWomenDetails != null }" >
-                            <div class="form-group has-error">
-                                <label class="control-label" for="inputError">Descripción para Mujeres</label>
-                                <input class="form-control" required="true" maxlength="255" name="womenDetails" id="inputError" value="<c:out value="${womenDetails}" />">
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorWomenDetails}" /></strong></br>
                             </div>
                         </c:if>
-                        <c:if test="${msgErrorUrlImage == null}" >
-                            <div class="form-group">
-                                <label>URL imagen</label>
-                                <input class="form-control" required="true" maxlength="255" name="urlImage" value="<c:out value="${urlImage}" />">
-                            </div>
-                        </c:if>
+                        <!-- /MENSAJE DE ERROR DE DETALLE MUJERES -->
+
+                        <!-- MENSAJE DE ERROR DE URL -->
                         <c:if test="${msgErrorUrlImage != null }" >
-                            <div class="form-group has-error">
-                                <label class="control-label" for="inputError">URL imagen</label>
-                                <input class="form-control" required="true" maxlength="255" name="urlImage" id="inputError" value="<c:out value="${urlImage}" />">
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorUrlImage}" /></strong></br>
                             </div>
                         </c:if>
-                        <button type="submit" name="add" class="btn btn-default"><strong><font size="1">AGREGAR</font></strong></button>
-                        <button type="reset" class="btn btn-default"><strong><font size="1">RESET</font></strong></button> 
-                    </form>
-                </div>
-            </div><!-- /.row -->          
+                        <!-- MENSAJE DE ERROR DE URL -->
+                    </div>
+                    <div class="col-lg-4">
+                        <!-- FORMULARIO -->
+                        <form role="form" action="DressCodeAddServlet" method="POST" name="formAdd">   
+                            <!-- TITULO -->
+                            <c:if test="${msgErrorDup == null && msgErrorTittle == null}" >
+                                <div class="form-group">
+                                    <label>Título</label>
+                                    <input class="form-control" required="true" maxlength="30" name="nameDressCode" value="<c:out value="${nameDressCode}" />">
+                                </div>
+                            </c:if>                                                                                  
+                            <c:if test="${msgErrorDup != null || msgErrorTittle != null }" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Título</label>
+                                    <input class="form-control" required="true" maxlength="30" name="nameDressCode" id="inputError" value="<c:out value="${nameDressCode}" />">
+                                </div>
+                            </c:if>
+                            <!-- /TITULO -->
 
-        </div><!-- /#page-wrapper -->
+                            <!-- DESCRIPCION HOMBRES -->
+                            <c:if test="${msgErrorMenDetails == null}" >
+                                <div class="form-group">
+                                    <label>Descripción para Hombres</label>
+                                    <input class="form-control" required="true" maxlength="255" name="menDetails" value="<c:out value="${menDetails}" />">
+                                </div>
+                            </c:if>                                                            
+                            <c:if test="${msgErrorMenDetails != null }" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Descripción para Hombres</label>
+                                    <input class="form-control" required="true" maxlength="255" name="menDetails" id="inputError" value="<c:out value="${menDetails}" />">
+                                </div>
+                            </c:if>
+                            <!-- /DESCRIPCION HOMBRES -->
 
-    </div><!-- /#wrapper -->
+                            <!-- DESCRIPCION PARA MUJERES -->
+                            <c:if test="${msgErrorWomenDetails == null}" >
+                                <div class="form-group">
+                                    <label>Descripción para Mujeres</label>
+                                    <input class="form-control" required="true" maxlength="255" name="womenDetails" value="<c:out value="${womenDetails}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorWomenDetails != null }" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Descripción para Mujeres</label>
+                                    <input class="form-control" required="true" maxlength="255" name="womenDetails" id="inputError" value="<c:out value="${womenDetails}" />">
+                                </div>
+                            </c:if>
+                            <!-- /DESCRIPCION PARA MUJERES -->
 
-</body>
+                            <!-- URL IMAGEN -->
+                            <c:if test="${msgErrorUrlImage == null}" >
+                                <div class="form-group">
+                                    <label>URL imagen</label>
+                                    <input class="form-control" required="true" maxlength="255" name="urlImage" value="<c:out value="${urlImage}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorUrlImage != null }" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">URL imagen</label>
+                                    <input class="form-control" required="true" maxlength="255" name="urlImage" id="inputError" value="<c:out value="${urlImage}" />">
+                                </div>
+                            </c:if>
+                            <!-- /URL IMAGEN -->
+
+                            <!-- BOTONES -->
+                            <button type="submit" name="add" class="btn btn-default"><strong><font size="1">AGREGAR</font></strong></button>
+                            <button type="reset" class="btn btn-default"><strong><font size="1">RESET</font></strong></button> 
+                            <!-- /BOTONES -->
+                        </form>
+                        <!-- /FORMULARIO -->
+                    </div>
+                </div><!-- /.row --> 
+
+                <!-- FOOTER -->
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>
+
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
+
+            </div><!-- /#page-wrapper -->
+
+        </div><!-- /#wrapper -->
+
+    </body>
 </html>

@@ -2,12 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package clientNews;
+package placeNews;
 
 import Helpers.Format;
-import Helpers.Rut;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
+import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,14 +17,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
-import userCard.UserCardDAO;
+import place.Place;
+import place.PlaceDAO;
 
 /**
  *
  * @author alexander
  */
-@WebServlet(name = "ClientNewsGetServlet", urlPatterns = {"/ClientNewsGetServlet"})
-public class ClientNewsGetServlet extends HttpServlet {
+@WebServlet(name = "PlaceNewsGetServlet", urlPatterns = {"/PlaceNewsGetServlet"})
+public class PlaceNewsGetServlet extends HttpServlet {
 
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
@@ -46,17 +48,18 @@ public class ClientNewsGetServlet extends HttpServlet {
         Connection conexion = null;
 
         try {
-            //////////////////////////////////////////
+            /////////////////////////////////////////
             // ESTABLECER CONEXION
-            //////////////////////////////////////////
+            /////////////////////////////////////////
 
             conexion = ds.getConnection();
 
-            ClientNewsDAO cnewsDAO = new ClientNewsDAO();
-            cnewsDAO.setConexion(conexion);
+            PlaceNewsDAO pnewsDAO = new PlaceNewsDAO();
+            pnewsDAO.setConexion(conexion);
 
-            UserCardDAO usercardDAO = new UserCardDAO();
-            usercardDAO.setConexion(conexion);
+            PlaceDAO placeDAO = new PlaceDAO();
+            placeDAO.setConexion(conexion);
+
             //////////////////////////////////////////
             // COMPROBAR SESSION
             /////////////////////////////////////////
@@ -76,59 +79,75 @@ public class ClientNewsGetServlet extends HttpServlet {
                     /* obtener los valores de session y asignar valores a la jsp */
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
-                    request.setAttribute("su", 777); //superuser 
 
+                    /////////////////////////////////////////
+                    // DECLARAR VARIABLES DE INSTANCIA
+                    /////////////////////////////////////////
+
+                    PlaceNews reg = null;
 
                     try {
                         /////////////////////////////////////////
                         // RECIBIR Y COMPROBAR PARAMETROS
                         /////////////////////////////////////////
 
-                        String sidClientNews = request.getParameter("idClientNews");
-                        String srut = request.getParameter("rut");
+                        String sidPlaceNews = request.getParameter("idPlaceNews");
+                        String sidPlace = request.getParameter("idPlace");
 
-                        ClientNews cnews = new ClientNews();
                         boolean error = false;
 
+                        PlaceNews pnews = new PlaceNews();
 
-                        /* comprobar id client news */
-                        if (sidClientNews == null || sidClientNews.trim().equals("")) {
-                            request.setAttribute("msgErrorIdClientNews", "Error al recibir id cliente noticias.");
+                        /* comprobar id place */
+                        if (sidPlaceNews == null || sidPlaceNews.trim().equals("")) {
+                            request.setAttribute("msgErrorIdPlaceNews", "Error al recibir id Noticia.");
                             error = true;
                         } else {
                             try {
-                                cnews.setIdClientNews(Integer.parseInt(sidClientNews));
+                                pnews.setIdPlaceNews(Integer.parseInt(sidPlaceNews));
                             } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorIdClientNews", "Error: El id de cliente noticias no es numÃ©rico.");
+                                request.setAttribute("msgErrorIdPlaceNews", "Error: El id de noticia no es numérico.");
                             }
                         }
 
-                        /* comprobar rut */
-                        if (srut == null || srut.trim().equals("")) {
-                            request.setAttribute("msgErrorRut", "Error al recibir rut.");
+                        /* comprobar id place */
+                        if (sidPlace == null || sidPlace.trim().equals("")) {
+                            request.setAttribute("msgErrorIdPlace", "Error al recibir id Plaza.");
                             error = true;
                         } else {
-                            cnews.setRut(Rut.getRut(srut));
-                            cnews.setDv(Rut.getDv(srut));
-                        }
-
-
-                        if (!error) {
-                            /* buscar noticia cliente */
-                            ClientNews reg = cnewsDAO.findByClientNews(cnews);
-                            if (reg != null) {
-                                reg.setDateBegin(Format.dateYYYYMMDD(reg.getDateBegin()));
-                                reg.setDateEnd(Format.dateYYYYMMDD(reg.getDateEnd()));
-
-                                request.setAttribute("cnews", reg);
-                                request.setAttribute("msgOk", "El registro ha sido encontrado!");
-                            } else {
-                                request.setAttribute("msgErrorFound", "Error: No se ha encontrado el registro.");
+                            try {
+                                pnews.setIdPlace(Integer.parseInt(sidPlace));
+                            } catch (NumberFormatException n) {
+                                request.setAttribute("msgErrorIdPlace", "Error: El id de plaza no es numérico.");
                             }
                         }
+
+                        if (!error) {
+                            PlaceNews aux = pnewsDAO.findByPlaceNews(pnews);
+                            if (aux != null) {
+                                reg = aux;
+                                reg.setDateBegin(Format.dateYYYYMMDD(reg.getDateBegin()));
+                                reg.setDateEnd(Format.dateYYYYMMDD(reg.getDateEnd()));
+                                request.setAttribute("msgOk", "Se encontró el registro!");
+                            } else {
+                                request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
+                            }
+                        }
+
+                        /* obtener lista de lugares */
+                        try {
+                            Collection<Place> listPlace = placeDAO.getAll();
+                            request.setAttribute("listPlace", listPlace);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+
+                        /* enviar datos del objeto a la vista */
+                        request.setAttribute("pnews", reg);
+
                     } catch (Exception parameterException) {
                     } finally {
-                        request.getRequestDispatcher("/clientNews/clientNewsUpdate.jsp").forward(request, response);
+                        request.getRequestDispatcher("/placeNews/placeNewsUpdate.jsp").forward(request, response);
                     }
                 }
             } catch (Exception sessionException) {

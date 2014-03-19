@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Admin</title>
+        <title>POINTEX</title>
 
         <!-- imperio css -->
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
@@ -70,54 +70,64 @@
                         <ol class="breadcrumb">
                             <li class="active"><a href="AdminMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                         </ol>
+                        <!-- MENSAJE INFORMATIVO -->
                         <c:if test="${msg != null}" >
                             <div class="alert alert-info alert-dismissable">
                                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                 <td><strong><c:out value="${msg}" /></strong></td>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE INFORMATIVO -->
+                        
+                        <!-- MENSAJE DE EXITO -->
                         <c:if test="${msgOk != null}" >
                             <div class="alert alert-dismissable alert-success">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgOk}" /></strong>
                             </div>
                         </c:if>
-                        <c:if test="${msgError1 != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgError1}" /></strong></br>
-                            </div>
-                        </c:if>
+                        <!-- /MENSAJE DE EXITO -->
+                        
+                        <!-- MENSAJE DE ELIMINACION -->
                         <c:if test="${msgDel != null}" >
                             <div class="alert alert-dismissable alert-warning">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgDel}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ELIMINACION -->
+                        
+                        <!-- MENSAJE DE ERROR ELIMINACION -->
                         <c:if test="${msgErrorNoDel != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorNoDel}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR ELIMINACION -->
                     </div>
                 </div><!-- /.row -->
+                
                 <div class="row">                  
                     <div class="col-lg-12"> 
-
                         <div class="table-responsive">
-
+                            <!-- DATA TABLE -->
                             <form action="AdminMainServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
-                                        <div class="box">                                
+                                        <div class="box"> 
+                                            <!-- TITULAR DEL DATATABLE -->
                                             <div class="box-title">
                                                 DataTable
+                                                <!-- AGREGAR REGISTRO -->
                                                 <object align="right"> <button class="btn btn-primary btn-mini" name="btnAddAdmin" type="button" onclick="location.href = 'AdminAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button></object>
+                                                <!-- /AGREGAR REGISTRO -->
                                                 </br>DB
                                             </div>
+                                            <!-- /TITULAR DEL DATATABLE -->
                                             <div class="box-content nopadding">
                                                 <table id="datatable" class="table table-striped table-bordered">
+                                                    <!-- HEAD DEL DATATABLE -->
                                                     <thead>
                                                         <tr>
                                                             <th><input class="check_all" type="checkbox" /></th>
@@ -129,6 +139,9 @@
                                                             <th> </th>
                                                         </tr>
                                                     </thead>
+                                                    <!-- /HEAD DEL DATATABLE -->
+                                                    
+                                                    <!-- BODY DEL DATATABLE -->
                                                     <tbody>
                                                         <c:forEach var="list" items="${list}"> 
                                                             <tr>
@@ -152,6 +165,9 @@
                                                             </tr>
                                                         </c:forEach>                                                                              		                                    		
                                                     </tbody>
+                                                    <!-- /BODY DEL DATATABLE -->
+                                                    
+                                                    <!-- FOOT DEL DATATABLE -->
                                                     <tfoot>
                                                         <tr>
                                                             <th><button class="btn btn-danger btn-mini delete" name="btnDelCol" type="submit"><font size="1">ELIMINAR</font></button></th>
@@ -163,18 +179,23 @@
                                                             <th> </th>
                                                         </tr>
                                                     </tfoot>
+                                                    <!-- /FOOT DEL DATATABLE --> 
                                                 </table>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </form>
-
+                            <!-- /DATA TABLE -->    
                         </div>
                     </div>
                 </div><!-- /.row -->
-
-
+                
+                <!-- FOOTER -->
+                <p>&nbsp;</p>
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
 
             </div><!-- /#page-wrapper -->
 

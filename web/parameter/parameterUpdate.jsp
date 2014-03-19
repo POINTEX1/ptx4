@@ -31,109 +31,7 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
 
-        <script type="text/javascript">
-            function changeDisplay() {
-                pwd = document.getElementById("fce");
-                pwd2 = document.getElementById("uce");
-                pwd3 = document.getElementById("fcp");
-                pwd4 = document.getElementById("ucp");
-                pwd5 = document.getElementById("fcex");
-                pwd6 = document.getElementById("ucex");
-                pwd7 = document.getElementById("fue");
-                pwd8 = document.getElementById("uue");
-                pwd9 = document.getElementById("fup");
-                pwd10 = document.getElementById("uup");
-                pwd11 = document.getElementById("fump");
-                pwd12 = document.getElementById("uump");
-                pwd13 = document.getElementById("fufp");
-                pwd14 = document.getElementById("uufp");
-                pwd15 = document.getElementById("fuc");
-                pwd16 = document.getElementById("uuc");
 
-
-                if (document.formUpdate.chkfce.checked) {
-                    pwd.style.display = 'block';
-                } else {
-                    pwd.style.display = 'none';
-                }
-                if (document.formUpdate.chkuce.checked) {
-                    pwd2.style.display = 'block';
-                } else {
-                    pwd2.style.display = 'none';
-                }
-                if (document.formUpdate.chkfcp.checked) {
-                    pwd3.style.display = 'block';
-                } else {
-                    pwd3.style.display = 'none';
-                }
-                if (document.formUpdate.chkucp.checked) {
-                    pwd4.style.display = 'block';
-                } else {
-                    pwd4.style.display = 'none';
-                }
-                if (document.formUpdate.chkfcex.checked) {
-                    pwd5.style.display = 'block';
-                } else {
-                    pwd5.style.display = 'none';
-                }
-                if (document.formUpdate.chkucex.checked) {
-                    pwd6.style.display = 'block';
-                } else {
-                    pwd6.style.display = 'none';
-                }
-                if (document.formUpdate.chkfue.checked) {
-                    pwd7.style.display = 'block';
-                } else {
-                    pwd7.style.display = 'none';
-                }
-                if (document.formUpdate.chkuue.checked) {
-                    pwd8.style.display = 'block';
-                } else {
-                    pwd8.style.display = 'none';
-                }
-                if (document.formUpdate.chkfup.checked) {
-                    pwd9.style.display = 'block';
-                } else {
-                    pwd9.style.display = 'none';
-                }
-                if (document.formUpdate.chkuup.checked) {
-                    pwd10.style.display = 'block';
-                } else {
-                    pwd10.style.display = 'none';
-                }
-                if (document.formUpdate.chkfump.checked) {
-                    pwd11.style.display = 'block';
-                } else {
-                    pwd11.style.display = 'none';
-                }
-                if (document.formUpdate.chkuump.checked) {
-                    pwd12.style.display = 'block';
-                } else {
-                    pwd12.style.display = 'none';
-                }
-                if (document.formUpdate.chkfufp.checked) {
-                    pwd13.style.display = 'block';
-                } else {
-                    pwd13.style.display = 'none';
-                }
-                if (document.formUpdate.chkuufp.checked) {
-                    pwd14.style.display = 'block';
-                } else {
-                    pwd14.style.display = 'none';
-                }
-                if (document.formUpdate.chkfuc.checked) {
-                    pwd15.style.display = 'block';
-                } else {
-                    pwd15.style.display = 'none';
-                }
-                if (document.formUpdate.chkuuc.checked) {
-                    pwd16.style.display = 'block';
-                } else {
-                    pwd16.style.display = 'none';
-                }
-
-            }
-        </script>
     </head>
 
     <body>
@@ -195,10 +93,22 @@
                                 <strong><c:out value="${msgErrorBanerCentralPromo}" /></strong></br>
                             </div>
                         </c:if> 
-                        <c:if test="${msgErrorBanerCentralExchange != null}" >
+                        <c:if test="${msgErrorBanerCentralExchangeable != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorBanerCentralExchange}" /></strong></br>
+                                <strong><c:out value="${msgErrorBanerCentralExchangeable}" /></strong></br>
+                            </div>
+                        </c:if>
+                        <c:if test="${msgErrorBanerCentralVip != null}" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorBanerCentralVip}" /></strong></br>
+                            </div>
+                        </c:if>
+                        <c:if test="${msgErrorBanerCentralAboutUs != null}" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorBanerCentralAboutUs}" /></strong></br>
                             </div>
                         </c:if> 
                         <c:if test="${msgErrorBanerTopEvent != null}" >
@@ -231,6 +141,12 @@
                                 <strong><c:out value="${msgErrorBanerTopConfiguration}" /></strong></br>
                             </div>
                         </c:if>
+                        <c:if test="${msgErrorBanerTopSocialNetworks != null}" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorBanerTopSocialNetworks}" /></strong></br>
+                            </div>
+                        </c:if>
                         <c:if test="${msgErrorFound != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -243,360 +159,171 @@
                             <c:if test="${msgErrorWaitingCard != null }" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Días para solicitud de tarjeta</label>
-                                    <input type="number" class="form-control" required="true" min="0" name="waitingCard" id="inputError" value="<c:out value="${parameter.waitingCard}" />">
+                                    <input type="number" class="form-control" required="true" min="0" name="waitingCard" id="inputError" value="<c:out value="${waitingCard}" />">
                                 </div>
                             </c:if>
                             <c:if test="${msgErrorWaitingCard == null }" >
                                 <div class="form-group">
                                     <label>Días para solicitud de tarjeta</label>
-                                    <input type="number" class="form-control" required="true" min="0" name="waitingCard" value="<c:out value="${parameter.waitingCard}" />">
+                                    <input type="number" class="form-control" required="true" min="0" name="waitingCard" value="<c:out value="${waitingCard}" />">
                                 </div>
                             </c:if>
                             <c:if test="${msgErrorNumberEvent == null}" >
                                 <div class="form-group">                            
                                     <label>Días para ultimos eventos</label>
-                                    <input class="form-control" required="true" min="0" max="99" name="numberEvent" value="<c:out value="${parameter.numberEvent}" />">                            
+                                    <input class="form-control" required="true" min="0" max="99" name="numberEvent" value="<c:out value="${numberEvent}" />">                            
                                 </div>
                             </c:if>
                             <c:if test="${msgErrorNumberEvent != null}" >
                                 <div class="form-group has-error">                            
                                     <label class="control-label" for="inputError">Días para ultimos eventos</label>
-                                    <input class="form-control" required="true" min="0" max="99" id="inputError" name="numberEvent" value="<c:out value="${parameter.numberEvent}" />">                            
+                                    <input class="form-control" required="true" min="0" max="99" id="inputError" name="numberEvent" value="<c:out value="${numberEvent}" />">                            
                                 </div>
                             </c:if>
                             <c:if test="${msgErrorNumberPromo == null}" >
                                 <div class="form-group">                            
                                     <label>Días para ultimas promociones</label>
-                                    <input class="form-control" required="true" min="0" max="99" name="numberPromo" value="<c:out value="${parameter.numberPromo}" />">                            
+                                    <input class="form-control" required="true" min="0" max="99" name="numberPromo" value="<c:out value="${numberPromo}" />">                            
                                 </div>
                             </c:if>
                             <c:if test="${msgErrorNumberPromo != null}" >
                                 <div class="form-group has-error">                            
                                     <label class="control-label" for="inputError">Días para ultimas promociones</label>
-                                    <input class="form-control" required="true" min="0" max="99" id="inputError" name="numberPromo" value="<c:out value="${parameter.numberPromo}" />">                            
+                                    <input class="form-control" required="true" min="0" max="99" id="inputError" name="numberPromo" value="<c:out value="${numberPromo}" />">                            
                                 </div>
                             </c:if>
-                            <div class="form-group">
-                                <label>Imagen de baner central de evento</label>
-                            </div> 
-                            <div class="radio-inline">
-                                <label>
-                                    <input type="radio" name="radioevent" id="chkfce" onClick="changeDisplay();"/> File Image
-                                </label>
-                            </div>
-                            <div class="radio-inline">
-                                <label>
-                                    <input type="radio" name="radioevent" id="chkuce" onClick="changeDisplay();"/> Url image
-                                </label>
-                            </div>
-                            <div id="fce" style="display:none">
-                                <c:if test="${msgErrorBanerCentralEvent == null}" >
-                                    <div class="form-group">
-                                        <input type="file" required="true" maxlength="100" name="banerCentralEvent" value="<c:out value="${parameter.banerCentralEvent}" />">
-                                    </div> 
-                                </c:if>
-                                <c:if test="${msgErrorBanerCentralEvent != null}" >
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError"></label>
-                                        <input type="file" required="true" maxlength="100" id="inputError" name="banerCentralEvent" value="<c:out value="${parameter.banerCentralEvent}" />">
-                                    </div> 
-                                </c:if>  
-                            </div>
-                            <div id="uce" style="display:none">
-                                <c:if test="${msgErrorBanerCentralEvent == null}" >
-                                    <div class="form-group">
-                                        <input type="text" required="true" maxlength="100" name="banerCentralEvent" value="<c:out value="${parameter.banerCentralEvent}" />">
-                                    </div> 
-                                </c:if>
-                                <c:if test="${msgErrorBanerCentralEvent != null}" >
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError"></label>
-                                        <input type="text" required="true" maxlength="100" id="inputError" name="banerCentralEvent" value="<c:out value="${parameter.banerCentralEvent}" />">
-                                    </div> 
-                                </c:if>  
-                            </div>
-                            <div class="form-group">
-                                <label>Imagen de baner central de promociones</label>
-                            </div> 
-                            <div class="radio-inline">
-                                <label>
-                                    <input type="radio" name="radiopromo" id="chkfcp" onClick="changeDisplay();"/> File Image
-                                </label>
-                            </div>
-                            <div class="radio-inline">
-                                <label>
-                                    <input type="radio" name="radiopromo" id="chkucp" onClick="changeDisplay();"/> Url image
-                                </label>
-                            </div>
-                            <div id="fcp" style="display:none">
-                                <c:if test="${msgErrorBanerCentralPromo == null}" >
-                                    <div class="form-group">
-                                        <input type="file" required="true" maxlength="100" name="banerCentralPromo" value="<c:out value="${parameter.banerCentralPromo}" />">
-                                    </div> 
-                                </c:if>
-                                <c:if test="${msgErrorBanerCentralPromo != null}" >
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError"></label>
-                                        <input type="file" required="true" maxlength="100" id="inputError" name="banerCentralPromo" value="<c:out value="${parameter.banerCentralPromo}" />">
-                                    </div> 
-                                </c:if>
-                            </div>
-                            <div id="ucp" style="display:none">
-                                <c:if test="${msgErrorBanerCentralPromo == null}" >
-                                    <div class="form-group">
-                                        <input class="form-control" required="true" maxlength="100" name="banerCentralPromo" value="<c:out value="${parameter.banerCentralPromo}" />">
-                                    </div> 
-                                </c:if>
-                                <c:if test="${msgErrorBanerCentralPromo != null}" >
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError"></label>
-                                        <input class="form-control" required="true" maxlength="100" id="inputError" name="banerCentralPromo" value="<c:out value="${parameter.banerCentralPromo}" />">
-                                    </div> 
-                                </c:if>
-                            </div>
-                            <div class="form-group">
-                                <label>Imagen de baner central de productos canjeables</label>
-                            </div>
-                            <div class="radio-inline">
-                                <label>
-                                    <input type="radio" name="radioexchange" id="chkfcex" onClick="changeDisplay();"/> File Image
-                                </label>
-                            </div>
-                            <div class="radio-inline">
-                                <label>
-                                    <input type="radio" name="radioexchange" id="chkucex" onClick="changeDisplay();"/> Url image
-                                </label>
-                            </div>
-                            <div id="fcex" style="display:none">
-                                <c:if test="${msgErrorBanerCentralExchange == null}" >
-                                    <div class="form-group">
-                                        <input type="file" required="true" maxlength="100" name="banerCentralExchange" value="<c:out value="${parameter.banerCentralExchange}" />">
-                                    </div> 
-                                </c:if>
-                                <c:if test="${msgErrorBanerCentralExchange != null}" >
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError"></label>
-                                        <input type="file" required="true" maxlength="100" id="inputError" name="banerCentralExchange" value="<c:out value="${parameter.banerCentralExchange}" />">
-                                    </div> 
-                                </c:if>
-                            </div>
-                            <div id="ucex" style="display:none">
-                                <c:if test="${msgErrorBanerCentralExchange == null}" >
-                                    <div class="form-group">
-                                        <input class="form-control" required="true" maxlength="100" name="banerCentralExchange" value="<c:out value="${parameter.banerCentralExchange}" />">
-                                    </div> 
-                                </c:if>
-                                <c:if test="${msgErrorBanerCentralExchange != null}" >
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError"></label>
-                                        <input class="form-control" required="true" maxlength="100" id="inputError" name="banerCentralExchange" value="<c:out value="${parameter.banerCentralExchange}" />">
-                                    </div> 
-                                </c:if>
-                            </div>
-                            <div class="form-group">
-                                <label>Imagen de baner cabecera de evento</label>
-                            </div>
-                            <div class="radio-inline">
-                                <label>
-                                    <input type="radio" name="radiotevent" id="chkfue" onClick="changeDisplay();"/> File Image
-                                </label>
-                            </div>
-                            <div class="radio-inline">
-                                <label>
-                                    <input type="radio" name="radiotevent" id="chkuue" onClick="changeDisplay();"/> Url image
-                                </label>
-                            </div>
-                            <div id="fue" style="display:none">
-                                <c:if test="${msgErrorBanerTopEvent == null}" >
-                                    <div class="form-group">
-                                        <label>File de baner en cabecera de evento</label>
-                                        <input type="file" required="true" maxlength="100" name="banerTopEvent" value="<c:out value="${parameter.banerTopEvent}" />">
-                                    </div>
-                                </c:if>
-                                <c:if test="${msgErrorBanerTopEvent != null}" >
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">File de baner en cabecera de evento</label>
-                                        <input type="file" required="true" maxlength="100" id="inputError" name="banerTopEvent" value="<c:out value="${parameter.banerTopEvent}" />">
-                                    </div> 
-                                </c:if>
-                            </div>
-                            <div id="uue" style="display:none">
-                                <c:if test="${msgErrorBanerTopEvent == null}" >
-                                    <div class="form-group">
-                                        <label>Url de baner en cabecera de evento</label>
-                                        <input class="form-control" required="true" maxlength="100" name="banerTopEvent" value="<c:out value="${parameter.banerTopEvent}" />">
-                                    </div>
-                                </c:if>
-                                <c:if test="${msgErrorBanerTopEvent != null}" >
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">Url de baner en cabecera de evento</label>
-                                        <input class="form-control" required="true" maxlength="100" id="inputError" name="banerTopEvent" value="<c:out value="${parameter.banerTopEvent}" />">
-                                    </div> 
-                                </c:if>
-                            </div>
-                            <div class="form-group">
-                                <label>Imagen de baner cabecera de promociones</label>
-                            </div>
-                            <div class="radio-inline">
-                                <label>
-                                    <input type="radio" name="radiotpromo" id="chkfup" onClick="changeDisplay();"/> File Image
-                                </label>
-                            </div>
-                            <div class="radio-inline">
-                                <label>
-                                    <input type="radio" name="radiotpromo" id="chkuup" onClick="changeDisplay();"/> Url image
-                                </label>
-                            </div>
-                            <div id="fup" style="display:none">
-                                <c:if test="${msgErrorBanerTopPromo == null}" >
-                                    <div class="form-group">
-                                        <input type="file" required="true" maxlength="100" name="banerTopPromo" value="<c:out value="${parameter.banerTopPromo}" />">
-                                    </div> 
-                                </c:if>
-                                <c:if test="${msgErrorBanerTopPromo != null}" >
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError"></label>
-                                        <input type="file" required="true" maxlength="100" id="inputError" name="banerTopPromo" value="<c:out value="${parameter.banerTopPromo}" />">
-                                    </div> 
-                                </c:if>
-                            </div>
-                            <div id="uup" style="display:none">
-                                <c:if test="${msgErrorBanerTopPromo == null}" >
-                                    <div class="form-group">
-                                        <label>Url de baner en cabecera de promociones</label>
-                                        <input class="form-control" required="true" maxlength="100" name="banerTopPromo" value="<c:out value="${parameter.banerTopPromo}" />">
-                                    </div> 
-                                </c:if>
-                                <c:if test="${msgErrorBanerTopPromo != null}" >
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">URL de baner en cabecera de promociones</label>
-                                        <input class="form-control" required="true" maxlength="100" id="inputError" name="banerTopPromo" value="<c:out value="${parameter.banerTopPromo}" />">
-                                    </div> 
-                                </c:if>
-                            </div>
-                            <div class="form-group">
-                                <label>Imagen de baner central de mis lugares</label>
-                            </div>
-                            <div class="radio-inline">
-                                <label>
-                                    <input type="radio" name="radiotmplace" id="chkfump" onClick="changeDisplay();"/> File Image
-                                </label>
-                            </div>
-                            <div class="radio-inline">
-                                <label>
-                                    <input type="radio" name="radiotmplace" id="chkuump" onClick="changeDisplay();"/> Url image
-                                </label>
-                            </div>
-                            <div id="fump" style="display:none">
-                                <c:if test="${msgErrorBanerTopMyPlace == null}" >
-                                    <div class="form-group">
-                                        <label>File de baner en cabecera de lugares de clientes</label>
-                                        <input type="file" required="true" maxlength="100" name="banerTopMyPlace" value="<c:out value="${parameter.banerTopMyPlace}" />">
-                                    </div> 
-                                </c:if>
-                                <c:if test="${msgErrorBanerTopMyPlace != null}" >
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">File de baner en cabecera de lugares de clientes</label>
-                                        <input type="file" required="true" maxlength="100" id="inputError" name="banerTopMyPlace" value="<c:out value="${parameter.banerTopMyPlace}" />">
-                                    </div> 
-                                </c:if>
-                            </div>
-                            <div id="uump" style="display:none">
-                                <c:if test="${msgErrorBanerTopMyPlace == null}" >
-                                    <div class="form-group">
-                                        <label>Url de baner en cabecera de lugares de clientes</label>
-                                        <input class="form-control" required="true" maxlength="100" name="banerTopMyPlace" value="<c:out value="${parameter.banerTopMyPlace}" />">
-                                    </div> 
-                                </c:if>
-                                <c:if test="${msgErrorBanerTopMyPlace != null}" >
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">URL de baner en cabecera de lugares de clientes</label>
-                                        <input class="form-control" required="true" maxlength="100" id="inputError" name="banerTopMyPlace" value="<c:out value="${parameter.banerTopMyPlace}" />">
-                                    </div> 
-                                </c:if>
-                            </div>
-                            <div class="form-group">
-                                <label>Imagen de baner cabecera de busqueda de lugares</label>
-                            </div>
-                            <div class="radio-inline">
-                                <label>
-                                    <input type="radio" name="radiotfplace" id="chkfufp" onClick="changeDisplay();"/> File Image
-                                </label>
-                            </div>
-                            <div class="radio-inline">
-                                <label>
-                                    <input type="radio" name="radiotfplace" id="chkuufp" onClick="changeDisplay();"/> Url image
-                                </label>
-                            </div>
-                            <div id="fufp" style="display:none">
-                                <c:if test="${msgErrorBanerTopFindPlace == null}" >
-                                    <div class="form-group">
-                                        <label>File de baner en cabecera de buscar lugares</label>
-                                        <input type="file" required="true" maxlength="100" name="banerTopFindPlace" value="<c:out value="${parameter.banerTopFindPlace}" />">
-                                    </div> 
-                                </c:if>
-                                <c:if test="${msgErrorBanerTopFindPlace != null}" >
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">File de baner en cabecera de buscar lugares</label>
-                                        <input type="file" required="true" maxlength="100" id="inputError" name="banerTopFindPlace" value="<c:out value="${parameter.banerTopFindPlace}" />">
-                                    </div> 
-                                </c:if>
-                            </div>
-                            <div id="uufp" style="display:none">
-                                <c:if test="${msgErrorBanerTopFindPlace == null}" >
-                                    <div class="form-group">
-                                        <label>Url de baner en cabecera de buscar lugares</label>
-                                        <input class="form-control" required="true" maxlength="100" name="banerTopFindPlace" value="<c:out value="${parameter.banerTopFindPlace}" />">
-                                    </div> 
-                                </c:if>
-                                <c:if test="${msgErrorBanerTopFindPlace != null}" >
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">Url de baner en cabecera de buscar lugares</label>
-                                        <input class="form-control" required="true" maxlength="100" id="inputError" name="banerTopFindPlace" value="<c:out value="${parameter.banerTopFindPlace}" />">
-                                    </div> 
-                                </c:if>
-                            </div>
-                            <div class="form-group">
-                                <label>Imagen de baner cabecera de  onfiguración</label>
-                            </div>
-                            <div class="radio-inline">
-                                <label>
-                                    <input type="radio" name="radiotconfig" id="chkfuc" onClick="changeDisplay();"/> File Image
-                                </label>
-                            </div>
-                            <div class="radio-inline">
-                                <label>
-                                    <input type="radio" name="radiotconfig" id="chkuuc" onClick="changeDisplay();"/> Url image
-                                </label>
-                            </div>
-                            <div id="fuc" style="display:none">
-                                <c:if test="${msgErrorBanerTopConfiguration == null}" >
-                                    <div class="form-group">
-                                        <label>File de baner en cabecera de configuración</label>
-                                        <input type="file" required="true" maxlength="100" name="banerTopConfiguration" value="<c:out value="${parameter.banerTopConfiguration}" />">
-                                    </div> 
-                                </c:if>
-                                <c:if test="${msgErrorBanerTopConfiguration != null}" >
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">File de baner en cabecera de configuración</label>
-                                        <input type="file" required="true" maxlength="100" id="inputError" name="banerTopConfiguration" value="<c:out value="${parameter.banerTopConfiguration}" />">
-                                    </div> 
-                                </c:if>
-                            </div>
-                            <div id="uuc" style="display:none">
-                                <c:if test="${msgErrorBanerTopConfiguration == null}" >
-                                    <div class="form-group">
-                                        <label>Url de baner en cabecera de configuración</label>
-                                        <input class="form-control" required="true" maxlength="100" name="banerTopConfiguration" value="<c:out value="${parameter.banerTopConfiguration}" />">
-                                    </div> 
-                                </c:if>
-                                <c:if test="${msgErrorBanerTopConfiguration != null}" >
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">URL de baner en cabecera de configuración</label>
-                                        <input class="form-control" required="true" maxlength="100" id="inputError" name="banerTopConfiguration" value="<c:out value="${parameter.banerTopConfiguration}" />">
-                                    </div> 
-                                </c:if>
-                            </div>
+                            <c:if test="${msgErrorBanerCentralEvent == null}" >
+                                <div class="form-group">
+                                    <label>Baner central de evento (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" name="banerCentralEvent" value="<c:out value="${banerCentralEvent}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorBanerCentralEvent != null}" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Baner Central de Evento (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" id="inputError" name="banerCentralEvent" value="<c:out value="${banerCentralEvent}" />">
+                                </div>
+                            </c:if> 
+                            <c:if test="${msgErrorBanerCentralPromo == null}" >
+                                <div class="form-group">
+                                    <label>Baner central de promoción (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" name="banerCentralPromo" value="<c:out value="${banerCentralPromo}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorBanerCentralPromo != null}" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Baner Central de Promoción (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" id="inputError" name="banerCentralPromo" value="<c:out value="${banerCentralPromo}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorBanerCentralExchangeable == null}" >
+                                <div class="form-group">
+                                    <label>Baner central de productos canjeables (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" name="banerCentralExchangeable" value="<c:out value="${banerCentralExchangeable}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorBanerCentralExchangeable != null}" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Baner central de productos canjeables (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" id="inputError" name="banerCentralExchangeable" value="<c:out value="${banerCentralExchangeable}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorBanerCentralVip == null}" >
+                                <div class="form-group">
+                                    <label>Baner central de vip (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" name="banerCentralVip" value="<c:out value="${banerCentralVip}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorBanerCentralVip != null}" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Baner central de vip (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" id="inputError" name="banerCentralVip" value="<c:out value="${banerCentralVip}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorBanerCentralAboutUs == null}" >
+                                <div class="form-group">
+                                    <label>Baner central de sobre nostros (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" name="banerCentralAboutUs" value="<c:out value="${banerCentralAboutUs}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorBanerCentralVip != null}" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Baner central de sobre nostros (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" id="inputError" name="banerCentralAboutUs" value="<c:out value="${banerCentralAboutUs}" />">
+                                </div>
+                            </c:if> 
+                            <c:if test="${msgErrorBanerTopEvent == null}" >
+                                <div class="form-group">
+                                    <label>Baner de cabecera de evento (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" name="banerTopEvent" value="<c:out value="${banerTopEvent}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorBanerTopEvent != null}" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Baner de cabecera de evento (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" id="inputError" name="banerTopEvent" value="<c:out value="${banerTopEvent}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorBanerTopPromo == null}" >
+                                <div class="form-group">
+                                    <label>Baner de cabecera de Promoción (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" name="banerTopPromo" value="<c:out value="${banerTopPromo}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorBanerTopPromo != null}" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Baner de cabecera de promoción (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" id="inputError" name="banerTopPromo" value="<c:out value="${banerTopPromo}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorBanerTopMyPlace == null}" >
+                                <div class="form-group">
+                                    <label>Baner de cabecera de mis lugares (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" name="banerTopMyPlace" value="<c:out value="${banerTopMyPlace}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorBanerTopMyPlace != null}" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Baner de cabecera de mis lugares (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" id="inputError" name="banerTopMyPlace" value="<c:out value="${banerTopMyPlace}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorBanerTopFindPlace == null}" >
+                                <div class="form-group">
+                                    <label>Baner de cabecera de busqueda de lugares (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" name="banerTopFindPlace" value="<c:out value="${banerTopFindPlace}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorBanerTopFindPlace != null}" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Baner de cabecera de busqueda de lugares (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" id="inputError" name="banerTopFindPlace" value="<c:out value="${banerTopFindPlace}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorBanerTopConfiguration == null}" >
+                                <div class="form-group">
+                                    <label>Baner de cabecera de configuración (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" name="banerTopConfiguration" value="<c:out value="${banerTopConfiguration}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorBanerTopConfiguration != null}" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Baner de cabecera de configuración (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" id="inputError" name="banerTopConfiguration" value="<c:out value="${banerTopConfiguration}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorBanerTopSocialNetworks == null}" >
+                                <div class="form-group">
+                                    <label>Baner de cabecera de redes sociales (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" name="banerTopSocialNetworks" value="<c:out value="${banerTopSocialNetworks}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorBanerTopSocialNetworks != null}" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Baner de cabecera de redes sociales (Url Image)</label>
+                                    <input class="form-control" required="true" maxlength="200" id="inputError" name="banerTopSocialNetworks" value="<c:out value="${banerTopSocialNetworks}" />">
+                                </div>
+                            </c:if>
                             <div class="form-group">
                                 <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>   
                             </div>

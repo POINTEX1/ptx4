@@ -14,7 +14,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Ciudad</title>
+        <title>POINTEX</title>
 
         <!-- imperio css -->
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
@@ -68,58 +68,77 @@
 
                 <div class="row">
                     <div class="col-lg-12">
+                        <!-- TITULO MANTENEDOR -->
                         <h1>Mantenedor <small> Ciudades</small></h1>
                         <ol class="breadcrumb">
                             <li class="active"><a href="CityMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                         </ol>
+                        <!-- /TITULO MANTENEDOR -->
+
+                        <!-- MENSAJE INFORMATIVO -->
                         <c:if test="${msg != null}" >
                             <div class="alert alert-info alert-dismissable">
                                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                 <td><strong><c:out value="${msg}" /></strong></td>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE INFORMATIVO -->
+
+                        <!-- MENSAJE DE EXITO -->
                         <c:if test="${msgOk != null}" >
                             <div class="alert alert-dismissable alert-success">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgOk}" /></strong>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE EXITO -->
+
+                        <!-- MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
                         <c:if test="${msgErrorFound != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorFound}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
+
+                        <!-- MENSAJE DE ERROR DE REFERENCIA -->
                         <c:if test="${msgErrorReference != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorReference}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR DE REFERENCIA -->
+
+                        <!-- MENSAJE DE ELIMINACION -->
                         <c:if test="${msgDel != null}" >
                             <div class="alert alert-dismissable alert-warning">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgDel}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ELIMINACION -->
                     </div>
                 </div><!-- /.row -->
                 <div class="row">                  
                     <div class="col-lg-12"> 
-
                         <div class="table-responsive">
-
+                            <!-- DATATABLE -->
                             <form action="CityMainServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
-                                        <div class="box">                                
+                                        <div class="box">     
+                                            <!-- TITULO DATATABLE -->
                                             <div class="box-title">
                                                 Datatable
                                                 <object align="right"> <button class="btn btn-primary btn-mini" name="btnAddAdmin" type="button" onclick="location.href = 'CityAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button></object>
                                                 </br>DB
                                             </div>
+                                            <!-- /TITULO DATATABLE -->
                                             <div class="box-content nopadding">
                                                 <table id="datatable" class="table table-striped table-bordered">
+                                                    <!-- HEADER DATATABLE -->
                                                     <thead>
                                                         <tr>
                                                             <th><input class="check_all" type="checkbox" /></th>
@@ -129,8 +148,10 @@
                                                             <th></th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <!-- /HEADER DATATABLE -->
 
+                                                    <!-- BODY DATATABLE -->
+                                                    <tbody>
                                                         <c:forEach var="list" items="${list}"> 
                                                             <tr>
                                                                 <th><input type="checkbox" name="chk" value="<c:out value="${list.idCity}" />"/></th>
@@ -140,11 +161,15 @@
                                                                     <a href="CityGetServlet?idCity=<c:out value="${list.idCity}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">ACTUALIZAR</font></strong></button></a>                                                                
                                                                 </td>
                                                                 <td class="center">                                                                    
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('CityMainServlet?btnDelRow=x&idCity=<c:out value="${list.idCity}" />'); return false;"><strong><font size="1">ELIMINAR</font></strong></button>
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('CityMainServlet?btnDelRow=x&idCity=<c:out value="${list.idCity}" />');
+                return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>                                                                                		                                    		
                                                     </tbody>
+                                                    <!-- /BODY DATATABLE -->
+
+                                                    <!-- FOOTER DATATABLE -->
                                                     <tfoot>
                                                         <tr>
                                                             <th><button class="btn btn-danger btn-mini delete" name="btnDelCol" type="submit"><font size="1">ELIMINAR</font></button></th>
@@ -154,19 +179,23 @@
                                                             <th></th>
                                                         </tr>
                                                     </tfoot>
+                                                    <!-- /FOOTER DATATABLE -->
                                                 </table>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </form>
-
+                            <!-- /DATATABLE -->
                         </div> <!-- /.responsive -->
-
                     </div>
-
                 </div><!-- /.row -->
 
+                </br>
+                <!-- FOOTER -->
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
 
             </div><!-- /#page-wrapper -->
 

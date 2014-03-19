@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Tarjetas</title>
+        <title>POINTEX</title>
 
         <!-- imperio css -->
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
@@ -35,7 +35,7 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
-       
+
         <script>
             function confirmar(url)
             {
@@ -66,41 +66,52 @@
                         <ol class="breadcrumb">
                             <li class="active"><a href="CardMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                         </ol>
+                        <!-- MENSAJE INFORMATIVO -->
                         <c:if test="${msg != null}" >
                             <div class="alert alert-info alert-dismissable">
                                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                 <td><strong><c:out value="${msg}" /></strong></td>
                             </div>    
                         </c:if>
+                        <!-- /MENSAJE INFORMATIVO -->
+
+                        <!-- MENSAJE DE ELIMINACION -->
                         <c:if test="${msgDel != null}" >
                             <div class="alert alert-dismissable alert-warning">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <td><strong><c:out value="${msgDel}" /></strong></br></td>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ELIMINACION -->
+
+                        <!-- MENSAJE DE ERROR DE ELIMINACION -->
                         <c:if test="${msgErrorDel != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorDel}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR DE ELIMINACION -->
                     </div>                
                 </div><!-- /.row -->
                 <div class="row">                  
                     <div class="col-lg-12">                        
                         <div class="table-responsive">
-
+                            <!-- DATATABLE -->
                             <form action="CardMainServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
-                                        <div class="box">                                
+                                        <div class="box">   
+                                            <!-- TITULO DE DATATABLE -->
                                             <div class="box-title">
                                                 Datatable
                                                 <object align="right"> <button class="btn btn-primary btn-mini" name="btnAdd" type="button" onclick="location.href = 'CardVerifyServlet';" ><font size="1"><strong>AGREGAR</strong></font></button></object>
                                                 </br>DB
                                             </div>
+                                            <!-- /TITULO DE DATATABLE -->
                                             <div class="box-content nopadding">
                                                 <table id="datatable" class="table table-striped table-bordered">
+                                                    <!-- HEADER DATATABLE -->
                                                     <thead>
                                                         <tr>
                                                             <th><input class="check_all" type="checkbox" /></th>
@@ -113,6 +124,8 @@
                                                             <th></th>
                                                         </tr>
                                                     </thead>
+                                                    <!-- /HEADER DATATABLE -->
+                                                    <!-- BODY DATATABLE -->
                                                     <tbody>
                                                         <c:forEach var="list" items="${list}"> 
                                                             <tr>
@@ -131,11 +144,15 @@
                                                                     <a href="CardGetServlet?rut=<c:out value="${list.rut}" />&barCode=<c:out value="${list.barCode}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><font size="1">ACTUALIZAR</font></button></a>
                                                                 </td>
                                                                 <td class="center">                                                                                                                                      
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('CardMainServlet?btnDelRow=x&barCode=<c:out value="${list.barCode}" />'); return false;"><strong><font size="1">ELIMINAR</font></strong></button>
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('CardMainServlet?btnDelRow=x&barCode=<c:out value="${list.barCode}" />');
+                return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>                                                                            		                                    		
                                                     </tbody>
+                                                    <!-- /BODY DATATABLE -->
+
+                                                    <!-- FOOT DATATABLE -->
                                                     <tfoot>
                                                         <tr>
                                                             <th> <button class="btn btn-danger btn-mini delete" name="btnDelCol" type="submit"><font size="1">ELIMINAR</font></button></th>
@@ -148,18 +165,23 @@
                                                             <th></th>
                                                         </tr>
                                                     </tfoot>
+                                                    <!-- /FOOT DATATABLE -->
                                                 </table>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </form>
-
+                            <!-- /DATATABLE -->
                         </div>
                     </div>
                 </div><!-- /.row -->
 
-
+                <!-- FOOTER -->
+                <p>&nbsp;</p>
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
 
             </div><!-- /#page-wrapper -->
 

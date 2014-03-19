@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Noticias Cliente</title>
+        <title>POINTEX</title>
 
         <!-- imperio css -->
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
@@ -55,65 +55,81 @@
 
         <div id="wrapper">
 
-            <!-- Collect the nav links, forms, and other content for toggling -->
+            <!-- MAIN MENU -->
             <c:import var="menu" url="/mainMenu.jsp" />
             <c:out value="${menu}" escapeXml="false" />
-            <!-- /.navbar-collapse -->
+            <!-- /MAIN MENU -->
 
             <div id="page-wrapper">
 
                 <div class="row">
                     <div class="col-lg-12">
+                        <!-- TITULO MANTENEDOR -->
                         <h1>Mantenedor <small> Noticias Cliente</small></h1>
                         <ol class="breadcrumb">
                             <li class="active"><a href="ClientNewsMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                         </ol>
+                        <!-- /TITULO MANTENEDOR -->
+
+                        <!-- MENSAJE INFORMATIVO -->
                         <c:if test="${msg != null}" >
                             <div class="alert alert-info alert-info">
                                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                 <td><strong><c:out value="${msg}" /></strong></td>
                             </div>    
                         </c:if> 
+                        <!-- /MENSAJE INFORMATIVO -->
 
+                        <!-- MENSAJE DE EXITO -->
                         <c:if test="${msgOk != null}" >
                             <div class="alert alert-dismissable alert-success">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgOk}" /></strong>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE EXITO -->
+
+                        <!-- MENSAJE DE ELIMINACION -->
                         <c:if test="${msgDel != null}" >
                             <div class="alert alert-dismissable alert-warning">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgDel}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ELIMINACION -->
+
+                        <!-- MENSAJE DE ERROR DE REFERENCIA -->
                         <c:if test="${msgErrorReference != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorReference}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR DE REFERENCIA -->
                     </div>                
                 </div><!-- /.row -->
                 <div class="row">                  
                     <div class="col-lg-12">                        
+                        <!-- DATATABLE -->
                         <div class="table-responsive">
-
                             <form action="ClientNewsMainServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
-                                        <div class="box">                                
+                                        <div class="box">   
+                                            <!-- TITULO DATATABLE -->
                                             <div class="box-title">
                                                 Datatable
                                                 <object align="right"> <button class="btn btn-primary btn-mini" name="btnAdd" type="button" onclick="location.href = 'ClientNewsAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button></object>
                                                 </br>DB
                                             </div>
+                                            <!-- /TITULO DATATABLE -->
                                             <div class="box-content nopadding">
                                                 <table id="datatable" class="table table-striped table-bordered">
+                                                    <!-- HEADER DATATABLE -->
                                                     <thead>
                                                         <tr>
                                                             <th><input class="check_all" type="checkbox" /></th>
-                                                            <th>Id <i class="fa fa-sort"></i></th>
+                                                            <th>ID <i class="fa fa-sort"></i></th>
                                                             <th>Título <i class="fa fa-sort"></i></th>
                                                             <th>Tipo <i class="fa fa-sort"></i></th>
                                                             <th>Rut <i class="fa fa-sort"></i></th>
@@ -125,13 +141,15 @@
                                                             <th></th>
                                                         </tr>
                                                     </thead>
+                                                    <!-- /HEADER DATATABLE -->
+
+                                                    <!-- BODY DATATABLE -->
                                                     <tbody>
                                                         <c:forEach var="list" items="${list}">  
                                                             <tr>
                                                                 <td class="center"><input type="checkbox" name="chk" value="<c:out value="${list.idClientNews}" />"/></td>  
                                                                 <td class="center"><c:out value="${list.idClientNews}" /></td>
                                                                 <td class="center"><c:out value="${list.tittle}" /></td>
-
                                                                 <td class="center">
                                                                     <c:if test="${list.newsType == 1}">Advertencia</c:if>
                                                                     <c:if test="${list.newsType == 2}">Notificación</c:if>
@@ -141,44 +159,53 @@
                                                                     <td class="center"><c:out value="${list.rut}" />-<c:out value="${list.dv}"/></td>
                                                                 <td class="center"><c:out value="${list.firstName}" /></td>
                                                                 <td class="center"><c:out value="${list.lastName}" /></td>
-                                                                <td><c:out value="${list.dateBegin}" /></td>
+                                                                <td class="center"><c:out value="${list.dateBegin}" /></td>
                                                                 <td class="center"><c:out value="${list.dateEnd}" /></td>
                                                                 <td class="center">      
                                                                     <a href="ClientNewsGetServlet?idClientNews=<c:out value="${list.idClientNews}" />&rut=<c:out value="${list.rut}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><font size="1">ACTUALIZAR</font></button></a>                                                               
                                                                 </td>
                                                                 <td class="center">                                                                    
-                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('ClientNewsMainServlet?btnDelRow=x&idClientNews=<c:out value="${list.idClientNews}" />'); return false;"><strong><font size="1">ELIMINAR</font></strong></button>
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('ClientNewsMainServlet?btnDelRow=x&idClientNews=<c:out value="${list.idClientNews}" />');
+                return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>                                                                            		                                    		
                                                     </tbody>
+                                                    <!-- /BODY DATATABLE -->
+
+                                                    <!-- FOOT DATATABLE -->
                                                     <tfoot>
                                                         <tr>
                                                             <th><button class="btn btn-danger btn-mini delete" name="btnDelCol" type="submit"><font size="1">ELIMINAR</font></button></th>
-                                                            <th>Id </th>
+                                                            <th>ID </th>
                                                             <th>Título </th>
-                                                            <th>Detalle </th>
-                                                            <th>Tipo </th>
-                                                            <th>Ciudad </th>
-                                                            <th>Imagen </th>
+                                                            <th>Tipo</th>
+                                                            <th>Rut </th>
+                                                            <th>Nombre </th>
+                                                            <th>Apellido </th>
                                                             <th>Fecha Inicio </th>
                                                             <th>Fecha Término </th>
                                                             <th></th>
                                                             <th></th>
                                                         </tr>
                                                     </tfoot>
+                                                    <!-- /FOOT DATATABLE -->
                                                 </table>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </form>
-
+                            </form>                            
                         </div>
+                        <!-- DATATABLE -->
                     </div>
                 </div><!-- /.row -->
 
-
+                <p>&nbsp;</p>
+                <!-- FOOTER -->
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
 
             </div><!-- /#page-wrapper -->
 

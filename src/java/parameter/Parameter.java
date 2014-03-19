@@ -1,7 +1,7 @@
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
-/*Test parameter*/
+ */
 package parameter;
 
 /**
@@ -13,16 +13,52 @@ public class Parameter implements java.io.Serializable {
     public int waitingCard;
     public int numberEvent;
     public int numberPromo;
+    public int idParameter;
     public String banerCentralEvent;
     public String banerCentralPromo;
-    public String banerCentralExchange;
+    public String banerCentralExchangeable;
+    public String banerCentralVip;
+    public String banerCentralAboutUs;
     public String banerTopEvent;
     public String banerTopPromo;
     public String banerTopMyPlace;
     public String banerTopFindPlace;
     public String banerTopConfiguration;
-
+    public String banerTopSocialNetworks;
+    /*test*/
     public Parameter() {
+    }
+
+    public int getWaitingCard() {
+        return waitingCard;
+    }
+
+    public void setWaitingCard(int waitingCard) {
+        this.waitingCard = waitingCard;
+    }
+
+    public int getNumberEvent() {
+        return numberEvent;
+    }
+
+    public void setNumberEvent(int numberEvent) {
+        this.numberEvent = numberEvent;
+    }
+
+    public int getNumberPromo() {
+        return numberPromo;
+    }
+
+    public void setNumberPromo(int numberPromo) {
+        this.numberPromo = numberPromo;
+    }
+
+    public int getIdParameter() {
+        return idParameter;
+    }
+
+    public void setIdParameter(int idParameter) {
+        this.idParameter = idParameter;
     }
 
     public String getBanerCentralEvent() {
@@ -41,12 +77,28 @@ public class Parameter implements java.io.Serializable {
         this.banerCentralPromo = banerCentralPromo;
     }
 
-    public String getBanerCentralExchange() {
-        return banerCentralExchange;
+    public String getBanerCentralExchangeable() {
+        return banerCentralExchangeable;
     }
 
-    public void setBanerCentralExchange(String banerCentralExchange) {
-        this.banerCentralExchange = banerCentralExchange;
+    public void setBanerCentralExchangeable(String banerCentralExchangeable) {
+        this.banerCentralExchangeable = banerCentralExchangeable;
+    }
+
+    public String getBanerCentralVip() {
+        return banerCentralVip;
+    }
+
+    public void setBanerCentralVip(String banerCentralVip) {
+        this.banerCentralVip = banerCentralVip;
+    }
+
+    public String getBanerCentralAboutUs() {
+        return banerCentralAboutUs;
+    }
+
+    public void setBanerCentralAboutUs(String banerCentralAboutUs) {
+        this.banerCentralAboutUs = banerCentralAboutUs;
     }
 
     public String getBanerTopEvent() {
@@ -89,27 +141,12 @@ public class Parameter implements java.io.Serializable {
         this.banerTopConfiguration = banerTopConfiguration;
     }
 
-    public int getWaitingCard() {
-        return waitingCard;
+    public String getBanerTopSocialNetworks() {
+        return banerTopSocialNetworks;
     }
 
-    public void setWaitingCard(int waitingCard) {
-        this.waitingCard = waitingCard;
+    public void setBanerTopSocialNetworks(String banerTopSocialNetworks) {
+        this.banerTopSocialNetworks = banerTopSocialNetworks;
     }
-
-    public int getNumberEvent() {
-        return numberEvent;
-    }
-
-    public void setNumberEvent(int numberEvent) {
-        this.numberEvent = numberEvent;
-    }
-
-    public int getNumberPromo() {
-        return numberPromo;
-    }
-
-    public void setNumberPromo(int numberPromo) {
-        this.numberPromo = numberPromo;
-    }
+    
 }

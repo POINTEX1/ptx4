@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Actualizar</title>
+        <title>POINTEX</title>
 
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.css" rel="stylesheet">
@@ -30,85 +30,117 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
+
     </head>
-</head>
 
-<body>
+    <body>
 
-    <div id="wrapper">
+        <div id="wrapper">
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <c:import var="menu" url="/mainMenu.jsp" />
-        <c:out value="${menu}" escapeXml="false" />
-        <!-- /.navbar-collapse -->
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <c:import var="menu" url="/mainMenu.jsp" />
+            <c:out value="${menu}" escapeXml="false" />
+            <!-- /.navbar-collapse -->
 
-        <div id="page-wrapper">
+            <div id="page-wrapper">
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>Mantenedor <small> Categorias</small></h1>
-                    <ol class="breadcrumb">
-                        <li><a href="CategoryMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
-                        <li class="active"><i class="fa fa-edit"></i> Actualizar</li>
-                    </ol>
-                    <c:if test="${msgOk != null}" >
-                        <div class="alert alert-dismissable alert-success">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgOk}" /></strong>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorId != null}" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorId}" /></strong></br>
-                        </div>
-                    </c:if> 
-                    <c:if test="${msgErrorNameCategory != null}" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorNameCategory}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorDup != null}" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorDup}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorFound != null}" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorFound}" /></strong></br>
-                        </div>
-                    </c:if>
-                </div>
-                
-                <div class="col-lg-4">
-                    <form role="form" action="CategoryUpdateServlet" method="POST" name="formUpdate">
-                        <div class="form-group">
-                            <label for="disabledSelect">ID Categoría</label>
-                            <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${category.idCategory}" />" disabled>
-                            <input type="hidden" name="idCategory" value="<c:out value="${category.idCategory}" />"/>
-                        </div>
-                        <c:if test="${msgErrorDup == null }" >
+                <div class="row">                    
+                    <div class="col-lg-12">
+                        <!-- TITULO MANTENEDOR -->
+                        <h1>Mantenedor <small> Categorias</small></h1>
+                        <ol class="breadcrumb">
+                            <li><a href="CategoryMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
+                            <li class="active"><i class="fa fa-edit"></i> Actualizar</li>
+                        </ol>
+                        <!-- /TITULO MANTENEDOR -->
+
+                        <!-- MENSAJE DE EXITO -->
+                        <c:if test="${msgOk != null}" >
+                            <div class="alert alert-dismissable alert-success">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgOk}" /></strong>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE DE EXITO -->
+
+                        <!-- MENSAJE DE ERROR DE ID CATEGORIA -->
+                        <c:if test="${msgErrorId != null}" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorId}" /></strong></br>
+                            </div>
+                        </c:if> 
+                        <!-- /MENSAJE DE ERROR DE ID CATEGORIA-->
+
+                        <!-- MENSAJE DE ERROR DE NOMBRE CATEGORIA -->
+                        <c:if test="${msgErrorNameCategory != null}" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorNameCategory}" /></strong></br>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE DE ERROR DE NOMBRE CATEGORIA -->
+
+                        <!-- MENSAJE DE ERROR DE REGISTRO DUPLICADO -->
+                        <c:if test="${msgErrorDup != null}" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorDup}" /></strong></br>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE DE ERROR DE REGISTRO DUPLICADO -->
+
+                        <!-- MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
+                        <c:if test="${msgErrorFound != null}" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorFound}" /></strong></br>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
+                    </div>
+
+                    <div class="col-lg-4">
+                        <!-- FORMULARIO -->
+                        <form role="form" action="CategoryUpdateServlet" method="POST" name="formUpdate">
+                            <!-- ID CATEGORY -->
                             <div class="form-group">
-                                <label>Nombre Categoría</label>
-                                <input class="form-control" required="true" maxlength="50" name="nameCategory" value="<c:out value="${category.nameCategory}" />">
+                                <label for="disabledSelect">ID Categoría</label>
+                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${category.idCategory}" />" disabled>
+                                <input type="hidden" name="idCategory" value="<c:out value="${category.idCategory}" />"/>
                             </div>
-                        </c:if>
-                        <c:if test="${msgErrorDup != null }" >
-                            <div class="form-group has-error">
-                                <label class="control-label" for="inputError">Nombre Categoría</label>
-                                <input class="form-control" required="true" maxlength="50" name="nameCategory" id="inputError" value="<c:out value="${category.nameCategory}" />">
-                            </div>
-                        </c:if>
-                        <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>
-                    </form>
-                </div>
-            </div><!-- /.row -->           
+                            <!-- /ID CATEGORY -->
 
-        </div><!-- /#page-wrapper -->
+                            <!-- NOMBRE CATEGORIA -->
+                            <c:if test="${msgErrorDup == null }" >
+                                <div class="form-group">
+                                    <label>Nombre Categoría</label>
+                                    <input class="form-control" required="true" maxlength="50" name="nameCategory" value="<c:out value="${category.nameCategory}" />">
+                                </div>
+                            </c:if>                                                                                    
+                            <c:if test="${msgErrorDup != null }" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Nombre Categoría</label>
+                                    <input class="form-control" required="true" maxlength="50" name="nameCategory" id="inputError" value="<c:out value="${category.nameCategory}" />">
+                                </div>
+                            </c:if>
+                            <!-- /NOMBRE CATEGORIA -->
+                            <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>
+                        </form>
+                        <!-- FORMULARIO -->
+                    </div>
+                </div><!-- /.row -->  
 
-    </div><!-- /#wrapper -->
-</body>
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>                
+                </br>
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
+
+            </div><!-- /#page-wrapper -->
+
+        </div><!-- /#wrapper -->
+    </body>
 </html>

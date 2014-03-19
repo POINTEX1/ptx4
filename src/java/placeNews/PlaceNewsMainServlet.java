@@ -2,12 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package clientNews;
+package placeNews;
 
-import Helpers.Format;
-import Helpers.Rut;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
+import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,14 +16,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
-import userCard.UserCardDAO;
 
 /**
  *
  * @author alexander
  */
-@WebServlet(name = "ClientNewsGetServlet", urlPatterns = {"/ClientNewsGetServlet"})
-public class ClientNewsGetServlet extends HttpServlet {
+@WebServlet(name = "PlaceNewsMainServlet", urlPatterns = {"/PlaceNewsMainServlet"})
+public class PlaceNewsMainServlet extends HttpServlet {
 
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
@@ -40,23 +39,20 @@ public class ClientNewsGetServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+  
         request.setCharacterEncoding("UTF-8");
 
         Connection conexion = null;
 
         try {
-            //////////////////////////////////////////
+            /////////////////////////////////////////
             // ESTABLECER CONEXION
-            //////////////////////////////////////////
-
+            /////////////////////////////////////////
             conexion = ds.getConnection();
 
-            ClientNewsDAO cnewsDAO = new ClientNewsDAO();
-            cnewsDAO.setConexion(conexion);
+            PlaceNewsDAO pnewsDAO = new PlaceNewsDAO();
+            pnewsDAO.setConexion(conexion);
 
-            UserCardDAO usercardDAO = new UserCardDAO();
-            usercardDAO.setConexion(conexion);
             //////////////////////////////////////////
             // COMPROBAR SESSION
             /////////////////////////////////////////
@@ -76,59 +72,81 @@ public class ClientNewsGetServlet extends HttpServlet {
                     /* obtener los valores de session y asignar valores a la jsp */
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
-                    request.setAttribute("su", 777); //superuser 
-
 
                     try {
                         /////////////////////////////////////////
-                        // RECIBIR Y COMPROBAR PARAMETROS
+                        // RECIBIR Y COMPROBAR PARAMETOS
                         /////////////////////////////////////////
 
-                        String sidClientNews = request.getParameter("idClientNews");
-                        String srut = request.getParameter("rut");
+                        String btnDelRow = request.getParameter("btnDelRow");
+                        String btnDelCol = request.getParameter("btnDelCol");
 
-                        ClientNews cnews = new ClientNews();
-                        boolean error = false;
+                        PlaceNews pnews = new PlaceNews();
 
-
-                        /* comprobar id client news */
-                        if (sidClientNews == null || sidClientNews.trim().equals("")) {
-                            request.setAttribute("msgErrorIdClientNews", "Error al recibir id cliente noticias.");
-                            error = true;
-                        } else {
+                        //////////////////////////////////////////
+                        // ELIMINAR POR REGISTRO
+                        //////////////////////////////////////////
+                        if (btnDelRow != null) {
+                            /* recibir parametros */
                             try {
-                                cnews.setIdClientNews(Integer.parseInt(sidClientNews));
+                                int id = Integer.parseInt(request.getParameter("idPlaceNews"));
+                                try {
+                                    pnewsDAO.delete(id);
+                                    request.setAttribute("msgDel", "Un registro ha sido eliminado.");
+                                } catch (Exception referenceException) {
+                                    request.setAttribute("msgErrorReference", "Error: No puede eliminar el registro, existen referencias asociadas.");
+                                }
                             } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorIdClientNews", "Error: El id de cliente noticias no es numÃ©rico.");
                             }
                         }
 
-                        /* comprobar rut */
-                        if (srut == null || srut.trim().equals("")) {
-                            request.setAttribute("msgErrorRut", "Error al recibir rut.");
-                            error = true;
-                        } else {
-                            cnews.setRut(Rut.getRut(srut));
-                            cnews.setDv(Rut.getDv(srut));
-                        }
+                        //////////////////////////////////////////
+                        // ELIMINAR VARIOS REGISTOS
+                        //////////////////////////////////////////
+                        if (btnDelCol != null) {
+                            try {
+                                /* recibir parametros */
+                                String[] outerArray = request.getParameterValues("chk");
 
-
-                        if (!error) {
-                            /* buscar noticia cliente */
-                            ClientNews reg = cnewsDAO.findByClientNews(cnews);
-                            if (reg != null) {
-                                reg.setDateBegin(Format.dateYYYYMMDD(reg.getDateBegin()));
-                                reg.setDateEnd(Format.dateYYYYMMDD(reg.getDateEnd()));
-
-                                request.setAttribute("cnews", reg);
-                                request.setAttribute("msgOk", "El registro ha sido encontrado!");
-                            } else {
-                                request.setAttribute("msgErrorFound", "Error: No se ha encontrado el registro.");
+                                int cont = 0;
+                                int i = 0;
+                                while (outerArray[i] != null) {
+                                    try {
+                                        pnewsDAO.delete(Integer.parseInt(outerArray[i]));
+                                        cont++;
+                                        if (cont == 1) {
+                                            request.setAttribute("msgDel", "Un registro ha sido eliminado.");
+                                        } else if (cont > 1) {
+                                            request.setAttribute("msgDel", cont + " registros han sido eliminados");
+                                        }
+                                    } catch (Exception referenceException) {
+                                        request.setAttribute("msgErrorReference", "Error: No puede eliminar " + pnews.getTittle() + ", existen registros asociados.");
+                                    }
+                                    i++;
+                                }
+                            } catch (Exception ex) {
                             }
                         }
+
+                        ////////////////////////////////////////
+                        // OBTENER REGISTROS DE DAO's
+                        ////////////////////////////////////////
+
+                        try {
+                            Collection<PlaceNews> listPlaceNews = pnewsDAO.getAll();
+                            request.setAttribute("list", listPlaceNews);
+
+                            if (listPlaceNews.size() > 1) {
+                                request.setAttribute("msg", listPlaceNews.size() + " registros encontrados en la base de datos.");
+                            } else if (listPlaceNews.isEmpty()) {
+                                request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                            }
+                        } catch (Exception ex) {
+                        }
+
                     } catch (Exception parameterException) {
                     } finally {
-                        request.getRequestDispatcher("/clientNews/clientNewsUpdate.jsp").forward(request, response);
+                        request.getRequestDispatcher("/placeNews/placeNews.jsp").forward(request, response);
                     }
                 }
             } catch (Exception sessionException) {

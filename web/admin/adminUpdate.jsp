@@ -65,91 +65,117 @@
                             <li><a href="AdminMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                             <li class="active"><i class="fa fa-edit"></i> Actualizar</li>
                         </ol>
+                        <!-- MENSAJE DE EXITO -->
                         <c:if test="${msgOk != null}" >
                             <div class="alert alert-dismissable alert-success">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgOk}" /></strong>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE EXITO -->
+
+                        <!-- MENSAJE DE ERROR DE ID ADMIN -->
                         <c:if test="${msgErrorId != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorId}" /></strong></br>
                             </div>
                         </c:if> 
+                        <!-- /MENSAJE DE ERROR DE ID ADMIN -->
+
+                        <!-- MENSAJE DE ERROR DE USERNAME -->
                         <c:if test="${msgErrorUsername != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorUsername}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR DE USERNAME -->
+
+                        <!-- MENSAJE DE ERROR DE EMAIL -->
                         <c:if test="${msgErrorEmail != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorEmail}" /></strong></br>
                             </div>
                         </c:if> 
+                        <!-- /MENSAJE DE ERROR DE EMAIL -->
+
+                        <!-- MENSAJE DE ERROR DE 1° PASSWORD -->
                         <c:if test="${msgErrorPwd1 != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorPwd1}" /></strong></br>
                             </div>
                         </c:if> 
+                        <!-- /MENSAJE DE ERROR DE 1° PASSWORD -->
+
+                        <!-- MENSAJE DE ERROR DE 2° PASSWORD -->
                         <c:if test="${msgErrorPwd2 != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorPwd2}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR DE 2° PASSWORD -->
+
+                        <!-- MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
                         <c:if test="${msgErrorFound != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorFound}" /></strong></br>
                             </div>
                         </c:if>
-
+                        <!-- /MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
                     </div>
+
                     <div class="col-lg-4">
+                        <!-- FORMULARIO -->
                         <form role="form" action="AdminUpdateServlet" method="POST" name="formUpdate">
+                            <!-- ID ADMIN -->
                             <div class="form-group">
                                 <label for="disabledSelect">ID Admin</label>
                                 <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${id}" />" disabled>
                                 <input type="hidden" name="id" value="<c:out value="${id}" />"/>
                             </div>
-                            <c:choose>
-                                <c:when test="${msgErrorUsername == null}">
-                                    <div class="form-group">
-                                        <label>Username </label>
-                                        <input class="form-control" required="true" maxlength="30" name="username" value="<c:out value="${username}" />">
-                                    </div>
-                                </c:when>
-                                <c:otherwise>
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">Username </label>
-                                        <input class="form-control" required="true" maxlength="30" name="username" id="inputError" value="<c:out value="${username}" />">
-                                    </div>
-                                </c:otherwise>
-                            </c:choose>
+                            <!-- /ID ADMIN -->
 
-                            <c:choose>
-                                <c:when test="${msgErrorEmail == null}">
-                                    <div class="form-group input-group">
-                                        <span class="input-group-addon">@</span>
-                                        <input type="email" required="true" name="email" maxlength="50" class="form-control" placeholder="Email" value="<c:out value="${email}" />" >
-                                    </div>
-                                </c:when>
-                                <c:otherwise>
-                                    <div class="form-group input-group has-error">
-                                        <span class="input-group-addon" for="inputError">@</span>
-                                        <input type="email" required="true" name="email"  id="inputError" maxlength="50" class="form-control" placeholder="Email" value="<c:out value="${email}" />" >
-                                    </div>
-                                </c:otherwise>
-                            </c:choose>
+                            <!-- USERNAME -->
+                            <c:if test="${msgErrorUsername == null}">
+                                <div class="form-group">
+                                    <label>Username </label>
+                                    <input class="form-control" required="true" maxlength="30" name="username" value="<c:out value="${username}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorUsername != null}">
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Username </label>
+                                    <input class="form-control" required="true" maxlength="30" name="username" id="inputError" value="<c:out value="${username}" />">
+                                </div>
+                            </c:if>                            
+                            <!-- /USERNAME -->
+
+                            <!-- EMAIL -->
+                            <c:if test="${msgErrorEmail == null}">
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon">@</span>
+                                    <input type="email" required="true" name="email" maxlength="50" class="form-control" placeholder="Email" value="<c:out value="${email}" />" >
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorEmail == null}">
+                                <div class="form-group input-group has-error">
+                                    <span class="input-group-addon" for="inputError">@</span>
+                                    <input type="email" required="true" name="email"  id="inputError" maxlength="50" class="form-control" placeholder="Email" value="<c:out value="${email}" />" >
+                                </div>
+                            </c:if>
+                            <!-- /EMAIL -->
+
+                            <!-- PASSWORD -->
                             <div class="form-group">
                                 <label class="checkbox-inline">
                                     <input type="checkbox" name="chk" id="chk" onClick="changeDisplay();"/> Restablecer password
                                 </label>
-                            </div>     
+                            </div>
                             <div id="pwd" style="display:none">
                                 <c:if test="${msgErrorPwd1 == null && msgErrorPwd2 == null }" >
                                     <div class="form-group">
@@ -172,15 +198,19 @@
                                     </div>
                                 </c:if>                                  
                             </div>
+                            <!-- /PASSWORD -->
                             <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>
                         </form>
+                        <!-- /FORMULARIO -->
                     </div>
                 </div><!-- /.row -->
 
+                <!-- FOOTER -->
                 <p>&nbsp;</p>
                 <c:import var="footer" url="/footer.jsp" />
                 <c:out value="${footer}" escapeXml="false" />
-                
+                <!-- /FOOTER -->
+
             </div><!-- /#page-wrapper -->
         </div><!-- /#wrapper -->
     </body>

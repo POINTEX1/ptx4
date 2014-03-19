@@ -5,6 +5,7 @@
 package parameter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.Collection;
 import javax.annotation.Resource;
@@ -87,7 +88,20 @@ public class ParameterGetServlet extends HttpServlet {
                         if (listParameter.size() > 0) {
                             for (Parameter aux : listParameter) {
                                 reg = aux;
-                                request.setAttribute("parameter", reg);
+                                request.setAttribute("waitingCard", reg.getWaitingCard());
+                                request.setAttribute("numberEvent", reg.getNumberEvent());
+                                request.setAttribute("numberPromo", reg.getNumberPromo());
+                                request.setAttribute("banerCentralEvent", reg.getBanerCentralEvent());
+                                request.setAttribute("banerCentralPromo", reg.getBanerCentralPromo());
+                                request.setAttribute("banerCentralExchangeable", reg.getBanerCentralExchangeable());
+                                request.setAttribute("banerCentralVip", reg.getBanerCentralVip());
+                                request.setAttribute("banerCentralAboutUs", reg.getBanerCentralAboutUs());
+                                request.setAttribute("banerTopEvent", reg.getBanerTopEvent());
+                                request.setAttribute("banerTopPromo", reg.getBanerTopPromo());
+                                request.setAttribute("banerTopMyPlace", reg.getBanerTopMyPlace());
+                                request.setAttribute("banerTopFindPlace", reg.getBanerTopFindPlace());
+                                request.setAttribute("banerTopConfiguration", reg.getBanerTopConfiguration());
+                                request.setAttribute("banerTopSocialNetworks", reg.getBanerTopSocialNetworks());
                                 request.setAttribute("msg", "registros encontrados en la base de datos.");
                             }
                         } else {

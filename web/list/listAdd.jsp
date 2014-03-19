@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Nuevo Registro</title>
+        <title>POINTEX</title>
 
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.css" rel="stylesheet">
@@ -30,125 +30,165 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
+
     </head>
-</head>
 
-<body>
+    <body>
 
-    <div id="wrapper">
+        <div id="wrapper">
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <c:import var="menu" url="/mainMenu.jsp" />
-        <c:out value="${menu}" escapeXml="false" />            
-        <!-- /.navbar-collapse -->
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <c:import var="menu" url="/mainMenu.jsp" />
+            <c:out value="${menu}" escapeXml="false" />            
+            <!-- /.navbar-collapse -->
 
-        <div id="page-wrapper">
+            <div id="page-wrapper">
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>Mantenedor <small> Registros de Entradas</small></h1>
-                    <ol class="breadcrumb">
-                        <li><a href="EntryMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
-                        <li class="active"><i class="fa fa-edit"></i> Agregar</li>
-                    </ol>
-                    <c:if test="${msg != null}" >
-                        <div class="alert alert-dismissable alert-info">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msg}" /></strong>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgOk != null}" >
-                        <div class="alert alert-dismissable alert-success">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgOk}" /></strong>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorRut != null }" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorRut}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErroridPlace != null }" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErroridPlace}" /></strong></br>
-                        </div>
-                    </c:if>                    
-                    <c:if test="${msgErrorBarCode != null }" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorBarCode}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorCardNotFound != null }" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorCardNotFound}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorExp != null }" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorExp}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorGuestNotFound != null }" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorGuestNotFound}" /></strong></br>
-                        </div>
-                    </c:if>                    
-                    <c:if test="${msgErrorIdEvent != null }" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorIdEvent}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorFound != null }" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorFound}" /></strong></br>
-                        </div>
-                    </c:if>                                        
-                </div>
-                <div class="col-lg-4">
-                    <form role="form" action="ListAddServlet" method="POST" name="formAdd">  
-                        <p><label>Ingresar Evento:</label></p>
-                        <div class="form-group">
-                            <input type="radio" name="optionEvent" value="1" <c:if test="${optionEvent == 1 || optionEvent == null}">checked</c:if> <label>Actual</label>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <!-- TITULO MANTENEDOR -->
+                        <h1>Mantenedor <small> Registros de Entradas</small></h1>
+                        <ol class="breadcrumb">
+                            <li><a href="EntryMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
+                            <li class="active"><i class="fa fa-edit"></i> Agregar</li>
+                        </ol>
+                        <!-- /TITULO MANTENEDOR -->
+
+                        <!-- MENSAJE INFORMATIVO -->
+                        <c:if test="${msg != null}" >
+                            <div class="alert alert-dismissable alert-info">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msg}" /></strong>
                             </div>
+                        </c:if>
+                        <!-- /MENSAJE INFORMATIVO -->
+
+                        <!-- MENSAJE DE EXITO -->
+                        <c:if test="${msgOk != null}" >
+                            <div class="alert alert-dismissable alert-success">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgOk}" /></strong>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE DE EXITO -->
+
+                        <!-- MENSAJE DE ERROR RUT -->
+                        <c:if test="${msgErrorRut != null }" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorRut}" /></strong></br>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE DE ERROR RUT -->
+
+                        <!-- MENSAJE DE ERROR ID PLACE -->
+                        <c:if test="${msgErroridPlace != null }" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErroridPlace}" /></strong></br>
+                            </div>
+                        </c:if> 
+                        <!-- /MENSAJE DE ERROR ID PLACE -->
+
+                        <!-- MENSAJE DE ERROR BARCODE -->
+                        <c:if test="${msgErrorBarCode != null }" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorBarCode}" /></strong></br>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE DE ERROR BARCODE -->
+
+                        <!-- MENSAJE DE ERROR CARD NO ENCONTRADA -->
+                        <c:if test="${msgErrorCardNotFound != null }" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorCardNotFound}" /></strong></br>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE DE ERROR CARD NO ENCONTRADA -->
+
+                        <!-- MENSAJE DE ERROR EXPIRACION -->
+                        <c:if test="${msgErrorExp != null }" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorExp}" /></strong></br>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE DE ERROR EXPIRACION -->
+
+                        <!-- MENSAJE DE ERROR ID EVENTO -->
+                        <c:if test="${msgErrorIdEvent != null }" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorIdEvent}" /></strong></br>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE DE ERROR ID EVENTO -->
+
+                        <!-- MENSAJE DE ERROR REGISTRO NO ENCONTRADO -->
+                        <c:if test="${msgErrorFound != null }" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorFound}" /></strong></br>
+                            </div>
+                        </c:if>   
+                        <!-- /MENSAJE DE ERROR REGISTRO NO ENCONTRADO -->
+                    </div>
+                    <div class="col-lg-4">
+                        <!-- FORMULARIO -->
+                        <form role="form" action="ListAddServlet" method="POST" name="formAdd">  
+                            <!-- OPTION EVENTO -->
+                            <p><label>Ingresar Evento:</label></p>
                             <div class="form-group">
-                                <label>Lugar</label>
-                                <select class="form-control" name="idPlace">
-                                <c:forEach var="listPlace" items="${listPlace}">  
-                                    <option value="<c:out value="${listPlace.idPlace}" />" <c:if test="${reg.idPlace == listPlace.idPlace}">selected</c:if>> <c:out value="${listPlace.namePlace}" /> </option>
-                                </c:forEach>
-                            </select>                                
-                        </div>   
-                        <div class="form-group">
-                            <input type="radio" name="optionEvent" value="2" <c:if test="${optionEvent == 2}">checked</c:if> /> 
-                                <label>Por ID Evento</label>
-                                <input class="form-control" type="number" maxlength="8" name="idEvent" value="<c:out value="${reg.idEvent}" />" />
-                        </div>                        
-                        <div class="form-group">                            
-                            <label>Código de Barras</label>
-                            <input class="form-control" type="number" maxlength="8" name="barCode" value="<c:out value="${reg.barCode}" />">
-                        </div>                        
-                        <button type="submit" name="add" class="btn btn-default"><strong><font size="1">AGREGAR</font></strong></button>
-                        <button type="reset" class="btn btn-default"><strong><font size="1">RESET</font></strong></button> 
-                    </form>
-                </div>
-            </div><!-- /.row -->
-            <div class="row">                  
-                <div class="col-lg-12">                        
+                                <input type="radio" name="optionEvent" value="1" <c:if test="${optionEvent == 1 || optionEvent == null}">checked</c:if> <label>Actual</label>
+                                </div>
+                                <!-- /OPTION EVENTO -->
 
-                </div>
-            </div><!-- /.row -->
+                                <!-- LUGAR -->
+                                <div class="form-group">
+                                    <label>Lugar</label>
+                                    <select class="form-control" name="idPlace">
+                                    <c:forEach var="listPlace" items="${listPlace}">  
+                                        <option value="<c:out value="${listPlace.idPlace}" />" <c:if test="${reg.idPlace == listPlace.idPlace}">selected</c:if>> <c:out value="${listPlace.namePlace}" /> </option>
+                                    </c:forEach>
+                                </select>                                
+                            </div>
+                            <!-- /LUGAR -->
 
-        </div><!-- /#page-wrapper -->
+                            <!-- ID EVENTO -->
+                            <div class="form-group">
+                                <input type="radio" name="optionEvent" value="2" <c:if test="${optionEvent == 2}">checked</c:if> /> 
+                                    <label>Por ID Evento</label>
+                                    <input class="form-control" type="number" maxlength="8" name="idEvent" value="<c:out value="${reg.idEvent}" />" />
+                            </div>
+                            <!-- /ID EVENTO -->
 
-    </div><!-- /#wrapper -->
+                            <!-- BARCODE -->
+                            <div class="form-group">                            
+                                <label>Código de Barras</label>
+                                <input class="form-control" type="number" maxlength="8" name="barCode" value="<c:out value="${reg.barCode}" />">
+                            </div>     
+                            <!-- BARCODE -->
 
-</body>
+                            <!-- BOTONES -->
+                            <button type="submit" name="add" class="btn btn-default"><strong><font size="1">AGREGAR</font></strong></button>
+                            <button type="reset" class="btn btn-default"><strong><font size="1">RESET</font></strong></button> 
+                            <!-- /BOTONES -->
+                        </form>
+                        <!-- /FORMULARIO -->
+                    </div>
+                </div><!-- /.row -->
+
+                </br>
+                <!-- FOOTER -->
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
+
+            </div><!-- /#page-wrapper -->
+
+        </div><!-- /#wrapper -->
+
+    </body>
 </html>

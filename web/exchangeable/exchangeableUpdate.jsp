@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Actualizar Producto</title>
+        <title>POINTEX</title>
 
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.css" rel="stylesheet">
@@ -55,79 +55,116 @@
 
                 <div class="row">
                     <div class="col-lg-12">
+                        <!-- TITULO MANTENEDOR -->
                         <h1>Mantenedor <small> Productos canjeables</small></h1>
                         <ol class="breadcrumb">
                             <li><a href="ExchangeableMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                             <li class="active"><i class="fa fa-edit"></i> Actualizar</li>
                         </ol>
+                        <!-- /TITULO MANTENEDOR -->
+
+                        <!-- MENSAJE DE EXITO -->
                         <c:if test="${msgOk != null}" >
                             <div class="alert alert-dismissable alert-success">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgOk}" /></strong>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE EXITO -->
+
+                        <!-- MENSAJE DE ERROR REGISTRO DUPLICADO -->
                         <c:if test="${msgErrorDup != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorDup}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- MENSAJE DE ERROR REGISTRO DUPLICADO -->
+
+                        <!-- MENSAJE DE ERROR ID PLACE -->
                         <c:if test="${msgErrorIdPlace != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorIdPlace}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR ID PLACE -->
+
+                        <!-- MENSAJE DE ERROR IMAGE -->
                         <c:if test="${msgErrorUrlImage != null }" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorUrlImage}" /></strong></br>
                             </div>
-                        </c:if> 
+                        </c:if>
+                        <!-- /MENSAJE DE ERROR IMAGE -->
+
+                        <!-- MENSJAE DE ERROR ID EXCHANGE -->
                         <c:if test="${msgErrorIdExchangeable != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorIdExchangeable}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSJAE DE ERROR ID EXCHANGE -->
+
+                        <!-- MENSAJE DE ERROR NOMBRE LUGAR -->
                         <c:if test="${msgErrorNamePlace != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorNamePlace}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR NOMBRE LUGAR -->
+
+                        <!-- MENSAJE DE ERROR REGISTRO NO ENCONTRADO -->
                         <c:if test="${msgErrorFound != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorFound}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR REGISTRO NO ENCONTRADO -->
+
+                        <!-- MENSAJE DE ERROR PUNTOS -->
                         <c:if test="${msgErrorPoints != null }" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorPoints}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR PUNTOS -->
+
+                        <!-- MENSAJE DE ERROR SOLICITUD -->
                         <c:if test="${msgErrorRequest != null }" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorRequest}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR SOLICITUD -->                        
                     </div>
                     <div class="col-lg-4">
+                        <!-- FORMULARIO -->
                         <form role="form" action="ExchangeableUpdateServlet" method="POST" name="formUpdate">
+                            <!-- LUGAR -->
                             <div class="form-group">
-                                <label for="disabledSelect">Plaza</label>
+                                <label for="disabledSelect">Lugar</label>
                                 <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${exchange.namePlace}" />" disabled>
                                 <input type="hidden" name="namePlace" value="<c:out value="${exchange.namePlace}" />"/>
                                 <input type="hidden" name="idPlace" value="<c:out value="${exchange.idPlace}" />"/>
                             </div>
+                            <!-- /LUGAR -->
+
+                            <!-- ID EXCHANGEABLE -->
                             <div class="form-group">
                                 <label for="disabledSelect">Id Exchangeable</label>
                                 <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${exchange.idExchangeable}" />" disabled>
                                 <input type="hidden" name="idExchangeable" value="<c:out value="${exchange.idExchangeable}" />"/>
                             </div>
+                            <!-- /ID EXCHANGEABLE -->
+
+                            <!-- TITULO -->
                             <c:if test="${msgErrorDup == null && msgErrorTittle == null}" >
                                 <div class="form-group">
                                     <label>Título de Producto</label>
@@ -139,7 +176,10 @@
                                     <label class="control-label" for="inputError">Título de Producto</label>
                                     <input class="form-control" required="true" maxlength="100" id="inputError" name="tittle" value="<c:out value="${exchange.tittle}" />">
                                 </div>
-                            </c:if>                        
+                            </c:if> 
+                            <!-- /TITULO -->
+
+                            <!-- PUNTOS -->
                             <c:if test="${msgErrorPoints != null }" >     
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError"> Puntos</label>
@@ -152,6 +192,9 @@
                                     <input class="form-control" type="number" required="true" min="0" max="99999" name="points" value="<c:out value="${exchange.points}" />">
                                 </div>
                             </c:if>
+                            <!-- /PUNTOS -->
+
+                            <!-- IMAGE -->
                             <c:if test="${msgErrorUrlImage == null }" >
                                 <div class="form-group">
                                     <label>URL imagen </label>
@@ -164,6 +207,9 @@
                                     <input class="form-control" required="true" maxlength="200" id="inputError" name="urlImage" value="<c:out value="${exchange.urlImage}" />">
                                 </div>
                             </c:if>
+                            <!-- /IMAGE -->
+
+                            <!-- SOLICITUD -->
                             <div class="form-group">
                                 <label>Solicitud: </label>
                                 <select class="form-control" id="exchangeRequest" name="exchangeRequest">                                
@@ -172,20 +218,26 @@
                                     <option value="2" <c:if test="${exchange.request == 2}">selected</c:if>>Rechazada</option>
                                     </select>          
                                 </div>
+                                <!-- /SOLICITUD -->
+
+                                <!-- RAZON RECHAZO -->
                                 <div class="form-group" id="reason">
                                     <label>Razón de rechazo</label>
                                     <textarea class="form-control" name="reason" maxlength="255" rows="4"><c:out value="${exchange.reason}" /></textarea>
                             </div>
+                            <!-- /RAZON RECHAZO -->
                             <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>
                         </form>
-
+                        <!-- FORMULARIO -->
                     </div>
                 </div><!-- /.row -->
-                <div class="row">                  
-                    <div class="col-lg-12">                        
 
-                    </div>
-                </div><!-- /.row -->
+                <!-- FOOTER -->
+                <p>&nbsp;</p>
+
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
 
             </div><!-- /#page-wrapper -->
 

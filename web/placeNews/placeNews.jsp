@@ -1,7 +1,7 @@
 <%-- 
-    Document   : admin
-    Created on : 26-dic-2013, 16:08:09
-    Author     : patricio alberto
+    Document   : placeNews
+    Created on : 18-03-2014, 12:36:51 PM
+    Author     : alexander
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>POINTEX</title>
+        <title>OTL - Noticias para Lugares</title>
 
         <!-- imperio css -->
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
@@ -37,20 +37,6 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
 
-        <script>
-            function confirmar(url)
-            {
-                if (confirm('¿Está seguro de eliminar el registro?'))
-                {
-                    window.location = url;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        </script>
-
     </head>
 
     <body>
@@ -66,148 +52,131 @@
 
                 <div class="row">
                     <div class="col-lg-12">
-                        <!-- TITULO MANTENEDOR -->
-                        <h1>Mantenedor <small> Productos Canjeables</small></h1>
+                        <h1>Mantenedor <small> Noticias para Lugares</small></h1>
                         <ol class="breadcrumb">
-                            <li class="active"><a href="ExchangeableMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
+                            <li class="active"><a href="PlaceNewsMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                         </ol>
-                        <!-- /TITULO MANTENEDOR -->
-
-                        <!-- MENSAJE INFORMATIVO -->
-                        <c:if test="${msg!= null}" >
+                        <c:if test="${msg != null}" >
                             <div class="alert alert-info alert-dismissable">
                                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                 <td><strong><c:out value="${msg}" /></strong></td>
+                            </div>  
+                        </c:if>
+                        <c:if test="${msgOk != null}" >
+                            <div class="alert alert-dismissable alert-success">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgOk}" /></strong>
                             </div>
                         </c:if>
-                        <!-- /MENSAJE INFORMATIVO -->
-
-                        <!-- MENSAJE DE ELIMINACION -->
                         <c:if test="${msgDel != null}" >
                             <div class="alert alert-dismissable alert-warning">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgDel}" /></strong></br>
                             </div>
                         </c:if>
-                        <!-- /MENSAJE DE ELIMINACION -->
-
-                        <!-- MENSAJE DE REGISTRO NO ENCONTRADO -->
                         <c:if test="${msgErrorFound != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorFound}" /></strong></br>
                             </div>
                         </c:if>
-                        <!-- /MENSAJE DE REGISTRO NO ENCONTRADO -->
-
-                        <!-- MENSAJE DE ERROR AL ELIMINAR -->
-                        <c:if test="${msgErrorDel!= null}" >
+                        <c:if test="${msgErrorDate != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorDel}" /></strong></br>
+                                <strong><c:out value="${msgErrorDate}" /></strong></br>
                             </div>
                         </c:if>
-                        <!-- /MENSAJE DE ERROR AL ELIMINAR -->
-
-                        <!-- MENSAJE DE ERROR DE REFERENCIA -->
                         <c:if test="${msgErrorReference != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorReference}" /></strong></br>
                             </div>
                         </c:if>
-                        <!-- /MENSAJE DE ERROR DE REFERENCIA -->
                     </div>
+
                 </div><!-- /.row -->
                 <div class="row">                  
-                    <div class="col-lg-12">  
+                    <div class="col-lg-12"> 
+
                         <div class="table-responsive">
-                            <!-- DATATABLE -->
-                            <form action="ExchangeableMainServlet" method="POST" name="form">
+
+                            <form action="PlaceNewsMainServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
-                                        <div class="box"> 
-                                            <!-- TITULO MANTENEDOR -->
+                                        <div class="box">                                
                                             <div class="box-title">
                                                 Datatable
-                                                <object align="right"> <button class="btn btn-primary btn-mini" name="btnAdd" type="button" onclick="location.href = 'ExchangeableAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button></object>
+                                                <object align="right"> <button class="btn btn-primary btn-mini" name="btnAddPlaceNews" type="button" onclick="location.href = 'PlaceNewsAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button></object>
                                                 </br>DB
                                             </div>
-                                            <!-- /TITULO MANTENEDOR -->
                                             <div class="box-content nopadding">
                                                 <table id="datatable" class="table table-striped table-bordered">
-                                                    <!-- HEADER DATATABLE -->
                                                     <thead>
                                                         <tr>
-                                                            <th><input class="check_all" type="checkbox"/></th>
-                                                            <th>Plaza <i class="fa fa-sort"></i></th>
+                                                            <th><input class="check_all" type="checkbox" /></th>
                                                             <th>ID <i class="fa fa-sort"></i></th>
-                                                            <th>Título Producto <i class="fa fa-sort"></i></th>
-                                                            <th>Puntos <i class="fa fa-sort"></i></th>       
-                                                            <th>Solicitud <i class="fa fa-sort"></i></th>
+                                                            <th>Lugar <i class="fa fa-sort"></i></th>                                                            
+                                                            <th>Título Noticia <i class="fa fa-sort"></i></th>
+                                                            <th>Tipo <i class="fa fa-sort"></i></th>
+                                                            <th>Detalle <i class="fa fa-sort"></i></th>
+                                                            <th>Fecha Inicio <i class="fa fa-sort"></i></th>
+                                                            <th>Fecha Término <i class="fa fa-sort"></i></th>
                                                             <th></th>
                                                             <th></th>
                                                         </tr>
                                                     </thead>
-                                                    <!-- /HEADER DATATABLE -->
-
-                                                    <!-- BODY DATATABLE -->
                                                     <tbody>
-                                                        <c:forEach var="list" items="${list}">  
-                                                            <tr>
-                                                                <td class="center"><input type="checkbox" name="chk" value="<c:out value="${list.idExchangeable}"/>"/></td>
-                                                                <td class="center"><c:out value="${list.namePlace}" /></td>
-                                                                <td class="center"><c:out value="${list.idExchangeable}" /></td>
+                                                        <tr>
+                                                            <c:forEach var="list" items="${list}">  
+                                                                <td class="center"><input type="checkbox" name="chk" value="<c:out value="${list.idPlaceNews}" />"/></td>
+                                                                <td class="center"><c:out value="${list.idPlaceNews}" /></td>
+                                                                <td class="center"><c:out value="${list.namePlace}" /></td>                                                                
                                                                 <td class="center"><c:out value="${list.tittle}" /></td>
-                                                                <td class="center"><c:out value="${list.points}" /></td>
                                                                 <td class="center">
-                                                                    <c:if test="${list.request == 0}">Pendiente</c:if>
-                                                                    <c:if test="${list.request == 1}">Aceptada</c:if>
-                                                                    <c:if test="${list.request == 2}">Rechazada</c:if>
+                                                                    <c:if test="${list.newsType == 1}">Advertencia</c:if>
+                                                                    <c:if test="${list.newsType == 2}">Notificación</c:if>
+                                                                    <c:if test="${list.newsType == 3}">Informacion</c:if>
+                                                                    <c:if test="${list.newsType == 4}">Atención</c:if>
                                                                     </td>
-                                                                    <td class="center">
-                                                                        <a href="ExchangeableGetServlet?idExchangeable=<c:out value="${list.idExchangeable}"/>"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">ACTUALIZAR</font></strong></button></a>
+                                                                    <td class="center"><c:out value="${list.details}" /></td>
+                                                                <td class="center"><c:out value="${list.dateBegin}" /></td>
+                                                                <td class="center"><c:out value="${list.dateEnd}" /></td>
+                                                                <td class="center">
+                                                                    <a href="PlaceNewsGetServlet?idPlace=<c:out value="${list.idPlace}" />&idPlaceNews=<c:out value="${list.idPlaceNews}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">ACTUALIZAR</font></strong></button></a>
                                                                 </td>
-                                                                <td class="center">                                                                    
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('ExchangeableMainServlet?btnDelRow=x&idExchangeable=<c:out value="${list.idExchangeable}" />');
-                return false;"><strong><font size="1">ELIMINAR</font></strong></button>
+                                                                <td class="center">
+                                                                    <form method="post" action="PlaceNewsMainServlet">
+                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" type="submit"><strong><font size="1"> ELIMINAR </font></strong></button>                                                                        
+                                                                        <input type="hidden" name="idPlaceNews" value="<c:out value="${list.idPlaceNews}" />"/>
+                                                                    </form>
                                                                 </td>
                                                             </tr>
-                                                        </c:forEach>
+                                                        </c:forEach>                                                                              		                                    		
                                                     </tbody>
-                                                    <!-- /BODY DATATABLE -->
-
-                                                    <!-- FOOT DATATABLE -->
                                                     <tfoot>
                                                         <tr>
                                                             <th><button class="btn btn-danger btn-mini delete" name="btnDelCol" type="submit"><font size="1">ELIMINAR</font></button></th>
-                                                            <th>Plaza</th>
                                                             <th>ID</th>
-                                                            <th>Título Producto</th>
-                                                            <th>Puntos</th> 
-                                                            <th>Solicitud</th>
+                                                            <th>Lugar </th>                                                            
+                                                            <th>Título Noticia </th>
+                                                            <th>Tipo </th>
+                                                            <th>Detalle </th>
+                                                            <th>Fecha Inicio </th>
+                                                            <th>Fecha Término </th>
                                                             <th></th>
                                                             <th></th>
                                                         </tr>
                                                     </tfoot>
-                                                    <!-- /FOOT DATATABLE -->
                                                 </table>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </form>
-                            <!-- DATATABLE -->
+
                         </div>
                     </div>
                 </div><!-- /.row -->
-
-                <!-- FOOTER -->
-                <p>&nbsp;</p>
-
-                <c:import var="footer" url="/footer.jsp" />
-                <c:out value="${footer}" escapeXml="false" />
-                <!-- /FOOTER -->
 
             </div><!-- /#page-wrapper -->
 

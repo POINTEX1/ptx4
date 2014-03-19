@@ -4,7 +4,6 @@
  */
 package clientPromoCheckout;
 
-import clientPromo.ClientPromo;
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 import com.mysql.jdbc.exceptions.MySQLSyntaxErrorException;
 import java.sql.Connection;
@@ -81,55 +80,6 @@ public class ClientPromoCheckoutDAO {
             }
         }
         return list;
-    }
-
-    public ClientPromoCheckout findByChekout(int id) {
-
-        Statement sentence = null;
-        ResultSet result = null;
-
-        ClientPromoCheckout reg = null;
-
-        try {
-            sentence = conexion.createStatement();
-            String sql = "select * from client_promo_check cpc, place pl, promo pr, user_card uc where uc.rut = cpc.rut and cpc.id_promo = " + id + " and cp.id_promo = pr.id_promo and pl.id_place = pr.id_place";
-            result = sentence.executeQuery(sql);
-
-            while (result.next()) {
-                /* instanciar objeto */
-                reg = new ClientPromoCheckout();
-                /* obtener resultset */
-                reg.setIdCheck(result.getInt("id_check"));
-                reg.setIdPromo(result.getInt("id_promo"));
-                reg.setIdPlace(result.getInt("id_place"));
-                reg.setNamePlace(result.getString("name_place"));
-                reg.setTittlePromo(result.getString("tittle"));
-                reg.setRut(result.getInt("rut"));
-                reg.setDv(result.getString("dv"));
-                reg.setCreateTime(result.getString("create_time"));
-            }
-
-        } catch (MySQLSyntaxErrorException ex) {
-            System.out.println("Error de sintaxis en ClientPromoDAO, findbyCheckout() : " + ex);
-            throw new RuntimeException("MySQL Syntax Exception en ClientPromoDAO, findbyCheckout() : " + ex);
-        } catch (MySQLIntegrityConstraintViolationException ex) {
-            System.out.println("MySQL Excepción de integridad en ClientPromoDAO, findbyCheckout() : " + ex);
-            throw new RuntimeException("MySQL Excepción de integridad en ClientPromoDAO, findbyCheckout() : " + ex);
-        } catch (SQLException ex) {
-            System.out.println("MySQL Excepción inesperada en ClientPromoDAO, findbyCheckout() : " + ex);
-            throw new RuntimeException("MySQL Excepción inesperada en ClientPromoDAO, findbyCheckout() : " + ex);
-        } finally {
-            /* liberar recursos */
-            try {
-                result.close();
-            } catch (Exception noGestionar) {
-            }
-            try {
-                sentence.close();
-            } catch (Exception noGestionar) {
-            }
-        }
-        return reg;
     }
 
     public void insert(ClientPromoCheckout reg) {

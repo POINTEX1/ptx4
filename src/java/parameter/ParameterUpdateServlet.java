@@ -82,6 +82,7 @@ public class ParameterUpdateServlet extends HttpServlet {
                     ////////////////////////////////////////
 
                     Parameter parameter = new Parameter();
+                    Format format = new Format();
 
                     try {
                         /////////////////////////////////////////
@@ -93,12 +94,15 @@ public class ParameterUpdateServlet extends HttpServlet {
                         String snumberPromo = request.getParameter("numberPromo");
                         String sbanerCevent = request.getParameter("banerCentralEvent");
                         String sbanerCpromo = request.getParameter("banerCentralPromo");
-                        String sbanerCexchange = request.getParameter("banerCentralExchange");
+                        String sbanerCexchange = request.getParameter("banerCentralExchangeable");
+                        String sbanerCvip = request.getParameter("banerCentralVip");
+                        String sbanerCabout = request.getParameter("banerCentralAboutUs");
                         String sbanerTevent = request.getParameter("banerTopEvent");
                         String sbanerTpromo = request.getParameter("banerTopPromo");
                         String sbanerTmyplace = request.getParameter("banerTopMyPlace");
                         String sbanerTfindplace = request.getParameter("banerTopFindPlace");
                         String sbanerTconfiguration = request.getParameter("banerTopConfiguration");
+                        String sbanerTsocial = request.getParameter("banerTopSocialNetworks");
 
                         boolean error = false;
 
@@ -108,6 +112,7 @@ public class ParameterUpdateServlet extends HttpServlet {
                             error = true;
                         } else {
                             try {
+                                request.setAttribute("waitingCard", swaitingCard);
                                 parameter.setWaitingCard(Integer.parseInt(swaitingCard));
                                 if (parameter.getWaitingCard() < 0) {
                                     request.setAttribute("msgErrorWaitingCard", "Error: Los días no pueden ser negativos.");
@@ -125,6 +130,7 @@ public class ParameterUpdateServlet extends HttpServlet {
                             error = true;
                         } else {
                             try {
+                                request.setAttribute("numberEvent", snumberEvent);
                                 parameter.setNumberEvent(Integer.parseInt(snumberEvent));
                                 if (parameter.getNumberEvent() < 0) {
                                     request.setAttribute("msgErrorNumberEvent", "Error: Los días no pueden ser negativos.");
@@ -142,6 +148,7 @@ public class ParameterUpdateServlet extends HttpServlet {
                             error = true;
                         } else {
                             try {
+                                request.setAttribute("numberPromo", snumberPromo);
                                 parameter.setNumberPromo(Integer.parseInt(snumberPromo));
                                 if (parameter.getNumberPromo() < 0) {
                                     request.setAttribute("msgErrorNumberPromo", "Error: Los días no pueden ser negativos.");
@@ -158,15 +165,26 @@ public class ParameterUpdateServlet extends HttpServlet {
                             request.setAttribute("msgErrorBanerCentralEvent", "Error: Debe ingresar url del baner central de event.");
                             error = true;
                         } else {
-                            parameter.setBanerCentralPromo(sbanerCevent);
+                            request.setAttribute("banerCentralEvent", sbanerCevent);
+                            if (format.validarUrl(sbanerCevent)) {
+                                parameter.setBanerCentralEvent(sbanerCevent);
+                            } else {
+                                request.setAttribute("msgErrorBanerCentralEvent", "Error: Debe ingresar formato correcto para baner central de evento.");
+                                error = true;
+                            }
                         }
-
                         /* comprobar baner central promo*/
                         if (sbanerCpromo == null || sbanerCpromo.trim().equals("")) {
                             request.setAttribute("msgErrorBanerCentralPromo", "Error: Debe ingresar url del baner central de promo.");
                             error = true;
                         } else {
-                            parameter.setBanerCentralPromo(sbanerCpromo);
+                            request.setAttribute("banerCentralPromo", sbanerCpromo);
+                            if (format.validarUrl(sbanerCpromo)) {
+                                parameter.setBanerCentralPromo(sbanerCpromo);
+                            } else {
+                                request.setAttribute("msgErrorBanerCentralPromo", "Error: Debe ingresar formato correcto para baner central de promo.");
+                                error = true;
+                            }
                         }
 
                         /* comprobar baner central exchange*/
@@ -174,7 +192,41 @@ public class ParameterUpdateServlet extends HttpServlet {
                             request.setAttribute("msgErrorBanerCentralExchange", "Error: Debe ingresar url del baner central de productos canjeables.");
                             error = true;
                         } else {
-                            parameter.setBanerCentralExchange(sbanerCexchange);
+                            request.setAttribute("banerCentralExchangeable", sbanerCexchange);
+                            if (format.validarUrl(sbanerCexchange)) {
+                                parameter.setBanerCentralExchangeable(sbanerCexchange);
+                            } else {
+                                request.setAttribute("msgErrorBanerCentralExchange", "Error: Debe ingresar formato correcto para baner central de productos canjeables.");
+                                error = true;
+                            }
+                        }
+
+                        /* comprobar baner central vip*/
+                        if (sbanerCvip == null || sbanerCvip.trim().equals("")) {
+                            request.setAttribute("msgErrorBanerCentralVip", "Error: Debe ingresar url del baner central de vip.");
+                            error = true;
+                        } else {
+                            request.setAttribute("banerCentralVip", sbanerCvip);
+                            if (format.validarUrl(sbanerCvip)) {
+                                parameter.setBanerCentralVip(sbanerCvip);
+                            } else {
+                                request.setAttribute("msgErrorBanerCentralVip", "Error: Debe ingresar formato correcto para baner central de vip.");
+                                error = true;
+                            }
+                        }
+
+                        /* comprobar baner central about us*/
+                        if (sbanerCabout == null || sbanerCabout.trim().equals("")) {
+                            request.setAttribute("msgErrorBanerCentralAboutUs", "Error: Debe ingresar url del baner central de sobre nostros.");
+                            error = true;
+                        } else {
+                            request.setAttribute("banerCentralAboutUs", sbanerCabout);
+                            if (format.validarUrl(sbanerCabout)) {
+                                parameter.setBanerCentralAboutUs(sbanerCabout);
+                            } else {
+                                request.setAttribute("msgErrorBanerCentralAboutUs", "Error: Debe ingresar formato correcto para baner central de sobre nostros.");
+                                error = true;
+                            }
                         }
 
                         /* comprobar baner top event*/
@@ -182,7 +234,13 @@ public class ParameterUpdateServlet extends HttpServlet {
                             request.setAttribute("msgErrorBanerTopEvent", "Error: Debe ingresar url del baner top para evento.");
                             error = true;
                         } else {
-                            parameter.setBanerTopEvent(sbanerTevent);
+                            request.setAttribute("banerTopEvent", sbanerTevent);
+                            if (format.validarUrl(sbanerTevent)) {
+                                parameter.setBanerTopEvent(sbanerTevent);
+                            } else {
+                                request.setAttribute("msgErrorBanerTopEvent", "Error: Debe ingresar formato correcto para baner de cabecera de evento.");
+                                error = true;
+                            }
                         }
 
                         /* comprobar baner top promo*/
@@ -190,22 +248,40 @@ public class ParameterUpdateServlet extends HttpServlet {
                             request.setAttribute("msgErrorBanerTopPromo", "Error: Debe ingresar url del baner top para promo.");
                             error = true;
                         } else {
-                            parameter.setBanerTopPromo(sbanerTpromo);
+                            request.setAttribute("banerTopPromo", sbanerTpromo);
+                            if (format.validarUrl(sbanerTpromo)) {
+                                parameter.setBanerTopPromo(sbanerTpromo);
+                            } else {
+                                request.setAttribute("msgErrorBanerTopPromo", "Error: Debe ingresar formato correcto para baner de cabecera de promo.");
+                                error = true;
+                            }
                         }
 
                         /* comprobar baner top my place*/
                         if (sbanerTmyplace == null || sbanerTmyplace.trim().equals("")) {
-                            request.setAttribute("msgErrorBanerTopMyPlace", "Error: Debe ingresar url del baner top para mis lugares.");
+                            request.setAttribute("msgErrorBanerTopMyPlace", "Error: Debe ingresar url del baner cabecera para mis lugares.");
                             error = true;
                         } else {
-                            parameter.setBanerTopMyPlace(sbanerTmyplace);
+                            request.setAttribute("banerTopMyPlace", sbanerTmyplace);
+                            if (format.validarUrl(sbanerTmyplace)) {
+                                parameter.setBanerTopMyPlace(sbanerTmyplace);
+                            } else {
+                                request.setAttribute("msgErrorBanerTopMyPlace", "Error: Debe ingresar formato correcto para baner de cabecera de mis lugares.");
+                                error = true;
+                            }
 
                         }/* comprobar baner top find place*/
                         if (sbanerTfindplace == null || sbanerTfindplace.trim().equals("")) {
                             request.setAttribute("msgErrorBanerTopFindPlace", "Error: Debe ingresar url del baner top para buscar lugares.");
                             error = true;
                         } else {
-                            parameter.setBanerTopFindPlace(sbanerTfindplace);
+                            request.setAttribute("banerTopFindPlace", sbanerTfindplace);
+                            if (format.validarUrl(sbanerTfindplace)) {
+                                parameter.setBanerTopFindPlace(sbanerTfindplace);
+                            } else {
+                                request.setAttribute("msgErrorBanerTopFindPlace", "Error: Debe ingresar formato correcto para baner de cabecera de buscar lugares.");
+                                error = true;
+                            }
 
                         }
 
@@ -214,19 +290,44 @@ public class ParameterUpdateServlet extends HttpServlet {
                             request.setAttribute("msgErrorBanerTopConfiguration", "Error: Debe ingresar url del baner top para configuración.");
                             error = true;
                         } else {
-                            parameter.setBanerTopConfiguration(sbanerTconfiguration);
+                            request.setAttribute("banerTopConfiguration", sbanerTconfiguration);
+                            if (format.validarUrl(sbanerTconfiguration)) {
+                                parameter.setBanerTopConfiguration(sbanerTconfiguration);
+                            } else {
+                                request.setAttribute("msgErrorBanerTopConfiguration", "Error: Debe ingresar formato correcto para baner de cabecera de configuración.");
+                                error = true;
+                            }
+                        }
 
+                        /* comprobar baner top configuration*/
+                        if (sbanerTsocial == null || sbanerTsocial.trim().equals("")) {
+                            request.setAttribute("msgErrorBanerTopSocialNetworks", "Error: Debe ingresar url del baner top para redes sociales.");
+                            error = true;
+                        } else {
+                            request.setAttribute("banerTopSocialNetworks", sbanerTsocial);
+                            if (format.validarUrl(sbanerTsocial)) {
+                                parameter.setBanerTopSocialNetworks(sbanerTsocial);
+                            } else {
+                                request.setAttribute("msgErrorBanerTopSocialNetworks", "Error: Debe ingresar formato correcto para baner de cabecera de redes sociales.");
+                                error = true;
+                            }
                         }
 
                         if (!error) {
-                            parameterDAO.update(parameter);
-                            request.setAttribute("msgOk", "Registro actualizado exitosamente! ");
+                            try {
+                                parameter.setIdParameter(1);
+                                parameterDAO.update(parameter);
+                                request.setAttribute("msgOk", "Registro actualizado exitosamente! ");
+                            } catch (Exception ex) {
+                                request.setAttribute("msgErrorFound", "Error: no existe el evento o ha sido eliminado mientras se actualizaba.");
+
+                            }
                         }
 
                         /////////////////////////////////////////
                         // ESTABLECER ATRIBUTOS AL REQUEST
                         /////////////////////////////////////////
-                        request.setAttribute("parameter", parameter);
+
 
                     } catch (Exception parameterException) {
                     } finally {

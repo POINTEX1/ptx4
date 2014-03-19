@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Actualizar ciudad</title>
+        <title>POINTEX</title>
 
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.css" rel="stylesheet">
@@ -30,91 +30,117 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
+
     </head>
-</head>
 
-<body>
+    <body>
 
-    <div id="wrapper">
+        <div id="wrapper">
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <c:import var="menu" url="/mainMenu.jsp" />
-        <c:out value="${menu}" escapeXml="false" />
-        <!-- /.navbar-collapse -->
+            <!-- MAIN MENU -->
+            <c:import var="menu" url="/mainMenu.jsp" />
+            <c:out value="${menu}" escapeXml="false" />
+            <!-- /MAIN MENU -->
 
-        <div id="page-wrapper">
+            <div id="page-wrapper">
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>Mantenedor <small> Ciudades</small></h1>
-                    <ol class="breadcrumb">
-                        <li><a href="CityMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
-                        <li class="active"><i class="fa fa-edit"></i> Actualizar</li>
-                    </ol>
-                    <c:if test="${msgOk != null}" >
-                        <div class="alert alert-dismissable alert-success">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgOk}" /></strong>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorId != null}" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorId}" /></strong></br>
-                        </div>
-                    </c:if> 
-                    <c:if test="${msgErrorNameCity != null}" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorNameCity}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorDup != null}" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorDup}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorFound != null}" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorFound}" /></strong></br>
-                        </div>
-                    </c:if>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <!-- TITULO MANTENEDOR -->
+                        <h1>Mantenedor <small> Ciudades</small></h1>
+                        <ol class="breadcrumb">
+                            <li><a href="CityMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
+                            <li class="active"><i class="fa fa-edit"></i> Actualizar</li>
+                        </ol>
+                        <!-- /TITULO MANTENEDOR -->
 
-                </div>
-                <div class="col-lg-4">
-                    <form role="form" action="CityUpdateServlet" method="POST" name="formUpdate">
-                        <div class="form-group">
-                            <label for="disabledSelect">Id Ciudad</label>
-                            <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${city.idCity}" />" disabled>
-                            <input type="hidden" name="idCity" value="<c:out value="${city.idCity}" />"/>
-                        </div>
-                        <c:if test="${msgErrorDup == null }" >
+                        <!-- MENSAJE DE EXITO -->
+                        <c:if test="${msgOk != null}" >
+                            <div class="alert alert-dismissable alert-success">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgOk}" /></strong>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE DE EXITO -->
+
+                        <!-- MENSAJE DE ERROR DE ID CIUDAD -->
+                        <c:if test="${msgErrorId != null}" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorId}" /></strong></br>
+                            </div>
+                        </c:if> 
+                        <!-- /MENSAJE DE ERROR DE ID CIUDAD -->
+
+                        <!-- MENSAJE DE ERROR DE NOMBRE DE CIUDAD -->
+                        <c:if test="${msgErrorNameCity != null}" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorNameCity}" /></strong></br>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE DE ERROR DE NOMBRE DE CIUDAD -->
+
+                        <!-- MENSAJE DE ERROR DE REGISTRO DUPLICADO -->
+                        <c:if test="${msgErrorDup != null}" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorDup}" /></strong></br>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE DE ERROR DE NOMBRE DE CIUDAD -->
+
+                        <!-- MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
+                        <c:if test="${msgErrorFound != null}" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorFound}" /></strong></br>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE DE ERROR DE NOMBRE DE CIUDAD -->
+                    </div>
+                    <div class="col-lg-4">
+                        <!-- FORMULARIO -->
+                        <form role="form" action="CityUpdateServlet" method="POST" name="formUpdate">
+                            <!-- ID CIUDAD -->
                             <div class="form-group">
-                                <label>Nombre Ciudad</label>
-                                <input class="form-control" required="true" maxlength="50" name="nameCity" value="<c:out value="${city.nameCity}" />">
+                                <label for="disabledSelect">ID Ciudad</label>
+                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${city.idCity}" />" disabled>
+                                <input type="hidden" name="idCity" value="<c:out value="${city.idCity}" />"/>
                             </div>
-                        </c:if>
-                        <c:if test="${msgErrorDup != null }" >
-                            <div class="form-group has-error">
-                                <label class="control-label" for="inputError">Nombre Ciudad</label>
-                                <input class="form-control" required="true" maxlength="50" name="nameCity" id="inputError" value="<c:out value="${city.nameCity}" />">
-                            </div>
-                        </c:if>
-                        <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>
-                    </form>
+                            <!-- /ID CIUDAD -->
 
-                </div>
-            </div><!-- /.row -->
-            <div class="row">                  
-                <div class="col-lg-12">                        
+                            <!-- NOMBRE CIUDAD -->
+                            <c:if test="${msgErrorDup == null }" >
+                                <div class="form-group">
+                                    <label>Nombre Ciudad</label>
+                                    <input class="form-control" required="true" maxlength="50" name="nameCity" value="<c:out value="${city.nameCity}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorDup != null }" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Nombre Ciudad</label>
+                                    <input class="form-control" required="true" maxlength="50" name="nameCity" id="inputError" value="<c:out value="${city.nameCity}" />">
+                                </div>
+                            </c:if>
+                            <!-- /NOMBRE CIUDAD -->
+                            <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>
+                        </form>
+                        <!-- FORMULARIO -->
+                    </div>
+                </div><!-- /.row -->
 
-                </div>
-            </div><!-- /.row -->
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>                                
+                <p>&nbsp;</p>
+                
+                <!-- FOOTER -->
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
 
-        </div><!-- /#page-wrapper -->
+            </div><!-- /#page-wrapper -->
 
-    </div><!-- /#wrapper -->
-</body>
+        </div><!-- /#wrapper -->
+    </body>
 </html>

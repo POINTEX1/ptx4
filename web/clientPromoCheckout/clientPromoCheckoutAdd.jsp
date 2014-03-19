@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Promociones Por Cliente</title>
+        <title>POINTEX</title>
 
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.css" rel="stylesheet">
@@ -45,63 +45,87 @@
 
                 <div class="row">
                     <div class="col-lg-12">
+                        <!-- TITULO DE MANTENEDOR -->
                         <h1>Mantenedor <small> Promociones compradas por Cliente</small></h1>
                         <ol class="breadcrumb">
                             <li><a href="ClientPromoCheckoutMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                             <li class="active"><i class="fa fa-edit"></i> Agregar</li>
                         </ol>
+                        <!-- /TITULO DE MANTENEDOR -->
+
+                        <!-- MENSAJE INFORMATIVO -->
                         <c:if test="${msg!= null }" >
                             <div class="alert alert-dismissable alert-info">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msg}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE INFORMATIVO -->
+
+                        <!-- MESAJE DE ERROR DE PROMOCION -->
                         <c:if test="${msgErrorPromo != null }" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorPromo}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MESAJE DE ERROR DE PROMOCION -->
+
+                        <!-- MENSAJE DE ERROR DE RUT -->
                         <c:if test="${msgErrorRut != null }" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorRut}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR DE RUT -->
+
+                        <!-- MENSAJE DE ERROR DE CLIENTE NO ENCONTRADO -->
                         <c:if test="${msgErrorUserFound != null }" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorUserFound}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
+
+                        <!-- MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
                         <c:if test="${msgErrorFound != null }" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorFound}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
+
+                        <!-- MENSAJE DE EXITO -->
                         <c:if test="${msgOk != null}" >
                             <div class="alert alert-dismissable alert-success">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgOk}" /></strong>
                             </div>
                         </c:if>
-
+                        <!-- /MENSAJE DE EXITO -->
                     </div>
                     <div class="col-lg-4">
+                        <!-- FORMULARIO -->
                         <form role="form" action="ClientPromoCheckoutAddServlet" method="POST" name="formAdd">                             
+                            <!-- ID PROMO -->
                             <c:if test="${msgErrorPromo == null }" >
                                 <div class="form-group">
                                     <label>ID Promo</label>
                                     <input type="number" class="form-control" required="true" min="1" name="idPromo" value="<c:out value="${idPromo}" />">
                                 </div>
-                            </c:if>
+                            </c:if>                                                                                   
                             <c:if test="${msgErrorPromo != null }" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">ID Promo</label>
                                     <input type="number" class="form-control" required="true" min="1" name="idPromo" id="inputError" value="<c:out value="${idPromo}" />">
                                 </div>
                             </c:if>
+                            <!-- /ID PROMO -->
+
+                            <!-- RUT -->
                             <c:if test="${msgErrorRut == null}">
                                 <div class="form-group">
                                     <label>RUT</label>
@@ -114,11 +138,25 @@
                                     <input class="form-control" required="true" maxlength="12" name="rut" id="inputError" value="<c:out value="${rut}" />">
                                 </div>
                             </c:if>
+                            <!-- /RUT -->
+
+                            <!-- BOTONES -->
                             <button type="submit" name="add" class="btn btn-default"><strong><font size="1">AGREGAR</font></strong></button>
                             <button type="reset" class="btn btn-default"><strong><font size="1">RESET</font></strong></button> 
+                            <!-- /BOTONES -->
                         </form>
+                        <!-- FORMULARIO -->
                     </div>
-                </div><!-- /.row -->            
+                </div><!-- /.row -->    
+
+                </br>
+                <!-- FOOTER -->
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>
+                
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
 
             </div><!-- /#page-wrapper -->
 
