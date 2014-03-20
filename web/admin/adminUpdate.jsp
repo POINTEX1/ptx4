@@ -14,7 +14,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Admin</title>
+        <title>POINTEX</title>
 
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.css" rel="stylesheet">
@@ -162,7 +162,7 @@
                                     <input type="email" required="true" name="email" maxlength="50" class="form-control" placeholder="Email" value="<c:out value="${email}" />" >
                                 </div>
                             </c:if>
-                            <c:if test="${msgErrorEmail == null}">
+                            <c:if test="${msgErrorEmail != null}">
                                 <div class="form-group input-group has-error">
                                     <span class="input-group-addon" for="inputError">@</span>
                                     <input type="email" required="true" name="email"  id="inputError" maxlength="50" class="form-control" placeholder="Email" value="<c:out value="${email}" />" >
