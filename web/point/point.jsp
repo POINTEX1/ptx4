@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Puntos</title>
+        <title>POINTEX</title>
 
         <!-- imperio css -->
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
@@ -66,48 +66,23 @@
 
                 <div class="row">
                     <div class="col-lg-12">
+                        <!-- TITULO MANTENEDOR -->
                         <h1>Mantenedor <small> Puntos</small></h1>
                         <ol class="breadcrumb">
                             <li class="active"><a href="PointMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                         </ol>
-                        <c:if test="${msg != null}" >
-                            <div class="alert alert-info alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <td><strong><c:out value="${msg}" /></strong></td>
-                            </div>  
-                        </c:if>
-                        <c:if test="${msgOk != null}" >
-                            <div class="alert alert-dismissable alert-success">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgOk}" /></strong>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgDel != null}" >
-                            <div class="alert alert-dismissable alert-warning">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgDel}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgErrorFound != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorFound}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgErrorReference != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorReference}" /></strong></br>
-                            </div>
-                        </c:if>
+                        <!-- /TITULO MANTENEDOR -->
+                        
+                        <!-- MENSAJES -->
+                        <c:import var="dataTableMsg" url="/dataTableMsg.jsp" />
+                        <c:out value="${dataTableMsg}" escapeXml="false" />
+                        <!-- /MENSAJES --> 
                     </div>
 
                 </div><!-- /.row -->
                 <div class="row">                  
                     <div class="col-lg-12"> 
-
                         <div class="table-responsive">
-
                             <form action="PointMainServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
@@ -122,7 +97,7 @@
                                                     <thead>
                                                         <tr>
                                                             <th><input class="check_all" type="checkbox" /></th>
-                                                            <th>Plaza <i class="fa fa-sort"></i></th>
+                                                            <th>Lugar <i class="fa fa-sort"></i></th>
                                                             <th>Ciudad <i class="fa fa-sort"></i></th>
                                                             <th>Rut <i class="fa fa-sort"></i></th>
                                                             <th>Nombres <i class="fa fa-sort"></i></th>
@@ -156,7 +131,7 @@
                                                     <tfoot>
                                                         <tr>
                                                             <th><button class="btn btn-danger btn-mini delete" name="btnDelCol" type="submit"><font size="1">ELIMINAR</font></button></th>
-                                                            <th>Plaza </th>
+                                                            <th>Lugar </th>
                                                             <th>Ciudad </th>
                                                             <th>Rut </th>
                                                             <th>Nombres </th>

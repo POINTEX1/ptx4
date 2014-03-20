@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL</title>
+        <title>POINTEX</title>
 
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.css" rel="stylesheet">
@@ -55,31 +55,44 @@
 
                 <div class="row">
                     <div class="col-lg-12">
+                        <!-- TITUTLO MANTENEDOR -->
                         <h1>Mantenedor <small> Solicitud Tarjeta</small></h1>
                         <ol class="breadcrumb">
                             <li><a href="OrderCardMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                             <li class="active"><i class="fa fa-edit"></i> Actualizar</li>
                         </ol>
+                        <!-- /TITUTLO MANTENEDOR -->
+
+                        <!-- MENSAJE DE EXITO -->
                         <c:if test="${msgOk != null}" >
                             <div class="alert alert-dismissable alert-success">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgOk}" /></strong>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE EXITO -->
+
+                        <!-- MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
                         <c:if test="${msgErrorFound != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorFound}" /></strong></br>
                             </div>
-                        </c:if>                                                                                                   
+                        </c:if> 
+                        <!-- /MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
                     </div>
                     <div class="col-lg-4">
+                        <!-- FORMULARIO --->
                         <form role="form" action="OrderCardUpdateServlet" method="POST" name="formUpdate">
+                            <!-- ID ORDER CARD -->
                             <div class="form-group">
                                 <label for="disabledSelect">ID</label>
                                 <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${orderCard.idOrder}" />" disabled>
                                 <input type="hidden" name="idOrder" value="<c:out value="${orderCard.idOrder}" />"/>
-                            </div>                                                                        
+                            </div>                
+                            <!-- /ID ORDER CARD -->
+
+                            <!-- TIPO TARJETA -->
                             <div class="form-group">
                                 <label>Tipo Tarjeta</label>
                                 <select class="form-control" name="cardType">
@@ -88,6 +101,9 @@
                                     <option value="3" <c:if test="${orderCard.cardType == 3}" >checked</c:if>>GOLDEN</option>                              
                                     </select>
                                 </div>
+                                <!-- /TIPO TARJETA -->
+
+                                <!-- SOLICITUD TARJETA -->
                                 <div class="form-group">
                                     <label>Solicitud de Tarjeta</label>
                                     <select class="form-control" id="orderCardRequest" name="orderCardRequest" onclick="changeDisplay()">
@@ -96,14 +112,25 @@
                                     <option value="2" <c:if test="${orderCard.request == 2}" >selected</c:if>>Rechazada</option>                                                                                             
                                     </select>
                                 </div>
+                                <!-- /SOLICITUD TARJETA -->
+
+                                <!-- RAZON RECHAZO -->
                                 <div class="form-group" id="reason">
                                     <label>Razón de rechazo</label>
                                     <textarea class="form-control" name="reason" maxlength="255" rows="4"><c:out value="${orderCard.reason}" /></textarea>
-                            </div>   
+                            </div>
+                            <!-- /RAZON RECHAZO -->
                             <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>
                         </form>
+                        <!-- /FORMULARIO --->
                     </div>
-                </div><!-- /.row -->           
+                </div><!-- /.row --> 
+
+                </br>
+                <!-- FOOTER -->
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
 
             </div><!-- /#page-wrapper -->
 

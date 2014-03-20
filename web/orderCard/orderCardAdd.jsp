@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL</title>
+        <title>POINTEX</title>
 
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.css" rel="stylesheet">
@@ -45,44 +45,63 @@
 
                 <div class="row">
                     <div class="col-lg-12">
+                        <!-- TITULO MANTENEDOR -->
                         <h1>Mantenedor <small> Solicitud Tarjeta</small></h1>
                         <ol class="breadcrumb">
                             <li><a href="OrderCardMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                             <li class="active"><i class="fa fa-edit"></i> Agregar</li>
                         </ol>
+                        <!-- /TITULO MANTENEDOR -->
+
+                        <!-- MENSAJE INFORMATIVO -->
                         <c:if test="${msg != null}" >
                             <div class="alert alert-info alert-dismissable">
                                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                 <td><strong><c:out value="${msg}" /></strong></td>
                             </div> 
                         </c:if>
+                        <!-- /MENSAJE INFORMATIVO -->
+
+                        <!-- MENSAJE DE EXITO --->
                         <c:if test="${msgOk != null}" >
                             <div class="alert alert-dismissable alert-success">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgOk}" /></strong>
                             </div>
-                        </c:if>                                      
+                        </c:if>    
+                        <!-- /MENSAJE DE EXITO --->
+
+                        <!-- MENSAJE DE ERROR RUT -->
                         <c:if test="${msgErrorRut != null }" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorRut}" /></strong></br>
                             </div>
-                        </c:if>   
+                        </c:if>  
+                        <!-- MENSAJE DE ERROR RUT -->
+
+                        <!-- MENSAJE DE ERROR DE INSERCION -->
                         <c:if test="${msgErrorIns != null }" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorIns}" /></strong></br>
                             </div>
-                        </c:if> 
+                        </c:if>
+                        <!-- /MENSAJE DE ERROR DE INSERCION -->
+
+                        <!-- MENSAJE DE ERROR DE EXISTENCIA -->
                         <c:if test="${msgErrorExist != null }" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorExist}" /></strong></br>
                             </div>
                         </c:if> 
+                        <!-- /MENSAJE DE ERROR DE EXISTENCIA -->
                     </div>
                     <div class="col-lg-4">
+                        <!-- FORMULARIO -->
                         <form role="form" action="OrderCardAddServlet" method="POST" name="formAdd"> 
+                            <!-- RUT -->
                             <c:if test="${msgErrorRut == null}" >
                                 <div class="form-group">
                                     <label>RUT</label>
@@ -94,7 +113,10 @@
                                     <label class="control-label" for="inputError">RUT</label>
                                     <input class="form-control" required="true" maxlength="12" name="rut" id="inputError" value="<c:out value="${rut}" />">
                                 </div>
-                            </c:if>                                                
+                            </c:if>  
+                            <!-- /RUT -->
+
+                            <!-- TIPO TARJETA -->
                             <div class="form-group">
                                 <label>Tipo Tarjeta</label>
                                 <select class="form-control" name="cardType">
@@ -102,12 +124,23 @@
                                     <option value="2" <c:if test="${orderCard.cardType == 2}" >checked</c:if>>SILVER</option>
                                     <option value="3" <c:if test="${orderCard.cardType == 3}" >checked</c:if>>GOLDEN</option>                              
                                     </select>
-                                </div>                                
-                            <button type="submit" name="add" class="btn btn-default"><strong><font size="1">AGREGAR</font></strong></button>
-                            <button type="reset" class="btn btn-default"><strong><font size="1">RESET</font></strong></button> 
-                        </form>
-                    </div>
-                </div><!-- /.row -->        
+                                </div> 
+                                <!-- TIPO TARJETA -->
+
+                                <!-- BOTONES -->
+                                <button type="submit" name="add" class="btn btn-default"><strong><font size="1">AGREGAR</font></strong></button>
+                                <button type="reset" class="btn btn-default"><strong><font size="1">RESET</font></strong></button> 
+                                <!-- /BOTONES -->
+                            </form>
+                            <!-- FORMULARIO -->
+                        </div>
+                    </div><!-- /.row -->  
+
+                    </br>
+                    <!-- FOOTER -->
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
 
             </div><!-- /#page-wrapper -->
 

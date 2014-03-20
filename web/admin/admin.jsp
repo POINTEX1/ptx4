@@ -66,48 +66,20 @@
             <div id="page-wrapper">
                 <div class="row">
                     <div class="col-lg-12">
+                        <!-- TITULO MANTENEDOR -->
                         <h1>Mantenedor <small> Admin</small></h1>
                         <ol class="breadcrumb">
                             <li class="active"><a href="AdminMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                         </ol>
-                        <!-- MENSAJE INFORMATIVO -->
-                        <c:if test="${msg != null}" >
-                            <div class="alert alert-info alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <td><strong><c:out value="${msg}" /></strong></td>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE INFORMATIVO -->
+                        <!-- /TITULO MANTENEDOR -->
                         
-                        <!-- MENSAJE DE EXITO -->
-                        <c:if test="${msgOk != null}" >
-                            <div class="alert alert-dismissable alert-success">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgOk}" /></strong>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE EXITO -->
-                        
-                        <!-- MENSAJE DE ELIMINACION -->
-                        <c:if test="${msgDel != null}" >
-                            <div class="alert alert-dismissable alert-warning">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgDel}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ELIMINACION -->
-                        
-                        <!-- MENSAJE DE ERROR ELIMINACION -->
-                        <c:if test="${msgErrorNoDel != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorNoDel}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR ELIMINACION -->
+                        <!-- MENSAJES -->
+                        <c:import var="dataTableMsg" url="/dataTableMsg.jsp" />
+                        <c:out value="${dataTableMsg}" escapeXml="false" />
+                        <!-- /MENSAJES -->                        
                     </div>
                 </div><!-- /.row -->
-                
+
                 <div class="row">                  
                     <div class="col-lg-12"> 
                         <div class="table-responsive">
@@ -140,7 +112,7 @@
                                                         </tr>
                                                     </thead>
                                                     <!-- /HEAD DEL DATATABLE -->
-                                                    
+
                                                     <!-- BODY DEL DATATABLE -->
                                                     <tbody>
                                                         <c:forEach var="list" items="${list}"> 
@@ -159,14 +131,15 @@
                                                                 </td>
                                                                 <td class="center">
                                                                     <c:if test="${list.idAdmin != idUser}" >                                                                           
-                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('AdminMainServlet?btnDelRow=x&id=<c:out value="${list.idAdmin}"/>'); return false;"><strong><font size="1">ELIMINAR</font></strong></button>
-                                                                    </c:if> 
+                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('AdminMainServlet?btnDelRow=x&id=<c:out value="${list.idAdmin}"/>');
+                return false;"><strong><font size="1">ELIMINAR</font></strong></button>
+                                                                            </c:if> 
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>                                                                              		                                    		
                                                     </tbody>
                                                     <!-- /BODY DEL DATATABLE -->
-                                                    
+
                                                     <!-- FOOT DEL DATATABLE -->
                                                     <tfoot>
                                                         <tr>
@@ -190,7 +163,7 @@
                         </div>
                     </div>
                 </div><!-- /.row -->
-                
+
                 <!-- FOOTER -->
                 <p>&nbsp;</p>
                 <c:import var="footer" url="/footer.jsp" />

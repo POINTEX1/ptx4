@@ -96,7 +96,7 @@ public class PlaceCategoryAddServlet extends HttpServlet {
                         boolean error = false;
 
                         if (btnAdd == null) {
-                            request.setAttribute("msg", "Ingrese una promoción o regalo para un cliente.");
+                            request.setAttribute("msg", "Ingrese una categoría para un lugar.");
                         } else {
                             /* comprobar id place */
                             if (sidPlace == null || sidPlace.trim().equals("")) {

@@ -14,7 +14,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL</title>
+        <title>POINTEX</title>
 
         <!-- imperio css -->
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
@@ -68,46 +68,22 @@
 
                 <div class="row">
                     <div class="col-lg-12">
+                        <!-- TITULO MANTENEDOR -->
                         <h1>Mantenedor <small> Universidades</small></h1>
                         <ol class="breadcrumb">
                             <li class="active"><a href="UniversityMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                         </ol>
-                        <c:if test="${msg != null}" >
-                            <div class="alert alert-info alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <td><strong><c:out value="${msg}" /></strong></td>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgOk != null}" >
-                            <div class="alert alert-dismissable alert-success">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgOk}" /></strong>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgErrorFound != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorFound}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgErrorReference != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorReference}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgDel != null}" >
-                            <div class="alert alert-dismissable alert-warning">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgDel}" /></strong></br>
-                            </div>
-                        </c:if>
+                        <!-- /TITULO MANTENEDOR -->
+                        
+                        <!-- MENSAJES -->
+                        <c:import var="dataTableMsg" url="/dataTableMsg.jsp" />
+                        <c:out value="${dataTableMsg}" escapeXml="false" />
+                        <!-- /MENSAJES --> 
                     </div>
                 </div><!-- /.row -->
 
                 <div class="row">                  
                     <div class="col-lg-12"> 
-
                         <div class="table-responsive">
 
                             <form action="UniversityMainServlet" method="POST" name="form">

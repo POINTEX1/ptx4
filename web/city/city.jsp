@@ -75,50 +75,11 @@
                         </ol>
                         <!-- /TITULO MANTENEDOR -->
 
-                        <!-- MENSAJE INFORMATIVO -->
-                        <c:if test="${msg != null}" >
-                            <div class="alert alert-info alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <td><strong><c:out value="${msg}" /></strong></td>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE INFORMATIVO -->
+                        <!-- MENSAJES -->
+                        <c:import var="dataTableMsg" url="/dataTableMsg.jsp" />
+                        <c:out value="${dataTableMsg}" escapeXml="false" />
+                        <!-- /MENSAJES --> 
 
-                        <!-- MENSAJE DE EXITO -->
-                        <c:if test="${msgOk != null}" >
-                            <div class="alert alert-dismissable alert-success">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgOk}" /></strong>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE EXITO -->
-
-                        <!-- MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
-                        <c:if test="${msgErrorFound != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorFound}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
-
-                        <!-- MENSAJE DE ERROR DE REFERENCIA -->
-                        <c:if test="${msgErrorReference != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorReference}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE REFERENCIA -->
-
-                        <!-- MENSAJE DE ELIMINACION -->
-                        <c:if test="${msgDel != null}" >
-                            <div class="alert alert-dismissable alert-warning">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgDel}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ELIMINACION -->
                     </div>
                 </div><!-- /.row -->
                 <div class="row">                  

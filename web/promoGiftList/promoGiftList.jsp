@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Promociones Por Cliente</title>
+        <title>POINTEX</title>
 
         <!-- imperio css -->
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
@@ -49,7 +49,7 @@
                 }
             }
         </script>
-        
+
     </head>
 
     <body>
@@ -65,50 +65,21 @@
 
                 <div class="row">
                     <div class="col-lg-12">
+                        <!-- TITULO MANTENEDOR -->
                         <h1>Mantenedor <small> Promociones por Cliente</small></h1>
                         <ol class="breadcrumb">
                             <li class="active"><a href="ClientPromoGiftMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                         </ol>
-                        <c:if test="${msg != null}" >
-                            <div class="alert alert-info alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <td><strong><c:out value="${msg}" /></strong></td>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgOk != null}" >
-                            <div class="alert alert-info alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <td><c:out value="${msgOk}" /></td>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgDel != null}" >
-                            <div class="alert alert-dismissable alert-warning">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgDel}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgErrorRut != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorRut}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgErrorFound != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorFound}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgErrorReference != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorReference}" /></strong></br>
-                            </div>
-                        </c:if>
+                        <!-- /TITULO MANTENEDOR -->
+
+                        <!-- MENSAJES -->
+                        <c:import var="dataTableMsg" url="/dataTableMsg.jsp" />
+                        <c:out value="${dataTableMsg}" escapeXml="false" />
+                        <!-- /MENSAJES --> 
 
                     </div>
-
                 </div><!-- /.row -->
+                
                 <div class="row">                  
                     <div class="col-lg-12">  
                         <div class="table-responsive">
@@ -145,7 +116,8 @@
                                                                 <td class="center"><c:out value="${list.rut}" />-<c:out value="${list.dv}" /></td>                                                                
                                                                 <td class="center"><c:out value="${list.points}" /></td>                                                                
                                                                 <td class="center">                                                                  
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('ClientPromoGiftMainServlet?btnDelRow=x&idPromo=<c:out value="${list.idPromo}" />&rut=<c:out value="${list.rut}" />'); return false;"><strong><font size="1">ELIMINAR</font></strong></button>
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('ClientPromoGiftMainServlet?btnDelRow=x&idPromo=<c:out value="${list.idPromo}" />&rut=<c:out value="${list.rut}" />');
+                return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>

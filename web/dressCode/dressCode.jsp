@@ -75,51 +75,12 @@
                             <li class="active"><a href="DressCodeMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                         </ol>
                         <!-- /TITULO MANTENEDOR -->
-                        
-                        <!-- MENSAJE INFORMATIVO -->
-                        <c:if test="${msg != null}" >
-                            <div class="alert alert-info alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <td><strong><c:out value="${msg}" /></strong></td>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE INFORMATIVO -->
-                        
-                        <!-- MENSAJE DE EXITO -->
-                        <c:if test="${msgOk != null}" >
-                            <div class="alert alert-dismissable alert-success">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgOk}" /></strong>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE EXITO -->
-                        
-                        <!-- MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
-                        <c:if test="${msgErrorFound != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorFound}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
-                        
-                        <!-- MENSAJE DE ERROR DE REFERENCIA -->
-                        <c:if test="${msgErrorReference != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorReference}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE REFERENCIA -->
-                        
-                        <!-- MENSAJE DE ELIMINACION -->
-                        <c:if test="${msgDel != null}" >
-                            <div class="alert alert-dismissable alert-warning">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgDel}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ELIMINACION -->
+
+                        <!-- MENSAJES -->
+                        <c:import var="dataTableMsg" url="/dataTableMsg.jsp" />
+                        <c:out value="${dataTableMsg}" escapeXml="false" />
+                        <!-- /MENSAJES --> 
+
                     </div>
                 </div><!-- /.row -->
                 <div class="row">                  
@@ -150,7 +111,7 @@
                                                         </tr>
                                                     </thead>
                                                     <!-- /HEADER DATATABLE -->
-                                                    
+
                                                     <!-- BODY DATATABLE -->
                                                     <tbody>
 
@@ -163,13 +124,14 @@
                                                                     <a href="DressCodeGetServlet?idDressCode=<c:out value="${list.idDressCode}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">ACTUALIZAR</font></strong></button></a>                                                                
                                                                 </td>
                                                                 <td class="center">                                                                    
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('DressCodeMainServlet?btnDelRow=x&idDressCode=<c:out value="${list.idDressCode}" />'); return false;"><strong><font size="1">ELIMINAR</font></strong></button>
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('DressCodeMainServlet?btnDelRow=x&idDressCode=<c:out value="${list.idDressCode}" />');
+                return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>                                                                                		                                    		
                                                     </tbody>
                                                     <!-- /BODY DATATABLE -->
-                                                    
+
                                                     <!-- FOOTER DATATABLE -->
                                                     <tfoot>
                                                         <tr>
@@ -195,7 +157,7 @@
                 <!-- FOOTER -->
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>
-                
+
                 <c:import var="footer" url="/footer.jsp" />
                 <c:out value="${footer}" escapeXml="false" />
                 <!-- /FOOTER -->

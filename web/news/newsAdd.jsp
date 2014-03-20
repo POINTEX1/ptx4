@@ -12,7 +12,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="">
         <meta name="author" content="">
-        <title>OTL - Nueva Noticias</title>
+        <title>POINTEX</title>
 
         <!-- imperio css -->
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
@@ -47,80 +47,114 @@
 
                 <div class="row">
                     <div class="col-lg-12">
+                        <!-- TITULO MANTENEDOR -->
                         <h1>Mantenedor <small> Noticias</small></h1>
                         <ol class="breadcrumb">
                             <li><a href="NewsMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                             <li class="active"><i class="fa fa-edit"></i> Agregar</li>
                         </ol>
+                        <!-- /TITULO MANTENEDOR -->
+
+                        <!-- MENSAJE INFORMATIVO -->
                         <c:if test="${msg != null }" >
                             <div class="alert alert-dismissable alert-info">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msg}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE INFORMATIVO -->
+
+                        <!-- MENSAJE DE ERROR EN TITULO -->
                         <c:if test="${msgErrorTittle != null }" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorTittle}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR EN TITULO -->
+
+                        <!-- MENSAJE DE ERROR FECHA -->
                         <c:if test="${msgErrorDate != null }" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorDate}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR FECHA -->
+
+                        <!-- MENSAJE DE ERROR DETALLES -->
                         <c:if test="${msgErrorDetails != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorDetails}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR DETALLES -->
+
+                        <!-- MENSAJE DE ERROR IMAGE -->
                         <c:if test="${msgErrorUrlImage != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorFirstName}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR IMAGE -->
+
+                        <!-- MENSAJE DE EXITO -->
                         <c:if test="${msgAdd != null}" >
                             <div class="alert alert-dismissable alert-success">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgAdd}" /></strong>
                             </div>
-                        </c:if>     
+                        </c:if>
+                        <!-- /MENSAJE DE EXITO -->
+
+                        <!-- MENSAJE DE EXITO -->
                         <c:if test="${msgOk != null}" >
                             <div class="alert alert-dismissable alert-success">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgOk}" /></strong>
                             </div>
                         </c:if>   
+                        <!-- /MENSAJE DE EXITO -->
+
+                        <!-- MENSAJE DE ERROR TIPO DE NOTICIA -->
                         <c:if test="${msgErrorTypeNews != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorTypeNews}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR TIPO DE NOTICIA -->
+
+                        <!-- MENSAJE DE ERROR REGISTRO DUPLICADO -->
                         <c:if test="${msgErrorDup != null }" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorDup}" /></strong></br>
                             </div>
                         </c:if>
+                        <!-- /MENSAJE DE ERROR REGISTRO DUPLICADO -->
                     </div>
                     <div class="col-lg-4">
+                        <!-- FORMULARIO -->
                         <form role="form" action="NewsAddServlet" method="POST" name="formAdd">                        
+                            <!-- TITULO NOTICIA -->
                             <c:if test="${msgErrorDup == null && msgErrorTittle == null }" >
                                 <div class="form-group">
                                     <label>Título de Noticia </label>
                                     <input class="form-control" required="true" maxlength="100" name="tittle" value="<c:out value="${news.tittle}" />">
                                 </div>
-                            </c:if>
+                            </c:if>                                                                                    
                             <c:if test="${msgErrorDup != null || msgErrorTittle != null}" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Título de Noticia</label>
                                     <input type="text" class="form-control" required="true" name="tittle" id="inputError" value="<c:out value="${news.tittle}" />">
                                 </div>
                             </c:if>
+                            <!-- /TITULO NOTICIA -->
+
+                            <!-- DETALLE -->
                             <c:choose>
                                 <c:when test="${msgErrorDetails == null}">
                                     <div class="form-group">
@@ -135,6 +169,9 @@
                                     </div>
                                 </c:otherwise>
                             </c:choose>
+                            <!-- /DETALLE -->
+
+                            <!-- TIPO NOTICIA -->
                             <div class="form-group">
                                 <label>Tipo de Noticias</label>
                                 <select class="form-control" required="true" name="newsType">
@@ -144,6 +181,9 @@
                                     <option value="4" <c:if test="${news.newsType == 4}" > selected </c:if>> Atención</option>
                                     </select>
                                 </div> 
+                                <!-- /TIPO NOTICIA -->
+
+                                <!-- IMAGEN -->
                             <c:choose>
                                 <c:when test="${msgErrorUrlImage == null}">
                                     <div class="form-group">
@@ -158,6 +198,9 @@
                                     </div>
                                 </c:otherwise>
                             </c:choose>
+                            <!-- /IMAGEN -->
+
+                            <!-- FECHA DE INICIO-TERMINO -->
                             <c:choose>
                                 <c:when test="${msgErrorDup == null && msgErrorDate == null }">
                                     <div class="form-group">
@@ -200,17 +243,22 @@
                                     </div>
                                 </c:otherwise>
                             </c:choose>
+                            <!-- /FECHA DE INICIO-TERMINO -->
 
+                            <!-- BOTONES -->
                             <button type="submit" name="add" class="btn btn-default">Add</button>
                             <button type="reset" class="btn btn-default">Reset</button> 
+                            <!-- /BOTONES -->
                         </form>
+                        <!-- /FORMULARIO -->
                     </div>
                 </div><!-- /.row -->
-                <div class="row">                  
-                    <div class="col-lg-12">                        
 
-                    </div>
-                </div><!-- /.row -->
+                </br>
+                <!-- FOOTER -->
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
 
             </div><!-- /#page-wrapper -->
 

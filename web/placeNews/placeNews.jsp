@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Noticias para Lugares</title>
+        <title>POINTEX</title>
 
         <!-- imperio css -->
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
@@ -52,46 +52,17 @@
 
                 <div class="row">
                     <div class="col-lg-12">
+                        <!-- TITULO MANTENEDOR -->
                         <h1>Mantenedor <small> Noticias para Lugares</small></h1>
                         <ol class="breadcrumb">
                             <li class="active"><a href="PlaceNewsMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                         </ol>
-                        <c:if test="${msg != null}" >
-                            <div class="alert alert-info alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <td><strong><c:out value="${msg}" /></strong></td>
-                            </div>  
-                        </c:if>
-                        <c:if test="${msgOk != null}" >
-                            <div class="alert alert-dismissable alert-success">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgOk}" /></strong>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgDel != null}" >
-                            <div class="alert alert-dismissable alert-warning">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgDel}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgErrorFound != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorFound}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgErrorDate != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorDate}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgErrorReference != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorReference}" /></strong></br>
-                            </div>
-                        </c:if>
+                        <!-- /TITULO MANTENEDOR -->
+
+                        <!-- MENSAJES -->
+                        <c:import var="dataTableMsg" url="/dataTableMsg.jsp" />
+                        <c:out value="${dataTableMsg}" escapeXml="false" />
+                        <!-- /MENSAJES -->  
                     </div>
 
                 </div><!-- /.row -->
@@ -99,18 +70,21 @@
                     <div class="col-lg-12"> 
 
                         <div class="table-responsive">
-
+                            <!-- DATATABLE -->
                             <form action="PlaceNewsMainServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
-                                        <div class="box">                                
+                                        <div class="box">  
+                                            <!-- TITULO DATATABLE -->
                                             <div class="box-title">
                                                 Datatable
                                                 <object align="right"> <button class="btn btn-primary btn-mini" name="btnAddPlaceNews" type="button" onclick="location.href = 'PlaceNewsAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button></object>
                                                 </br>DB
                                             </div>
+                                            <!-- /TITULO DATATABLE -->
                                             <div class="box-content nopadding">
                                                 <table id="datatable" class="table table-striped table-bordered">
+                                                    <!-- HEADER DATATABLE -->
                                                     <thead>
                                                         <tr>
                                                             <th><input class="check_all" type="checkbox" /></th>
@@ -125,6 +99,9 @@
                                                             <th></th>
                                                         </tr>
                                                     </thead>
+                                                    <!-- /HEADER DATATABLE -->
+
+                                                    <!-- BODY -->
                                                     <tbody>
                                                         <tr>
                                                             <c:forEach var="list" items="${list}">  
@@ -144,15 +121,16 @@
                                                                 <td class="center">
                                                                     <a href="PlaceNewsGetServlet?idPlace=<c:out value="${list.idPlace}" />&idPlaceNews=<c:out value="${list.idPlaceNews}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">ACTUALIZAR</font></strong></button></a>
                                                                 </td>
-                                                                <td class="center">
-                                                                    <form method="post" action="PlaceNewsMainServlet">
-                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" type="submit"><strong><font size="1"> ELIMINAR </font></strong></button>                                                                        
-                                                                        <input type="hidden" name="idPlaceNews" value="<c:out value="${list.idPlaceNews}" />"/>
-                                                                    </form>
+                                                                <td class="center">                                                                   
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('PlaceNewsMainServlet?btnDelRow=x&idPlaceNews=<c:out value="${list.idPlaceNews}" />');
+                                                        return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>                                                                              		                                    		
                                                     </tbody>
+                                                    <!-- /BODY -->
+
+                                                    <!-- FOOTER DATATABLE -->
                                                     <tfoot>
                                                         <tr>
                                                             <th><button class="btn btn-danger btn-mini delete" name="btnDelCol" type="submit"><font size="1">ELIMINAR</font></button></th>
@@ -167,16 +145,23 @@
                                                             <th></th>
                                                         </tr>
                                                     </tfoot>
+                                                    <!-- /FOOTER DATATABLE -->
                                                 </table>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </form>
-
+                            <!-- /DATATABLE -->
                         </div>
                     </div>
                 </div><!-- /.row -->
+
+                </br>
+                <!-- FOOTER -->
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
 
             </div><!-- /#page-wrapper -->
 

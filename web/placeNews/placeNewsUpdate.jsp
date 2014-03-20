@@ -14,7 +14,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Noticia para Lugar</title>
+        <title>POINTEX</title>
 
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.css" rel="stylesheet">
@@ -45,11 +45,14 @@
 
             <div class="row">
                 <div class="col-lg-12">
+                    <!-- TITULO MANTENEDOR -->
                     <h1>Mantenedor <small> Noticia para Lugar</small></h1>
                     <ol class="breadcrumb">
                         <li><a href="PlaceNewsMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                         <li class="active"><i class="fa fa-edit"></i> Actualizar</li>
                     </ol>
+                    <!-- /TITULO MANTENEDOR -->
+
                     <c:if test="${msgOk != null}" >
                         <div class="alert alert-dismissable alert-success">
                             <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -118,42 +121,56 @@
                     </c:if>
                 </div>
                 <div class="col-lg-4">
+                    <!-- FORMULARIO -->
                     <form role="form" action="PlaceNewsUpdateServlet" method="POST" name="formUpdate">
+                        <!-- LUGAR -->
                         <div class="form-group">
-                            <label for="disabledSelect">Plaza</label>
+                            <label for="disabledSelect">Lugar</label>
                             <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${pnews.namePlace}" />" disabled>
                             <input type="hidden" name="namePlace" value="<c:out value="${pnews.namePlace}" />"/>
                             <input type="hidden" name="idPlace" value="<c:out value="${pnews.idPlace}" />"/>
                         </div>
+                        <!-- /LUGAR -->
+
+                        <!-- ID NOTICIA -->
                         <div class="form-group">
                             <label for="disabledSelect">id Noticia Lugares</label>
                             <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${pnews.idPlaceNews}" />" disabled>
                             <input type="hidden" name="idPlaceNews" value="<c:out value="${pnews.idPlaceNews}" />"/>
                         </div>
+                        <!-- /ID NOTICIA -->
+
+                        <!-- TITULO -->
                         <c:if test="${msgErrorDup == null && msgErrorTittle == null }" >
                             <div class="form-group">
                                 <label>Título</label>
                                 <input class="form-control" required="true" maxlength="50" name="tittle" value="<c:out value="${pnews.tittle}" />">
                             </div>
-                        </c:if>
+                        </c:if>                                                                        
                         <c:if test="${msgErrorDup != null || msgErrorTittle != null }" >
                             <div class="form-group has-error">
                                 <label class="control-label" for="inputError">Título</label>
                                 <input class="form-control" required="true" maxlength="50" name="tittle" id="inputError" value="<c:out value="${pnews.tittle}" />">
                             </div>
                         </c:if>
+                        <!-- /TITULO -->
+
+                        <!-- DETALLE -->
                         <c:if test="${msgErrorDetails == null}" >
                             <div class="form-group">
                                 <label>Detalles</label>
                                 <input class="form-control" required="true" maxlength="200" name="details" value="<c:out value="${pnews.details}" />">
                             </div>
-                        </c:if>
+                        </c:if>                                                                        
                         <c:if test="${msgErrorDetails != null}" >
                             <div class="form-group has-error">
                                 <label class="control-label" for="inputError">Detalle</label>
                                 <input class="form-control" required="true" maxlength="200" id="inputError" name="details" value="<c:out value="${pnews.details}" />">
                             </div>
                         </c:if>
+                        <!-- /DETALLE -->
+
+                        <!-- TIPO NOTICIA -->
                         <div class="form-group">
                             <label>Tipo de Noticias</label>
                             <select class="form-control" required="true" name="newsType">
@@ -163,18 +180,24 @@
                                 <option value="4" <c:if test="${pnews.newsType == 4}" > selected </c:if>> Atención</option>
                                 </select>
                             </div>
+                            <!-- /TIPO NOTICIA -->
+
+                            <!-- URL IMAGE -->
                         <c:if test="${msgErrorUrlImage == null}" >
                             <div class="form-group">
                                 <label>Url Imagen</label>
                                 <input class="form-control" required="true" maxlength="200" name="urlImage" value="<c:out value="${pnews.urlImage}" />">
                             </div>
-                        </c:if>
+                        </c:if>                                                                        
                         <c:if test="${msgErrorUrlImage != null}" >
                             <div class="form-group has-error">
                                 <label class="control-label" for="inputError">Url Imagen</label>
                                 <input class="form-control" required="true" maxlength="200" id="inputError" name="urlImage" value="<c:out value="${pnews.urlImage}" />">
                             </div>
                         </c:if>
+                        <!-- /URL IMAGE -->
+
+                        <!-- FECHA INICIO-TERMINO -->
                         <c:choose>
                             <c:when test="${msgErrorDup == null && msgErrorDate == null }">
                                 <div class="form-group">
@@ -217,16 +240,18 @@
                                 </div>
                             </c:otherwise>
                         </c:choose>
+                        <!-- FECHA INICIO-TERMINO -->
                         <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>
                     </form>
-
+                    <!-- FORMULARIO -->
                 </div>
             </div><!-- /.row -->
-            <div class="row">                  
-                <div class="col-lg-12">                        
 
-                </div>
-            </div><!-- /.row -->
+            </br>
+            <!-- FOOTER -->
+            <c:import var="footer" url="/footer.jsp" />
+            <c:out value="${footer}" escapeXml="false" />
+            <!-- /FOOTER --> 
 
         </div><!-- /#page-wrapper -->
 
