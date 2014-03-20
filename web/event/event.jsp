@@ -132,7 +132,7 @@
                                                                 <td class="center"><c:out value="${list.dateBegin}" /></td>
                                                                 <td class="center"><c:out value="${list.dateEnd}" /></td>
                                                                 <td class="center">
-                                                                    <a href="EventGetServlet?idPlace=<c:out value="${list.idPlace}" />&idEvent=<c:out value="${list.idEvent}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">ACTUALIZAR</font></strong></button></a>
+                                                                    <a href="EventGetServlet?idPlace=<c:out value="${list.idPlace}" />&idEvent=<c:out value="${list.idEvent}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">VER / ACTUALIZAR</font></strong></button></a>
                                                                 </td>
                                                                 <td class="center">                                                                    
                                                                     <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('EventMainServlet?btnDelRow=x&idEvent=<c:out value="${list.idEvent}" />');

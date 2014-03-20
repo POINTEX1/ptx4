@@ -128,7 +128,7 @@
                                                                 </td>
                                                                 <td class="center"><c:out value="${list.contact}" /></td>
                                                                 <td class="center">
-                                                                    <a href="PlaceGetServlet?idPlace=<c:out value="${list.idPlace}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">ACTUALIZAR</font></strong></button></a>
+                                                                    <a href="PlaceGetServlet?idPlace=<c:out value="${list.idPlace}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">VER / ACTUALIZAR</font></strong></button></a>
                                                                 </td>
                                                                 <td class="center">                                                                    
                                                                     <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('PlaceMainServlet?btnDelRow=x&idPlace=<c:out value="${list.idPlace}" />');

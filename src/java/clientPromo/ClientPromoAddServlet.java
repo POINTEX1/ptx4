@@ -27,8 +27,8 @@ import userCard.UserCardDAO;
  *
  * @author patricio alberto
  */
-@WebServlet(name = "PromoGiftListAddServlet", urlPatterns = {"/PromoGiftListAddServlet"})
-public class PromoGiftListAddServlet extends HttpServlet {
+@WebServlet(name = "ClientPromoAddServlet", urlPatterns = {"/ClientPromoAddServlet"})
+public class ClientPromoAddServlet extends HttpServlet {
 
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
@@ -202,7 +202,7 @@ public class PromoGiftListAddServlet extends HttpServlet {
 
                     } catch (Exception parameterException) {
                     } finally {
-                        request.getRequestDispatcher("/promoGiftList/promoGiftListAdd.jsp").forward(request, response);
+                        request.getRequestDispatcher("/clientPromo/clientPromoAdd.jsp").forward(request, response);
                     }
                 }
             } catch (Exception sessionException) {

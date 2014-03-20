@@ -113,7 +113,7 @@
                                                                 <td class="center"><c:out value="${list.lastName}" /></td>
                                                                 <td class="center"><c:out value="${list.email}" /></td>
                                                                 <td class="center">      
-                                                                    <a href="UserCardGetServlet?rut=<c:out value="${list.rut}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><font size="1">ACTUALIZAR</font></button></a>                                                               
+                                                                    <a href="UserCardGetServlet?rut=<c:out value="${list.rut}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><font size="1">VER / ACTUALIZAR</font></button></a>                                                               
                                                                 </td>
                                                                 <td class="center">                                                                    
                                                                     <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('ClientMainServlet?btnDelRow=x&rut=<c:out value="${list.rut}" />');

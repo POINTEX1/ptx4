@@ -68,7 +68,7 @@
                         <!-- TITULO MANTENEDOR -->
                         <h1>Mantenedor <small> Promociones por Cliente</small></h1>
                         <ol class="breadcrumb">
-                            <li class="active"><a href="ClientPromoGiftMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
+                            <li class="active"><a href="ClientPromoMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                         </ol>
                         <!-- /TITULO MANTENEDOR -->
 
@@ -89,7 +89,7 @@
                                         <div class="box">                                
                                             <div class="box-title">
                                                 Datatable
-                                                <object align="right"> <button class="btn btn-primary btn-mini" name="btnAdd" type="button" onclick="location.href = 'PromoGiftListAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button></object>
+                                                <object align="right"> <button class="btn btn-primary btn-mini" name="btnAdd" type="button" onclick="location.href = 'ClientPromoAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button></object>
                                                 </br>DB
                                             </div>
                                             <div class="box-content nopadding">

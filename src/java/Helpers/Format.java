@@ -62,6 +62,38 @@ public class Format {
         return textFormatted.toString();
     }
 
+    public static String dateDDMMYYYY(String d) throws ParseException {
+
+        java.util.Date date = new SimpleDateFormat("yyy-MM-dd").parse(d);
+        String formattedDate = new SimpleDateFormat("dd-MM-yyyy").format(date);
+
+        return formattedDate;
+    }    
+
+    public static String dateDdMmYyyyTHrMmSs(String d) throws ParseException {
+
+        java.util.Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(d);
+        String formattedDate = new SimpleDateFormat("dd-MM-yyyy HH:mm").format(date);
+
+        return formattedDate;
+    }
+
+    public static String dateYYYYMMDDmmss(String d) throws ParseException {
+
+        java.util.Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(d);
+        String formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+
+        return formattedDate;
+    }
+
+    public static String dateYYYYMMDDTmmss(String d) throws ParseException {
+
+        java.util.Date date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(d);
+        String formattedDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+
+        return formattedDate;
+    }
+
     public boolean validarUrl(String url_image) {
         url_image.toLowerCase();
         boolean correcto = false;

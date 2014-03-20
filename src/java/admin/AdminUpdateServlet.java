@@ -117,6 +117,7 @@ public class AdminUpdateServlet extends HttpServlet {
                         }
                     }
                     /* comprobar email */
+                    url = url + "&email=" + email;
                     if (email == null || email.trim().equals("")) {
                         url = url + "&msgErrorEmail=Error: Debe ingresar email.";
                         error = true;

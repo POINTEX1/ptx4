@@ -127,7 +127,7 @@
                                                                 <td class="center"><c:out value="${list.email}" /></td>
                                                                 <td class="center"><c:out value="${list.createTime}" /></td>
                                                                 <td class="center">
-                                                                    <a href="AdminGetServlet?id=<c:out value="${list.idAdmin}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">ACTUALIZAR</font></strong></button></a>                                                                         
+                                                                    <a href="AdminGetServlet?id=<c:out value="${list.idAdmin}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">VER / ACTUALIZAR</font></strong></button></a>                                                                         
                                                                 </td>
                                                                 <td class="center">
                                                                     <c:if test="${list.idAdmin != idUser}" >                                                                           

@@ -21,8 +21,8 @@ import place.PlaceDAO;
  *
  * @author patricio alberto
  */
-@WebServlet(name = "ClientPromoGiftMainServlet", urlPatterns = {"/ClientPromoGiftMainServlet"})
-public class ClientPromoGiftMainServlet extends HttpServlet {
+@WebServlet(name = "ClientPromoMainServlet", urlPatterns = {"/ClientPromoMainServlet"})
+public class ClientPromoMainServlet extends HttpServlet {
 
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
@@ -152,7 +152,7 @@ public class ClientPromoGiftMainServlet extends HttpServlet {
 
                     } catch (Exception parameterException) {
                     } finally {
-                        request.getRequestDispatcher("/promoGiftList/promoGiftList.jsp").forward(request, response);
+                        request.getRequestDispatcher("/clientPromo/clientPromo.jsp").forward(request, response);
                     }
                 }
             } catch (Exception sessionException) {

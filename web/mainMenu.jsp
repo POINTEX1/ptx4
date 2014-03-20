@@ -30,7 +30,7 @@
                     <c:if test="${access == 777 || access == 555 }" ><li><a href="PointMainServlet">Puntos Cliente</a></li></c:if>
                         <li><a href="CardMainServlet">Tarjetas</a></li>  
                         <li><a href="OrderCardMainServlet">Solicitud Tarjetas</a></li> 
-                    <c:if test="${access == 777 || access == 555 }" ><li><a href="ClientPromoGiftMainServlet">Promociones Cliente</a></li></c:if>
+                    <c:if test="${access == 777 || access == 555 }" ><li><a href="ClientPromoMainServlet">Promociones Cliente</a></li></c:if>
                     <c:if test="${access == 777 || access == 555 }" ><li><a href="ClientPromoCheckoutMainServlet">Compras Cliente</a></li></c:if>
                     <c:if test="${access == 777 || access == 555 }" ><li><a href="ClientNewsMainServlet">Noticias clientes</a></li></c:if>
                     </ul>

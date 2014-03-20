@@ -67,133 +67,139 @@ public class CardUpdateServlet extends HttpServlet {
                 request.setAttribute("access", access);
 
                 //////////////////////////////////////////
-                // DECLARAR VARIABLES DE INSTANCIA
-                /////////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                /////////////////////////////////////////    
+
+                String srut = request.getParameter("rut");
+                String sdv = request.getParameter("dv");
+                String firstname = request.getParameter("firstName");
+                String lastname = request.getParameter("lastName");
+                String sbarcode = request.getParameter("barCode");
+                String scardtype = request.getParameter("cardType");
+                String dateBegin = request.getParameter("dateBeginCard");
+                String dateEnd = request.getParameter("dateEndCard");
 
                 Card card = new Card();
 
-                try {
-                    //////////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    /////////////////////////////////////////
+                boolean error = false;
 
-                    String srut = request.getParameter("rut");
-                    String sdv = request.getParameter("dv");
-                    String firstname = request.getParameter("firstName");
-                    String lastname = request.getParameter("lastName");
-                    String sbarcode = request.getParameter("barCode");
-                    String scardtype = request.getParameter("cardType");
-                    String dateBegin = request.getParameter("dateBeginCard");
-                    String dateEnd = request.getParameter("dateEndCard");
-                    
-                    System.out.println(lastname);
+                /* instanciar string url */
+                String url = "?a=target";
 
-                    boolean error = false;
-
-                    /* comprobar rut */
-                    if (srut == null || srut.trim().equals("")) {
-                        request.setAttribute("msgErrorRut", "Error al recibir rut.");
+                /* comprobar rut */
+                url = url + "&rut=" + srut;
+                if (srut == null || srut.trim().equals("")) {
+                    url = url + "&msgErrorRut=Error al recibir RUT.";
+                    error = true;
+                } else {
+                    try {
+                        card.setRut(Integer.parseInt(srut));
+                    } catch (NumberFormatException n) {
+                        url = url + "&msgErrorRut=Error al recibir RUT.";
                         error = true;
-                    } else {
-                        try {
-                            card.setRut(Integer.parseInt(srut));
-                        } catch (NumberFormatException n) {
-                            request.setAttribute("msgErrorRut", "Error al recibir rut.");
-                            error = true;
-                        }
                     }
-
-                    /* comprobar dv */
-                    if (sdv == null || sdv.trim().equals("")) {
-                        request.setAttribute("msgErrorDv", "Error al recibir dv.");
-                        error = true;
-                    } else {
-                        card.setDv(sdv);
-                    }
-                    
-                    /* comprobar firstname */
-                    if(firstname == null || firstname.trim().equals("")) {
-                        request.setAttribute("msgErrorFirstName", "Error al recibir nombre.");
-                        error = true;
-                    } else {
-                        card.setFirstName(firstname);
-                    }
-                    
-                    /* comprobar lastname */
-                    if(lastname == null || lastname.trim().equals("")) {
-                        request.setAttribute("msgErrorLastName", "Error al recibir apellido.");
-                        error = true;
-                    } else {
-                        card.setLastName(lastname);
-                    }
-
-                    /* comprobar barcode */
-                    if (sbarcode == null || sbarcode.trim().equals("")) {
-                        request.setAttribute("msgErrorBarCode", "Error al recibir código de barras.");
-                        error = true;
-                    } else {
-                        try {
-                            card.setBarCode(Integer.parseInt(sbarcode));
-                        } catch (NumberFormatException n) {
-                            request.setAttribute("msgErrorBarCode", "Error al recibir código de barras, debe ser numérico.");
-                            error = true;
-                        }
-                    }
-
-                    /* comprobar type */
-                    if (scardtype == null || scardtype.trim().equals("")) {
-                        request.setAttribute("msgErrorType", "Error al recibir tipo de tarjeta.");
-                        error = true;
-                    } else {
-                        try {
-                            card.setCardType(Integer.parseInt(scardtype));
-                        } catch (NumberFormatException n) {
-                            request.setAttribute("msgErrorType", "Error al recibir tipo de tarjeta.");
-                            error = true;
-                        }
-                    }                    
-                    
-                    /* comprobar date begin */
-                    if (dateBegin == null || dateBegin.trim().equals("")) {
-                        request.setAttribute("msgErrorDateBegin", "Error al recibir fecha de inicio.");
-                        error = true;
-                    } else {
-                        card.setDateBeginCard(dateBegin);
-                        /* comprobar date end */
-                        if (dateEnd == null || dateEnd.trim().equals("")) {
-                            request.setAttribute("msgErrorDateEnd", "Error al recibir fecha de término.");
-                            error = true;
-                        } else {
-                            /* comparar fechas */
-                            card.setDateBeginCard(dateBegin);
-                            card.setDateEndCard(dateEnd);
-                            System.out.println("comparar fecha inicio fecha fin: " + card.getDateBeginCard().compareTo(card.getDateEndCard()));
-                            if (card.getDateBeginCard().compareTo(card.getDateEndCard()) >= 0) {
-                                request.setAttribute("msgErrorDateBegin", "Error: La fecha de término deber ser mayor que la fecha de inicio.");
-                                error = true;
-                            }
-                        }
-                    }
-
-                    ////////////////////////////////////////
-                    // INSERTAR REGISTRO
-                    ////////////////////////////////////////
-                    
-                    if (!error) {
-                        /* comprobar existencia */
-                        Card aux = cardDAO.findByBarCode(card.getBarCode());                        
-                        if (aux != null) {
-                            cardDAO.update(card);
-                            request.setAttribute("msgOk", "Registro actualizado exitosamente! ");
-                        } else {
-                            request.setAttribute("msgErrorFound", "Error: La tarjeta no ha sido encontrada o ha sido eliminada mientras actualizaba.");
-                        }
-                    }
-                } catch (Exception parameterException) {
-                } finally {
-                    request.setAttribute("reg", card);
-                    request.getRequestDispatcher("/card/cardUpdate.jsp").forward(request, response);
                 }
+
+                /* comprobar dv */
+                url = url + "&dv=" + sdv;
+                if (sdv == null || sdv.trim().equals("")) {
+                    url = url + "&msgErrorDv=Error al recibir DV.";
+                    error = true;
+                } else {
+                    card.setDv(sdv);
+                }
+
+                /* comprobar firstname */
+                url = url + "&firstName=" + firstname;
+                if (firstname == null || firstname.trim().equals("")) {
+                    url = url + "&msgErrorFirstName=Error al recibir nombres.";
+                    error = true;
+                } else {
+                    card.setFirstName(firstname);
+                }
+
+                /* comprobar lastname */
+                url = url + "&lastName=" + lastname;
+                if (lastname == null || lastname.trim().equals("")) {
+                    url = url + "&msgErrorLastName=Error al recibir apellidos .";
+                    error = true;
+                } else {
+                    card.setLastName(lastname);
+                }
+
+                /* comprobar barcode */
+                url = url + "&barCode=" + sbarcode;
+                if (sbarcode == null || sbarcode.trim().equals("")) {
+                    url = url + "&msgErrorBarCode=Error al recibir código de barras.";
+                    error = true;
+                } else {
+                    try {
+                        card.setBarCode(Integer.parseInt(sbarcode));
+                    } catch (NumberFormatException n) {
+                        url = url + "&msgErrorBarCode=Error al recibir código de barras, debe ser numérico.";
+                        error = true;
+                    }
+                }
+
+                /* comprobar type */
+                url = url + "&cardType=" + scardtype;
+                if (scardtype == null || scardtype.trim().equals("")) {
+                    url = url + "&msgErrorType=Error al recibir tipo tarjeta.";
+                    error = true;
+                } else {
+                    try {
+                        card.setCardType(Integer.parseInt(scardtype));
+                    } catch (NumberFormatException n) {
+                        url = url + "&msgErrorType=Error al recibir tipo tarjeta.";
+                        error = true;
+                    }
+                }
+
+                /* comprobar date begin */
+                url = url + "&dateBegin=" + dateBegin;
+                if (dateBegin == null || dateBegin.trim().equals("")) {
+                    url = url + "&msgErrorDateBegin=Error al recibir fecha de inicio.";
+                    error = true;
+                } else {
+                    card.setDateBeginCard(dateBegin);
+                    /* comprobar date end */
+                    url = url + "&dateEnd=" + dateEnd;
+                    if (dateEnd == null || dateEnd.trim().equals("")) {
+                        url = url + "&msgErrorDateEnd=Error al recibir fecha de término.";
+                        error = true;
+                    } else {
+                        /* comparar fechas */
+                        card.setDateBeginCard(dateBegin);
+                        card.setDateEndCard(dateEnd);
+                        //System.out.println("comparar fecha inicio fecha fin: " + card.getDateBeginCard().compareTo(card.getDateEndCard()));
+                        if (card.getDateBeginCard().compareTo(card.getDateEndCard()) >= 0) {
+                            url = url + "&msgErrorDateBegin=Error: La fecha de término deber ser mayor que la fecha de inicio.";
+                            error = true;
+                        }
+                    }
+                }
+
+                ////////////////////////////////////////
+                // INSERTAR REGISTRO
+                ////////////////////////////////////////
+
+                if (!error) {
+                    /* comprobar existencia */
+                    Card aux = cardDAO.findByBarCode(card.getBarCode());
+                    if (aux != null) {
+                        try {
+                            cardDAO.update(card);
+                            url = url + "&msgOk=Registro actualizado exitosamente!";
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    } else {
+                        url = url + "msgErrorFound=Error: La tarjeta no ha sido encontrada o ha sido eliminada mientras actualizaba.";
+                    }
+                }
+
+                response.sendRedirect("/POINTEX1/CardGetServlet" + url);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");
@@ -202,6 +208,7 @@ public class CardUpdateServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

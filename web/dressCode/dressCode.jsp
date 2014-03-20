@@ -121,7 +121,7 @@
                                                                 <td class="center"><c:out value="${list.idDressCode}" /></td>
                                                                 <td class="center"><c:out value="${list.nameDressCode}" /></td>
                                                                 <td class="center">
-                                                                    <a href="DressCodeGetServlet?idDressCode=<c:out value="${list.idDressCode}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">ACTUALIZAR</font></strong></button></a>                                                                
+                                                                    <a href="DressCodeGetServlet?idDressCode=<c:out value="${list.idDressCode}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">VER / ACTUALIZAR</font></strong></button></a>                                                                
                                                                 </td>
                                                                 <td class="center">                                                                    
                                                                     <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('DressCodeMainServlet?btnDelRow=x&idDressCode=<c:out value="${list.idDressCode}" />');

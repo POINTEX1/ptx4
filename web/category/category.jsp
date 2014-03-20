@@ -119,7 +119,7 @@
                                                                 <td class="center"><c:out value="${list.idCategory}" /></td>
                                                                 <td class="center"><c:out value="${list.nameCategory}" /></td>
                                                                 <td class="center">
-                                                                    <a href="CategoryGetServlet?idCategory=<c:out value="${list.idCategory}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">ACTUALIZAR</font></strong></button></a>                                                                
+                                                                    <a href="CategoryGetServlet?idCategory=<c:out value="${list.idCategory}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">VER / ACTUALIZAR</font></strong></button></a>                                                                
                                                                 </td>
                                                                 <td class="center">                                                                    
                                                                     <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('CategoryMainServlet?btnDelRow=x&idCategory=<c:out value="${list.idCategory}" />');

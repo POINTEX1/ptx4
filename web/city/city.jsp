@@ -119,7 +119,7 @@
                                                                 <td class="center"><c:out value="${list.idCity}" /></td>
                                                                 <td class="center"><c:out value="${list.nameCity}" /></td>
                                                                 <td class="center">
-                                                                    <a href="CityGetServlet?idCity=<c:out value="${list.idCity}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">ACTUALIZAR</font></strong></button></a>                                                                
+                                                                    <a href="CityGetServlet?idCity=<c:out value="${list.idCity}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">VER / ACTUALIZAR</font></strong></button></a>                                                                
                                                                 </td>
                                                                 <td class="center">                                                                    
                                                                     <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('CityMainServlet?btnDelRow=x&idCity=<c:out value="${list.idCity}" />');

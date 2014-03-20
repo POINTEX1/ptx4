@@ -147,27 +147,27 @@
                     <form role="form" action="CardUpdateServlet" method="POST" name="formUpdate">
                         <!-- BARCODE -->
                         <div class="form-group">
-                            <label for="disabledSelect">Codigo de Barra</label>
-                            <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${reg.barCode}" />" disabled>
-                            <input type="hidden" name="barCode" value="<c:out value="${reg.barCode}" />"/>
+                            <label for="disabledSelect">Código de Barra</label>
+                            <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${barCode}" />" disabled>
+                            <input type="hidden" name="barCode" value="<c:out value="${barCode}" />"/>
                         </div>
                         <!-- /BARCODE -->
 
                         <!-- RUT-DV -->
                         <div class="form-group">
-                            <label for="disabledSelect">Rut</label>
-                            <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${reg.rut}" />-<c:out value="${reg.dv}" />" disabled>
-                            <input type="hidden" name="rut" value="<c:out value="${reg.rut}" />"/>
-                            <input type="hidden" name="dv" value="<c:out value="${reg.dv}" />"/>
+                            <label for="disabledSelect">RUT</label>
+                            <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${rut}" />-<c:out value="${dv}" />" disabled>
+                            <input type="hidden" name="rut" value="<c:out value="${rut}" />"/>
+                            <input type="hidden" name="dv" value="<c:out value="${dv}" />"/>
                         </div>
                         <!-- /RUT-DV -->
 
                         <!-- FIRSTNAME-LASTNAME -->
                         <div class="form-group">
                             <label for="disabledSelect">Nombre</label>
-                            <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${reg.firstName}" /> <c:out value="${reg.lastName}" />" disabled>
-                            <input type="hidden" name="firstName" value="<c:out value="${reg.firstName}" /> "/>
-                            <input type="hidden" name="lastName" value="<c:out value="${reg.lastName}" />"/>                          
+                            <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${firstName}" /> <c:out value="${lastName}" />" disabled>
+                            <input type="hidden" name="firstName" value="<c:out value="${firstName}" /> "/>
+                            <input type="hidden" name="lastName" value="<c:out value="${lastName}" />"/>                          
                         </div>
                         <!-- /FIRSTNAME-LASTNAME -->
 
@@ -175,9 +175,9 @@
                         <div class="form-group">
                             <label>Tipo de Tarjeta *</label>
                             <select class="form-control" required="true" name="cardType">
-                                <option value="1"  <c:if test="${reg.cardType == 1}" > selected </c:if>> Basic</option>
-                                <option value="2" <c:if test="${reg.cardType == 2}" > selected </c:if>> Silver</option>
-                                <option value="3" <c:if test="${reg.cardType == 3}" > selected </c:if>> Gold</option>
+                                <option value="1"  <c:if test="${cardType == 1}" > selected </c:if>> Basic</option>
+                                <option value="2" <c:if test="${cardType == 2}" > selected </c:if>> Silver</option>
+                                <option value="3" <c:if test="${cardType == 3}" > selected </c:if>> Gold</option>
                                 </select>
                             </div> 
                             <!-- /TIPO DE TARJETA -->
@@ -185,17 +185,17 @@
                             <!-- FECHA DE INICIO -->
                             <div class="form-group">
                                 <label>Fecha de Inicio</label>
-                                <input class="form-control" type="datetime-local" required="true" name="dateBeginCard" value="<c:out value="${reg.dateBeginCard}" />">
+                                <input class="form-control" type="datetime-local" required="true" name="dateBeginCard" value="<c:out value="${dateBegin}" />">
                         </div>
                         <!-- /FECHA DE INICIO -->
 
                         <!-- FECHA DE TERMINO -->
                         <div class="form-group">
                             <label>Fecha de Caducidad</label>
-                            <input class="form-control" type="datetime-local" required="true" name="dateEndCard" value="<c:out value="${reg.dateEndCard}" />">
+                            <input class="form-control" type="datetime-local" required="true" name="dateEndCard" value="<c:out value="${dateEnd}" />">
                         </div>
                         <!-- /FECHA DE TERMINO -->
-                        <button type="submit" class="btn btn-default">Update</button>
+                        <button type="submit" class="btn btn-default">Actualizar</button>
                     </form>
                     <!-- /FORMULARIO -->
                 </div>

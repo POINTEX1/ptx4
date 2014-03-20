@@ -121,7 +121,7 @@
                                                                 <td class="center"><c:out value="${list.dateEndCard}" /></td>
 
                                                                 <td class="center">      
-                                                                    <a href="CardGetServlet?rut=<c:out value="${list.rut}" />&barCode=<c:out value="${list.barCode}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><font size="1">ACTUALIZAR</font></button></a>
+                                                                    <a href="CardGetServlet?rut=<c:out value="${list.rut}" />&barCode=<c:out value="${list.barCode}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><font size="1">VER / ACTUALIZAR</font></button></a>
                                                                 </td>
                                                                 <td class="center">                                                                                                                                      
                                                                     <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('CardMainServlet?btnDelRow=x&barCode=<c:out value="${list.barCode}" />');

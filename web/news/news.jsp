@@ -117,7 +117,7 @@
                                                                 <td><c:out value="${list.dateBegin}" /></td>
                                                                 <td class="center"><c:out value="${list.dateEnd}" /></td>
                                                                 <td class="center">      
-                                                                    <a href="NewsGetServlet?idNews=<c:out value="${list.idNews}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><font size="1">ACTUALIZAR</font></button></a>                                                               
+                                                                    <a href="NewsGetServlet?idNews=<c:out value="${list.idNews}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><font size="1">VER / ACTUALIZAR</font></button></a>                                                               
                                                                 </td>
                                                                 <td class="center">                                                                    
                                                                     <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('NewsMainServlet?btnDelRow=x&idNews=<c:out value="${list.idNews}" />');

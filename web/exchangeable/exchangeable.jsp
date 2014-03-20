@@ -127,7 +127,7 @@
                                                                     <c:if test="${list.request == 2}">Rechazada</c:if>
                                                                     </td>
                                                                     <td class="center">
-                                                                        <a href="ExchangeableGetServlet?idExchangeable=<c:out value="${list.idExchangeable}"/>"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">ACTUALIZAR</font></strong></button></a>
+                                                                        <a href="ExchangeableGetServlet?idExchangeable=<c:out value="${list.idExchangeable}"/>"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">VER / ACTUALIZAR</font></strong></button></a>
                                                                 </td>
                                                                 <td class="center">                                                                    
                                                                     <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('ExchangeableMainServlet?btnDelRow=x&idExchangeable=<c:out value="${list.idExchangeable}" />');

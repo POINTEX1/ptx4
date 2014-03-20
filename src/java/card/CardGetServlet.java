@@ -6,7 +6,6 @@ package card;
 
 import Helpers.Format;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -73,25 +72,106 @@ public class CardGetServlet extends HttpServlet {
                 request.setAttribute("userJsp", user);
                 request.setAttribute("access", access);
 
+                //////////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                //////////////////////////////////////////
                 try {
-                    //////////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    //////////////////////////////////////////
+                    /* recibir atributos por PRG */                    
+                    String cardType = request.getParameter("cardType");
+                    String dateBegin = request.getParameter("dateBegin");
+                    String dateEnd = request.getParameter("dateEnd");
 
+                    /* recibir mensajes de PRG */
+                    String msgOk = request.getParameter("msgOk");
+                    String msgErrorRut = request.getParameter("msgErrorRut");
+                    String msgErrorDv = request.getParameter("msgErrorDv");                    
+                    String msgErrorBarCode = request.getParameter("msgErrorBarCode");
+                    String msgErrorType = request.getParameter("msgErrorType");
+                    String msgErrorDateBegin = request.getParameter("msgErrorDateBegin");
+                    String msgErrorDateEnd = request.getParameter("msgErrorDateEnd");
+
+                    /* recibir parametros por busqueda */
                     Card card = new Card();
 
-                    card.setBarCode(Integer.parseInt(request.getParameter("barCode")));
-                    card.setRut(Integer.parseInt(request.getParameter("rut")));
-                    Card reg = dao.findbyBarCodeJoin(card);
-                    if (reg != null) {
-                        reg.setDateBeginCard(Format.date(reg.getDateBeginCard()));
-                        reg.setDateEndCard(Format.date(reg.getDateEndCard()));
-                        request.setAttribute("reg", reg);
-                        request.setAttribute("msgOk", "Se encontró el registro!");
-                    } else {
-                        request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
+                    try {
+                        card.setBarCode(Integer.parseInt(request.getParameter("barCode")));
+                        card.setRut(Integer.parseInt(request.getParameter("rut")));
+                    } catch (NumberFormatException n) {
                     }
 
+                    /* buscar registro */
+                    try {
+                        Card reg = dao.findbyBarCodeJoin(card);
+                        if (reg != null) {
+                            ///////////////////////////////////////
+                            // ESTABLECER ATRIBUTOS
+                            ///////////////////////////////////////
+
+                            /* establecer atributos del DAO */
+                            request.setAttribute("barCode", reg.getBarCode());
+                            request.setAttribute("rut", reg.getRut());
+                            request.setAttribute("dv", reg.getDv());
+                            request.setAttribute("firstName", reg.getFirstName());
+                            request.setAttribute("lastName", reg.getLastName());
+
+                            /* comprobar error rut */
+                            if (msgErrorRut == null || msgErrorRut.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorRut", msgErrorRut);
+                            }
+
+                            /* comprobar error dv */
+                            if (msgErrorDv == null || msgErrorDv.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorDv", msgErrorDv);
+                            }
+
+                            /* comprobar error barcode */
+                            if (msgErrorBarCode == null || msgErrorBarCode.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorBarCode", msgErrorBarCode);
+                            }
+
+                            /* comprobar error card Type */
+                            if (msgErrorType == null || msgErrorType.trim().equals("")) {
+                                request.setAttribute("cardType", reg.getCardType());
+                            } else {
+                                request.setAttribute("msgErrorType", msgErrorType);
+                                try {
+                                    request.setAttribute("cardType", Integer.parseInt(cardType));
+                                } catch (NumberFormatException n) {
+                                }
+                            }
+
+                            /* comprobar date begin */
+                            if (msgErrorDateBegin == null || msgErrorDateBegin.trim().equals("")) {
+                                request.setAttribute("dateBegin", Format.dateYYYYMMDD(reg.getDateBeginCard()));
+                            } else {
+                                request.setAttribute("msgErrorDateBegin", msgErrorDateBegin);
+                                request.setAttribute("dateBegin", dateBegin);
+                            }
+
+                            /* comprobar date end*/
+                            if (msgErrorDateEnd == null || msgErrorDateEnd.trim().equals("")) {
+                                request.setAttribute("dateEnd", Format.dateYYYYMMDD(reg.getDateEndCard()));
+                            } else {
+                                request.setAttribute("msgErrorDateEnd", msgErrorDateEnd);
+                                request.setAttribute("dateEnd", dateEnd);
+                            }
+
+                            /* comprobar mensaje de exito */
+                            if (msgOk == null || msgOk.trim().equals("")) {
+                                request.setAttribute("msgOk", "Se encontró el registro!");
+                            } else {
+                                request.setAttribute("msgOk", msgOk);
+                            }
+
+                        } else {
+                            request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
+                        }
+                    } catch (Exception ex) {
+                        request.setAttribute("msgErrorFound", "Error: La función no se pudo ejecutar.");
+                    }
                 } catch (Exception ex) {
                     request.setAttribute("msgErrorFound", "Error: No se recibió ningún parámetro.");
                 } finally {
