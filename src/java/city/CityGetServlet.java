@@ -68,37 +68,62 @@ public class CityGetServlet extends HttpServlet {
                 request.setAttribute("userJsp", userJsp);
                 request.setAttribute("access", access);
 
-                //////////////////////////////////////////
-                // DECLARAR VARIABLES DE INSTANCIA
                 /////////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                //////////////////////////////////////// 
+
+                /* obtener atributos de PRG */
+                String nameCity = request.getParameter("nameCity");
+
+                /* obtener mensajes de PRG */
+                String msgErrorId = request.getParameter("msgErroId");
+                String msgErrorNameCity = request.getParameter("msgErrorNameCity");
+                String msgErrorDup = request.getParameter("msgErrorDup");
+                String msgOk = request.getParameter("msgOk");
+
+                /* obtener atributos de busqueda */
+                String sidCity = request.getParameter("idCity");
 
                 City city = new City();
 
-                try {
-                    /////////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    //////////////////////////////////////// 
+                /* comprobar id city */
+                if (sidCity == null || sidCity.trim().equals("")) {
+                    request.setAttribute("msgErrorId", "Error al recibir id Ciudad.");
+                } else {
+                    city.setIdCity(Integer.parseInt(sidCity));
+                    /* comprobar existencia */
+                    City aux = cityDAO.findbyIdCity(city);
+                    if (aux != null) {
+                        /* obtener atributos del dao */
+                        request.setAttribute("idCity", aux.getIdCity());
 
-                    String sidCity = request.getParameter("idCity");
+                        /* comprobar msgErrorNameCity */
+                        if (msgErrorNameCity == null || msgErrorNameCity.trim().equals("")) {
+                            request.setAttribute("nameCity", aux.getNameCity());
+                        } else {
+                            request.setAttribute("nameCity", nameCity);
+                            request.setAttribute("msgErrorNameCity", msgErrorNameCity);
+                        }
 
-                    /* comprobar id city */
-                    if (sidCity == null || sidCity.trim().equals("")) {
-                        request.setAttribute("msgErrorId", "Error al recibir id Ciudad.");
-                    } else {
-                        city.setIdCity(Integer.parseInt(sidCity));
-                        /* comprobar existencia */
-                        City aux = cityDAO.findbyIdCity(city);
-                        if (aux != null) {
-                            request.setAttribute("city", aux);
+                        /* comprobar msgErrorDup */
+                        if (msgErrorDup == null || msgErrorDup.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorDup", msgErrorDup);
+                        }
+
+                        if (msgOk == null || msgOk.trim().equals("")) {
                             request.setAttribute("msgOk", "Se encontró el registro!");
                         } else {
-                            request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
+                            request.setAttribute("msgOk", msgOk);
                         }
+
+                    } else {
+                        request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
                     }
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("/city/cityUpdate.jsp").forward(request, response);
                 }
+
+                request.getRequestDispatcher("/city/cityUpdate.jsp").forward(request, response);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");

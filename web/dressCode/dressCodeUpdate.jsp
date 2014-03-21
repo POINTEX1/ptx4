@@ -90,10 +90,10 @@
                         <!-- /MENSAJE DE ERROR DE REGISTRO DUPLICADO -->
 
                         <!-- MENSAJE DE ERROR DE TITULO -->
-                        <c:if test="${msgErrorTittle != null }" >
+                        <c:if test="${msgErrorNameDressCode != null }" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorTittle}" /></strong></br>
+                                <strong><c:out value="${msgErrorNameDressCode}" /></strong></br>
                             </div>
                         </c:if>
                         <!-- /MENSAJE DE ERROR DE TITULO -->
@@ -132,22 +132,22 @@
                             <!-- ID -->
                             <div class="form-group">
                                 <label for="disabledSelect">ID</label>
-                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${dressCode.idDressCode}" />" disabled>
-                                <input type="hidden" name="idDressCode" value="<c:out value="${dressCode.idDressCode}" />"/>
+                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${idDressCode}" />" disabled>
+                                <input type="hidden" name="idDressCode" value="<c:out value="${idDressCode}" />"/>
                             </div>
                             <!-- /ID -->
 
                             <!-- TITULO -->
-                            <c:if test="${msgErrorDup == null && msgErrorTittle == null}" >
+                            <c:if test="${msgErrorDup == null && msgErrorNameDressCode == null}" >
                                 <div class="form-group">
                                     <label>Título</label>
-                                    <input class="form-control" required="true" maxlength="30" name="nameDressCode" value="<c:out value="${dressCode.nameDressCode}" />">
+                                    <input class="form-control" required="true" maxlength="30" name="nameDressCode" value="<c:out value="${nameDressCode}" />">
                                 </div>
                             </c:if>
-                            <c:if test="${msgErrorDup != null || msgErrorTittle != null }" >
+                            <c:if test="${msgErrorDup != null || msgErrorNameDressCode != null }" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Título</label>
-                                    <input class="form-control" required="true" maxlength="30" name="nameDressCode" id="inputError" value="<c:out value="${dressCode.nameDressCode}" />">
+                                    <input class="form-control" required="true" maxlength="30" name="nameDressCode" id="inputError" value="<c:out value="${nameDressCode}" />">
                                 </div>
                             </c:if>
                             <!-- /TITULO -->
@@ -156,13 +156,13 @@
                             <c:if test="${msgErrorMenDetails == null}" >
                                 <div class="form-group">
                                     <label>Descripción para Hombres</label>
-                                    <input class="form-control" required="true" maxlength="255" name="menDetails" value="<c:out value="${dressCode.menDetails}" />">
+                                    <input class="form-control" required="true" maxlength="255" name="menDetails" value="<c:out value="${menDetails}" />">
                                 </div>
                             </c:if>                                                                                    
                             <c:if test="${msgErrorMenDetails != null }" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Descripción para Hombres</label>
-                                    <input class="form-control" required="true" maxlength="255" name="menDetails" id="inputError" value="<c:out value="${dressCode.menDetails}" />">
+                                    <input class="form-control" required="true" maxlength="255" name="menDetails" id="inputError" value="<c:out value="${menDetails}" />">
                                 </div>
                             </c:if>
                             <!-- /DESCRIPCION HOMBRES -->
@@ -171,13 +171,13 @@
                             <c:if test="${msgErrorWomenDetails == null}" >
                                 <div class="form-group">
                                     <label>Descripción para Mujeres</label>
-                                    <input class="form-control" required="true" maxlength="255" name="womenDetails" value="<c:out value="${dressCode.womenDetails}" />">
+                                    <input class="form-control" required="true" maxlength="255" name="womenDetails" value="<c:out value="${womenDetails}" />">
                                 </div>
                             </c:if>
                             <c:if test="${msgErrorWomenDetails != null }" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Descripción para Mujeres</label>
-                                    <input class="form-control" required="true" maxlength="255" name="womenDetails" id="inputError" value="<c:out value="${dressCode.womenDetails}" />">
+                                    <input class="form-control" required="true" maxlength="255" name="womenDetails" id="inputError" value="<c:out value="${womenDetails}" />">
                                 </div>
                             </c:if>
                             <!-- /DESCRIPCION MUJERES -->
@@ -186,13 +186,13 @@
                             <c:if test="${msgErrorUrlImage == null}" >
                                 <div class="form-group">
                                     <label>URL imagen</label>
-                                    <input class="form-control" required="true" maxlength="255" name="urlImage" value="<c:out value="${dressCode.urlImage}" />">
+                                    <input class="form-control" required="true" maxlength="255" name="urlImage" value="<c:out value="${urlImage}" />">
                                 </div>
                             </c:if>
                             <c:if test="${msgErrorUrlImage != null }" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">URL imagen</label>
-                                    <input class="form-control" required="true" maxlength="255" name="urlImage" id="inputError" value="<c:out value="${dressCode.urlImage}" />">
+                                    <input class="form-control" required="true" maxlength="255" name="urlImage" id="inputError" value="<c:out value="${urlImage}" />">
                                 </div>
                             </c:if>
                             <!-- /URL IMAGEN -->

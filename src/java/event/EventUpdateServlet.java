@@ -80,179 +80,163 @@ public class EventUpdateServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-                    /////////////////////////////////////////
-                    // DECLARAR VARIABLES DE INSTANCIA
                     ////////////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETROS
+                    ////////////////////////////////////////
+
+                    String sidPlace = request.getParameter("idPlace");
+                    String sidEvent = request.getParameter("idEvent");
+                    String tittle = request.getParameter("tittle");
+                    String details = request.getParameter("details");
+                    String dateBegin = request.getParameter("dateBegin");
+                    String dateEnd = request.getParameter("dateEnd");
+                    String urlImage = request.getParameter("urlImage");
+                    String spoints = request.getParameter("points");
+                    String srequest = request.getParameter("eventRequest");
+                    String sidDressCode = request.getParameter("idDressCode");
+                    String reason = request.getParameter("reason");
 
                     Event event = new Event();
 
-                    try {
-                        /////////////////////////////////////////
-                        // RECIBIR Y COMPROBAR PARAMETROS
-                        ////////////////////////////////////////
+                    boolean error = false;
 
-                        String sidPlace = request.getParameter("idPlace");
-                        String sidEvent = request.getParameter("idEvent");
-                        String namePlace = request.getParameter("namePlace");
-                        String tittle = request.getParameter("tittle");
-                        String details = request.getParameter("details");
-                        String dateBegin = request.getParameter("dateBegin");
-                        String dateEnd = request.getParameter("dateEnd");
-                        String urlImage = request.getParameter("urlImage");
-                        String spoints = request.getParameter("points");
-                        String srequest = request.getParameter("eventRequest");
-                        String sidDressCode = request.getParameter("idDressCode");
-                        String reason = request.getParameter("reason");
+                    String url = "?a=target";
 
-                        boolean error = false;
-
-                        /* comprobar id place */
-                        if (sidPlace == null || sidPlace.trim().equals("")) {
-                            request.setAttribute("msgErrorIdPlace", "Error al recibir id de plaza.");
-                            error = true;
-                        } else {
-                            event.setIdPlace(Integer.parseInt(sidPlace));
-                        }
-
-                        /* comprobar id event */
-                        if (sidEvent == null || sidEvent.trim().equals("")) {
-                            request.setAttribute("msgErrorIdEvent", "Error al recibir id de evento.");
-                            error = true;
-                        } else {
-                            event.setIdEvent(Integer.parseInt(sidEvent));
-                        }
-
-                        /* comprobar namePlace */
-                        if (namePlace == null || namePlace.trim().equals("")) {
-                            request.setAttribute("msgErrorNamePlace", "Error al recibir nombre de plaza.");
-                            error = true;
-                        } else {
-                            event.setNamePlace(namePlace);
-                        }
-
-                        /* comprobar tittle*/
-                        if (tittle == null || tittle.trim().equals("")) {
-                            request.setAttribute("msgErrorTittle", "Error al recibir título.");
-                            error = true;
-                        } else {
-                            event.setTittle(tittle);
-                        }
-
-                        /* comprobar details */
-                        if (details == null || details.trim().equals("")) {
-                            request.setAttribute("msgErrorDetails", "Error al recibir detalles.");
-                            error = true;
-                        } else {
-                            event.setDetails(details);
-                        }
-
-                        /* comprobar points */
-                        if (spoints == null || spoints.trim().equals("")) {
-                            request.setAttribute("msgErrorPoints", "Error: Debe ingresar puntos.");
-                            error = true;
-                        } else {
-                            try {
-                                event.setPoints(Integer.parseInt(spoints));
-                                if (event.getPoints() < 0) {
-                                    request.setAttribute("msgErrorPoints", "Error: Los puntos no pueden ser negativos.");
-                                    error = true;
-                                }
-                            } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorPoints", "Error: Los puntos deben ser numéricos.");
-                                error = true;
-                            }
-                        }
-
-                        /* comprobar url image*/
-                        if (urlImage == null || urlImage.trim().equals("")) {
-                            request.setAttribute("msgErrorUrlImage", "Error: Debe ingresar url de imagen.");
-                            error = true;
-                        } else {
-                            event.setUrlImage(urlImage);
-                        }
-
-                        /* comprobar dateBegin */
-                        if (dateBegin == null || dateBegin.trim().equals("")) {
-                            request.setAttribute("msgErrorDateBegin", "Error al recibir feha de inicio.");
-                            error = true;
-                        } else {
-                            /* comprobar dateEnd */
-                            if (dateEnd == null || dateEnd.trim().equals("")) {
-                                request.setAttribute("msgErrorDateEnd", "Error al recibir feha de término.");
-                                error = true;
-                            } else {
-                                /* comparar fechas */
-                                event.setDateBegin(dateBegin);
-                                event.setDateEnd(dateEnd);
-                                //System.out.println("Comparar fecha 1 y fecha 2: " + event.getDateBegin().compareTo(event.getDateEnd()));
-                                if (event.getDateBegin().compareTo(event.getDateEnd()) >= 0) {
-                                    request.setAttribute("msgErrorDate", "Error: La fecha de término debe ser mayor que la fecha de inicio.");
-                                    error = true;
-                                }
-                            }
-                        }
-
-                        /* comprobar request */
-                        if (srequest == null || srequest.trim().equals("")) {
-                            request.setAttribute("msgErrorRequest", "Error al recibir la solicitud.");
-                            error = true;
-                        } else {
-                            try {
-                                event.setRequest(Integer.parseInt(srequest));
-                            } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorType", "Error al recibir la solicitud.");
-                                error = true;
-                            }
-                        }
-
-                        /* comprobar id dress code */
-                        if (sidDressCode == null || sidDressCode.trim().equals("")) {
-                            error = true;
-                        } else {
-                            try {
-                                event.setIdDressCode(Integer.parseInt(sidDressCode));
-                            } catch (NumberFormatException n) {
-                                error = true;
-                            }
-                        }
-
-                        /* comprobar reason */
-                        if (reason == null || reason.trim().equals("")) {
-                        } else {
-                            event.setReason(reason);
-                        }
-
-                        if (!error) {
-                            /* comprobar registros duplicados */
-                            boolean find = eventDAO.findDuplicate(event);
-                            if (find) {
-                                request.setAttribute("msgErrorEvent", "Error: ya existe este evento. Compruebe utilizando otro título u otro rango de fechas.");
-                            } else {
-                                /* comprobar existencia */
-                                Event aux = eventDAO.findByPlaceEvent(event);
-                                if (aux != null) {
-                                    eventDAO.update(event);
-                                    request.setAttribute("msgOk", "Registro actualizado exitosamente! ");
-                                } else {
-                                    request.setAttribute("msgErrorFound", "Error: no existe el evento o ha sido eliminado mientras se actualizaba.");
-                                }
-                            }
-                        }
-
-                        /* obtener lista de codigos de vestir */
-                        try {
-                            Collection<DressCode> listDressCode = dressCodeDAO.getAll();
-                            request.setAttribute("listDressCode", listDressCode);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-
-                        request.setAttribute("event", event);
-
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("/event/eventUpdate.jsp").forward(request, response);
+                    /* comprobar id place */
+                    url += "&idPlace=" + sidPlace;
+                    if (sidPlace == null || sidPlace.trim().equals("")) {
+                        url += "&msgErrorIdPlace=Error al recibir id de lugar.";
+                        error = true;
+                    } else {
+                        event.setIdPlace(Integer.parseInt(sidPlace));
                     }
+
+                    /* comprobar id event */
+                    url += "&idEvent=" + sidEvent;
+                    if (sidEvent == null || sidEvent.trim().equals("")) {
+                        url += "&msgErrorIdEvent=Error al recibir id de evento.";
+                        error = true;
+                    } else {
+                        event.setIdEvent(Integer.parseInt(sidEvent));
+                    }
+
+                    /* comprobar tittle */
+                    url += "&tittle=" + tittle;
+                    if (tittle == null || tittle.trim().equals("")) {
+                        url += "&msgErrorTittle=Error al recibir título.";
+                        error = true;
+                    } else {
+                        event.setTittle(tittle);
+                    }
+
+                    /* comprobar details */
+                    url += "&details=" + details;
+                    if (details == null || details.trim().equals("")) {
+                        url += "&msgErrorDetails=Error al recibir detalles.";
+                        error = true;
+                    } else {
+                        event.setDetails(details);
+                    }
+
+                    /* comprobar points */
+                    url += "&points=" + spoints;
+                    if (spoints == null || spoints.trim().equals("")) {
+                        url += "&msgErrorPoints=Error: Debe ingresar puntos.";
+                        error = true;
+                    } else {
+                        try {
+                            event.setPoints(Integer.parseInt(spoints));
+                            if (event.getPoints() < 0) {
+                                url += "&msgErrorPoints=Error: Los puntos no pueden ser negativos.";
+                                error = true;
+                            }
+                        } catch (NumberFormatException n) {
+                            url += "&msgErrorPoints=Error: Los puntos deben ser numéricos.";
+                            error = true;
+                        }
+                    }
+
+                    /* comprobar url image*/
+                    url += "&urlImage=" + urlImage;
+                    if (urlImage == null || urlImage.trim().equals("")) {
+                        url += "&msgErrorUrlImage=Error: Debe ingresar url de imagen.";
+                        error = true;
+                    } else {
+                        event.setUrlImage(urlImage);
+                    }
+
+                    /* comprobar dateBegin */
+                    url += "&dateBegin=" + dateBegin;
+                    url += "&dateEnd=" + dateEnd;
+                    if (dateBegin == null || dateBegin.trim().equals("")) {
+                        url += "&msgErrorDate=Error al recibir feha de inicio.";
+                        error = true;
+                    } else {
+                        /* comprobar dateEnd */
+                        if (dateEnd == null || dateEnd.trim().equals("")) {
+                            url += "&msgErrorDate=Error al recibir feha de término.";
+                            error = true;
+                        } else {
+                            /* comparar fechas */
+                            event.setDateBegin(dateBegin);
+                            event.setDateEnd(dateEnd);
+                            //System.out.println("Comparar fecha 1 y fecha 2: " + event.getDateBegin().compareTo(event.getDateEnd()));
+                            if (event.getDateBegin().compareTo(event.getDateEnd()) >= 0) {
+                                url += "&msgErrorDate=Error: La fecha de término debe ser mayor que la fecha de inicio.";
+                                error = true;
+                            }
+                        }
+                    }
+
+                    /* comprobar id dress code */
+                    url += "&idDressCode=" + sidDressCode;
+                    if (sidDressCode == null || sidDressCode.trim().equals("")) {
+                        error = true;
+                    } else {
+                        try {
+                            event.setIdDressCode(Integer.parseInt(sidDressCode));
+                        } catch (NumberFormatException n) {
+                            error = true;
+                        }
+                    }
+
+                    /*comprobar request */
+                    url += "&srequest=" + srequest;
+                    if (srequest == null || srequest.trim().equals("")) {
+                    } else {
+                        try {
+                            event.setRequest(Integer.parseInt(srequest));
+                        } catch (NumberFormatException n) {
+                        }
+                    }
+
+                    /* comprobar reason */
+                    url += "&reason=" + reason;
+                    if ((reason == null || reason.trim().equals("")) && event.getRequest() == 2) {
+                        url += "&msgErrorReason=Error: Debe ingresar razón de rechazo.";
+                        error = true;
+                    } else {
+                        event.setReason(reason);
+                    }
+
+                    if (!error) {
+                        /* comprobar registros duplicados */
+                        boolean find = eventDAO.findDuplicate(event);
+                        if (find) {
+                            url += "&msgErrorEvent=Error: ya existe este evento. Compruebe utilizando otro título u otro rango de fechas.";
+                        } else {
+                            /* comprobar existencia */
+                            Event aux = eventDAO.findByPlaceEvent(event);
+                            if (aux != null) {
+                                eventDAO.update(event);
+                                url += "&msgOk=Registro actualizado exitosamente!";
+                            } else {
+                                url += "&msgErrorFound=Error: no existe el evento o ha sido eliminado mientras se actualizaba.";
+                            }
+                        }
+                    }
+                    /* send redirect */
+                    response.sendRedirect("EventGetServlet" + url);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
@@ -262,6 +246,7 @@ public class EventUpdateServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

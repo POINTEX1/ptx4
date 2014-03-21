@@ -132,26 +132,23 @@
                             <!-- ID CLIENT NEWS -->
                             <div class="form-group">
                                 <label for="disabledSelect">ID</label>
-                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${cnews.idClientNews}" />" disabled>
-                                <input type="hidden" name="idClientNews" value="<c:out value="${cnews.idClientNews}" />"/>
+                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${idClientNews}" />" disabled>
+                                <input type="hidden" name="idClientNews" value="<c:out value="${idClientNews}" />"/>
                             </div>
                             <!-- /ID CLIENT NEWS -->
 
                             <!-- RUT -->
                             <div class="form-group">
                                 <label for="disabledSelect">RUT</label>
-                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${cnews.rut}" />-<c:out value="${cnews.dv}" />" disabled>
-                                <input type="hidden" name="rut" value="<c:out value="${cnews.rut}" />"/>
-                                <input type="hidden" name="dv" value="<c:out value="${cnews.dv}" />"/>
+                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${rut}" />-<c:out value="${dv}" />" disabled>
+                                <input type="hidden" name="rut" value="<c:out value="${rut}" />"/>                               
                             </div>
                             <!-- /RUT -->
 
                             <!-- NOMBRE -->
                             <div class="form-group">
                                 <label for="disabledSelect">Nombre</label>
-                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${cnews.firstName}" /> <c:out value="${cnews.lastName}" />" disabled>
-                                <input type="hidden" name="firstName" value="<c:out value="${cnews.firstName}" /> "/>
-                                <input type="hidden" name="lastName" value="<c:out value="${cnews.lastName}" />"/>                          
+                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${firstName}" /> <c:out value="${lastName}" />" disabled>                                                          
                             </div>
                             <!-- /NOMBRE -->
 
@@ -159,13 +156,13 @@
                             <c:if test="${msgErrorDup == null && msgErrorTittle == null }" >
                                 <div class="form-group">
                                     <label>Título</label>
-                                    <input class="form-control" required="true" maxlength="50" name="tittle" value="<c:out value="${cnews.tittle}" />">
+                                    <input class="form-control" required="true" maxlength="50" name="tittle" value="<c:out value="${tittle}" />">
                                 </div>
                             </c:if>                                                        
                             <c:if test="${msgErrorDup != null || msgErrorTittle != null }" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Título</label>
-                                    <input class="form-control" required="true" maxlength="50" name="tittle" id="inputError" value="<c:out value="${cnews.tittle}" />">
+                                    <input class="form-control" required="true" maxlength="50" name="tittle" id="inputError" value="<c:out value="${tittle}" />">
                                 </div>
                             </c:if>
                             <!-- /TITULO -->
@@ -174,54 +171,54 @@
                             <div class="form-group">
                                 <label>Tipo de Noticias</label>
                                 <select class="form-control" required="true" name="newsType">
-                                    <option value="1"  <c:if test="${cnews.newsType == 1}" > selected </c:if>> Advertencia</option>
-                                    <option value="2" <c:if test="${cnews.newsType == 2}" > selected </c:if>> Notificación</option>
-                                    <option value="3" <c:if test="${cnews.newsType == 3}" > selected </c:if>> Información</option>
-                                    <option value="4" <c:if test="${cnews.newsType == 4}" > selected </c:if>> Atención</option>
+                                    <option value="1"  <c:if test="${newsType == 1}" > selected </c:if>> Advertencia</option>
+                                    <option value="2" <c:if test="${newsType == 2}" > selected </c:if>> Notificación</option>
+                                    <option value="3" <c:if test="${newsType == 3}" > selected </c:if>> Información</option>
+                                    <option value="4" <c:if test="${newsType == 4}" > selected </c:if>> Atención</option>
                                     </select>
                                 </div>
                                 <!-- /TIPO DE NOTICIA -->
 
-                            <!-- FECHAS -->
+                                <!-- FECHAS -->
                             <c:choose>
                                 <c:when test="${msgErrorDup == null && msgErrorDate == null }">
                                     <div class="form-group">
                                         <label>Fecha de Inicio</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateBegin" value="<c:out value="${cnews.dateBegin}" />">
+                                        <input class="form-control" type="datetime-local" required="true" name="dateBegin" value="<c:out value="${dateBegin}" />">
                                     </div>
                                     <div class="form-group">
                                         <label>Fecha de Término</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateEnd" value="<c:out value="${cnews.dateEnd}" />">
+                                        <input class="form-control" type="datetime-local" required="true" name="dateEnd" value="<c:out value="${dateEnd}" />">
                                     </div>
                                 </c:when>
                                 <c:when test="${msgErrorDup != null && msgErrorDate == null }">
                                     <div class="form-group has-error">
                                         <label class="control-label" for="inputError">Fecha de Inicio</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateBegin" id="inputError" value="<c:out value="${cnews.dateBegin}" />">
+                                        <input class="form-control" type="datetime-local" required="true" name="dateBegin" id="inputError" value="<c:out value="${dateBegin}" />">
                                     </div>
                                     <div class="form-group has-error">
                                         <label class="control-label" for="inputError">Fecha de Término</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateEnd" id="inputError" value="<c:out value="${cnews.dateEnd}" />">
+                                        <input class="form-control" type="datetime-local" required="true" name="dateEnd" id="inputError" value="<c:out value="${dateEnd}" />">
                                     </div>
                                 </c:when>
                                 <c:when test="${msgErrorDup == null && msgErrorDate != null }">
                                     <div class="form-group has-error">
                                         <label class="control-label" for="inputError">Fecha de Inicio</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateBegin" id="inputError" value="<c:out value="${cnews.dateBegin}" />">
+                                        <input class="form-control" type="datetime-local" required="true" name="dateBegin" id="inputError" value="<c:out value="${dateBegin}" />">
                                     </div>
                                     <div class="form-group has-error">
                                         <label class="control-label" for="inputError">Fecha de Término</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateEnd" id="inputError" value="<c:out value="${cnews.dateEnd}" />">
+                                        <input class="form-control" type="datetime-local" required="true" name="dateEnd" id="inputError" value="<c:out value="${dateEnd}" />">
                                     </div>
                                 </c:when>
                                 <c:otherwise>
                                     <div class="form-group">
                                         <label>Fecha de Inicio</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateBegin" value="<c:out value="${cnews.dateBegin}" />">
+                                        <input class="form-control" type="datetime-local" required="true" name="dateBegin" value="<c:out value="${dateBegin}" />">
                                     </div>
                                     <div class="form-group">
                                         <label>Fecha de Término</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateEnd" value="<c:out value="${cnews.dateEnd}" />">
+                                        <input class="form-control" type="datetime-local" required="true" name="dateEnd" value="<c:out value="${dateEnd}" />">
                                     </div>
                                 </c:otherwise>
                             </c:choose>

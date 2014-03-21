@@ -84,17 +84,33 @@ public class EventGetServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-                    /////////////////////////////////////////
-                    // DECLARAR VARIABLES DE INSTANCIA
-                    /////////////////////////////////////////
 
-                    Event reg = null;
-
+                    /////////////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETROS
+                    /////////////////////////////////////////
                     try {
-                        /////////////////////////////////////////
-                        // RECIBIR Y COMPROBAR PARAMETROS
-                        /////////////////////////////////////////
+                        /* obtener atributos de PRG */
+                        String tittle = request.getParameter("tittle");
+                        String details = request.getParameter("details");
+                        String points = request.getParameter("points");
+                        String dateBegin = request.getParameter("dateBegin");
+                        String dateEnd = request.getParameter("dateEnd");
+                        String urlImage = request.getParameter("urlImage");
+                        String reason = request.getParameter("reason");
+                        String srequest = request.getParameter("srequest");
 
+
+                        /* obtener mensajes de PRG */
+                        String msgOk = request.getParameter("msgOk");
+                        String msgErrorTittle = request.getParameter("msgErrorTittle");
+                        String msgErrorDetails = request.getParameter("msgErrorDetails");
+                        String msgErrorPoints = request.getParameter("msgErrorPoints");
+                        String msgErrorDate = request.getParameter("msgErrorDate");
+                        String msgErrorUrlImage = request.getParameter("msgErrorUrlImage");
+                        String msgErrorEvent = request.getParameter("msgErrorEvent");
+                        String msgErrorReason = request.getParameter("msgErrorReason");
+
+                        /* obtener atributos de busqueda */
                         String sidPlace = request.getParameter("idPlace");
                         String sidEvent = request.getParameter("idEvent");
 
@@ -127,12 +143,92 @@ public class EventGetServlet extends HttpServlet {
                         }
 
                         if (!error) {
-                            Event aux = eventDAO.findByPlaceEvent(event);
-                            if (aux != null) {
-                                reg = aux;
+                            /* buscar Evento */
+                            Event reg = eventDAO.findByPlaceEvent(event);
+                            if (reg != null) {
+                                /* obtener atributos del dao */
+                                request.setAttribute("idPlace", reg.getIdPlace());
+                                request.setAttribute("namePlace", reg.getNamePlace());
+                                request.setAttribute("idEvent", reg.getIdEvent());
+                                request.setAttribute("idDressCode", reg.getIdDressCode());
+
                                 reg.setDateBegin(Format.dateYYYYMMDD(reg.getDateBegin()));
                                 reg.setDateEnd(Format.dateYYYYMMDD(reg.getDateEnd()));
-                                request.setAttribute("msgOk", "Se encontró el registro!");
+
+                                /////////////////////////////
+                                // COMPROBAR ATRIBUTOS
+                                /////////////////////////////
+
+                                /* comprobar titulo evento */
+                                if (msgErrorTittle == null || msgErrorTittle.trim().equals("")) {
+                                    request.setAttribute("tittle", reg.getTittle());
+                                } else {
+                                    request.setAttribute("msgErrorTittle", msgErrorTittle);
+                                    request.setAttribute("tittle", tittle);
+                                }
+
+                                /* comprobar detalles */
+                                if (msgErrorDetails == null || msgErrorDetails.trim().equals("")) {
+                                    request.setAttribute("details", reg.getDetails());
+                                } else {
+                                    request.setAttribute("msgErrorDetails", msgErrorDetails);
+                                    request.setAttribute("details", details);
+                                }
+
+                                /* comprobar puntos */
+                                if (msgErrorPoints == null || msgErrorPoints.trim().equals("")) {
+                                    request.setAttribute("points", reg.getPoints());
+                                } else {
+                                    request.setAttribute("msgErrorPoints", msgErrorPoints);
+                                    request.setAttribute("points", points);
+                                }
+
+                                /* comprobar fechas */
+                                if (msgErrorDate == null || msgErrorDate.trim().equals("")) {
+                                    request.setAttribute("dateBegin", reg.getDateBegin());
+                                    request.setAttribute("dateEnd", reg.getDateEnd());
+                                } else {
+                                    request.setAttribute("msgErrorDate", msgErrorDate);
+                                    request.setAttribute("dateBegin", dateBegin);
+                                    request.setAttribute("dateEnd", dateEnd);
+                                }
+
+                                /* comprobar url image */
+                                if (msgErrorUrlImage == null || msgErrorUrlImage.trim().equals("")) {
+                                    request.setAttribute("urlImage", reg.getUrlImage());
+                                } else {
+                                    request.setAttribute("msgErrorUrlImage", msgErrorUrlImage);
+                                    request.setAttribute("urlImage", urlImage);
+                                }
+
+                                /* comprobar reason */
+                                if (msgErrorReason == null || msgErrorReason.trim().equals("")) {
+                                    request.setAttribute("reason", reg.getReason());
+                                    request.setAttribute("request", reg.getRequest());
+                                } else {
+                                    request.setAttribute("msgErrorReason", msgErrorReason);
+                                    request.setAttribute("reason", reason);
+                                    System.out.println(srequest);
+                                    try {
+                                        int rqst = Integer.parseInt(srequest);
+                                        request.setAttribute("request", rqst);
+                                    } catch (NumberFormatException n) {
+                                    }
+                                }
+
+                                /* comprobar error event */
+                                if (msgErrorEvent == null || msgErrorEvent.trim().equals("")) {
+                                } else {
+                                    request.setAttribute("msgErrorEvent", msgErrorEvent);
+                                    request.setAttribute("tittle", tittle);
+                                }
+
+                                /* comprobar mensaje de exito */
+                                if (msgOk == null || msgOk.trim().equals("")) {
+                                    request.setAttribute("msgOk", "Se encontró el registro!");
+                                } else {
+                                    request.setAttribute("msgOk", msgOk);
+                                }
                             } else {
                                 request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
                             }
@@ -153,9 +249,6 @@ public class EventGetServlet extends HttpServlet {
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
-
-                        /* enviar datos del objeto a la vista */
-                        request.setAttribute("event", reg);
 
                     } catch (Exception parameterException) {
                     } finally {

@@ -84,10 +84,22 @@ public class ClientNewsGetServlet extends HttpServlet {
                         // RECIBIR Y COMPROBAR PARAMETROS
                         /////////////////////////////////////////
 
+                        /* obtener atributos de PRG */
+                        String tittle = request.getParameter("tittle");
+                        String dateBegin = request.getParameter("dateBegin");
+                        String dateEnd = request.getParameter("dateEnd");
+
+                        /* obtener mensajes de PRG */
+                        String msgErrorTittle = request.getParameter("msgErrorTittle");
+                        String msgErrorDate = request.getParameter("msgErrorDate");
+                        String msgOk = request.getParameter("msgOk");
+
+                        /* parametros de busqueda */
                         String sidClientNews = request.getParameter("idClientNews");
                         String srut = request.getParameter("rut");
 
                         ClientNews cnews = new ClientNews();
+
                         boolean error = false;
 
 
@@ -108,8 +120,12 @@ public class ClientNewsGetServlet extends HttpServlet {
                             request.setAttribute("msgErrorRut", "Error al recibir rut.");
                             error = true;
                         } else {
-                            cnews.setRut(Rut.getRut(srut));
-                            cnews.setDv(Rut.getDv(srut));
+                            try {
+                                cnews.setRut(Integer.parseInt(srut));
+                            } catch (NumberFormatException n) {
+                                request.setAttribute("msgErrorRut", "Error al recibir rut.");
+                                error = true;
+                            }
                         }
 
 
@@ -120,8 +136,43 @@ public class ClientNewsGetServlet extends HttpServlet {
                                 reg.setDateBegin(Format.dateYYYYMMDD(reg.getDateBegin()));
                                 reg.setDateEnd(Format.dateYYYYMMDD(reg.getDateEnd()));
 
-                                request.setAttribute("cnews", reg);
-                                request.setAttribute("msgOk", "El registro ha sido encontrado!");
+                                /* obtener atributos del dao */
+                                request.setAttribute("rut", reg.getRut());
+                                request.setAttribute("dv", reg.getDv());
+                                request.setAttribute("idClientNews", reg.getIdClientNews());
+                                request.setAttribute("firstName", reg.getFirstName());
+                                request.setAttribute("lastName", reg.getLastName());
+                                request.setAttribute("newsType", reg.getNewsType());
+
+                                /*comprobar titulo */
+                                if (msgErrorTittle == null || msgErrorTittle.trim().equals("")) {
+                                    request.setAttribute("tittle", reg.getTittle());
+                                } else {
+                                    request.setAttribute("msgErrorTittle", msgErrorTittle);
+                                    request.setAttribute("tittle", tittle);
+                                }
+
+                                /* comprobar date */
+                                if (msgErrorDate == null || msgErrorDate.trim().equals("")) {
+                                } else {
+                                    request.setAttribute("msgErrorDate", msgErrorDate);
+                                }
+
+                                /* comprobar fecha inicio */
+                                if (msgErrorDate == null || msgErrorDate.trim().equals("")) {
+                                    request.setAttribute("dateBegin", reg.getDateBegin());
+                                    request.setAttribute("dateEnd", reg.getDateEnd());
+                                } else {
+                                    request.setAttribute("msgErrorDate", msgErrorDate);
+                                    request.setAttribute("dateBegin", dateBegin);
+                                    request.setAttribute("dateEnd", dateEnd);
+                                }
+
+                                if (msgOk == null || msgOk.trim().equals("")) {
+                                    request.setAttribute("msgOk", "El registro ha sido encontrado!");
+                                } else {
+                                    request.setAttribute("msgOk", msgOk);
+                                }
                             } else {
                                 request.setAttribute("msgErrorFound", "Error: No se ha encontrado el registro.");
                             }

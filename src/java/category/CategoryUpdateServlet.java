@@ -73,51 +73,59 @@ public class CategoryUpdateServlet extends HttpServlet {
                 /////////////////////////////////////////
                 // RECIBIR Y COMPROBAR PARAMETROS
                 /////////////////////////////////////////
-                try {
 
-                    String sidCategory = request.getParameter("idCategory");
-                    String nameCategory = request.getParameter("nameCategory");
+                String sidCategory = request.getParameter("idCategory");
+                String nameCategory = request.getParameter("nameCategory");
 
-                    Category category = new Category();
+                Category category = new Category();
 
-                    boolean error = false;
+                boolean error = false;
 
-                    /* comprobar ID */
-                    if (sidCategory == null || sidCategory.trim().equals("")) {
-                        request.setAttribute("msgErrorId", "Error al recibir ID. ");
-                        error = true;
-                    } else {
+                String url = "?a=target";
+
+                /* comprobar ID */
+                url += "&idCategory=" + sidCategory;
+                if (sidCategory == null || sidCategory.trim().equals("")) {
+                    url += "&msgErrorId=Error al recibir ID.";
+                    error = true;
+                } else {
+                    try {
                         category.setIdCategory(Integer.parseInt(sidCategory));
-                    }
-                    /* comprobar name category */
-                    if (nameCategory == null || nameCategory.trim().equals("")) {
-                        request.setAttribute("msgErrorNameCity", "Error al recibir nombre Ciudad. ");
+                    } catch (NumberFormatException n) {
+                        url += "&msgErrorId=Error al recibir ID.";
                         error = true;
-                    } else {
-                        category.setNameCategory(Format.capital(nameCategory));
                     }
+                }
+                /* comprobar name category */
+                url += "&nameCategory=" + nameCategory;
+                if (nameCategory == null || nameCategory.trim().equals("")) {
+                    url += "&msgErrorNameCategory= Error: Debe ingresar nombre de categoría.";
+                    error = true;
+                } else {
+                    category.setNameCategory(Format.capital(nameCategory));
+                }
 
-                    if (!error) {
-                        /* comprobar duplicados */
-                        if (categoryDAO.findByName(category.getIdCategory(), category.getNameCategory())) {
-                            request.setAttribute("msgErrorDup", "Error: ya existe una categoría con este nombre. ");
-                        } else {
-                            /* comprobar existencia */
-                            Category aux = categoryDAO.findById(category.getIdCategory());
-                            if (aux != null) {
+                if (!error) {
+                    /* comprobar duplicados */
+                    if (categoryDAO.findByName(category.getIdCategory(), category.getNameCategory())) {
+                        url += "&msgErrorDup=Error: ya existe una categoría con ese nombre.";
+                    } else {
+                        /* comprobar existencia */
+                        Category aux = categoryDAO.findById(category.getIdCategory());
+                        if (aux != null) {
+                            try {
                                 categoryDAO.update(category);
-                                request.setAttribute("msgOk", "Registro actualizado exitosamente! ");
-                            } else {
-                                request.setAttribute("msgErrorFound", "Error: La ciudad no existe o ha sido eliminada mientras se actualizaba.");
+                                url += "msgOk=Registro actualizado exitosamente!";
+                            } catch (Exception ex) {
                             }
+                        } else {
+                            url += "msgErrorFound=Error: La ciudad no existe o ha sido eliminada mientras se actualizaba.";
                         }
                     }
-                    request.setAttribute("category", category);
-                } catch (Exception parameterException) {
-                    parameterException.printStackTrace();
-                } finally {
-                    request.getRequestDispatcher("category/categoryUpdate.jsp").forward(request, response);
                 }
+                /* send redirect */
+                response.sendRedirect("CategoryGetServlet" + url);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");

@@ -134,7 +134,7 @@ public class EventDAO {
 
         try {
             sentence = conexion.createStatement();
-            String sql = "select * from event e, place p where e.id_place = " + event.getIdPlace() + " and e.id_event = " + event.getIdEvent() + " and e.id_place = p.id_place ";
+            String sql = "select * from event e, place p, dress_code dc where e.id_place = " + event.getIdPlace() + " and e.id_event = " + event.getIdEvent() + " and e.id_place = p.id_place and e.id_dress_code = dc.id_dress_code";
             result = sentence.executeQuery(sql);
 
             while (result.next()) {
@@ -152,6 +152,7 @@ public class EventDAO {
                 reg.setPoints(result.getInt("points"));
                 reg.setRequest(result.getInt("request"));
                 reg.setReason(result.getString("reason"));
+                reg.setIdDressCode(result.getInt("id_dress_code"));
             }
 
         } catch (MySQLSyntaxErrorException ex) {

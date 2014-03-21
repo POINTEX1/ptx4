@@ -4,10 +4,7 @@
  */
 package dressCode;
 
-import city.City;
-import city.CityDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -74,8 +71,22 @@ public class DressCodeGetServlet extends HttpServlet {
                 try {
                     /////////////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETROS
-                    ////////////////////////////////////////                     
+                    //////////////////////////////////////// 
 
+                    /* recibir parametros de PRG */
+                    String nameDressCode = request.getParameter("nameDressCode");
+                    String menDetails = request.getParameter("menDetails");
+                    String womenDetails = request.getParameter("womenDetails");
+                    String urlImage = request.getParameter("urlImage");
+
+                    /* recibir mensaje de PRG */
+                    String msgErrorNameDressCode = request.getParameter("msgErrorNameDressCode");
+                    String msgErrorMenDetails = request.getParameter("msgErrorMenDetails");
+                    String msgErrorWomenDetails = request.getParameter("msgErrorWomenDetails");
+                    String msgErrorUrlImage = request.getParameter("msgErrorUrlImage");
+                    String msgOk = request.getParameter("msgOk");
+
+                    /* parametros de busqueda */
                     String sidDressCode = request.getParameter("idDressCode");
 
                     DressCode dressCode = new DressCode();
@@ -86,15 +97,55 @@ public class DressCodeGetServlet extends HttpServlet {
                     } else {
                         try {
                             dressCode.setIdDressCode(Integer.parseInt(sidDressCode));
-                            /* buscar dressCode */
-                            DressCode reg = dressCodeDAO.findById(dressCode.getIdDressCode());
-                            request.setAttribute("dressCode", reg);
-                            if (reg.getIdDressCode() > 0) {
+                        } catch (NumberFormatException n) {
+                        }
+                        /* buscar dressCode */
+                        DressCode reg = dressCodeDAO.findById(dressCode.getIdDressCode());
+                        if (reg != null) {
+
+                            /* obtener atributos del dao */
+                            request.setAttribute("idDressCode", reg.getIdDressCode());
+
+                            /* comprobar nameDressCode */
+                            if (msgErrorNameDressCode == null || msgErrorNameDressCode.trim().equals("")) {
+                                request.setAttribute("nameDressCode", reg.getNameDressCode());
+                            } else {
+                                request.setAttribute("msgErrorNameDressCode", msgErrorNameDressCode);
+                                request.setAttribute("nameDressCode", nameDressCode);
+                            }
+
+                            /* comprobar men Details */
+                            if (msgErrorMenDetails == null || msgErrorMenDetails.trim().equals("")) {
+                                request.setAttribute("menDetails", reg.getMenDetails());
+                            } else {
+                                request.setAttribute("msgErrorMenDetails", msgErrorMenDetails);
+                                request.setAttribute("menDetails", menDetails);
+                            }
+
+                            /* comprobar woman details */
+                            if (msgErrorWomenDetails == null || msgErrorWomenDetails.trim().equals("")) {
+                                request.setAttribute("womenDetails", reg.getWomenDetails());
+                            } else {
+                                request.setAttribute("msgErrorWomenDetails", msgErrorWomenDetails);
+                                request.setAttribute("womenDetails", womenDetails);
+                            }
+
+                            /* comprobar url */
+                            if (msgErrorUrlImage == null || msgErrorUrlImage.trim().equals("")) {
+                                request.setAttribute("urlImage", reg.getUrlImage());
+                            } else {
+                                request.setAttribute("msgErrorUrlImage", msgErrorUrlImage);
+                                request.setAttribute("urlImage", urlImage);
+                            }
+
+                            if (msgOk == null || msgOk.trim().equals("")) {
                                 request.setAttribute("msgOk", "Se encontró el registro!");
                             } else {
-                                request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
+                                request.setAttribute("msgOk", msgOk);
                             }
-                        } catch (NumberFormatException n) {
+
+                        } else {
+                            request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
                         }
                     }
                 } catch (Exception parameterException) {

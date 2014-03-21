@@ -68,88 +68,94 @@ public class DressCodeUpdateServlet extends HttpServlet {
                 request.setAttribute("userJsp", userJsp);
                 request.setAttribute("access", access);
 
-                try {
-                    /////////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    //////////////////////////////////////// 
+                /////////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                //////////////////////////////////////// 
 
-                    String sidDressCode = request.getParameter("idDressCode");
-                    String nameDressCode = request.getParameter("nameDressCode");
-                    String menDetails = request.getParameter("menDetails");
-                    String womenDetails = request.getParameter("womenDetails");
-                    String urlImage = request.getParameter("urlImage");
+                String sidDressCode = request.getParameter("idDressCode");
+                String nameDressCode = request.getParameter("nameDressCode");
+                String menDetails = request.getParameter("menDetails");
+                String womenDetails = request.getParameter("womenDetails");
+                String urlImage = request.getParameter("urlImage");
 
-                    DressCode dressCode = new DressCode();
+                DressCode dressCode = new DressCode();
 
-                    boolean error = false;
+                boolean error = false;
 
-                    /* comprobar idDressCode */
-                    if (sidDressCode == null || sidDressCode.trim().equals("")) {
-                        request.setAttribute("msgErrorId", "Error al recibir ID");
+                /* instanciar string url */
+                String url = "?a=target";
+
+                /* comprobar idDressCode */
+                url += "&idDressCode=" + sidDressCode;
+                if (sidDressCode == null || sidDressCode.trim().equals("")) {
+                    url += "&msgErrorId=Error al recibir ID.";
+                    error = true;
+                } else {
+                    try {
+                        dressCode.setIdDressCode(Integer.parseInt(sidDressCode));
+                    } catch (NumberFormatException n) {
+                        url += "&msgErrorId=Error al recibir ID.";
                         error = true;
-                    } else {
-                        try {
-                            dressCode.setIdDressCode(Integer.parseInt(sidDressCode));
-                        } catch (NumberFormatException n) {
-                            request.setAttribute("msgErrorId", "Error al recibir ID, no es campo numérico");
-                            error = true;
-                        }
                     }
-
-                    /* comprobar name dress code */
-                    if (nameDressCode == null || nameDressCode.trim().equals("")) {
-                        request.setAttribute("msgErrorTittle", "Error: Debe ingresar un título de código de vestir.");
-                        error = true;
-                    } else {
-                        dressCode.setNameDressCode(nameDressCode);
-                        /* comprobar duplicaciones */
-                        boolean find = dressCodeDAO.findByIdName(dressCode.getIdDressCode(), dressCode.getNameDressCode());
-                        if (find) {
-                            request.setAttribute("msgErrorDup", "Error: ya existe un código de vestir con ese título.");
-                            error = true;
-                        }
-                    }
-
-                    /* comprobar men details */
-                    if (menDetails == null || menDetails.trim().equals("")) {
-                        request.setAttribute("msgErrorMenDetails", "Error: Debe ingresar detalles para hombres.");
-                        error = true;
-                    } else {
-                        dressCode.setMenDetails(menDetails);
-                    }
-
-                    /* comprobar women details */
-                    if (womenDetails == null || womenDetails.trim().equals("")) {
-                        request.setAttribute("msgErrorWomenDetails", "Error: Debe ingresar detalles para mujeres.");
-                        error = true;
-                    } else {
-                        dressCode.setWomenDetails(womenDetails);
-                    }
-
-                    /* comprobar url image */
-                    if (urlImage == null || urlImage.trim().equals("")) {
-                        request.setAttribute("msgErrorUrlImage", "Error: Debe ingresar url de imagen.");
-                        error = true;
-                    } else {
-                        dressCode.setUrlImage(urlImage);
-                    }
-
-                    if (!error) {
-                        /* comprobar existencia */
-                        DressCode aux = dressCodeDAO.findById(dressCode.getIdDressCode());
-                        if (aux.getIdDressCode() > 0) {
-                            /* actualizar datos */
-                            dressCodeDAO.update(dressCode);
-                            request.setAttribute("msgOk", "Registro actualizado exitosamente! ");
-                        } else {
-                            request.setAttribute("msgErrorFound", "Error: La ciudad no existe o ha sido eliminada mientras se actualizaba.");
-                        }
-                    }
-                    request.setAttribute("dressCode", dressCode);
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("/dressCode/dressCodeUpdate.jsp").forward(request, response);
                 }
+
+                /* comprobar name dress code */
+                url += "&nameDressCode=" + nameDressCode;
+                if (nameDressCode == null || nameDressCode.trim().equals("")) {
+                    url += "&msgErrorNameDressCode=Error: Debe ingresar un título de código de vestir.";
+                    error = true;
+                } else {
+                    dressCode.setNameDressCode(nameDressCode);
+                    /* comprobar duplicaciones */
+                    boolean find = dressCodeDAO.findByIdName(dressCode.getIdDressCode(), dressCode.getNameDressCode());
+                    if (find) {
+                        url += "&msgErrorNameDressCode=Error: ya existe un código de vestir con ese título.";
+                        error = true;
+                    }
+                }
+
+                /* comprobar men details */
+                url += "&menDetails=" + menDetails;
+                if (menDetails == null || menDetails.trim().equals("")) {
+                    url += "&msgErrorMenDetails=Error: Debe ingresar detalles para hombres.";
+                    error = true;
+                } else {
+                    dressCode.setMenDetails(menDetails);
+                }
+
+                /* comprobar women details */
+                url += "&womenDetails" + womenDetails;
+                if (womenDetails == null || womenDetails.trim().equals("")) {
+                    url += "&msgErrorWomenDetails=Error: Debe ingresar detalles para mujeres.";
+                    error = true;
+                } else {
+                    dressCode.setWomenDetails(womenDetails);
+                }
+
+                /* comprobar url image */
+                url += "&urlImage=" + urlImage;
+                if (urlImage == null || urlImage.trim().equals("")) {
+                    url += "&msgErrorUrlImage=Error: Debe ingresar url de imagen.";
+                    error = true;
+                } else {
+                    dressCode.setUrlImage(urlImage);
+                }
+
+                if (!error) {
+                    /* comprobar existencia */
+                    DressCode aux = dressCodeDAO.findById(dressCode.getIdDressCode());
+                    if (aux != null) {
+                        /* actualizar datos */
+                        dressCodeDAO.update(dressCode);
+                        url += "&msgOk=Registro actualizado exitosamente!";
+                    } else {
+                        url += "&msgErrorFound=Error: La ciudad no existe o ha sido eliminada mientras se actualizaba.";
+                    }
+                }
+
+                /* send redirect */
+                response.sendRedirect("DressCodeGetServlet" + url);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");
@@ -158,6 +164,7 @@ public class DressCodeUpdateServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar sesion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

@@ -106,22 +106,22 @@
                             <!-- ID CATEGORY -->
                             <div class="form-group">
                                 <label for="disabledSelect">ID Categoría</label>
-                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${category.idCategory}" />" disabled>
-                                <input type="hidden" name="idCategory" value="<c:out value="${category.idCategory}" />"/>
+                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${idCategory}" />" disabled>
+                                <input type="hidden" name="idCategory" value="<c:out value="${idCategory}" />"/>
                             </div>
                             <!-- /ID CATEGORY -->
 
                             <!-- NOMBRE CATEGORIA -->
-                            <c:if test="${msgErrorDup == null }" >
+                            <c:if test="${msgErrorDup == null && msgErrorNameCategory == null }" >
                                 <div class="form-group">
                                     <label>Nombre Categoría</label>
-                                    <input class="form-control" required="true" maxlength="50" name="nameCategory" value="<c:out value="${category.nameCategory}" />">
+                                    <input class="form-control" required="true" maxlength="50" name="nameCategory" value="<c:out value="${nameCategory}" />">
                                 </div>
                             </c:if>                                                                                    
-                            <c:if test="${msgErrorDup != null }" >
+                            <c:if test="${msgErrorDup != null || msgErrorNameCategory != null}" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Nombre Categoría</label>
-                                    <input class="form-control" required="true" maxlength="50" name="nameCategory" id="inputError" value="<c:out value="${category.nameCategory}" />">
+                                    <input class="form-control" required="true" maxlength="50" name="nameCategory" id="inputError" value="<c:out value="${nameCategory}" />">
                                 </div>
                             </c:if>
                             <!-- /NOMBRE CATEGORIA -->

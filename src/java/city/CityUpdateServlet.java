@@ -70,57 +70,58 @@ public class CityUpdateServlet extends HttpServlet {
                 request.setAttribute("access", access);
 
                 /////////////////////////////////////////
-                // DECLARAR VARIABLES DE INSTANCIA
+                // RECIBIR Y COMPROBAR PARAMETROS
                 //////////////////////////////////////// 
+
+                String sidCity = request.getParameter("idCity");
+                String nameCity = request.getParameter("nameCity");
 
                 City city = new City();
 
-                try {
-                    /////////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    //////////////////////////////////////// 
+                boolean error = false;
 
-                    String sidCity = request.getParameter("idCity");
-                    String nameCity = request.getParameter("nameCity");
+                String url = "?a=target";
 
-                    boolean error = false;
-
-                    /* comprobar id city */
-                    if (sidCity == null || sidCity.trim().equals("")) {
-                        request.setAttribute("msgErrorId", "Error al recibir id Ciudad. ");
-                        error = true;
-                    } else {
+                /* comprobar id city */
+                url += "&idCity=" + sidCity;
+                if (sidCity == null || sidCity.trim().equals("")) {
+                    url += "&msgErrorId=Error al recibir id Ciudad.";
+                    error = true;
+                } else {
+                    try {
                         city.setIdCity(Integer.parseInt(sidCity));
-                    }
-                    /* comprobar name city */
-                    if (nameCity == null || nameCity.trim().equals("")) {
-                        request.setAttribute("msgErrorNameCity", "Error al recibir nombre Ciudad. ");
+                    } catch (NumberFormatException n) {
+                        url += "&msgErrorId=Error al recibir id Ciudad.";
                         error = true;
-                    } else {
-                        city.setNameCity(Format.capital(nameCity));
                     }
 
-                    if (!error) {
-                        /* comprobar ciudad duplicada */
-                        boolean find = cityDAO.validateDuplicateName(city);
-                        if (find) {
-                            request.setAttribute("msgErrorDup", "Error: ya existe una ciudad con este nombre. ");
-                        } else {
-                            /* comprobar existencia */
-                            City aux = cityDAO.findbyIdCity(city);
-                            if (aux != null) {
-                                cityDAO.update(city);
-                                request.setAttribute("msgOk", "Registro actualizado exitosamente! ");
-                            } else {
-                                request.setAttribute("msgErrorFound", "Error: La ciudad no existe o ha sido eliminada mientras se actualizaba.");
-                            }
+                }
+                /* comprobar name city */
+                url += "&nameCity=" + nameCity;
+                if (nameCity == null || nameCity.trim().equals("")) {
+                    url += "&msgErrorNameCity=Error: Debe ingresar nombre Ciudad.";
+                    error = true;
+                } else {
+                    city.setNameCity(Format.capital(nameCity));
+                }
+
+                if (!error) {
+                    /* comprobar ciudad duplicada */
+                    boolean find = cityDAO.validateDuplicateName(city);
+                    if (find) {
+                        url += "&msgErrorDup=Error: ya existe una ciudad con este nombre.";
+                    } else {
+                        /* actualizar */
+                        try {
+                            cityDAO.update(city);
+                            url += "&msgOk=Registro actualizado exitosamente!";
+                        } catch (Exception ex) {
                         }
                     }
-                } catch (Exception parameterException) {
-                } finally {
-                    request.setAttribute("city", city);
-                    request.getRequestDispatcher("/city/cityUpdate.jsp").forward(request, response);
                 }
+                /* send redirect */
+                response.sendRedirect("CityGetServlet" + url);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");
@@ -129,6 +130,7 @@ public class CityUpdateServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

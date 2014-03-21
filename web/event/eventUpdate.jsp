@@ -186,6 +186,24 @@
                             </div>
                         </c:if>
                         <!-- /MENSAJE DE ERROR DE SOLICITUD -->
+                        
+                        <!-- MENSAJE DE ERROR DE RAZON -->
+                        <c:if test="${msgErrorReason != null }" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorReason}" /></strong></br>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE DE ERROR DE RAZON -->
+                        
+                        <!-- MENSAJE DE ERROR EVENTO -->
+                        <c:if test="${msgErrorEvent != null}" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorEvent}" /></strong></br>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE DE ERROR EVENTO -->
                     </div>
                     <div class="col-lg-4">
                         <!-- FORMULARIO -->
@@ -193,17 +211,17 @@
                             <!-- LUGARES -->
                             <div class="form-group">
                                 <label for="disabledSelect">Lugar</label>
-                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${event.namePlace}" />" disabled>
-                                <input type="hidden" name="namePlace" value="<c:out value="${event.namePlace}" />"/>
-                                <input type="hidden" name="idPlace" value="<c:out value="${event.idPlace}" />"/>
+                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${namePlace}" />" disabled>
+                                <input type="hidden" name="namePlace" value="<c:out value="${namePlace}" />"/>
+                                <input type="hidden" name="idPlace" value="<c:out value="${idPlace}" />"/>
                             </div>
                             <!-- /LUGARES -->
 
                             <!-- ID EVENTO -->
                             <div class="form-group">
-                                <label for="disabledSelect">id Evento</label>
-                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${event.idEvent}" />" disabled>
-                                <input type="hidden" name="idEvent" value="<c:out value="${event.idEvent}" />"/>
+                                <label for="disabledSelect">ID Evento</label>
+                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${idEvent}" />" disabled>
+                                <input type="hidden" name="idEvent" value="<c:out value="${idEvent}" />"/>
                             </div>
                             <!-- /ID EVENTO -->
 
@@ -211,13 +229,13 @@
                             <c:if test="${msgErrorEvent == null && msgErrorTittle == null}">
                                 <div class="form-group">
                                     <label>Título de Evento</label>
-                                    <input class="form-control" required="true" maxlength="100" name="tittle" value="<c:out value="${event.tittle}" />">
+                                    <input class="form-control" required="true" maxlength="100" name="tittle" value="<c:out value="${tittle}" />">
                                 </div>
                             </c:if>
                             <c:if test="${msgErrorEvent != null || msgErrorTittle != null}">
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Título de Evento</label>
-                                    <input type="text" class="form-control" required="true" name="tittle" id="inputError" value="<c:out value="${event.tittle}" />">
+                                    <input type="text" class="form-control" required="true" name="tittle" id="inputError" value="<c:out value="${tittle}" />">
                                 </div>
                             </c:if>
                             <!-- /TITULO EVENTO -->
@@ -226,13 +244,13 @@
                             <c:if test="${msgErrorDetails == null}" >
                                 <div class="form-group">                            
                                     <label>Detalles</label>
-                                    <input class="form-control" required="true" maxlength="100" name="details" value="<c:out value="${event.details}" />">                            
+                                    <input class="form-control" required="true" maxlength="100" name="details" value="<c:out value="${details}" />">                            
                                 </div>
                             </c:if>
                             <c:if test="${msgErrorDetails != null}" >
                                 <div class="form-group has-error">                            
                                     <label class="control-label" for="inputError">Detalles</label>
-                                    <input class="form-control" required="true" maxlength="100" id="inputError" name="details" value="<c:out value="${event.details}" />">                            
+                                    <input class="form-control" required="true" maxlength="100" id="inputError" name="details" value="<c:out value="${details}" />">                            
                                 </div>
                             </c:if>
                             <!-- /DETALLES -->
@@ -242,38 +260,38 @@
                                 <label>Código de Vestir</label>
                                 <select class="form-control" name="idDressCode">
                                     <c:forEach var="listDressCode" items="${listDressCode}">  
-                                        <option value="<c:out value="${listDressCode.idDressCode}" />" <c:if test="${event.idDressCode == listDressCode.idDressCode}">selected</c:if>> <c:out value="${listDressCode.nameDressCode}" /> </option>
+                                        <option value="<c:out value="${listDressCode.idDressCode}" />" <c:if test="${listDressCode.idDressCode == idDressCode}">selected</c:if>> <c:out value="${listDressCode.nameDressCode}" /> </option>
                                     </c:forEach>
                                 </select>                                
                             </div>
                             <!-- /CODIGO VESTIR -->
 
                             <!-- PUNTOS -->
-                            <c:if test="${msgErrorPoints != null }" >
-                                <div class="form-group has-error">
-                                    <label class="control-label" for="inputError">Puntos</label>
-                                    <input type="number" class="form-control" min="0" max="99999" name="points" id="inputError" value="<c:out value="${event.points}" />">
-                                </div>
-                            </c:if>
                             <c:if test="${msgErrorPoints == null }" >
                                 <div class="form-group">
                                     <label>Puntos</label>
-                                    <input type="number" class="form-control" min="0" max="99999" name="points" value="<c:out value="${event.points}" />">
+                                    <input type="number" class="form-control" min="0" max="99999" name="points" value="<c:out value="${points}" />">
                                 </div>
                             </c:if>
+                            <c:if test="${msgErrorPoints != null }" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Puntos</label>
+                                    <input type="number" class="form-control" min="0" max="99999" name="points" id="inputError" value="<c:out value="${points}" />">
+                                </div>
+                            </c:if>                            
                             <!-- /PUNTOS -->
 
                             <!-- IMAGE -->
                             <c:if test="${msgErrorUrlImage == null}" >
                                 <div class="form-group">
                                     <label>URL de Imagen</label>
-                                    <input class="form-control" required="true" maxlength="100" name="urlImage" value="<c:out value="${event.urlImage}" />">
+                                    <input class="form-control" required="true" maxlength="100" name="urlImage" value="<c:out value="${urlImage}" />">
                                 </div> 
                             </c:if>
                             <c:if test="${msgErrorUrlImage != null}" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">URL de Imagen</label>
-                                    <input class="form-control" required="true" maxlength="100" id="inputError" name="urlImage" value="<c:out value="${event.urlImage}" />">
+                                    <input class="form-control" required="true" maxlength="100" id="inputError" name="urlImage" value="<c:out value="${urlImage}" />">
                                 </div> 
                             </c:if>
                             <!-- /IMAGE -->
@@ -282,21 +300,21 @@
                             <c:if test="${msgErrorEvent == null && msgErrorDate == null}">
                                 <div class="form-group">
                                     <label>Fecha de Inicio</label>
-                                    <input class="form-control" type="datetime-local" required="true" name="dateBegin" value="<c:out value="${event.dateBegin}" />">
+                                    <input class="form-control" type="datetime-local" required="true" name="dateBegin" value="<c:out value="${dateBegin}" />">
                                 </div>
                                 <div class="form-group">
                                     <label>Fecha de Término</label>
-                                    <input class="form-control" type="datetime-local" required="true" name="dateEnd" value="<c:out value="${event.dateEnd}" />">
+                                    <input class="form-control" type="datetime-local" required="true" name="dateEnd" value="<c:out value="${dateEnd}" />">
                                 </div>
                             </c:if>
-                            <c:if test="${msgErrorEvent == null && msgErrorDate == null}">
+                            <c:if test="${msgErrorEvent != null || msgErrorDate != null}">
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Fecha de Inicio</label>
-                                    <input class="form-control" type="datetime-local" required="true" name="dateBegin" id="inputError" value="<c:out value="${event.dateBegin}" />">
+                                    <input class="form-control" type="datetime-local" required="true" name="dateBegin" id="inputError" value="<c:out value="${dateBegin}" />">
                                 </div>
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Fecha de Término</label>
-                                    <input class="form-control" type="datetime-local" required="true" name="dateEnd" id="inputError" value="<c:out value="${event.dateEnd}" />">
+                                    <input class="form-control" type="datetime-local" required="true" name="dateEnd" id="inputError" value="<c:out value="${dateEnd}" />">
                                 </div>
                             </c:if>
                             <!-- /FECHAS -->
@@ -305,9 +323,9 @@
                             <div class="form-group">
                                 <label>Solicitud: </label>
                                 <select class="form-control" id="eventRequest" name="eventRequest" onchange="changeDisplay()">                                
-                                    <option value="0" <c:if test="${event.request == 0}">selected</c:if>>Pendiente</option>
-                                    <option value="1" <c:if test="${event.request == 1}">selected</c:if>>Aceptada</option>
-                                    <option value="2" <c:if test="${event.request == 2}">selected</c:if>>Rechazada</option>
+                                    <option value="0" <c:if test="${request == 0}">selected</c:if>>Pendiente</option>
+                                    <option value="1" <c:if test="${request == 1}">selected</c:if>>Aceptada</option>
+                                    <option value="2" <c:if test="${request == 2}">selected</c:if>>Rechazada</option>
                                     </select>                                
                                 </div>
                                 <!-- /SOLICITUD -->
@@ -315,7 +333,7 @@
                                 <!-- RAZON RECHAZO -->
                                 <div class="form-group" id="reason">
                                     <label>Razón de rechazo</label>
-                                    <textarea class="form-control" name="reason" maxlength="255" rows="4"><c:out value="${event.reason}" /></textarea>
+                                    <textarea class="form-control" name="reason" maxlength="255" rows="4"><c:out value="${reason}" /></textarea>
                             </div>
                             <!-- /RAZON RECHAZO -->
                             <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>

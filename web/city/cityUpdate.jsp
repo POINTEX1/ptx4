@@ -105,22 +105,22 @@
                             <!-- ID CIUDAD -->
                             <div class="form-group">
                                 <label for="disabledSelect">ID Ciudad</label>
-                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${city.idCity}" />" disabled>
-                                <input type="hidden" name="idCity" value="<c:out value="${city.idCity}" />"/>
+                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${idCity}" />" disabled>
+                                <input type="hidden" name="idCity" value="<c:out value="${idCity}" />"/>
                             </div>
                             <!-- /ID CIUDAD -->
 
                             <!-- NOMBRE CIUDAD -->
-                            <c:if test="${msgErrorDup == null }" >
+                            <c:if test="${msgErrorDup == null && msgErrorNameCity == null}" >
                                 <div class="form-group">
                                     <label>Nombre Ciudad</label>
-                                    <input class="form-control" required="true" maxlength="50" name="nameCity" value="<c:out value="${city.nameCity}" />">
+                                    <input class="form-control" required="true" maxlength="50" name="nameCity" value="<c:out value="${nameCity}" />">
                                 </div>
                             </c:if>
-                            <c:if test="${msgErrorDup != null }" >
+                            <c:if test="${msgErrorDup != null || msgErrorNameCity != null }" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Nombre Ciudad</label>
-                                    <input class="form-control" required="true" maxlength="50" name="nameCity" id="inputError" value="<c:out value="${city.nameCity}" />">
+                                    <input class="form-control" required="true" maxlength="50" name="nameCity" id="inputError" value="<c:out value="${nameCity}" />">
                                 </div>
                             </c:if>
                             <!-- /NOMBRE CIUDAD -->
@@ -133,7 +133,7 @@
                 <p>&nbsp;</p>
                 <p>&nbsp;</p>                                
                 <p>&nbsp;</p>
-                
+
                 <!-- FOOTER -->
                 <c:import var="footer" url="/footer.jsp" />
                 <c:out value="${footer}" escapeXml="false" />

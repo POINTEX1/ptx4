@@ -73,6 +73,15 @@ public class CategoryGetServlet extends HttpServlet {
                 //////////////////////////////////////// 
                 try {
 
+                    /* recibir atributos por PRG */
+                    String nameCategory = request.getParameter("nameCategory");
+
+                    /* recibir mensajes por PRG */
+                    String msgErrorNameCategory = request.getParameter("msgErrorNameCategory");
+                    String msgErrorDup = request.getParameter("msgErrorDup");
+                    String msgOk = request.getParameter("msgOk");
+
+                    /* obtener atributos para busqueda */
                     String sidCategory = request.getParameter("idCategory");
 
                     Category category = new Category();
@@ -86,8 +95,29 @@ public class CategoryGetServlet extends HttpServlet {
                         Category aux = categoryDAO.findById(category.getIdCategory());
 
                         if (aux != null) {
-                            request.setAttribute("category", aux);
-                            request.setAttribute("msgOk", "Se encontró el registro!");
+                            /* obtener atributos del dao */
+                            request.setAttribute("idCategory", aux.getIdCategory());
+
+                            /* comprobar msgErrorNameCategory */
+                            if (msgErrorNameCategory == null || msgErrorNameCategory.trim().equals("")) {
+                                request.setAttribute("nameCategory", aux.getNameCategory());
+                            } else {
+                                request.setAttribute("msgErrorNameCategory", msgErrorNameCategory);
+                                request.setAttribute("nameCategory", nameCategory);
+                            }
+
+                            /* comprobar registro duplicado */
+                            if (msgErrorDup == null || msgErrorDup.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorDup", msgErrorDup);
+                            }
+
+                            /* comprobar msgOk */
+                            if (msgOk == null || msgOk.trim().equals("")) {
+                                request.setAttribute("msgOk", "Se encontró el registro!");
+                            } else {
+                                request.setAttribute("msgOk", msgOk);
+                            }
                         } else {
                             request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
                         }
