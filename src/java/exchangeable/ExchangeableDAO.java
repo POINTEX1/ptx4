@@ -19,29 +19,29 @@ import java.util.Collection;
  * @author patricio alberto
  */
 public class ExchangeableDAO {
-
+    
     private Connection conexion;
-
+    
     public Connection getConexion() {
         return conexion;
     }
-
+    
     public void setConexion(Connection conexion) {
         this.conexion = conexion;
     }
-
+    
     public Collection<Exchangeable> getAll() {
-
+        
         Statement sentence = null;
         ResultSet result = null;
-
+        
         Collection<Exchangeable> list = new ArrayList<Exchangeable>();
-
+        
         try {
             sentence = conexion.createStatement();
             String sql = "select * from exchangeable ex, place pl where ex.id_place = pl.id_place order by ex.id_exchangeable desc";
             result = sentence.executeQuery(sql);
-
+            
             while (result.next()) {
                 /* instanciar objeto */
                 Exchangeable reg = new Exchangeable();
@@ -56,7 +56,7 @@ public class ExchangeableDAO {
                 /* agregar a la lista */
                 list.add(reg);
             }
-
+            
         } catch (MySQLSyntaxErrorException ex) {
             System.out.println("Error de sintaxis en ExchangeableDAO, getAll() : " + ex);
             throw new RuntimeException("MySQL Syntax Exception en ExchangeableDAO, getAll() : " + ex);
@@ -79,19 +79,19 @@ public class ExchangeableDAO {
         }
         return list;
     }
-
+    
     public Exchangeable findByExchange(Exchangeable exchange) {
-
+        
         Statement sentence = null;
         ResultSet result = null;
-
+        
         Exchangeable reg = null;
-
+        
         try {
             sentence = conexion.createStatement();
             String sql = "select * from exchangeable ex, place pl where ex.id_exchangeable = " + exchange.getIdExchangeable() + " and ex.id_place = pl.id_place ";
             result = sentence.executeQuery(sql);
-
+            
             while (result.next()) {
                 /* definir objeto */
                 reg = new Exchangeable();
@@ -103,8 +103,9 @@ public class ExchangeableDAO {
                 reg.setPoints(result.getInt("points"));
                 reg.setUrlImage(result.getString("ex.url_image"));
                 reg.setRequest(result.getInt("request"));
+                reg.setReason(result.getString("reason"));
             }
-
+            
         } catch (MySQLSyntaxErrorException ex) {
             System.out.println("Error de sintaxis en ExchangeableDAO, findByExchangeable() : " + ex);
             throw new RuntimeException("MySQL Syntax Exception en ExchangeableDAO, findByExchangeable() : " + ex);
@@ -127,23 +128,23 @@ public class ExchangeableDAO {
         }
         return reg;
     }
-
+    
     public boolean validateDuplicate(Exchangeable exchange) {
-
+        
         Statement sentence = null;
         ResultSet result = null;
-
+        
         boolean find = false;
-
+        
         try {
             sentence = conexion.createStatement();
             String sql = "select * from exchangeable ex, place pl where ex.id_exchangeable <> " + exchange.getIdExchangeable() + " and ex.tittle = '" + exchange.getTittle() + "' and ex.request = 1";
             result = sentence.executeQuery(sql);
-
+            
             while (result.next()) {
                 find = true;
             }
-
+            
         } catch (MySQLSyntaxErrorException ex) {
             System.out.println("Error de sintaxis en ExchangeableDAO, validateDuplicate() : " + ex);
             throw new RuntimeException("MySQL Syntax Exception en ExchangeableDAO, validateDuplicate() : " + ex);
@@ -166,20 +167,20 @@ public class ExchangeableDAO {
         }
         return find;
     }
-
+    
     public void delete(int id) {
-
+        
         PreparedStatement sentence = null;
-
+        
         try {
             String sql = "delete from exchangeable where id_exchangeable = ? ";
-
+            
             sentence = conexion.prepareStatement(sql);
-
+            
             sentence.setInt(1, id);
-
+            
             sentence.executeUpdate();
-
+            
         } catch (MySQLSyntaxErrorException ex) {
             System.out.println("Error de sintaxis en ExchangeableDAO, delete() : " + ex);
             throw new RuntimeException("MySQL Syntax Exception en ExchangeableDAO, delete() : " + ex);
@@ -197,24 +198,24 @@ public class ExchangeableDAO {
             }
         }
     }
-
+    
     public void insert(Exchangeable exchange) {
-
+        
         PreparedStatement sentence = null;
-
+        
         try {
-
+            
             String sql = "insert into exchangeable (id_place, tittle, url_image, points, request) values (?, ?, ?, ?, ?)";
             sentence = conexion.prepareStatement(sql);
-
+            
             sentence.setInt(1, exchange.getIdPlace());
             sentence.setString(2, exchange.getTittle());
             sentence.setString(3, exchange.getUrlImage());
             sentence.setInt(4, exchange.getPoints());
             sentence.setInt(5, exchange.getRequest());
-
+            
             sentence.executeUpdate();
-
+            
         } catch (MySQLSyntaxErrorException ex) {
             System.out.println("Error de sintaxis en ExchangeableDAO, insert() : " + ex);
             throw new RuntimeException("MySQL Syntax Exception en ExchangeableDAO, insert() : " + ex);
@@ -232,23 +233,24 @@ public class ExchangeableDAO {
             }
         }
     }
-
+    
     public void update(Exchangeable exchange) {
-
+        
         PreparedStatement sentence = null;
-
+        
         try {
-            String sql = "update exchangeable set tittle = ?, url_image = ?, points = ?, request = ? where id_exchangeable = ? ";
+            String sql = "update exchangeable set tittle = ?, url_image = ?, points = ?, request = ?, reason = ? where id_exchangeable = ? ";
             sentence = conexion.prepareStatement(sql);
-
+            
             sentence.setString(1, exchange.getTittle());
             sentence.setString(2, exchange.getUrlImage());
             sentence.setInt(3, exchange.getPoints());
             sentence.setInt(4, exchange.getRequest());
-            sentence.setInt(5, exchange.getIdExchangeable());
-
+            sentence.setString(5, exchange.getReason());
+            sentence.setInt(6, exchange.getIdExchangeable());
+            
             sentence.executeUpdate();
-
+            
         } catch (MySQLSyntaxErrorException ex) {
             System.out.println("Error de sintaxis en ExchangeableDAO, update() : " + ex);
             throw new RuntimeException("MySQL Syntax Exception en ExchangeableDAO, update() : " + ex);

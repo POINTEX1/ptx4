@@ -116,6 +116,7 @@ public class AdminUpdateServlet extends HttpServlet {
                             error = true;
                         }
                     }
+
                     /* comprobar email */
                     url = url + "&email=" + email;
                     if (email == null || email.trim().equals("")) {
@@ -199,8 +200,6 @@ public class AdminUpdateServlet extends HttpServlet {
                             }
                         }
                     }
-
-                    request.setAttribute("admin", admin);
 
                     response.sendRedirect("/POINTEX1/AdminGetServlet?id=" + admin.getIdAdmin() + url);
                 }

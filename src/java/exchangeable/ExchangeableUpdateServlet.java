@@ -76,9 +76,7 @@ public class ExchangeableUpdateServlet extends HttpServlet {
                     // RECIBIR Y COMPROBAR PARAMETROS
                     /////////////////////////////////////////                    
 
-                    String sidPlace = request.getParameter("idPlace");
                     String sidExchangeable = request.getParameter("idExchangeable");
-                    String namePlace = request.getParameter("namePlace");
                     String tittle = request.getParameter("tittle");
                     String urlImage = request.getParameter("urlImage");
                     String spoints = request.getParameter("points");
@@ -88,87 +86,70 @@ public class ExchangeableUpdateServlet extends HttpServlet {
                     Exchangeable exchange = new Exchangeable();
 
                     boolean error = false;
-                    
+
                     String url = "?a=target";
 
-                    /* comprobar id place */
-                    if (sidPlace == null || sidPlace.trim().equals("")) {
-                        request.setAttribute("msgErrorIdPlace", "Error al recibir id plaza.");
-                        error = true;
-                    } else {
-                        try {
-                            exchange.setIdPlace(Integer.parseInt(sidPlace));
-                        } catch (NumberFormatException n) {
-                            request.setAttribute("msgErrorIdPlace", "Error al recibir id plaza.");
-                            error = true;
-                        }
-                    }
-
                     /* comprobar id exchangeable */
+                    url += "&idExchangeable=" + sidExchangeable;
                     if (sidExchangeable == null || sidExchangeable.trim().equals("")) {
-                        request.setAttribute("msgErrorIdExchangeable", "Error al recibir id producto canjeable.");
                         error = true;
                     } else {
                         try {
                             exchange.setIdExchangeable(Integer.parseInt(sidExchangeable));
                         } catch (NumberFormatException n) {
-                            request.setAttribute("msgErrorIdExchangeable", "Error al recibir id producto canjeable.");
                             error = true;
                         }
                     }
 
-                    /* comprobar name place */
-                    if (namePlace == null || namePlace.trim().equals("")) {
-                        request.setAttribute("msgErrorNamePlace", "Error al recibir nombre de plaza.");
-                        error = true;
-                    } else {
-                        exchange.setNamePlace(namePlace);
-                    }
-
                     /* comprobar tittle */
+                    url += "&tittle=" + tittle;
                     if (tittle == null || tittle.trim().equals("")) {
-                        request.setAttribute("msgErrorTittle", "Error: Debe ingresar un título para la promo o regalo.");
+                        url += "&msgErrorTittle=Error: Debe ingresar un título para el producto canjeable.";
                         error = true;
                     } else {
                         exchange.setTittle(tittle);
                     }
 
                     /* comprobar url image */
+                    url += "&urlImage=" + urlImage;
                     if (urlImage == null || urlImage.trim().equals("")) {
-                        request.setAttribute("msgErrorUrlImage", "Error: Debe ingresar url de imagen.");
+                        url += "&msgErrorUrlImage=Error: Debe ingresar url de imagen.";
                         error = true;
                     } else {
                         exchange.setUrlImage(urlImage);
                     }
 
                     /* comprobar points */
+                    url += "&points=" + spoints;
                     if (spoints == null || spoints.trim().equals("")) {
-                        request.setAttribute("msgErrorPoints", "Error: Debe ingresar puntos que acumula esta promoción.");
+                        url += "&msgErrorPoints=Error: Debe ingresar puntos que acumula esta promoción.";
                         error = true;
                     } else {
                         try {
                             exchange.setPoints(Integer.parseInt(spoints));
                         } catch (NumberFormatException n) {
-                            request.setAttribute("msgErrorPoints", "Error: Los puntos deben ser numéricos.");
+                            url += "&msgErrorPoints=Error: Los puntos deben ser numéricos.";
                             error = true;
                         }
                     }
 
                     /* comprobar request */
+                    url += "&request=" + srequest;
                     if (srequest == null || srequest.trim().equals("")) {
-                        request.setAttribute("msgErrorRequest", "Error al recibir la solicitud.");
                         error = true;
                     } else {
                         try {
                             exchange.setRequest(Integer.parseInt(srequest));
                         } catch (NumberFormatException n) {
-                            request.setAttribute("msgErrorRequest", "Error al recibir la solicitud.");
                             error = true;
                         }
                     }
 
-                    /* comprobar reason*/
-                    if (reason == null || reason.trim().equals("")) {
+                    /* comprobar reason */
+                    url += "&reason=" + reason;
+                    if ((reason == null || reason.trim().equals("")) && exchange.getRequest() == 2) {
+                        url += "&msgErrorReason=Error: Debe ingresar razón de rechazo.";
+                        error = true;
                     } else {
                         exchange.setReason(reason);
                     }
@@ -181,20 +162,18 @@ public class ExchangeableUpdateServlet extends HttpServlet {
                         /* verificar registro duplicado */
                         boolean find = exDAO.validateDuplicate(exchange);
                         if (find) {
-                            request.setAttribute("msgErrorDup", "Error: ya existe este producto canjeable.");
+                            url += "&msgErrorDup=Error: ya existe este producto canjeable.";
                         } else {
-                            /* verificar si existe antes de actualizar */
-                            Exchangeable aux = exDAO.findByExchange(exchange);
-                            if (aux.getIdPlace() > 0) {
+                            try {
                                 exDAO.update(exchange);
-                                request.setAttribute("msgOk", "Registro actualizado exitosamente! ");
-                            } else {
-                                request.setAttribute("msgErrorFound", "Error: El registro no existe o ha sido mientras se actualizaba.");
+                                url += "&msgOk=Registro actualizado exitosamente!";
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
                             }
                         }
                     }
                     /* send redirect */
-                    response.sendRedirect("&ExchangeableGetServlet" + url);                    
+                    response.sendRedirect("ExchangeableGetServlet" + url);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */

@@ -76,6 +76,22 @@ public class ExchangeableGetServlet extends HttpServlet {
                 // RECIBIR Y COMPROBAR PARAMETROS
                 /////////////////////////////////////////
                 try {
+                    /* obtener atributos de PRG */
+                    String tittle = request.getParameter("tittle");
+                    String urlImage = request.getParameter("urlImage");
+                    String points = request.getParameter("points");
+                    String srequest = request.getParameter("request");
+                    String reason = request.getParameter("reason");
+
+                    /* obtener mensajes de PRG */
+                    String msgErrorTittle = request.getParameter("msgErrorTittle");
+                    String msgErrorUrlImage = request.getParameter("msgErrorUrlImage");
+                    String msgErrorPoints = request.getParameter("msgErrorPoints");
+                    String msgErrorReason = request.getParameter("msgErrorReason");
+                    String msgErrorDup = request.getParameter("msgErrorDup");
+                    String msgOk = request.getParameter("msgOk");
+
+                    /* parametros de busqueda */
                     String sidExchangeable = request.getParameter("idExchangeable");
 
                     Exchangeable exchange = new Exchangeable();
@@ -96,9 +112,61 @@ public class ExchangeableGetServlet extends HttpServlet {
                     if (!error) {
                         /* buscar producto */
                         Exchangeable reg = exDAO.findByExchange(exchange);
-                        if (reg.getIdPlace() > 0) {
-                            request.setAttribute("exchange", reg);
-                            request.setAttribute("msgOk", "Se encontró el registro!");
+                        if (reg != null) {
+                            /* obtener atributos del dao */
+                            request.setAttribute("idExchangeable", reg.getIdExchangeable());
+                            request.setAttribute("namePlace", reg.getNamePlace());
+
+                            //////////////////////////
+                            /// COMPROBAR ATRIBUTOS
+                            //////////////////////////
+
+                            /* comprobar tittle */
+                            if (msgErrorTittle == null || msgErrorTittle.trim().equals("")) {
+                                request.setAttribute("tittle", reg.getTittle());
+                            } else {
+                                request.setAttribute("msgErrorTittle", msgErrorTittle);
+                                request.setAttribute("tittle", tittle);
+                            }
+
+                            /* comprobar url image */
+                            if (msgErrorUrlImage == null || msgErrorUrlImage.trim().equals("")) {
+                                request.setAttribute("urlImage", reg.getUrlImage());
+                            } else {
+                                request.setAttribute("msgErrorUrlImage", msgErrorUrlImage);
+                                request.setAttribute("urlImage", urlImage);
+                            }
+
+                            /* comprobar points */
+                            if (msgErrorPoints == null || msgErrorPoints.trim().equals("")) {
+                                request.setAttribute("points", reg.getPoints());
+                            } else {
+                                request.setAttribute("msgErrorPoints", msgErrorPoints);
+                                request.setAttribute("points", points);
+                            }
+
+                            /* comprobar reason */
+                            if (msgErrorReason == null || msgErrorReason.trim().equals("")) {
+                                request.setAttribute("reason", reg.getReason());
+                                request.setAttribute("request", reg.getRequest());
+                            } else {
+                                request.setAttribute("msgErrorReason", msgErrorReason);
+                                request.setAttribute("reason", reason);
+                                request.setAttribute("request", Integer.parseInt(srequest));
+                            }
+
+                            /* comprobar registro duplicado */
+                            if (msgErrorDup == null || msgErrorDup.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorDup", msgErrorDup);
+                            }
+
+                            /* comprobar mensaje de exito */
+                            if (msgOk == null || msgOk.trim().equals("")) {
+                                request.setAttribute("msg", "Se encontró el registro!");
+                            } else {
+                                request.setAttribute("msgOk", msgOk);
+                            }
                         } else {
                             request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
                         }
