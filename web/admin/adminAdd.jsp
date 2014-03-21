@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Admin</title>
+        <title>POINTEX</title>
 
         <!-- imperio css -->
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
@@ -35,6 +35,15 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
+
+        <script type="text/javascript">
+            function disabledButton() {
+                if (document.formAdd.btnAdd.disabled == false) {
+                    document.getElementById("formAdd").submit();
+                    document.formAdd.btnAdd.disabled = true;
+                }
+            }
+        </script>
 
     </head>
 
@@ -130,7 +139,7 @@
                     </div>
                     <div class="col-lg-4">
                         <!-- FORMULARIO -->
-                        <form role="form" action="AdminAddServlet" method="POST" name="formAdd"> 
+                        <form role="form" action="AdminAddServlet" method="POST" id="formAdd" name="formAdd"> 
                             <!-- USERNAME -->
                             <c:if test="${msgErrorUsername == null}">
                                 <div class="form-group">
@@ -195,8 +204,9 @@
                             </c:if>
                             <!-- /PASSWORD -->
 
-                            <!-- BOTONES -->
-                            <button type="submit" name="add" class="btn btn-default"><strong><font size="1">AGREGAR</font></strong></button>
+                            <!-- BOTONES -->     
+                            <input type="hidden" name="add" value="1"/>
+                            <button type="submit" name="btnAdd" class="btn btn-default" onclick="disabledButton();"><strong><font size="1">AGREGAR</font></strong></button>
                             <button type="reset" class="btn btn-default"><strong><font size="1">RESET</font></strong></button> 
                             <!-- /BOTONES -->
                         </form>

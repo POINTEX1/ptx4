@@ -45,6 +45,14 @@
                 }
             }
         </script>
+        <script type="text/javascript">
+            function disabledButton() {
+                if (document.formUpdate.btnUpdate.disabled == false) {
+                    document.getElementById("formUpdate").submit();
+                    document.formUpdate.btnUpdate.disabled = true;
+                }
+            }
+        </script>
     </head>
 
     <body>
@@ -131,7 +139,7 @@
 
                     <div class="col-lg-4">
                         <!-- FORMULARIO -->
-                        <form role="form" action="AdminUpdateServlet" method="POST" name="formUpdate">
+                        <form role="form" action="AdminUpdateServlet" method="POST" id="formUpdate" name="formUpdate">
                             <!-- ID ADMIN -->
                             <div class="form-group">
                                 <label for="disabledSelect">ID Admin</label>
@@ -199,7 +207,7 @@
                                 </c:if>                                  
                             </div>
                             <!-- /PASSWORD -->
-                            <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>
+                            <button type="submit" name="btnUpdate" class="btn btn-default" onClick="disabledButton()"><strong><font size="1">ACTUALIZAR</font></strong></button>
                         </form>
                         <!-- /FORMULARIO -->
                     </div>
