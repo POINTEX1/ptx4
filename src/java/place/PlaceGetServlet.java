@@ -79,25 +79,29 @@ public class PlaceGetServlet extends HttpServlet {
                     request.setAttribute("access", access);
                     request.setAttribute("su", 777); //superuser                    
 
-                    try {
-                        /////////////////////////////////////////
-                        // RECIBIR Y COMPROBAR PARAMETROS
-                        /////////////////////////////////////////
+                    /////////////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETROS
+                    /////////////////////////////////////////
 
-                        String sidPlace = request.getParameter("idPlace");
+                    String sidPlace = request.getParameter("idPlace");
 
-                        boolean error = false;
+                    boolean error = false;
 
-                        /* comprobar id place */
-                        int id = 0;
-                        if (sidPlace == null || sidPlace.trim().equals("")) {
-                            error = true;
-                        } else {
+                    /* comprobar id place */
+                    int id = 0;
+                    if (sidPlace == null || sidPlace.trim().equals("")) {
+                        error = true;
+                    } else {
+                        try {
                             id = Integer.parseInt(sidPlace);
+                        } catch (NumberFormatException n) {
+                            error = true;
                         }
+                    }
 
-                        if (!error) {
-                            /* buscar place */
+                    if (!error) {
+                        /* buscar place */
+                        try {
                             Place reg = dao.findById(id);
                             if (reg != null) {
                                 request.setAttribute("place", reg);
@@ -105,24 +109,24 @@ public class PlaceGetServlet extends HttpServlet {
                             } else {
                                 request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
                             }
-                        }
-
-                        //////////////////////////////////////////
-                        // ESTABLECER ATRIBUTOS AL REQUEST
-                        /////////////////////////////////////////
-
-                        /* obtener listado de ciudades */
-                        try {
-                            Collection<City> listCity = cityDAO.getAll();
-                            request.setAttribute("listCity", listCity);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
-
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("/place/placeUpdate.jsp").forward(request, response);
                     }
+
+                    //////////////////////////////////////////
+                    // ESTABLECER ATRIBUTOS AL REQUEST
+                    /////////////////////////////////////////
+
+                    /* obtener listado de ciudades */
+                    try {
+                        Collection<City> listCity = cityDAO.getAll();
+                        request.setAttribute("listCity", listCity);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                    request.getRequestDispatcher("/place/placeUpdate.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
