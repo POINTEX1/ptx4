@@ -54,6 +54,15 @@
                         </ol>
                         <!-- /TITULO MANTENEDOR -->
 
+                        <!-- MENSAJE INFORMATIVO -->
+                        <c:if test="${msg != null}" >
+                            <div class="alert alert-dismissable alert-info">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msg}" /></strong>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE INFORMATIVO -->
+
                         <!-- MENSAJE DE EXITO -->
                         <c:if test="${msgOk != null}" >
                             <div class="alert alert-dismissable alert-success">
@@ -159,8 +168,8 @@
                             <!-- ID NEWS -->
                             <div class="form-group">
                                 <label for="disabledSelect">ID Noticia</label>
-                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${news.idNews}" />" disabled>
-                                <input type="hidden" name="idNews" value="<c:out value="${news.idNews}" />"/>
+                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${idNews}" />" disabled>
+                                <input type="hidden" name="idNews" value="<c:out value="${idNews}" />"/>
                             </div>
                             <!-- /ID NEWS -->
 
@@ -168,13 +177,13 @@
                             <c:if test="${msgErrorDup == null && msgErrorTittle == null }" >
                                 <div class="form-group">
                                     <label>Título</label>
-                                    <input class="form-control" required="true" maxlength="50" name="tittle" value="<c:out value="${news.tittle}" />">
+                                    <input class="form-control" required="true" maxlength="50" name="tittle" value="<c:out value="${tittle}" />">
                                 </div>
                             </c:if>
                             <c:if test="${msgErrorDup != null || msgErrorTittle != null }" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Título</label>
-                                    <input class="form-control" required="true" maxlength="50" name="tittle" id="inputError" value="<c:out value="${news.tittle}" />">
+                                    <input class="form-control" required="true" maxlength="50" name="tittle" id="inputError" value="<c:out value="${tittle}" />">
                                 </div>
                             </c:if>
                             <!-- /TITULO -->
@@ -183,13 +192,13 @@
                             <c:if test="${msgErrorDetails == null}" >
                                 <div class="form-group">
                                     <label>Detalles</label>
-                                    <input class="form-control" required="true" maxlength="200" name="details" value="<c:out value="${news.details}" />">
+                                    <input class="form-control" required="true" maxlength="200" name="details" value="<c:out value="${details}" />">
                                 </div>
                             </c:if>
                             <c:if test="${msgErrorDetails != null}" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Detalle</label>
-                                    <input class="form-control" required="true" maxlength="200" id="inputError" name="details" value="<c:out value="${news.details}" />">
+                                    <input class="form-control" required="true" maxlength="200" id="inputError" name="details" value="<c:out value="${details}" />">
                                 </div>
                             </c:if>
                             <!-- /DETALLE -->
@@ -198,10 +207,10 @@
                             <div class="form-group">
                                 <label>Tipo de Noticias</label>
                                 <select class="form-control" required="true" name="newsType">
-                                    <option value="1"  <c:if test="${news.newsType == 1}" > selected </c:if>> Advertencia</option>
-                                    <option value="2" <c:if test="${news.newsType == 2}" > selected </c:if>> Notificación</option>
-                                    <option value="3" <c:if test="${news.newsType == 3}" > selected </c:if>> Información</option>
-                                    <option value="4" <c:if test="${news.newsType == 4}" > selected </c:if>> Atención</option>
+                                    <option value="1"  <c:if test="${newsType == 1}" > selected </c:if>> Advertencia</option>
+                                    <option value="2" <c:if test="${newsType == 2}" > selected </c:if>> Notificación</option>
+                                    <option value="3" <c:if test="${newsType == 3}" > selected </c:if>> Información</option>
+                                    <option value="4" <c:if test="${newsType == 4}" > selected </c:if>> Atención</option>
                                     </select>
                                 </div>
                                 <!-- /TIPO NOTICIA -->
@@ -210,13 +219,13 @@
                             <c:if test="${msgErrorUrlImage == null}" >
                                 <div class="form-group">
                                     <label>Url Imagen</label>
-                                    <input class="form-control" required="true" maxlength="200" name="urlImage" value="<c:out value="${news.urlImage}" />">
+                                    <input class="form-control" required="true" maxlength="200" name="urlImage" value="<c:out value="${urlImage}" />">
                                 </div>
                             </c:if>                                                                                                            
                             <c:if test="${msgErrorUrlImage != null}" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Url Imagen</label>
-                                    <input class="form-control" required="true" maxlength="200" id="inputError" name="urlImage" value="<c:out value="${news.urlImage}" />">
+                                    <input class="form-control" required="true" maxlength="200" id="inputError" name="urlImage" value="<c:out value="${urlImage}" />">
                                 </div>
                             </c:if>
                             <!-- /IMAGE -->
@@ -225,21 +234,21 @@
                             <c:if test="${msgErrorDup == null && msgErrorDate == null}">
                                 <div class="form-group">
                                     <label>Fecha de Inicio</label>
-                                    <input class="form-control" type="datetime-local" required="true" name="dateBegin" value="<c:out value="${news.dateBegin}" />">
+                                    <input class="form-control" type="datetime-local" required="true" name="dateBegin" value="<c:out value="${dateBegin}" />">
                                 </div>
                                 <div class="form-group">
                                     <label>Fecha de Término</label>
-                                    <input class="form-control" type="datetime-local" required="true" name="dateEnd" value="<c:out value="${news.dateEnd}" />">
+                                    <input class="form-control" type="datetime-local" required="true" name="dateEnd" value="<c:out value="${dateEnd}" />">
                                 </div>
                             </c:if>
                             <c:if test="${msgErrorDup != null || msgErrorDate != null}">
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Fecha de Inicio</label>
-                                    <input class="form-control" type="datetime-local" required="true" name="dateBegin" id="inputError" value="<c:out value="${news.dateBegin}" />">
+                                    <input class="form-control" type="datetime-local" required="true" name="dateBegin" id="inputError" value="<c:out value="${dateBegin}" />">
                                 </div>
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Fecha de Término</label>
-                                    <input class="form-control" type="datetime-local" required="true" name="dateEnd" id="inputError" value="<c:out value="${news.dateEnd}" />">
+                                    <input class="form-control" type="datetime-local" required="true" name="dateEnd" id="inputError" value="<c:out value="${dateEnd}" />">
                                 </div>
                             </c:if>
                             <!-- /FECHA INICIO-TERMINO -->

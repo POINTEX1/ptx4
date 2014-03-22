@@ -5,12 +5,8 @@
 package news;
 
 import Helpers.Format;
-import city.City;
-import city.CityDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
-import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -76,14 +72,30 @@ public class NewsGetServlet extends HttpServlet {
                 request.setAttribute("userJsp", username);
                 request.setAttribute("access", access);
 
+                /////////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                /////////////////////////////////////////
                 try {
-                    /////////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    /////////////////////////////////////////
+                    /* obtener atributos de PRG */
+                    String tittle = request.getParameter("tittle");
+                    String details = request.getParameter("details");
+                    String urlImage = request.getParameter("urlImage");
+                    String dateBegin = request.getParameter("dateBegin");
+                    String dateEnd = request.getParameter("dateEnd");
 
+                    /* obtener mensajes de PRG */
+                    String msgOk = request.getParameter("msgOk");
+                    String msgErrorTittle = request.getParameter("msgErrorTittle");
+                    String msgErrorDetails = request.getParameter("msgErrorDetails");
+                    String msgErrorUrlImage = request.getParameter("msgErrorUrlImage");
+                    String msgErrorDate = request.getParameter("msgErrorDate");
+                    String msgErrorDup = request.getParameter("msgErrorDup");
+
+                    /* obtener parametros de busqueda */
                     String sidNews = request.getParameter("idNews");
 
                     News news = new News();
+
                     boolean error = false;
 
                     /* comprobar id news */
@@ -101,11 +113,62 @@ public class NewsGetServlet extends HttpServlet {
                         /* buscar news */
                         News reg = newsDAO.findByNews(news);
                         if (reg != null) {
+                            /* obtener atributos del dao */
+                            request.setAttribute("idNews", reg.getIdNews());
+                            request.setAttribute("newsType", reg.getNewsType());
+                            /////////////////////////////
+                            // COMPROBAR ATRIBUTOS
+                            /////////////////////////////
+
                             reg.setDateBegin(Format.dateYYYYMMDD(reg.getDateBegin()));
                             reg.setDateEnd(Format.dateYYYYMMDD(reg.getDateEnd()));
 
-                            request.setAttribute("news", reg);
-                            request.setAttribute("msgOk", "Se encontró el registro!");
+                            /* comprobar tittle */
+                            if (msgErrorTittle == null || msgErrorTittle.trim().equals("")) {
+                                request.setAttribute("tittle", reg.getTittle());
+                            } else {
+                                request.setAttribute("msgErrorTittle", msgErrorTittle);
+                                request.setAttribute("tittle", tittle);
+                            }
+
+                            /* comprobar details */
+                            if (msgErrorDetails == null || msgErrorDetails.trim().equals("")) {
+                                request.setAttribute("details", reg.getDetails());
+                            } else {
+                                request.setAttribute("msgErrorDetails", msgErrorDetails);
+                                request.setAttribute("details", details);
+                            }
+
+                            /* comprobar urlImage */
+                            if (msgErrorUrlImage == null || msgErrorUrlImage.trim().equals("")) {
+                                request.setAttribute("urlImage", reg.getUrlImage());
+                            } else {
+                                request.setAttribute("msgErrorUrlImage", msgErrorUrlImage);
+                                request.setAttribute("urlImage", urlImage);
+                            }
+
+                            /* comprobar fechas */
+                            if (msgErrorDate == null || msgErrorDate.trim().equals("")) {
+                                request.setAttribute("dateBegin", reg.getDateBegin());
+                                request.setAttribute("dateEnd", reg.getDateEnd());
+                            } else {
+                                request.setAttribute("msgErrorDate", msgErrorDate);
+                                request.setAttribute("dateBegin", dateBegin);
+                                request.setAttribute("dateEnd", dateEnd);
+                            }
+
+                            /* comprobar duplicados */
+                            if (msgErrorDup == null || msgErrorDup.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorDup", msgErrorDup);
+                            }
+
+                            /* comprobar actualizacion */
+                            if (msgOk == null || msgOk.trim().equals("")) {
+                                request.setAttribute("msg", "Se encontró el registro!");
+                            } else {
+                                request.setAttribute("msgOk", msgOk);
+                            }
                         } else {
                             request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
                         }
