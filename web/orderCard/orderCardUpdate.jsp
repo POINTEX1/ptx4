@@ -63,6 +63,15 @@
                         </ol>
                         <!-- /TITUTLO MANTENEDOR -->
 
+                        <!-- MENSAJE INFORMATIVO -->
+                        <c:if test="${msg != null}" >
+                            <div class="alert alert-dismissable alert-info">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msg}" /></strong>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE INFORMATIVO -->
+
                         <!-- MENSAJE DE EXITO -->
                         <c:if test="${msgOk != null}" >
                             <div class="alert alert-dismissable alert-success">
@@ -80,15 +89,27 @@
                             </div>
                         </c:if> 
                         <!-- /MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
+
+                        <!-- MENSAJE DE ERROR DE RAZON -->
+                        <c:if test="${msgErrorReason != null}" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorReason}" /></strong></br>
+                            </div>
+                        </c:if> 
+                        <!-- /MENSAJE DE ERROR DE RAZON -->
                     </div>
+
+
+
                     <div class="col-lg-4">
                         <!-- FORMULARIO --->
                         <form role="form" action="OrderCardUpdateServlet" method="POST" name="formUpdate">
                             <!-- ID ORDER CARD -->
                             <div class="form-group">
-                                <label for="disabledSelect">ID</label>
-                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${orderCard.idOrder}" />" disabled>
-                                <input type="hidden" name="idOrder" value="<c:out value="${orderCard.idOrder}" />"/>
+                                <label for="disabledSelect">ID Orden Tarjeta</label>
+                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${idOrder}" />" disabled>
+                                <input type="hidden" name="idOrder" value="<c:out value="${idOrder}" />"/>
                             </div>                
                             <!-- /ID ORDER CARD -->
 
@@ -96,9 +117,9 @@
                             <div class="form-group">
                                 <label>Tipo Tarjeta</label>
                                 <select class="form-control" name="cardType">
-                                    <option value="1" <c:if test="${orderCard.cardType == 1 || orderCard.cardType == null}" >checked</c:if> >BASIC</option>
-                                    <option value="2" <c:if test="${orderCard.cardType == 2}" >checked</c:if>>SILVER</option>
-                                    <option value="3" <c:if test="${orderCard.cardType == 3}" >checked</c:if>>GOLDEN</option>                              
+                                    <option value="1" <c:if test="${cardType == 1 || cardType == null}" >checked</c:if> >BASIC</option>
+                                    <option value="2" <c:if test="${cardType == 2}" >checked</c:if>>SILVER</option>
+                                    <option value="3" <c:if test="${cardType == 3}" >checked</c:if>>GOLDEN</option>                              
                                     </select>
                                 </div>
                                 <!-- /TIPO TARJETA -->
@@ -107,9 +128,9 @@
                                 <div class="form-group">
                                     <label>Solicitud de Tarjeta</label>
                                     <select class="form-control" id="orderCardRequest" name="orderCardRequest" onclick="changeDisplay()">
-                                        <option value="0" <c:if test="${orderCard.request == 0 || orderCard.request == null}" >selected</c:if>>Pendiente</option>
-                                    <option value="1" <c:if test="${orderCard.request == 1}" >selected</c:if>>Aceptada</option>
-                                    <option value="2" <c:if test="${orderCard.request == 2}" >selected</c:if>>Rechazada</option>                                                                                             
+                                        <option value="0" <c:if test="${request == 0 || request == null}" >selected</c:if>>Pendiente</option>
+                                    <option value="1" <c:if test="${request == 1}" >selected</c:if>>Aceptada</option>
+                                    <option value="2" <c:if test="${request == 2}" >selected</c:if>>Rechazada</option>                                                                                             
                                     </select>
                                 </div>
                                 <!-- /SOLICITUD TARJETA -->
@@ -117,7 +138,7 @@
                                 <!-- RAZON RECHAZO -->
                                 <div class="form-group" id="reason">
                                     <label>Razón de rechazo</label>
-                                    <textarea class="form-control" name="reason" maxlength="255" rows="4"><c:out value="${orderCard.reason}" /></textarea>
+                                    <textarea class="form-control" name="reason" maxlength="255" rows="4"><c:out value="${reason}" /></textarea>
                             </div>
                             <!-- /RAZON RECHAZO -->
                             <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>

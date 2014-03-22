@@ -72,81 +72,83 @@ public class OrderCardUpdateServlet extends HttpServlet {
                 request.setAttribute("userJsp", username);
                 request.setAttribute("access", access);
 
-                try {
-                    /////////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    /////////////////////////////////////////
+                /////////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                /////////////////////////////////////////
 
-                    String sidOrderCard = request.getParameter("idOrder");
-                    String sCardType = request.getParameter("cardType");
-                    String srequest = request.getParameter("orderCardRequest");
-                    String reason = request.getParameter("reason");
+                String sidOrderCard = request.getParameter("idOrder");
+                String sCardType = request.getParameter("cardType");
+                String srequest = request.getParameter("orderCardRequest");
+                String reason = request.getParameter("reason");
 
-                    OrderCard orderCard = new OrderCard();
+                OrderCard orderCard = new OrderCard();
 
-                    boolean error = false;
+                boolean error = false;
 
-                    /* comprobar idOrder */
-                    if (sidOrderCard == null || sidOrderCard.trim().equals("")) {
+                /* instanciar string url */
+                String url = "?a=target";
+
+                /* comprobar idOrder */
+                url += "&idOrder=" + sidOrderCard;
+                if (sidOrderCard == null || sidOrderCard.trim().equals("")) {
+                    error = true;
+                } else {
+                    try {
+                        orderCard.setIdOrder(Integer.parseInt(sidOrderCard));
+                    } catch (NumberFormatException n) {
                         error = true;
-                    } else {
-                        try {
-                            orderCard.setIdOrder(Integer.parseInt(sidOrderCard));
-                        } catch (NumberFormatException n) {
-                            error = true;
-                        }
                     }
-
-                    /* comprobar card type */
-                    if (sCardType == null || sCardType.trim().equals("")) {
-                        error = true;
-                    } else {
-                        try {
-                            orderCard.setCardType(Integer.parseInt(sCardType));
-                        } catch (NumberFormatException n) {
-                            error = true;
-                        }
-                    }
-
-                    /* comprobar request */
-                    if (srequest == null || srequest.trim().equals("")) {
-                        error = true;
-                    } else {
-                        try {
-                            orderCard.setRequest(Integer.parseInt(srequest));
-                        } catch (NumberFormatException n) {
-                            error = true;
-                        }
-                    }
-
-                    /* comprobar reason*/
-                    if (reason == null || reason.trim().equals("")) {
-                    } else {
-                        orderCard.setReason(reason);
-                    }
-
-                    if (!error) {
-                        /* actualizar datos */
-                        try {
-                            orderCardDAO.update(orderCard);
-                            request.setAttribute("msgOk", "Registro actualizado exitosamente! ");
-                        } catch (Exception ex) {
-                            request.setAttribute("msgErrorFound", "Error al actualizar, el registro ya no existe.");
-                        }
-
-                        /* despachar datos a la vista */
-                        try {
-                            OrderCard aux = orderCardDAO.findById(orderCard.getIdOrder());
-                            request.setAttribute("orderCard", aux);
-                        } catch (Exception ex) {
-                        }
-                    } else {
-                        request.setAttribute("msgErrorFound", "Error: Datos corruptos.");
-                    }
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("/orderCard/orderCardUpdate.jsp").forward(request, response);
                 }
+
+                /* comprobar card type */
+                url += "&cardType=" + sCardType;
+                if (sCardType == null || sCardType.trim().equals("")) {
+                    error = true;
+                } else {
+                    try {
+                        orderCard.setCardType(Integer.parseInt(sCardType));
+                    } catch (NumberFormatException n) {
+                        error = true;
+                    }
+                }
+
+                /* comprobar request */
+                url += "&request=" + srequest;
+                if (srequest == null || srequest.trim().equals("")) {
+                    error = true;
+                } else {
+                    try {
+                        orderCard.setRequest(Integer.parseInt(srequest));
+                    } catch (NumberFormatException n) {
+                        error = true;
+                    }
+                }
+
+                /* comprobar reason*/
+                url += "&reason=" + reason;
+                if ((reason == null || reason.trim().equals("")) && orderCard.getRequest() == 2) {
+                    url += "&msgErrorReason=Error: Debe ingresar razón de rechazo.";
+                    error = true;
+                } else {
+                    orderCard.setReason(reason);
+                }
+
+                ////////////////////////////////
+                // EJECUTAR LOGICA DE NEGOCIO
+                ////////////////////////////////
+
+                if (!error) {
+                    /* actualizar datos */
+                    try {
+                        orderCardDAO.update(orderCard);
+                        url += "&msgOk=Registro actualizado exitosamente!";
+                    } catch (Exception ex) {
+                        url += "&msgErrorFound=Error al actualizar, el registro ya no existe.";
+                    }
+                }
+                /* send redirect */
+                response.sendRedirect("OrderCardGetServlet" + url);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");
@@ -155,6 +157,7 @@ public class OrderCardUpdateServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

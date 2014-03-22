@@ -73,47 +73,74 @@ public class OrderCardGetServlet extends HttpServlet {
                     request.setAttribute("access", access);
                     request.setAttribute("su", 777); //superuser                    
 
-                    try {
-                        /////////////////////////////////////////
-                        // RECIBIR Y COMPROBAR PARAMETROS
-                        /////////////////////////////////////////
+                    /////////////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETROS
+                    /////////////////////////////////////////
 
-                        String sidOrder = request.getParameter("idOrder");
+                    /* obtener atributos de PRG */
+                    String srequest = request.getParameter("request");
+                    String reason = request.getParameter("reason");
 
-                        boolean error = false;
+                    /* obtener mensajes de PRG */
+                    String msgOk = request.getParameter("msgOk");
+                    String msgErrorReason = request.getParameter("msgErrorReason");
 
-                        /* comprobar id order */
-                        int id = 0;
-                        if (sidOrder == null || sidOrder.trim().equals("")) {
+                    /* obtener parametros de busqueda */
+                    String sidOrder = request.getParameter("idOrder");
+
+                    boolean error = false;
+
+                    /* comprobar id order */
+                    int id = 0;
+                    if (sidOrder == null || sidOrder.trim().equals("")) {
+                        error = true;
+                    } else {
+                        try {
+                            id = Integer.parseInt(sidOrder);
+                        } catch (NumberFormatException n) {
                             error = true;
-                        } else {
-                            try {
-                                id = Integer.parseInt(sidOrder);
-                            } catch (NumberFormatException n) {
-                                error = true;
-                            }
                         }
+                    }
 
-                        //////////////////////////////////
-                        // EJECUTAR LOGICA DE NEGOCIO
-                        //////////////////////////////////
-
-                        if (!error) {
-                            /* buscar order */
+                    if (!error) {
+                        /* buscar order */
+                        try {
                             OrderCard reg = orderCardDAO.findById(id);
-
                             if (reg != null) {
-                                request.setAttribute("orderCard", reg);
-                                request.setAttribute("msgOk", "Se encontró el registro!");
+                                /* obtener atributos del dao */
+                                request.setAttribute("idOrder", reg.getIdOrder());
+                                request.setAttribute("cardType", reg.getCardType());
+
+                                ////////////////////////////
+                                // COMPROBAR ATRIBUTOS
+                                ////////////////////////////
+
+                                /* comprobar reason */
+                                if (msgErrorReason == null || msgErrorReason.trim().equals("")) {
+                                    request.setAttribute("request", reg.getRequest());
+                                    request.setAttribute("reason", reg.getReason());
+                                } else {
+                                    request.setAttribute("msgErrorReason", msgErrorReason);
+                                    request.setAttribute("request", Integer.parseInt(srequest));
+                                    request.setAttribute("reason", reason);
+                                }
+
+                                /* comprobar mensaje de actualizacion */
+                                if (msgOk == null || msgOk.trim().equals("")) {
+                                    request.setAttribute("msg", "Se encontró el registro!");
+                                } else {
+                                    request.setAttribute("msgOk", msgOk);
+                                }
+
                             } else {
                                 request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
                             }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
-
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("/orderCard/orderCardUpdate.jsp").forward(request, response);
                     }
+
+                    request.getRequestDispatcher("/orderCard/orderCardUpdate.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
