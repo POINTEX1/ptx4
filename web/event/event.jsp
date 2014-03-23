@@ -37,6 +37,9 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
 
+        <!-- export excel -->
+        <script src="js/export-excel.js"></script>
+
         <script>
             function confirmar(url)
             {
@@ -77,7 +80,7 @@
                         <c:import var="dataTableMsg" url="/dataTableMsg.jsp" />
                         <c:out value="${dataTableMsg}" escapeXml="false" />
                         <!-- /MENSAJES --> 
-                        
+
                     </div>
 
                 </div><!-- /.row -->
@@ -92,7 +95,13 @@
                                             <!-- TITULO DATATABLE -->
                                             <div class="box-title">
                                                 Datatable
-                                                <object align="right"> <button class="btn btn-primary btn-mini" name="btnAddEvent" type="button" onclick="location.href = 'EventAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button></object>
+                                                <object align="right"> 
+                                                    <!-- EXPORTAR A EXCEL -->
+                                                    <button class="btn btn-primary btn-mini" name="btnExportExcel" onclick="generateExcel('datatable');" ><font size="1"><strong>EXPORT XLS</strong></font></button>                                                    
+                                                    &nbsp;&nbsp;
+                                                    <!-- AGREGAR REGISTRO -->
+                                                    <button class="btn btn-primary btn-mini" name="btnAddEvent" type="button" onclick="location.href = 'EventAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button>
+                                                </object>
                                                 </br>DB
                                             </div>
                                             <!-- /TITULO DATATABLE -->

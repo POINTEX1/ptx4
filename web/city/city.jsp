@@ -38,6 +38,9 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
 
+        <!-- export excel -->
+        <script src="js/export-excel.js"></script>
+
         <script>
             function confirmar(url)
             {
@@ -93,55 +96,61 @@
                                             <!-- TITULO DATATABLE -->
                                             <div class="box-title">
                                                 Datatable
-                                                <object align="right"> <button class="btn btn-primary btn-mini" name="btnAddAdmin" type="button" onclick="location.href = 'CityAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button></object>
+                                                <object align="right"> 
+                                                    <button class="btn btn-primary btn-mini" name="btnExportExcel" onclick="generateExcel('tableWrap');" ><font size="1"><strong>EXPORT XLS</strong></font></button>
+                                                    &nbsp;&nbsp;
+                                                    <button class="btn btn-primary btn-mini" name="btnAddAdmin" type="button" onclick="location.href = 'CityAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button>
+                                                </object>
                                                 </br>DB
                                             </div>
                                             <!-- /TITULO DATATABLE -->
                                             <div class="box-content nopadding">
-                                                <table id="datatable" class="table table-striped table-bordered">
-                                                    <!-- HEADER DATATABLE -->
-                                                    <thead>
-                                                        <tr>
-                                                            <th><input class="check_all" type="checkbox" /></th>
-                                                            <th>Id Ciudad <i class="fa fa-sort"></i></th>
-                                                            <th>Nombre Ciudad <i class="fa fa-sort"></i></th>
-                                                            <th></th>
-                                                            <th></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <!-- /HEADER DATATABLE -->
-
-                                                    <!-- BODY DATATABLE -->
-                                                    <tbody>
-                                                        <c:forEach var="list" items="${list}"> 
+                                                <div id="tableWrap">
+                                                    <table id="datatable" class="table table-striped table-bordered">
+                                                        <!-- HEADER DATATABLE -->
+                                                        <thead>
                                                             <tr>
-                                                                <th><input type="checkbox" name="chk" value="<c:out value="${list.idCity}" />"/></th>
-                                                                <td class="center"><c:out value="${list.idCity}" /></td>
-                                                                <td class="center"><c:out value="${list.nameCity}" /></td>
-                                                                <td class="center">
-                                                                    <a href="CityGetServlet?idCity=<c:out value="${list.idCity}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">VER / ACTUALIZAR</font></strong></button></a>                                                                
-                                                                </td>
-                                                                <td class="center">                                                                    
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('CityMainServlet?btnDelRow=x&idCity=<c:out value="${list.idCity}" />');
-                return false;"><strong><font size="1">ELIMINAR</font></strong></button>
-                                                                </td>
+                                                                <th><input class="check_all" type="checkbox" /></th>
+                                                                <th>Id Ciudad <i class="fa fa-sort"></i></th>
+                                                                <th>Nombre Ciudad <i class="fa fa-sort"></i></th>
+                                                                <th></th>
+                                                                <th></th>
                                                             </tr>
-                                                        </c:forEach>                                                                                		                                    		
-                                                    </tbody>
-                                                    <!-- /BODY DATATABLE -->
+                                                        </thead>
+                                                        <!-- /HEADER DATATABLE -->
 
-                                                    <!-- FOOTER DATATABLE -->
-                                                    <tfoot>
-                                                        <tr>
-                                                            <th><button class="btn btn-danger btn-mini delete" name="btnDelCol" type="submit"><font size="1">ELIMINAR</font></button></th>
-                                                            <th>Id Ciudad</th>
-                                                            <th>Nombre Ciudad</th>
-                                                            <th></th>
-                                                            <th></th>
-                                                        </tr>
-                                                    </tfoot>
-                                                    <!-- /FOOTER DATATABLE -->
-                                                </table>
+                                                        <!-- BODY DATATABLE -->
+                                                        <tbody>
+                                                            <c:forEach var="list" items="${list}"> 
+                                                                <tr>
+                                                                    <th><input type="checkbox" name="chk" value="<c:out value="${list.idCity}" />"/></th>
+                                                                    <td class="center"><c:out value="${list.idCity}" /></td>
+                                                                    <td class="center"><c:out value="${list.nameCity}" /></td>
+                                                                    <td class="center">
+                                                                        <a href="CityGetServlet?idCity=<c:out value="${list.idCity}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">VER / ACTUALIZAR</font></strong></button></a>                                                                
+                                                                    </td>
+                                                                    <td class="center">                                                                    
+                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('CityMainServlet?btnDelRow=x&idCity=<c:out value="${list.idCity}" />');
+                return false;"><strong><font size="1">ELIMINAR</font></strong></button>
+                                                                    </td>
+                                                                </tr>
+                                                            </c:forEach>                                                                                		                                    		
+                                                        </tbody>
+                                                        <!-- /BODY DATATABLE -->
+
+                                                        <!-- FOOTER DATATABLE -->
+                                                        <tfoot>
+                                                            <tr>
+                                                                <th><button class="btn btn-danger btn-mini delete" name="btnDelCol" type="submit"><font size="1">ELIMINAR</font></button></th>
+                                                                <th>Id Ciudad</th>
+                                                                <th>Nombre Ciudad</th>
+                                                                <th></th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </tfoot>
+                                                        <!-- /FOOTER DATATABLE -->
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

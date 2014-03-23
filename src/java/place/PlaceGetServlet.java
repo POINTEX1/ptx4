@@ -52,8 +52,8 @@ public class PlaceGetServlet extends HttpServlet {
 
             conexion = ds.getConnection();
 
-            PlaceDAO dao = new PlaceDAO();
-            dao.setConexion(conexion);
+            PlaceDAO placeDAO = new PlaceDAO();
+            placeDAO.setConexion(conexion);
 
             CityDAO cityDAO = new CityDAO();
             cityDAO.setConexion(conexion);
@@ -83,6 +83,23 @@ public class PlaceGetServlet extends HttpServlet {
                     // RECIBIR Y COMPROBAR PARAMETROS
                     /////////////////////////////////////////
 
+                    /* obtener atributos de PRG */
+                    String namePlace = request.getParameter("namePlace");
+                    String contact = request.getParameter("contact");
+                    String urlImage = request.getParameter("urlImage");
+                    String urlLogo = request.getParameter("urlLogo");
+
+                    /* obtener mensajes de PRG */
+                    String msgOk = request.getParameter("msgOk");
+                    String msgErrorNamePlace = request.getParameter("msgErrorNamePlace");
+                    String msgErrorAddress = request.getParameter("msgErrorAddress");
+                    String msgErrorContact = request.getParameter("msgErrorContact");
+                    String msgErrorDes = request.getParameter("msgErrorDes");
+                    String msgErrorUrlImage = request.getParameter("msgErrorUrlImage");
+                    String msgErrorUrlLogo = request.getParameter("msgErrorUrlLogo");
+                    String msgErrorDup = request.getParameter("msgErrorDup");
+
+                    /* obtener parametros de busqueda */
                     String sidPlace = request.getParameter("idPlace");
 
                     boolean error = false;
@@ -102,10 +119,75 @@ public class PlaceGetServlet extends HttpServlet {
                     if (!error) {
                         /* buscar place */
                         try {
-                            Place reg = dao.findById(id);
+                            Place reg = placeDAO.findById(id);
                             if (reg != null) {
-                                request.setAttribute("place", reg);
-                                request.setAttribute("msgOk", "Se encontró el registro!");
+                                /* obtener atributos del dao */
+                                request.setAttribute("idPlace", reg.getIdPlace());
+                                request.setAttribute("idCity", reg.getIdCity());
+                                request.setAttribute("status", reg.getStatus());
+
+                                /////////////////////////////
+                                // COMPROBAR PARAMETROS
+                                /////////////////////////////
+
+                                /* comprobar name place */
+                                if (msgErrorNamePlace == null || msgErrorNamePlace.trim().equals("")) {
+                                    request.setAttribute("namePlace", reg.getNamePlace());
+                                } else {
+                                    request.setAttribute("msgErrorNamePlace", msgErrorNamePlace);
+                                }
+
+                                /* comprobar address */
+                                if (msgErrorAddress == null || msgErrorAddress.trim().equals("")) {
+                                    request.setAttribute("address", reg.getAddress());
+                                } else {
+                                    request.setAttribute("msgErrorAddress", msgErrorAddress);
+                                }
+
+                                /* comprobar contact */
+                                if (msgErrorContact == null || msgErrorContact.trim().equals("")) {
+                                    request.setAttribute("contact", reg.getContact());
+                                } else {
+                                    request.setAttribute("msgErrorContact", msgErrorContact);
+                                    request.setAttribute("contact", contact);
+                                }
+
+                                /* comprobar description */
+                                if (msgErrorDes == null || msgErrorDes.trim().equals("")) {
+                                    request.setAttribute("description", reg.getDescription());
+                                } else {
+                                    request.setAttribute("msgErrorDes", msgErrorDes);
+                                }
+
+                                /* comprobar urlImage */
+                                if (msgErrorUrlImage == null || msgErrorUrlImage.trim().equals("")) {
+                                    request.setAttribute("urlImage", reg.getUrlImage());
+                                } else {
+                                    request.setAttribute("msgErrorUrlImage", msgErrorUrlImage);
+                                    request.setAttribute("urlImage", urlImage);
+                                }
+
+                                /* comprobar url Logo */
+                                if (msgErrorUrlLogo == null || msgErrorUrlLogo.trim().equals("")) {
+                                    request.setAttribute("urlLogo", reg.getUrlLogo());
+                                } else {
+                                    request.setAttribute("msgErrorUrlLogo", msgErrorUrlLogo);
+                                    request.setAttribute("urlLogo", urlLogo);
+                                }
+
+                                if (msgErrorDup == null || msgErrorDup.trim().equals("")) {
+                                } else {
+                                    request.setAttribute("msgErrorDup", msgErrorDup);
+                                    request.setAttribute("namePlace", namePlace);
+                                }
+
+                                /* comprobar msgOk y msg */
+                                if (msgOk == null || msgOk.trim().equals("")) {
+                                    request.setAttribute("msg", "Se encontró el registro!");
+                                } else {
+                                    request.setAttribute("msgOk", msgOk);
+                                }
+
                             } else {
                                 request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
                             }

@@ -37,6 +37,9 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
 
+        <!-- export excel -->
+        <script src="js/export-excel.js"></script>
+
         <script>
             function confirmar(url)
             {
@@ -49,7 +52,8 @@
                     return false;
                 }
             }
-        </script>
+        </script>                 
+
     </head>
 
     <body>
@@ -72,7 +76,7 @@
                             <li class="active"><a href="AdminMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                         </ol>
                         <!-- /TITULO MANTENEDOR -->
-                        
+
                         <!-- MENSAJES -->
                         <c:import var="dataTableMsg" url="/dataTableMsg.jsp" />
                         <c:out value="${dataTableMsg}" escapeXml="false" />
@@ -90,70 +94,78 @@
                                         <div class="box"> 
                                             <!-- TITULAR DEL DATATABLE -->
                                             <div class="box-title">
-                                                DataTable
-                                                <!-- AGREGAR REGISTRO -->
-                                                <object align="right"> <button class="btn btn-primary btn-mini" name="btnAddAdmin" type="button" onclick="location.href = 'AdminAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button></object>
-                                                <!-- /AGREGAR REGISTRO -->
+                                                DataTable                                                
+                                                <object align="right">                                                     
+                                                    <!-- EXPORTAR A EXCEL -->
+                                                    <button class="btn btn-primary btn-mini" name="btnExportExcel" onclick="generate_excel('datatable');" ><font size="1"><strong>EXPORT XLS</strong></font></button>
+                                                    <!-- /EXPORTAR A EXCEL -->
+                                                    &nbsp;&nbsp;
+                                                    <!-- AGREGAR REGISTRO -->
+                                                    <button class="btn btn-primary btn-mini" name="btnAddAdmin" type="button" onclick="location.href = 'AdminAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button>
+                                                    <!-- /AGREGAR REGISTRO -->
+                                                </object>
                                                 </br>DB
                                             </div>
                                             <!-- /TITULAR DEL DATATABLE -->
                                             <div class="box-content nopadding">
-                                                <table id="datatable" class="table table-striped table-bordered">
-                                                    <!-- HEAD DEL DATATABLE -->
-                                                    <thead>
-                                                        <tr>
-                                                            <th><input class="check_all" type="checkbox" /></th>
-                                                            <th>ID <i class="fa fa-sort"></i></th>
-                                                            <th>Username <i class="fa fa-sort"></i></th>
-                                                            <th>Email <i class="fa fa-sort"></i></th>
-                                                            <th>Fecha de Creación <i class="fa fa-sort"></i></th>
-                                                            <th> </th>
-                                                            <th> </th>
-                                                        </tr>
-                                                    </thead>
-                                                    <!-- /HEAD DEL DATATABLE -->
-
-                                                    <!-- BODY DEL DATATABLE -->
-                                                    <tbody>
-                                                        <c:forEach var="list" items="${list}"> 
+                                                <div id="tableWrap">
+                                                    <table id="datatable" class="table table-striped table-bordered">
+                                                        <!-- HEAD DEL DATATABLE -->
+                                                        <thead>
                                                             <tr>
-                                                                <td class="center">
-                                                                    <c:if test="${list.idAdmin != idUser}" >
-                                                                        <input type="checkbox" name="chk" value="<c:out value="${list.idAdmin}" />"/>
-                                                                    </c:if>
-                                                                </td>                                            
-                                                                <td class="center"><c:out value="${list.idAdmin}" /></td>
-                                                                <td class="center"><c:out value="${list.username}" /></td>
-                                                                <td class="center"><c:out value="${list.email}" /></td>
-                                                                <td class="center"><c:out value="${list.createTime}" /></td>
-                                                                <td class="center">
-                                                                    <a href="AdminGetServlet?id=<c:out value="${list.idAdmin}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">VER / ACTUALIZAR</font></strong></button></a>                                                                         
-                                                                </td>
-                                                                <td class="center">
-                                                                    <c:if test="${list.idAdmin != idUser}" >                                                                           
-                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('AdminMainServlet?btnDelRow=x&id=<c:out value="${list.idAdmin}"/>');
-                return false;"><strong><font size="1">ELIMINAR</font></strong></button>
-                                                                            </c:if> 
-                                                                </td>
+                                                                <th><input class="check_all" type="checkbox" /></th>
+                                                                <th>ID <i class="fa fa-sort"></i></th>
+                                                                <th>Username <i class="fa fa-sort"></i></th>
+                                                                <th>Email <i class="fa fa-sort"></i></th>
+                                                                <th>Fecha de Creación <i class="fa fa-sort"></i></th>
+                                                                <th> </th>
+                                                                <th> </th>
                                                             </tr>
-                                                        </c:forEach>                                                                              		                                    		
-                                                    </tbody>
-                                                    <!-- /BODY DEL DATATABLE -->
+                                                        </thead>
+                                                        <!-- /HEAD DEL DATATABLE -->
 
-                                                    <!-- FOOT DEL DATATABLE -->
-                                                    <tfoot>
-                                                        <tr>
-                                                            <th><button class="btn btn-danger btn-mini delete" name="btnDelCol" type="submit"><font size="1">ELIMINAR</font></button></th>
-                                                            <th>ID </th>
-                                                            <th>Username </th>
-                                                            <th>Email </th>
-                                                            <th>Fecha de Creación </th>
-                                                            <th> </th>
-                                                            <th> </th>
-                                                        </tr>
-                                                    </tfoot>
-                                                    <!-- /FOOT DEL DATATABLE --> 
-                                                </table>
+                                                        <!-- BODY DEL DATATABLE -->
+                                                        <tbody>
+                                                            <c:forEach var="list" items="${list}"> 
+                                                                <tr>
+                                                                    <td class="center">
+                                                                        <c:if test="${list.idAdmin != idUser}" >
+                                                                            <input type="checkbox" name="chk" value="<c:out value="${list.idAdmin}" />"/>
+                                                                        </c:if>
+                                                                    </td>                                            
+                                                                    <td class="center"><c:out value="${list.idAdmin}" /></td>
+                                                                    <td class="center"><c:out value="${list.username}" /></td>
+                                                                    <td class="center"><c:out value="${list.email}" /></td>
+                                                                    <td class="center"><c:out value="${list.createTime}" /></td>
+                                                                    <td class="center">
+                                                                        <a href="AdminGetServlet?id=<c:out value="${list.idAdmin}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">VER / ACTUALIZAR</font></strong></button></a>                                                                         
+                                                                    </td>
+                                                                    <td class="center">
+                                                                        <c:if test="${list.idAdmin != idUser}" >                                                                                                                                                                       
+                                                                            <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('AdminMainServlet?btnDelRow=x&id=<c:out value="${list.idAdmin}"/>');
+                return false;"><strong><font size="1">ELIMINAR</font></strong></button>
+                                                                                </c:if> 
+                                                                    </td>
+                                                                </tr>
+                                                            </c:forEach>                                                                              		                                    		
+                                                        </tbody>
+                                                        <!-- /BODY DEL DATATABLE -->
+
+                                                        <!-- FOOT DEL DATATABLE -->
+                                                        <tfoot>
+                                                            <tr>
+                                                                <th><button class="btn btn-danger btn-mini delete" name="btnDelCol" type="submit"><font size="1">ELIMINAR</font></button></th>
+                                                                <th>ID </th>
+                                                                <th>Username </th>
+                                                                <th>Email </th>
+                                                                <th>Fecha de Creación </th>
+                                                                <th> </th>
+                                                                <th> </th>
+                                                            </tr>
+                                                        </tfoot>
+                                                        <!-- /FOOT DEL DATATABLE --> 
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

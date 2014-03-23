@@ -36,7 +36,10 @@
 
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
-        <script src="js/tablesorter/tables.js"></script>        
+        <script src="js/tablesorter/tables.js"></script> 
+
+        <!-- export excel -->
+        <script src="js/export-excel.js"></script>
 
         <script>
             function confirmar(url)
@@ -79,7 +82,7 @@
                         <c:import var="dataTableMsg" url="/dataTableMsg.jsp" />
                         <c:out value="${dataTableMsg}" escapeXml="false" />
                         <!-- /MENSAJES --> 
-                        
+
                     </div>
                 </div><!-- /.row -->
                 <div class="row">                  
@@ -93,55 +96,61 @@
                                             <!-- TITULO DE DATATABLE -->
                                             <div class="box-title">
                                                 Datatable
-                                                <object align="right"> <button class="btn btn-primary btn-mini" name="btnAdd" type="button" onclick="location.href = 'CategoryAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button></object>
+                                                <object align="right"> 
+                                                    <button class="btn btn-primary btn-mini" name="btnExportExcel" onclick="generateExcel('datatable');" ><font size="1"><strong>EXPORT XLS</strong></font></button>
+                                                    &nbsp;&nbsp;
+                                                    <button class="btn btn-primary btn-mini" name="btnAdd" type="button" onclick="location.href = 'CategoryAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button>                                                    
+                                                </object>
                                                 </br>DB
                                             </div>
                                             <!-- /TITULO DE DATATABLE -->
                                             <div class="box-content nopadding">
-                                                <table id="datatable" class="table table-striped table-bordered">
-                                                    <!-- HEADER DE DATATABLE -->
-                                                    <thead>
-                                                        <tr>
-                                                            <th><input class="check_all" type="checkbox" /></th>
-                                                            <th>Id Categoria <i class="fa fa-sort"></i></th>
-                                                            <th>Nombre Categoria <i class="fa fa-sort"></i></th>
-                                                            <th></th>
-                                                            <th></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <!-- /HEADER DE DATATABLE -->
-
-                                                    <!-- BODY DE DATATABLE -->
-                                                    <tbody>
-                                                        <c:forEach var="list" items="${list}"> 
+                                                <div id="tableWrap">
+                                                    <table id="datatable" class="table table-striped table-bordered">
+                                                        <!-- HEADER DE DATATABLE -->
+                                                        <thead>
                                                             <tr>
-                                                                <th><input type="checkbox" name="chk" value="<c:out value="${list.idCategory}" />"/></th>
-                                                                <td class="center"><c:out value="${list.idCategory}" /></td>
-                                                                <td class="center"><c:out value="${list.nameCategory}" /></td>
-                                                                <td class="center">
-                                                                    <a href="CategoryGetServlet?idCategory=<c:out value="${list.idCategory}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">VER / ACTUALIZAR</font></strong></button></a>                                                                
-                                                                </td>
-                                                                <td class="center">                                                                    
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('CategoryMainServlet?btnDelRow=x&idCategory=<c:out value="${list.idCategory}" />');
-                return false;"><strong><font size="1">ELIMINAR</font></strong></button>
-                                                                </td>
+                                                                <th><input class="check_all" type="checkbox" /></th>
+                                                                <th>Id Categoria <i class="fa fa-sort"></i></th>
+                                                                <th>Nombre Categoria <i class="fa fa-sort"></i></th>
+                                                                <th></th>
+                                                                <th></th>
                                                             </tr>
-                                                        </c:forEach>                                                                                		                                    		
-                                                    </tbody>
-                                                    <!-- /BODY DE DATATABLE -->
+                                                        </thead>
+                                                        <!-- /HEADER DE DATATABLE -->
 
-                                                    <!-- FOOTER DE DATATABLE -->
-                                                    <tfoot>
-                                                        <tr>
-                                                            <th><button class="btn btn-danger btn-mini delete" name="btnDelCol" type="submit"><font size="1">ELIMINAR</font></button></th>
-                                                            <th>Id Categoria</th>
-                                                            <th>Nombre Categoria</th>
-                                                            <th></th>
-                                                            <th></th>
-                                                        </tr>
-                                                    </tfoot>
-                                                    <!-- /FOOTER DE DATATABLE -->
-                                                </table>
+                                                        <!-- BODY DE DATATABLE -->
+                                                        <tbody>
+                                                            <c:forEach var="list" items="${list}"> 
+                                                                <tr>
+                                                                    <th><input type="checkbox" name="chk" value="<c:out value="${list.idCategory}" />"/></th>
+                                                                    <td class="center"><c:out value="${list.idCategory}" /></td>
+                                                                    <td class="center"><c:out value="${list.nameCategory}" /></td>
+                                                                    <td class="center">
+                                                                        <a href="CategoryGetServlet?idCategory=<c:out value="${list.idCategory}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">VER / ACTUALIZAR</font></strong></button></a>                                                                
+                                                                    </td>
+                                                                    <td class="center">                                                                    
+                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('CategoryMainServlet?btnDelRow=x&idCategory=<c:out value="${list.idCategory}" />');
+                return false;"><strong><font size="1">ELIMINAR</font></strong></button>
+                                                                    </td>
+                                                                </tr>
+                                                            </c:forEach>                                                                                		                                    		
+                                                        </tbody>
+                                                        <!-- /BODY DE DATATABLE -->
+
+                                                        <!-- FOOTER DE DATATABLE -->
+                                                        <tfoot>
+                                                            <tr>
+                                                                <th><button class="btn btn-danger btn-mini delete" name="btnDelCol" type="submit"><font size="1">ELIMINAR</font></button></th>
+                                                                <th>Id Categoria</th>
+                                                                <th>Nombre Categoria</th>
+                                                                <th></th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </tfoot>
+                                                        <!-- /FOOTER DE DATATABLE -->
+                                                    </table>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

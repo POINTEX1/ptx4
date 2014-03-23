@@ -28,7 +28,6 @@
         <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
         <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.min.js"></script>  
 
-
         <!-- JavaScript -->
         <script src="js/jquery-1.10.2.js"></script>
         <script src="js/bootstrap.js"></script>
@@ -36,6 +35,23 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
+
+        <!-- export excel -->
+        <script src="js/export-excel.js"></script>
+
+        <script>
+            function confirmar(url)
+            {
+                if (confirm('¿Está seguro de eliminar el registro?'))
+                {
+                    window.location = url;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        </script>
 
     </head>
 
@@ -78,7 +94,13 @@
                                             <!-- TITULO DATATABLE -->
                                             <div class="box-title">
                                                 Datatable
-                                                <object align="right"> <button class="btn btn-primary btn-mini" name="btnAddPlaceNews" type="button" onclick="location.href = 'PlaceNewsAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button></object>
+                                                <object align="right"> 
+                                                    <!-- EXPORTAR A EXCEL -->
+                                                    <button class="btn btn-primary btn-mini" name="btnExportExcel" onclick="generateExcel('datatable');" ><font size="1"><strong>EXPORT XLS</strong></font></button>                                                    
+                                                    &nbsp;&nbsp;
+                                                    <!-- AGREGAR REGISTRO -->
+                                                    <button class="btn btn-primary btn-mini" name="btnAddPlaceNews" type="button" onclick="location.href = 'PlaceNewsAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button>
+                                                </object>
                                                 </br>DB
                                             </div>
                                             <!-- /TITULO DATATABLE -->
@@ -123,7 +145,7 @@
                                                                 </td>
                                                                 <td class="center">                                                                   
                                                                     <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('PlaceNewsMainServlet?btnDelRow=x&idPlaceNews=<c:out value="${list.idPlaceNews}" />');
-                                                        return false;"><strong><font size="1">ELIMINAR</font></strong></button>
+                return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>                                                                              		                                    		

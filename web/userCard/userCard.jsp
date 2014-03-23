@@ -36,6 +36,9 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
 
+        <!-- export excel -->
+        <script src="js/export-excel.js"></script>
+
         <script>
             function confirmar(url)
             {
@@ -77,7 +80,7 @@
                         <!-- /MENSAJES --> 
                     </div>                
                 </div><!-- /.row -->
-                
+
                 <div class="row">                  
                     <div class="col-lg-12">                        
                         <div class="table-responsive">
@@ -88,7 +91,13 @@
                                         <div class="box">                                
                                             <div class="box-title">
                                                 Datatable
-                                                <object align="right"> <button class="btn btn-primary btn-mini" name="btnAdd" type="button" onclick="location.href = 'UserCardAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button></object>
+                                                <object align="right"> 
+                                                    <!-- EXPORTAR A EXCEL -->
+                                                    <button class="btn btn-primary btn-mini" name="btnExportExcel" onclick="generateExcel('datatable');" ><font size="1"><strong>EXPORT XLS</strong></font></button>                                                    
+                                                    &nbsp;&nbsp;
+                                                    <!-- AGREGAR REGISTRO -->
+                                                    <button class="btn btn-primary btn-mini" name="btnAdd" type="button" onclick="location.href = 'UserCardAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button>
+                                                </object>
                                                 </br>DB
                                             </div>
                                             <div class="box-content nopadding">

@@ -37,6 +37,9 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
 
+        <!-- export excel -->
+        <script src="js/export-excel.js"></script>
+
         <script>
             function confirmar(url)
             {
@@ -72,7 +75,7 @@
                             <li class="active"><a href="PointMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                         </ol>
                         <!-- /TITULO MANTENEDOR -->
-                        
+
                         <!-- MENSAJES -->
                         <c:import var="dataTableMsg" url="/dataTableMsg.jsp" />
                         <c:out value="${dataTableMsg}" escapeXml="false" />
@@ -89,7 +92,13 @@
                                         <div class="box">                                
                                             <div class="box-title">
                                                 Datatable
-                                                <object align="right"> <button class="btn btn-primary btn-mini" name="btnAddEvent" type="button" onclick="location.href = 'PointAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button></object>
+                                                <object align="right"> 
+                                                    <!-- EXPORTAR A EXCEL -->
+                                                    <button class="btn btn-primary btn-mini" name="btnExportExcel" onclick="generateExcel('datatable');" ><font size="1"><strong>EXPORT XLS</strong></font></button>                                                    
+                                                    &nbsp;&nbsp;
+                                                    <!-- AGREGAR REGISTRO -->
+                                                    <button class="btn btn-primary btn-mini" name="btnAddEvent" type="button" onclick="location.href = 'PointAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button>
+                                                </object>
                                                 </br>DB
                                             </div>
                                             <div class="box-content nopadding">
@@ -123,7 +132,8 @@
                                                                     <a href="PointGetServlet?idPlace=<c:out value="${list.idPlace}" />&rut=<c:out value="${list.rut}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">VER / ACTUALIZAR</font></strong></button></a>
                                                                 </td>
                                                                 <td class="center">                                                                    
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('PointMainServlet?btnDelRow=x&idPlace=<c:out value="${list.idPlace}" />&rut=<c:out value="${list.rut}" />'); return false;"><strong><font size="1">ELIMINAR</font></strong></button>
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('PointMainServlet?btnDelRow=x&idPlace=<c:out value="${list.idPlace}" />&rut=<c:out value="${list.rut}" />');
+                return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>                                                                              		                                    		

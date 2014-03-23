@@ -36,6 +36,9 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
 
+        <!-- export excel -->
+        <script src="js/export-excel.js"></script>
+
         <script>
             function confirmar(url)
             {
@@ -81,57 +84,62 @@
                                         <div class="box">                                
                                             <div class="box-title">
                                                 Datatable
-                                                <object align="right"> <button class="btn btn-primary btn-mini" name="btnAdd" type="button" onclick="location.href = 'ClientExchangeAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button></object>
+                                                <object align="right"> 
+                                                    <button class="btn btn-primary btn-mini" name="btnExportExcel" onclick="generateExcel('datatable');" ><font size="1"><strong>EXPORT XLS</strong></font></button>
+                                                    &nbsp;&nbsp;
+                                                    <button class="btn btn-primary btn-mini" name="btnAdd" type="button" onclick="location.href = 'ClientExchangeAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button>
+                                                </object>
                                                 </br>DB
                                             </div>
-                                            <div class="box-content nopadding">
-                                                <table id="datatable" class="table table-striped table-bordered">
-                                                    <thead>
-                                                        <tr>
-                                                            <th><input class="check_all" type="checkbox" /></th>
-                                                            <th>ID Check <i class="fa fa-sort"></i></th>
-                                                            <th>Lugar <i class="fa fa-sort"></i></th>
-                                                            <th>ID Exchangeable <i class="fa fa-sort"></i></th>
-                                                            <th>Título Canjeable <i class="fa fa-sort"></i></th>
-                                                            <th>Rut <i class="fa fa-sort"></i></th>
-                                                            <th>Fecha/Hora Compra <i class="fa fa-sort"></i></th>
-                                                            <th></th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <c:forEach var="list" items="${list}">  
-                                                                <td class="center"><input type="checkbox" name="chk" value="<c:out value="${list.idCheck}" />"/></td>
-                                                                <td class="center"><c:out value="${list.idCheck}" /></td>
-                                                                <td class="center"><c:out value="${list.namePlace}" /></td>
-                                                                <td class="center"><c:out value="${list.idExchangeable}" /></td>
-                                                                <td class="center"><c:out value="${list.tittle}" /></td>
-                                                                <td class="center"><c:out value="${list.rut}" />-<c:out value="${list.dv}" /></td>                                                                
-                                                                <td class="center"><c:out value="${list.createTime}" /></td>                                                                
-                                                                <td class="center">                                                                   
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('ClientExchangeCheckMainServlet?btnDelRow=x&idCheck=<c:out value="${list.idCheck}" />');
-                return false;"><strong><font size="1">ELIMINAR</font></strong></button>
-                                                                </td>
+                                            <div class="box-content nopadding">   
+                                                <div id="tableWrap">
+                                                    <table id="datatable" class="table table-striped table-bordered">                                                                                                        
+                                                        <thead>
+                                                            <tr>
+                                                                <th><input class="check_all" type="checkbox" /></th>
+                                                                <th>ID Check <i class="fa fa-sort"></i></th>
+                                                                <th>Lugar <i class="fa fa-sort"></i></th>
+                                                                <th>ID Exchangeable <i class="fa fa-sort"></i></th>
+                                                                <th>Título Canjeable <i class="fa fa-sort"></i></th>
+                                                                <th>Rut <i class="fa fa-sort"></i></th>
+                                                                <th>Fecha/Hora Compra <i class="fa fa-sort"></i></th>
+                                                                <th></th>
                                                             </tr>
-                                                        </c:forEach>
-                                                    </tbody>
-                                                    <tfoot>
-                                                        <tr>
-                                                            <th><button class="btn btn-danger btn-mini delete" name="btnDelCol" type="submit"><font size="1">ELIMINAR</font></button></th>
-                                                            <th>ID Check </th>
-                                                            <th>Lugar </th>
-                                                            <th>ID Exchangeable </th>
-                                                            <th>Título Canjeable </th>
-                                                            <th>Rut </th>
-                                                            <th>Fecha/Hora Compra </th>
-                                                            <th></th>
-                                                        </tr>
-                                                    </tfoot>
-                                                </table>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <c:forEach var="list" items="${list}">  
+                                                                    <td class="center"><input type="checkbox" name="chk" value="<c:out value="${list.idCheck}" />"/></td>
+                                                                    <td class="center"><c:out value="${list.idCheck}" /></td>
+                                                                    <td class="center"><c:out value="${list.namePlace}" /></td>
+                                                                    <td class="center"><c:out value="${list.idExchangeable}" /></td>
+                                                                    <td class="center"><c:out value="${list.tittle}" /></td>
+                                                                    <td class="center"><c:out value="${list.rut}" />-<c:out value="${list.dv}" /></td>                                                                
+                                                                    <td class="center"><c:out value="${list.createTime}" /></td>                                                                
+                                                                    <td class="center">                                                                   
+                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('ClientExchangeCheckMainServlet?btnDelRow=x&idCheck=<c:out value="${list.idCheck}" />');
+                return false;"><strong><font size="1">ELIMINAR</font></strong></button>
+                                                                    </td>
+                                                                </tr>
+                                                            </c:forEach>
+                                                        </tbody>
+                                                        <tfoot>
+                                                            <tr>
+                                                                <th><button class="btn btn-danger btn-mini delete" name="btnDelCol" type="submit"><font size="1">ELIMINAR</font></button></th>
+                                                                <th>ID Check </th>
+                                                                <th>Lugar </th>
+                                                                <th>ID Exchangeable </th>
+                                                                <th>Título Canjeable </th>
+                                                                <th>Rut </th>
+                                                                <th>Fecha/Hora Compra </th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </tfoot> 
+                                                    </table>  
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                             </form>
                         </div>
                     </div>
