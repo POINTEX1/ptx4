@@ -19,29 +19,29 @@ import java.util.Collection;
  * @author alexander
  */
 public class PlaceNewsDAO {
-    
+
     private Connection conexion;
-    
+
     public Connection getConexion() {
         return conexion;
     }
-    
+
     public void setConexion(Connection conexion) {
         this.conexion = conexion;
     }
-    
-    public PlaceNews findByPlaceNews(PlaceNews pnews) {
-        
+
+    public PlaceNews findByPlaceNews(int id) {
+
         Statement sentence = null;
         ResultSet result = null;
-        
+
         PlaceNews reg = null;
-        
+
         try {
             sentence = conexion.createStatement();
-            String sql = "select * from place_news pn, place pl where pn.id_pnews = " + pnews.getIdPlaceNews() + " and pn.id_place = pl.id_place ";
+            String sql = "select * from place_news pn, place pl where pn.id_pnews = " + id + " and pn.id_place = pl.id_place ";
             result = sentence.executeQuery(sql);
-            
+
             while (result.next()) {
                 /* instanciar objeto */
                 reg = new PlaceNews();
@@ -56,7 +56,7 @@ public class PlaceNewsDAO {
                 reg.setDateBegin(result.getString("date_begin"));
                 reg.setDateEnd(result.getString("date_end"));
             }
-            
+
         } catch (MySQLSyntaxErrorException ex) {
             System.out.println("Error de sintaxis en PlaceNewsDAO, findByPlaceNews() : " + ex);
             throw new RuntimeException("MySQL Syntax Exception en PlaceNewsDAO, findByPlaceNews() : " + ex);
@@ -79,22 +79,22 @@ public class PlaceNewsDAO {
         }
         return reg;
     }
-    
+
     public Collection<PlaceNews> getAll() {
-        
+
         Statement sentence = null;
         ResultSet result = null;
-        
+
         Collection<PlaceNews> list = new ArrayList<PlaceNews>();
-        
+
         try {
             sentence = conexion.createStatement();
             String sql = "select * from place_news pn, place pl where pn.id_place = pl.id_place order by pn.id_pnews desc";
             result = sentence.executeQuery(sql);
-            
+
             while (result.next()) {
                 PlaceNews reg = new PlaceNews();
-                
+
                 reg.setIdPlaceNews(result.getInt("id_pnews"));
                 reg.setIdPlace(result.getInt("id_place"));
                 reg.setNamePlace(result.getString("name_place"));
@@ -107,7 +107,7 @@ public class PlaceNewsDAO {
                 /* agregar a la lista */
                 list.add(reg);
             }
-            
+
         } catch (MySQLSyntaxErrorException ex) {
             System.out.println("Error de sintaxis en PlaceNewsDAO, getAll() : " + ex);
             throw new RuntimeException("MySQL Syntax Exception en PlaceNewsDAO, getAll() : " + ex);
@@ -130,24 +130,24 @@ public class PlaceNewsDAO {
         }
         return list;
     }
-    
+
     public boolean validateDuplicate(PlaceNews reg) {
-        
+
         Statement sentence = null;
         ResultSet result = null;
-        
+
         boolean find = false;
-        
+
         try {
             sentence = conexion.createStatement();
-            String sql = "select * from place_news where id_pnews <> " + reg.getIdPlaceNews() + " and id_place = " + reg.getIdPlace() + " and tittle = '" + reg.getTittle() + "' and date_end > '" + reg.getDateBegin() + "' ";
+            String sql = "select * from place_news where id_pnews <> " + reg.getIdPlaceNews() + " and tittle = '" + reg.getTittle() + "' and date_end > '" + reg.getDateBegin() + "' ";
             result = sentence.executeQuery(sql);
-            
+
             while (result.next()) {
                 /* obtener resultSet */
                 find = true;
             }
-            
+
         } catch (MySQLSyntaxErrorException ex) {
             System.out.println("Error de sintaxis en PlaceNewsDAO, validateDuplicate : " + ex);
             throw new RuntimeException("MySQL Syntax Exception en PlaceNewsDAO, validateDuplicate : " + ex);
@@ -170,17 +170,17 @@ public class PlaceNewsDAO {
         }
         return find;
     }
-    
+
     public void insert(PlaceNews reg) {
-        
+
         PreparedStatement sentence = null;
-        
+
         try {
             String sql = "insert into place_news (id_place, tittle, news_type, details, url_image, date_begin, date_end) values (?, ?, ?, ?, ?, ?, ?)";
-            
+
             sentence = conexion.prepareStatement(sql);
-            
-            
+
+
             sentence.setInt(1, reg.getIdPlace());
             sentence.setString(2, reg.getTittle());
             sentence.setInt(3, reg.getNewsType());
@@ -188,9 +188,9 @@ public class PlaceNewsDAO {
             sentence.setString(5, reg.getUrlImage());
             sentence.setString(6, reg.getDateBegin());
             sentence.setString(7, reg.getDateEnd());
-            
+
             sentence.executeUpdate();
-            
+
         } catch (MySQLSyntaxErrorException ex) {
             System.out.println("Error de sintaxis en PlaceNewsDAO, insert() : " + ex);
             throw new RuntimeException("MySQL Syntax Exception en PlaceNewsDAO, insert() : " + ex);
@@ -208,20 +208,20 @@ public class PlaceNewsDAO {
             }
         }
     }
-    
+
     public void delete(int id) {
-        
+
         PreparedStatement sentence = null;
-        
+
         try {
             String sql = "delete from place_news where id_pnews = ?";
-            
+
             sentence = conexion.prepareStatement(sql);
-            
+
             sentence.setInt(1, id);
-            
+
             sentence.executeUpdate();
-            
+
         } catch (MySQLSyntaxErrorException ex) {
             System.out.println("Error de sintaxis en PlaceNewsDAO, delete() : " + ex);
             throw new RuntimeException("MySQL Syntax Exception en PlaceNewsDAO, delete() : " + ex);
@@ -239,15 +239,15 @@ public class PlaceNewsDAO {
             }
         }
     }
-    
+
     public void update(PlaceNews reg) {
         PreparedStatement sentence = null;
-        
+
         try {
-            String sql = "update place_news set tittle = ?, news_type = ?, details = ?, url_image = ?, date_begin = ?, date_end = ? where id_pnews = ? and id_place = ? ";
-            
+            String sql = "update place_news set tittle = ?, news_type = ?, details = ?, url_image = ?, date_begin = ?, date_end = ? where id_pnews = ?";
+
             sentence = conexion.prepareStatement(sql);
-            
+
             sentence.setString(1, reg.getTittle());
             sentence.setInt(2, reg.getNewsType());
             sentence.setString(3, reg.getDetails());
@@ -255,10 +255,9 @@ public class PlaceNewsDAO {
             sentence.setString(5, reg.getDateBegin());
             sentence.setString(6, reg.getDateEnd());
             sentence.setInt(7, reg.getIdPlaceNews());
-            sentence.setInt(8, reg.getIdPlace());
-            
+
             sentence.executeUpdate();
-            
+
         } catch (MySQLSyntaxErrorException ex) {
             System.out.println("Error de sintaxis en PlaceNewsDAO, update() : " + ex);
             throw new RuntimeException("MySQL Syntax Exception en PlaceNewsDAO, update() : " + ex);

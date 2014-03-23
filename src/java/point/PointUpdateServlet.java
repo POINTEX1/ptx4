@@ -44,11 +44,10 @@ public class PointUpdateServlet extends HttpServlet {
         /* definir conexion */
         Connection conexion = null;
 
+        /////////////////////////////////////////
+        // ESTABLECER CONEXION
+        ///////////////////////////////////////// 
         try {
-            /////////////////////////////////////////
-            // ESTABLECER CONEXION
-            ///////////////////////////////////////// 
-
             conexion = ds.getConnection();
 
             PointDAO pointDAO = new PointDAO();
@@ -117,15 +116,15 @@ public class PointUpdateServlet extends HttpServlet {
                                 error = true;
                             }
                         }
-                        
+
                         /* comprobar dv */
-                        if(sdv == null || sdv.trim().equals("")) {
+                        if (sdv == null || sdv.trim().equals("")) {
                             request.setAttribute("msgErrorRut", "Error al recibir RUT.");
                             error = true;
                         } else {
                             point.setDv(sdv);
                         }
-                        
+
                         /* comprobar points */
                         if (spoints == null || spoints.trim().equals("")) {
                             request.setAttribute("msgErrorPoints", "Error: Debe ingresar puntos.");
@@ -142,7 +141,7 @@ public class PointUpdateServlet extends HttpServlet {
                                 error = true;
                             }
                         }
-                        
+
                         if (!error) {
                             /* comprobar existencia */
                             Point aux = pointDAO.findByPoint(point);

@@ -46,11 +46,10 @@ public class PlaceNewsUpdateServlet extends HttpServlet {
         /* definir conexion */
         Connection conexion = null;
 
+        /////////////////////////////////////////
+        // ESTABLECER CONEXION
+        /////////////////////////////////////////
         try {
-            /////////////////////////////////////////
-            // ESTABLECER CONEXION
-            ///////////////////////////////////////// 
-
             conexion = ds.getConnection();
 
             PlaceNewsDAO pnewsDAO = new PlaceNewsDAO();
@@ -77,136 +76,118 @@ public class PlaceNewsUpdateServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-                    /////////////////////////////////////////
-                    // DECLARAR VARIABLES DE INSTANCIA
-                    ////////////////////////////////////////
+                    //////////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETROS
+                    //////////////////////////////////////
+
+                    String sidPlaceNews = request.getParameter("idPlaceNews");
+                    String snewsType = request.getParameter("newsType");
+                    String tittle = request.getParameter("tittle");
+                    String details = request.getParameter("details");
+                    String dateBegin = request.getParameter("dateBegin");
+                    String dateEnd = request.getParameter("dateEnd");
+                    String urlImage = request.getParameter("urlImage");
+
+                    /* instanciar string url */
+                    String url = "?a=target";
+
+                    /* retornar atributos por PRG */
+                    url += "&idPlaceNews=" + sidPlaceNews;
+                    url += "&tittle=" + tittle;
+                    url += "&details=" + details;
+                    url += "&urlImage=" + urlImage;
+                    url += "&dateBegin=" + dateBegin;
+                    url += "&dateEnd=" + dateEnd;
 
                     PlaceNews pnews = new PlaceNews();
 
-                    try {
-                        /////////////////////////////////////////
-                        // RECIBIR Y COMPROBAR PARAMETROS
-                        ////////////////////////////////////////
+                    boolean error = false;
 
-                        String sidPlaceNews = request.getParameter("idPlaceNews");
-                        String sidPlace = request.getParameter("idPlace");
-                        String namePlace = request.getParameter("namePlace");
-                        String snewsType = request.getParameter("newsType");
-                        String tittle = request.getParameter("tittle");
-                        String details = request.getParameter("details");
-                        String dateBegin = request.getParameter("dateBegin");
-                        String dateEnd = request.getParameter("dateEnd");
-                        String urlImage = request.getParameter("urlImage");
-
-                        boolean error = false;
-
-                        /* comprobar id place news */
-                        if (sidPlaceNews == null || sidPlaceNews.trim().equals("")) {
-                            request.setAttribute("msgErrorIdPlaceNews", "Error al recibir id de noticia.");
-                            error = true;
-                        } else {
-                            pnews.setIdPlaceNews(Integer.parseInt(sidPlaceNews));
-                        }
-
-
-                        /* comprobar id place */
-                        if (sidPlace == null || sidPlace.trim().equals("")) {
-                            request.setAttribute("msgErrorIdPlace", "Error al recibir id de plaza.");
-                            error = true;
-                        } else {
-                            pnews.setIdPlace(Integer.parseInt(sidPlace));
-                        }
-
-                        /* comprobar namePlace */
-                        if (namePlace == null || namePlace.trim().equals("")) {
-                            request.setAttribute("msgErrorNamePlace", "Error al recibir nombre de plaza.");
-                            error = true;
-                        } else {
-                            pnews.setNamePlace(namePlace);
-                        }
-
-                        /*comprobar typeNews*/
-                        if (snewsType == null || snewsType.trim().equals("")) {
-                            request.setAttribute("msgErrorTypeNews", "Error al recibir tipo de noticia.");
-                            error = true;
-                        } else {
-                            try {
-                                pnews.setNewsType(Integer.parseInt(snewsType));
-                            } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorTypeNews", "Error: Debe recibir un valor numérico en tipo de noticias.");
-                                error = true;
-                            }
-                        }
-
-                        /* comprobar tittle*/
-                        if (tittle == null || tittle.trim().equals("")) {
-                            request.setAttribute("msgErrorTittle", "Error al recibir título.");
-                            error = true;
-                        } else {
-                            pnews.setTittle(tittle);
-                        }
-
-                        /* comprobar details */
-                        if (details == null || details.trim().equals("")) {
-                            request.setAttribute("msgErrorDetails", "Error al recibir detalles.");
-                            error = true;
-                        } else {
-                            pnews.setDetails(details);
-                        }
-
-                        /* comprobar url image*/
-                        if (urlImage == null || urlImage.trim().equals("")) {
-                            request.setAttribute("msgErrorUrlImage", "Error: Debe ingresar url de imagen.");
-                            error = true;
-                        } else {
-                            pnews.setUrlImage(urlImage);
-                        }
-
-                        /* comprobar dateBegin */
-                        if (dateBegin == null || dateBegin.trim().equals("")) {
-                            request.setAttribute("msgErrorDateBegin", "Error al recibir feha de inicio.");
-                            error = true;
-                        } else {
-                            /* comprobar dateEnd */
-                            if (dateEnd == null || dateEnd.trim().equals("")) {
-                                request.setAttribute("msgErrorDateEnd", "Error al recibir feha de término.");
-                                error = true;
-                            } else {
-                                /* comparar fechas */
-                                pnews.setDateBegin(dateBegin);
-                                pnews.setDateEnd(dateEnd);
-                                //System.out.println("Comparar fecha 1 y fecha 2: " + event.getDateBegin().compareTo(event.getDateEnd()));
-                                if (pnews.getDateBegin().compareTo(pnews.getDateEnd()) >= 0) {
-                                    request.setAttribute("msgErrorDate", "Error: La fecha de término debe ser mayor que la fecha de inicio.");
-                                    error = true;
-                                }
-                            }
-                        }
-
-
-                        if (!error) {
-                            /* comprobar registros duplicados */
-                            boolean find = pnewsDAO.validateDuplicate(pnews);
-                            if (find) {
-                                request.setAttribute("msgErrorDup", "Error: ya existe esta noticia. Compruebe utilizando otro título u otro rango de fechas.");
-                            } else {
-                                /* comprobar existencia */
-                                PlaceNews aux = pnewsDAO.findByPlaceNews(pnews);
-                                if (aux != null) {
-                                    pnewsDAO.update(pnews);
-                                    request.setAttribute("msgOk", "Registro actualizado exitosamente! ");
-                                } else {
-                                    request.setAttribute("msgErrorFound", "Error: no existe el evento o ha sido eliminado mientras se actualizaba.");
-                                }
-                            }
-                        }
-
-                        request.setAttribute("pnews", pnews);
-
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("/placeNews/placeNewsUpdate.jsp").forward(request, response);
+                    /* comprobar id place news */
+                    if (sidPlaceNews == null || sidPlaceNews.trim().equals("")) {
+                        error = true;
+                    } else {
+                        pnews.setIdPlaceNews(Integer.parseInt(sidPlaceNews));
                     }
+
+                    /*comprobar typeNews*/
+                    if (snewsType == null || snewsType.trim().equals("")) {
+                        error = true;
+                    } else {
+                        try {
+                            pnews.setNewsType(Integer.parseInt(snewsType));
+                        } catch (NumberFormatException n) {
+                            error = true;
+                        }
+                    }
+
+                    /* comprobar tittle*/
+                    if (tittle == null || tittle.trim().equals("")) {
+                        url += "&msgErrorTittle=Error al recibir título.";
+                        error = true;
+                    } else {
+                        pnews.setTittle(tittle);
+                    }
+
+                    /* comprobar details */
+                    if (details == null || details.trim().equals("")) {
+                        url += "&msgErrorDetails=Error al recibir detalles.";
+                        error = true;
+                    } else {
+                        pnews.setDetails(details);
+                    }
+
+                    /* comprobar url image*/
+                    if (urlImage == null || urlImage.trim().equals("")) {
+                        url += "&msgErrorUrlImage=Error: Debe ingresar url de imagen.";
+                        error = true;
+                    } else {
+                        pnews.setUrlImage(urlImage);
+                    }
+
+                    /* comprobar dateBegin */
+                    if (dateBegin == null || dateBegin.trim().equals("")) {
+                        url += "&msgErrorDate=Error: Debe ingresar fecha de inicio.";
+                        error = true;
+                    } else {
+                        /* comprobar dateEnd */
+                        if (dateEnd == null || dateEnd.trim().equals("")) {
+                            url += "&msgErrorDate=Error: Debe ingresar fecha de término.";
+                            error = true;
+                        } else {
+                            /* comparar fechas */
+                            pnews.setDateBegin(dateBegin);
+                            pnews.setDateEnd(dateEnd);
+                            //System.out.println("Comparar fecha 1 y fecha 2: " + event.getDateBegin().compareTo(event.getDateEnd()));
+                            if (pnews.getDateBegin().compareTo(pnews.getDateEnd()) >= 0) {
+                                url += "&msgErrorDate=Error: La fecha de inicio no puede ser mayo que la de término.";
+                                error = true;
+                            }
+                        }
+                    }
+
+                    /////////////////////////////////////
+                    // EJECUTAR LOGICA DE NEGOCIO
+                    /////////////////////////////////////
+
+                    if (!error) {
+                        /* comprobar registros duplicados */
+                        boolean find = pnewsDAO.validateDuplicate(pnews);
+                        if (find) {
+                            url += "&msgErrorDup=Error: ya existe esta noticia. Compruebe utilizando otro título u otro rango de fechas.";
+                        } else {
+                            /* actualizar registro */
+                            try {
+                                pnewsDAO.update(pnews);
+                                url += "&msgOk=Registro actualizado exitosamente!";
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                    }
+
+                    /* send redirect */
+                    response.sendRedirect("PlaceNewsGetServlet" + url);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
@@ -216,6 +197,7 @@ public class PlaceNewsUpdateServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

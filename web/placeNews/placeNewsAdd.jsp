@@ -110,18 +110,25 @@
                                 <strong><c:out value="${msgErrorDateEnd}" /></strong></br>
                             </div>
                         </c:if>
+                        <c:if test="${msgErrorDate != null }" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorDate}" /></strong></br>
+                            </div>
+                        </c:if>
                         <c:if test="${msgErrorUrlImage != null }" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorUrlImage}" /></strong></br>
                             </div>
                         </c:if>
-                        <c:if test="${msgErrorTypeNews != null }" >
+                        <c:if test="${msgErrorDup != null }" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorTypeNews}" /></strong></br>
+                                <strong><c:out value="${msgErrorDup}" /></strong></br>
                             </div>
                         </c:if>
+
                     </div>
                     <div class="col-lg-4">
                         <!-- FORMULARIO -->

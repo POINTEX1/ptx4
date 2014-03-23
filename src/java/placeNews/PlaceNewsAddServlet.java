@@ -6,7 +6,6 @@ package placeNews;
 
 import Helpers.Format;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.Collection;
 import javax.annotation.Resource;
@@ -182,7 +181,6 @@ public class PlaceNewsAddServlet extends HttpServlet {
                                 /* comprobar registros duplicados */
                                 boolean find = pnewsDAO.validateDuplicate(pnews);
                                 if (find) {
-                                    error = true;
                                     request.setAttribute("msgErrorDup", "Error: ya existe esta noticia. Compruebe utilizando otro título u otro rango de fechas.");
                                 } else {
                                     /* insertar nueva noticia */

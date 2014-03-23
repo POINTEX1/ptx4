@@ -81,74 +81,123 @@ public class PlaceNewsGetServlet extends HttpServlet {
                     request.setAttribute("access", access);
 
                     /////////////////////////////////////////
-                    // DECLARAR VARIABLES DE INSTANCIA
+                    // RECIBIR Y COMPROBAR PARAMETROS
                     /////////////////////////////////////////
 
-                    PlaceNews reg = null;
+                    /* obtener atributos de PRG */
+                    String tittle = request.getParameter("tittle");
+                    String urlImage = request.getParameter("urlImage");
+                    String dateBegin = request.getParameter("dateBegin");
+                    String dateEnd = request.getParameter("dateEnd");
 
-                    try {
-                        /////////////////////////////////////////
-                        // RECIBIR Y COMPROBAR PARAMETROS
-                        /////////////////////////////////////////
+                    /* obtener mensajes de PRG */
+                    String msgOk = request.getParameter("msgOk");
+                    String msgErrorTittle = request.getParameter("msgErrorTittle");
+                    String msgErrorDetails = request.getParameter("msgErrorDetails");
+                    String msgErrorUrlImage = request.getParameter("msgErrorUrlImage");
+                    String msgErrorDate = request.getParameter("msgErrorDate");
+                    String msgErrorDup = request.getParameter("msgErrorDup");
 
-                        String sidPlaceNews = request.getParameter("idPlaceNews");
-                        String sidPlace = request.getParameter("idPlace");
+                    /* obtener parametros de busqueda */
+                    String sidPlaceNews = request.getParameter("idPlaceNews");
 
-                        boolean error = false;
+                    boolean error = false;
 
-                        PlaceNews pnews = new PlaceNews();
+                    PlaceNews pnews = new PlaceNews();
 
-                        /* comprobar id place */
-                        if (sidPlaceNews == null || sidPlaceNews.trim().equals("")) {
-                            request.setAttribute("msgErrorIdPlaceNews", "Error al recibir id Noticia.");
+                    /* comprobar id place */
+                    if (sidPlaceNews == null || sidPlaceNews.trim().equals("")) {
+                        error = true;
+                    } else {
+                        try {
+                            pnews.setIdPlaceNews(Integer.parseInt(sidPlaceNews));
+                        } catch (NumberFormatException n) {
                             error = true;
-                        } else {
-                            try {
-                                pnews.setIdPlaceNews(Integer.parseInt(sidPlaceNews));
-                            } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorIdPlaceNews", "Error: El id de noticia no es numérico.");
-                            }
                         }
+                    }
 
-                        /* comprobar id place */
-                        if (sidPlace == null || sidPlace.trim().equals("")) {
-                            request.setAttribute("msgErrorIdPlace", "Error al recibir id Plaza.");
-                            error = true;
-                        } else {
-                            try {
-                                pnews.setIdPlace(Integer.parseInt(sidPlace));
-                            } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorIdPlace", "Error: El id de plaza no es numérico.");
-                            }
-                        }
+                    if (!error) {
+                        /* buscar registro */
+                        try {
+                            PlaceNews reg = pnewsDAO.findByPlaceNews(pnews.getIdPlaceNews());
+                            if (reg != null) {
+                                /* obtener registros del dao */
+                                request.setAttribute("idPlaceNews", reg.getIdPlaceNews());
+                                request.setAttribute("namePlace", reg.getNamePlace());
+                                request.setAttribute("newsType", reg.getNewsType());
 
-                        if (!error) {
-                            PlaceNews aux = pnewsDAO.findByPlaceNews(pnews);
-                            if (aux != null) {
-                                reg = aux;
                                 reg.setDateBegin(Format.dateYYYYMMDD(reg.getDateBegin()));
                                 reg.setDateEnd(Format.dateYYYYMMDD(reg.getDateEnd()));
-                                request.setAttribute("msgOk", "Se encontró el registro!");
+
+                                ///////////////////////////
+                                // COMPROBAR ERRORES
+                                ///////////////////////////
+
+                                /* comprobar tittle */
+                                if (msgErrorTittle == null || msgErrorTittle.trim().equals("")) {
+                                    request.setAttribute("tittle", reg.getTittle());
+                                } else {
+                                    request.setAttribute("MsgErrorTittle", msgErrorTittle);
+                                }
+
+                                /* comprobar details */
+                                if (msgErrorDetails == null || msgErrorDetails.trim().equals("")) {
+                                    request.setAttribute("details", reg.getDetails());
+                                } else {
+                                    request.setAttribute("msgErrorDetails", msgErrorDetails);
+                                }
+
+                                /* comprobar urlImage */
+                                if (msgErrorUrlImage == null || msgErrorUrlImage.trim().equals("")) {
+                                    request.setAttribute("urlImage", reg.getUrlImage());
+                                } else {
+                                    request.setAttribute("msgErrorUrlImage", urlImage);
+                                }
+
+                                /* comprobar fecha */
+                                if (msgErrorDate == null || msgErrorDate.trim().equals("")) {
+                                    request.setAttribute("dateBegin", reg.getDateBegin());
+                                    request.setAttribute("dateEnd", reg.getDateEnd());
+                                } else {
+                                    request.setAttribute("msgErrorDate", msgErrorDate);
+                                    request.setAttribute("dateBegin", dateBegin);
+                                    request.setAttribute("dateEnd", dateEnd);
+                                }
+
+                                /* comprobar duplicaciones */
+                                if (msgErrorDup == null || msgErrorDup.trim().equals("")) {
+                                } else {
+                                    request.setAttribute("msgErrorDup", msgErrorDup);
+                                    request.setAttribute("tittle", tittle);
+                                    request.setAttribute("dateBegin", dateBegin);
+                                    request.setAttribute("dateEnd", dateEnd);
+                                }
+
+                                /* comprobar mensaje de exito */
+                                if (msgOk == null || msgOk.trim().equals("")) {
+                                    request.setAttribute("msg", "Se encontró el registro!");
+                                } else {
+                                    request.setAttribute("msgOk", msgOk);
+                                }
+
+
                             } else {
                                 request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
                             }
-                        }
-
-                        /* obtener lista de lugares */
-                        try {
-                            Collection<Place> listPlace = placeDAO.getAll();
-                            request.setAttribute("listPlace", listPlace);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
-
-                        /* enviar datos del objeto a la vista */
-                        request.setAttribute("pnews", reg);
-
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("/placeNews/placeNewsUpdate.jsp").forward(request, response);
                     }
+
+                    /* obtener lista de lugares */
+                    try {
+                        Collection<Place> listPlace = placeDAO.getAll();
+                        request.setAttribute("listPlace", listPlace);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                    request.getRequestDispatcher("/placeNews/placeNewsUpdate.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
