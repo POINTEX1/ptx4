@@ -97,7 +97,7 @@
                                             <div class="box-title">
                                                 Datatable
                                                 <object align="right"> 
-                                                    <button class="btn btn-primary btn-mini" name="btnExportExcel" onclick="generateExcel('tableWrap');" ><font size="1"><strong>EXPORT XLS</strong></font></button>
+                                                    <button class="btn btn-primary btn-mini" name="btnExportExcel" onclick="generateExcel('datatable');" ><font size="1"><strong>EXPORT XLS</strong></font></button>
                                                     &nbsp;&nbsp;
                                                     <button class="btn btn-primary btn-mini" name="btnAddAdmin" type="button" onclick="location.href = 'CityAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button>
                                                 </object>
