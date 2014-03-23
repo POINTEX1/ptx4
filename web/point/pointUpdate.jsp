@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Puntos</title>
+        <title>POINTEX</title>
 
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.css" rel="stylesheet">
@@ -50,67 +50,73 @@
                             <li><a href="PointMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                             <li class="active"><i class="fa fa-edit"></i> Actualizar</li>
                         </ol>
+
+                        <c:if test="${msg != null}" >
+                            <div class="alert alert-dismissable alert-info">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msg}" /></strong>
+                            </div>
+                        </c:if>  
+
                         <c:if test="${msgOk != null}" >
                             <div class="alert alert-dismissable alert-success">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgOk}" /></strong>
                             </div>
-                        </c:if>                                       
+                        </c:if>
+
                         <c:if test="${msgErrorFound != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorFound}" /></strong></br>
                             </div>
                         </c:if>
+
                         <c:if test="${msgErrorPoints != null }" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                                 <strong><c:out value="${msgErrorPoints}" /></strong></br>
                             </div>
-                        </c:if>
-                        <c:if test="${msgErrorRut != null }" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorRut}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgErrorFound != null }" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorFound}" /></strong></br>
-                            </div>
-                        </c:if>
+                        </c:if> 
+
                     </div>
                     <div class="col-lg-4">
                         <form role="form" action="PointUpdateServlet" method="POST" name="formUpdate">
                             <div class="form-group">
-                                <label for="disabledSelect">Plaza</label>
-                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${point.namePlace}" />" disabled>
-                                <input type="hidden" name="namePlace" value="<c:out value="${point.namePlace}" />"/>
-                                <input type="hidden" name="idPlace" value="<c:out value="${point.idPlace}" />"/>
+                                <label for="disabledSelect">Lugar</label>
+                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${namePlace}" />" disabled>
+                                <input type="hidden" name="namePlace" value="<c:out value="${namePlace}" />"/>
+                                <input type="hidden" name="idPlace" value="<c:out value="${idPlace}" />"/>
                             </div>
                             <div class="form-group">
                                 <label for="disabledSelect">Rut</label>
-                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${point.rut}" />-<c:out value="${point.dv}" />" disabled>
-                                <input type="hidden" name="rut" value="<c:out value="${point.rut}" />"/>
-                                <input type="hidden" name="dv" value="<c:out value="${point.dv}" />"/>
+                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${rut}" />-<c:out value="${dv}" />" disabled>
+                                <input type="hidden" name="rut" value="<c:out value="${rut}" />"/>                                
                             </div>                                             
                             <c:if test="${msgErrorPoints != null }" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Puntos</label>
-                                    <input type="number" class="form-control" min="0" max="99999" name="points" id="inputError" value="<c:out value="${point.points}" />">
+                                    <input type="number" class="form-control" min="0" max="99999" name="points" id="inputError" value="<c:out value="${points}" />">
                                 </div>
                             </c:if>
                             <c:if test="${msgErrorPoints == null }" >
                                 <div class="form-group">
                                     <label>Puntos</label>
-                                    <input type="number" class="form-control" min="0" max="99999" name="points" value="<c:out value="${point.points}" />">
+                                    <input type="number" class="form-control" min="0" max="99999" name="points" value="<c:out value="${points}" />">
                                 </div>
                             </c:if>                   
                             <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>
                         </form>
                     </div>
                 </div><!-- /.row -->
+
+                </br>
+                </br>                                
+                <!-- FOOTER -->
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER --> 
+
             </div><!-- /#page-wrapper -->
         </div><!-- /#wrapper -->
     </body>

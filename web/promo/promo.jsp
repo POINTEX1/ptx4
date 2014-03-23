@@ -72,7 +72,7 @@
                         <!-- TITULO MANTENEDOR -->
                         <h1>Mantenedor <small> Promociones</small></h1>
                         <ol class="breadcrumb">
-                            <li class="active"><a href="PromoGiftMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
+                            <li class="active"><a href="PromoMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                         </ol>
                         <!-- TITULO MANTENEDOR -->
 
@@ -86,7 +86,7 @@
                     <div class="col-lg-12">  
                         <div class="table-responsive">
 
-                            <form action="PromoGiftMainServlet" method="POST" name="form">
+                            <form action="PromoMainServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
                                         <div class="box">                                
@@ -167,7 +167,10 @@
                     </div>
                 </div><!-- /.row -->
 
-
+                <!-- FOOTER -->
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
 
             </div><!-- /#page-wrapper -->
 

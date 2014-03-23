@@ -68,7 +68,7 @@
                     </p>
                     <c:if test="${msgErrorLogin != null}" >
                         <p><font color="red" ><c:out value="${msgErrorLogin}" /></font></p>
-                    </c:if>
+                        </c:if>
 
                     <input type="submit" name="btnLogin" class="button round blue image-right ic-right-arrow" value="LOG IN"/>
                     <p></p>
@@ -84,9 +84,9 @@
         <!-- FOOTER -->
         <div id="footer">
 
-            <p>&copy; Copyright 2014 <a href="#">ON THE LIST! LTD</a>. Todos los derechos reservados.</p>
+            <p><h2><small>&copy; POINTEX Corporation 2014 - Todos los derechos reservados.</small></h2></p>
 
-        </div> <!-- end footer -->
+    </div> <!-- end footer -->
 
-    </body>
+</body>
 </html>

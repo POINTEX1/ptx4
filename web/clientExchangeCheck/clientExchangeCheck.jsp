@@ -53,6 +53,7 @@
             }
         </script>
     </head>
+
     <body>
         <div id="wrapper">
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -63,7 +64,7 @@
             <div id="page-wrapper">
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1>Mantenedor <small> Canjeables por Cliente</small></h1>
+                        <h1>Mantenedor <small>Productos Canjeados por Cliente</small></h1>
                         <ol class="breadcrumb">
                             <li class="active"><a href="ClientExchangeCheckMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                         </ol>
@@ -144,6 +145,11 @@
                         </div>
                     </div>
                 </div><!-- /.row -->
+
+                <!-- FOOTER -->
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
 
             </div> <!-- /. page-wrapper-->
         </div> <!-- /. wrapper-->

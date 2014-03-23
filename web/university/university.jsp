@@ -88,7 +88,6 @@
                 <div class="row">                  
                     <div class="col-lg-12"> 
                         <div class="table-responsive">
-
                             <form action="UniversityMainServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
@@ -147,13 +146,14 @@
                                     </div>
                                 </div>
                             </form>
-
                         </div> <!-- /.responsive -->
-
                     </div>
-
                 </div><!-- /.row -->
 
+                <!-- FOOTER -->
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
 
             </div><!-- /#page-wrapper -->
 

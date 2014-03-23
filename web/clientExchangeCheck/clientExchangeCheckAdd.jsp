@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>POINTEX </title>
+        <title>POINTEX</title>
 
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.css" rel="stylesheet">
@@ -45,7 +45,7 @@
 
                 <div class="row">
                     <div class="col-lg-12">
-                        <h1>Mantenedor <small> Promociones compradas por Cliente</small></h1>
+                        <h1>Mantenedor <small> Productos Canjeados por Cliente</small></h1>
                         <ol class="breadcrumb">
                             <li><a href="ClientExchangeCheckMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                             <li class="active"><i class="fa fa-edit"></i> Agregar</li>
@@ -99,7 +99,7 @@
                                 <label>Producto canjeable</label>
                                 <select class="form-control" name="idExchange">
                                     <c:forEach var="list" items="${list}">  
-                                        <option value="<c:out value="${list.idExchangeable}" />" <c:if test="${idExchangeable == list.idExchangeable}">selected</c:if>> <c:out value="${list.namePlace}"/> &nbsp; &nbsp;<c:out value="${list.tittle}" />  </option>
+                                        <option value="<c:out value="${list.idExchangeable}" />" <c:if test="${idExchangeable == list.idExchangeable}">selected</c:if>> <c:out value="${list.namePlace}"/> &nbsp; - &nbsp;<c:out value="${list.tittle}" />  </option>
                                     </c:forEach>
                                 </select>                                
                             </div>
@@ -119,7 +119,16 @@
                             <button type="reset" class="btn btn-default"><strong><font size="1">RESET</font></strong></button> 
                         </form>
                     </div>
-                </div><!-- /.row -->            
+                </div><!-- /.row --> 
+
+                <!-- FOOTER -->
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>
+                </br>
+                </br>
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
 
             </div><!-- /#page-wrapper -->
 

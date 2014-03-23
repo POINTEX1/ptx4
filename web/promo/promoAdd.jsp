@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Nueva Promoción</title>
+        <title>POINTEX</title>
 
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.css" rel="stylesheet">
@@ -47,7 +47,7 @@
                     <div class="col-lg-12">
                         <h1>Mantenedor <small> Promociones</small></h1>
                         <ol class="breadcrumb">
-                            <li><a href="PromoGiftMainServlet"><i class="fa fa-table"></i> Principal</a></li>
+                            <li><a href="PromoMainServlet"><i class="fa fa-table"></i> Principal</a></li>
                             <li class="active"><i class="fa fa-edit"></i> Agregar </li>
                         </ol>
                         <c:if test="${msg != null}" >
@@ -215,11 +215,12 @@
                         </form>
                     </div>
                 </div><!-- /.row -->
-                <div class="row">                  
-                    <div class="col-lg-12">                        
 
-                    </div>
-                </div><!-- /.row -->
+                </br>
+                <!-- FOOTER -->
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
 
             </div><!-- /#page-wrapper -->
 

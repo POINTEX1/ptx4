@@ -6,7 +6,6 @@ package point;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
-import place.Place;
 import place.PlaceDAO;
 
 /**
@@ -79,10 +77,18 @@ public class PointGetServlet extends HttpServlet {
                     request.setAttribute("access", access);
 
                     try {
-                        /////////////////////////////////////////
+                        ///////////////////////////////////////
                         // RECIBIR Y COMPROBAR PARAMETROS
-                        /////////////////////////////////////////
+                        ///////////////////////////////////////
 
+                        /* obtener atributos de PRG */
+                        String points = request.getParameter("points");
+
+                        /* obtner mensajes de PRG */
+                        String msgErrorPoints = request.getParameter("msgErrorPoints");
+                        String msgOk = request.getParameter("msgOk");
+
+                        /* obtener parametros de busqueda */
                         String sidPlace = request.getParameter("idPlace");
                         String srut = request.getParameter("rut");
 
@@ -92,43 +98,63 @@ public class PointGetServlet extends HttpServlet {
 
                         /* comprobar id place */
                         if (sidPlace == null || sidPlace.trim().equals("")) {
-                            request.setAttribute("msgErrorIdPlace", "Error al recibir id Plaza.");
                             error = true;
                         } else {
                             try {
                                 point.setIdPlace(Integer.parseInt(sidPlace));
                             } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorIdPlace", "Error: El id de plaza no es numérico.");
+                                error = true;
                             }
                         }
 
                         /* comprobar rut */
-                        if (srut == null || srut.trim().equals("") || srut.length() < 2) {
-                            request.setAttribute("msgErrorRut", "Error: Debe ingresar RUT.");
+                        if (srut == null || srut.trim().equals("")) {
                             error = true;
                         } else {
                             try {
                                 point.setRut(Integer.parseInt(srut));
                             } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorRut", "Error: RUT inválido.");
                                 error = true;
                             }
                         }
 
                         if (!error) {
                             /* obtener valores de point */
-                            Point aux = pointDAO.findByPoint(point);
-                            if (aux != null) {
-                                request.setAttribute("point", aux);
-                                request.setAttribute("msgOk", "Se encontró el registro!");
-                            } else {
-                                request.setAttribute("msgErrorFound", "Error: No se encontró el Evento.");
+                            try {
+                                Point reg = pointDAO.findByPoint(point);
+                                if (reg != null) {
+                                    /* obtener atributos del dao */
+                                    request.setAttribute("idPlace", reg.getIdPlace());
+                                    request.setAttribute("namePlace", reg.getNamePlace());
+                                    request.setAttribute("rut", reg.getRut());
+                                    request.setAttribute("dv", reg.getDv());
+
+                                    //////////////////////////////
+                                    // COMPROBAR VALIDACIONES
+                                    //////////////////////////////
+
+                                    /* comprobar points */
+                                    if (msgErrorPoints == null || msgErrorPoints.trim().equals("")) {
+                                        request.setAttribute("points", reg.getPoints());
+                                    } else {
+                                        request.setAttribute("msgErrorPoints", msgErrorPoints);
+                                        request.setAttribute("points", points);
+                                    }
+
+                                    /* comprobar mensaje de exito */
+                                    if (msgOk == null || msgOk.trim().equals("")) {
+                                        request.setAttribute("msg", "Se encontró el registro!");
+                                    } else {
+                                        request.setAttribute("msgOk", msgOk);
+                                    }
+
+                                } else {
+                                    request.setAttribute("msgErrorFound", "Error: No se encontró el Evento.");
+                                }
+                            } catch (Exception ex) {
+                                request.setAttribute("msgErrorFound", "Ocurrió un error inesperado.");
                             }
                         }
-
-                        Collection<Place> listPlace = placeDAO.getAll();
-                        request.setAttribute("listPlace", listPlace);
-
                     } catch (Exception parameterException) {
                         parameterException.printStackTrace();
                     } finally {

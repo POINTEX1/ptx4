@@ -9,7 +9,7 @@
     <div class="col-lg-12 text-center">
         <div class="panel panel-default">
             <div class="panel-body">
-                <h6><small>&copy; POINTEX Corporation 2014 - Todos los derechos reservados</small></h6>
+                <h6><small>&copy; POINTEX Corporation 2014 - Todos los derechos reservados.</small></h6>
             </div>
         </div>            
     </div>

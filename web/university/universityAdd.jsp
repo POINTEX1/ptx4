@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL</title>
+        <title>POINTEX</title>
 
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.css" rel="stylesheet">
@@ -29,82 +29,82 @@
 
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
-        <script src="js/tablesorter/tables.js"></script>
+        <script src="js/tablesorter/tables.js"></script>    
     </head>
-</head>
 
-<body>
+    <body>
 
-    <div id="wrapper">
+        <div id="wrapper">
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <c:import var="menu" url="/mainMenu.jsp" />
-        <c:out value="${menu}" escapeXml="false" />
-        <!-- /.navbar-collapse -->
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <c:import var="menu" url="/mainMenu.jsp" />
+            <c:out value="${menu}" escapeXml="false" />
+            <!-- /.navbar-collapse -->
 
-        <div id="page-wrapper">
+            <div id="page-wrapper">
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>Mantenedor <small> Universidades</small></h1>
-                    <ol class="breadcrumb">
-                        <li><a href="UniversityMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
-                        <li class="active"><i class="fa fa-edit"></i> Agregar</li>
-                    </ol>
-                    <c:if test="${msg != null}" >
-                        <div class="alert alert-info alert-dismissable">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            <td><strong><c:out value="${msg}" /></strong></td>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgOk != null}" >
-                        <div class="alert alert-dismissable alert-success">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgOk}" /></strong>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorName != null }" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorName}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorDup != null }" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorDup}" /></strong></br>
-                        </div>
-                    </c:if>
-
-                </div>
-                <div class="col-lg-4">
-                    <form role="form" action="UniversityAddServlet" method="POST" name="formAdd">   
-                        <c:if test="${msgErrorDup == null }" >
-                            <div class="form-group">
-                                <label>Nombre Universidad</label>
-                                <input class="form-control" required="true" maxlength="50" name="nameUniversity" value="<c:out value="${uni.nameUniversity}" />">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1>Mantenedor <small> Universidades</small></h1>
+                        <ol class="breadcrumb">
+                            <li><a href="UniversityMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
+                            <li class="active"><i class="fa fa-edit"></i> Agregar</li>
+                        </ol>
+                        <c:if test="${msg != null}" >
+                            <div class="alert alert-info alert-dismissable">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <td><strong><c:out value="${msg}" /></strong></td>
+                            </div>
+                        </c:if>
+                        <c:if test="${msgOk != null}" >
+                            <div class="alert alert-dismissable alert-success">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgOk}" /></strong>
+                            </div>
+                        </c:if>
+                        <c:if test="${msgErrorName != null }" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorName}" /></strong></br>
                             </div>
                         </c:if>
                         <c:if test="${msgErrorDup != null }" >
-                            <div class="form-group has-error">
-                                <label class="control-label" for="inputError">Nombre Universidad</label>
-                                <input class="form-control" required="true" maxlength="50" name="nameUniversity" id="inputError" value="<c:out value="${uni.nameUniversity}" />">
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorDup}" /></strong></br>
                             </div>
                         </c:if>
-                        <button type="submit" name="add" class="btn btn-default"><strong><font size="1">AGREGAR</font></strong></button>
-                        <button type="reset" class="btn btn-default"><strong><font size="1">RESET</font></strong></button> 
-                    </form>
-                </div>
-            </div><!-- /.row -->
-            <div class="row">                  
-                <div class="col-lg-12">                        
 
-                </div>
-            </div><!-- /.row -->
+                    </div>
+                    <div class="col-lg-4">
+                        <form role="form" action="UniversityAddServlet" method="POST" name="formAdd">   
+                            <c:if test="${msgErrorDup == null }" >
+                                <div class="form-group">
+                                    <label>Nombre Universidad</label>
+                                    <input class="form-control" required="true" maxlength="50" name="nameUniversity" value="<c:out value="${uni.nameUniversity}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorDup != null }" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Nombre Universidad</label>
+                                    <input class="form-control" required="true" maxlength="50" name="nameUniversity" id="inputError" value="<c:out value="${uni.nameUniversity}" />">
+                                </div>
+                            </c:if>
+                            <button type="submit" name="add" class="btn btn-default"><strong><font size="1">AGREGAR</font></strong></button>
+                            <button type="reset" class="btn btn-default"><strong><font size="1">RESET</font></strong></button> 
+                        </form>
+                    </div>
+                </div><!-- /.row -->
 
-        </div><!-- /#page-wrapper -->
+                </br>
+                <!-- FOOTER -->
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
 
-    </div><!-- /#wrapper -->
+            </div><!-- /#page-wrapper -->
 
-</body>
+        </div><!-- /#wrapper -->
+
+    </body>
 </html>

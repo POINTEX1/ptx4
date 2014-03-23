@@ -148,12 +148,14 @@
                                     </div>
                                 </div>
                             </form>
-
                         </div>
                     </div>
                 </div><!-- /.row -->
 
-
+                <!-- FOOTER -->
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
 
             </div><!-- /#page-wrapper -->
 

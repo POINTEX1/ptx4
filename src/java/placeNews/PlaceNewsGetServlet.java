@@ -123,6 +123,7 @@ public class PlaceNewsGetServlet extends HttpServlet {
                             if (reg != null) {
                                 /* obtener registros del dao */
                                 request.setAttribute("idPlaceNews", reg.getIdPlaceNews());
+                                request.setAttribute("idPlace", reg.getIdPlace());
                                 request.setAttribute("namePlace", reg.getNamePlace());
                                 request.setAttribute("newsType", reg.getNewsType());
 
@@ -179,7 +180,6 @@ public class PlaceNewsGetServlet extends HttpServlet {
                                 } else {
                                     request.setAttribute("msgOk", msgOk);
                                 }
-
 
                             } else {
                                 request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");

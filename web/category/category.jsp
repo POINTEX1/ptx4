@@ -162,8 +162,7 @@
 
                 </div><!-- /.row -->
 
-                <!-- FOOTER -->
-                <p>&nbsp;</p>
+                <!-- FOOTER -->                
                 <c:import var="footer" url="/footer.jsp" />
                 <c:out value="${footer}" escapeXml="false" />
                 <!-- /FOOTER -->

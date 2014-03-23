@@ -76,89 +76,74 @@ public class PointUpdateServlet extends HttpServlet {
                     /////////////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETROS
                     ////////////////////////////////////////
-                    try {
 
-                        String sidPlace = request.getParameter("idPlace");
-                        String namePlace = request.getParameter("namePlace");
-                        String srut = request.getParameter("rut");
-                        String sdv = request.getParameter("dv");
-                        String spoints = request.getParameter("points");
+                    String sidPlace = request.getParameter("idPlace");
+                    String namePlace = request.getParameter("namePlace");
+                    String srut = request.getParameter("rut");
+                    String spoints = request.getParameter("points");
 
-                        Point point = new Point();
+                    Point point = new Point();
 
-                        boolean error = false;
+                    boolean error = false;
 
-                        /* comprobar id place */
-                        if (sidPlace == null || sidPlace.trim().equals("")) {
-                            request.setAttribute("msgErrorIdPlace", "Error al recibir id de plaza.");
-                            error = true;
-                        } else {
+                    /* instanciar string url */
+                    String url = "?a=target";
+
+                    url += "&idPlace=" + sidPlace;
+                    url += "&namePlace=" + namePlace;
+                    url += "&rut=" + srut;
+                    url += "&points=" + spoints;
+
+                    /* comprobar id place */
+                    if (sidPlace == null || sidPlace.trim().equals("")) {
+                        error = true;
+                    } else {
+                        try {
                             point.setIdPlace(Integer.parseInt(sidPlace));
-                        }
-
-                        /* comprobar namePlace */
-                        if (namePlace == null || namePlace.trim().equals("")) {
-                            request.setAttribute("msgErrorNamePlace", "Error al recibir nombre de plaza.");
+                        } catch (NumberFormatException n) {
                             error = true;
-                        } else {
-                            point.setNamePlace(namePlace);
                         }
-
-                        /* comprobar rut */
-                        if (srut == null || srut.trim().equals("") || srut.length() < 2) {
-                            request.setAttribute("msgErrorRut", "Error al recibir RUT.");
-                            error = true;
-                        } else {
-                            try {
-                                point.setRut(Integer.parseInt(srut));
-                            } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorRut", "Error: RUT inválido.");
-                                error = true;
-                            }
-                        }
-
-                        /* comprobar dv */
-                        if (sdv == null || sdv.trim().equals("")) {
-                            request.setAttribute("msgErrorRut", "Error al recibir RUT.");
-                            error = true;
-                        } else {
-                            point.setDv(sdv);
-                        }
-
-                        /* comprobar points */
-                        if (spoints == null || spoints.trim().equals("")) {
-                            request.setAttribute("msgErrorPoints", "Error: Debe ingresar puntos.");
-                            error = true;
-                        } else {
-                            try {
-                                point.setPoints(Integer.parseInt(spoints));
-                                if (point.getPoints() < 0) {
-                                    request.setAttribute("msgErrorPoints", "Error: Los puntos no pueden ser negativos.");
-                                    error = true;
-                                }
-                            } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorPoints", "Error: Los puntos deben ser numéricos.");
-                                error = true;
-                            }
-                        }
-
-                        if (!error) {
-                            /* comprobar existencia */
-                            Point aux = pointDAO.findByPoint(point);
-                            if (aux != null) {
-                                pointDAO.update(point);
-                                request.setAttribute("msgOk", "Registro actualizado exitosamente! ");
-                            } else {
-                                request.setAttribute("msgErrorFound", "Error: no existe el evento o ha sido eliminado mientras se actualizaba.");
-                            }
-                        }
-
-                        request.setAttribute("point", point);
-
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("/point/pointUpdate.jsp").forward(request, response);
                     }
+
+                    /* comprobar rut */
+                    if (srut == null || srut.trim().equals("")) {
+                        error = true;
+                    } else {
+                        try {
+                            point.setRut(Integer.parseInt(srut));
+                        } catch (NumberFormatException n) {
+                            error = true;
+                        }
+                    }
+
+                    /* comprobar points */
+                    if (spoints == null || spoints.trim().equals("")) {
+                        url += "&msgErrorPoints=Error: Debe ingresar puntos.";
+                        error = true;
+                    } else {
+                        try {
+                            point.setPoints(Integer.parseInt(spoints));
+                            if (point.getPoints() < 0) {
+                                url += "&msgErrorPoints=Error: Los puntos no pueden ser negativos.";
+                                error = true;
+                            }
+                        } catch (NumberFormatException n) {
+                            url += "&msgErrorPoints=Error: Los puntos deben ser numéricos.";
+                            error = true;
+                        }
+                    }
+
+                    if (!error) {
+                        /* comprobar existencia */
+                        try {
+                            pointDAO.update(point);
+                            url += "msgOk=Registro actualizado exitosamente!";
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                    /* send redirect */
+                    response.sendRedirect("PointGetServlet" + url);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
@@ -168,6 +153,7 @@ public class PointUpdateServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

@@ -13,7 +13,7 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <title>OTL - Puntos</title>
+        <title>POINTEX</title>
 
         <!-- Bootstrap core CSS -->
         <link href="css/bootstrap.css" rel="stylesheet">
@@ -122,11 +122,12 @@
                     </form>
                 </div>
             </div><!-- /.row -->
-            <div class="row">                  
-                <div class="col-lg-12">                        
 
-                </div>
-            </div><!-- /.row -->
+            </br>
+            <!-- FOOTER -->
+            <c:import var="footer" url="/footer.jsp" />
+            <c:out value="${footer}" escapeXml="false" />
+            <!-- /FOOTER -->
 
         </div><!-- /#page-wrapper -->
 

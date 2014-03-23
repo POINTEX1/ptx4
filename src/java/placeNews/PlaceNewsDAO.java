@@ -140,7 +140,7 @@ public class PlaceNewsDAO {
 
         try {
             sentence = conexion.createStatement();
-            String sql = "select * from place_news where id_pnews <> " + reg.getIdPlaceNews() + " and tittle = '" + reg.getTittle() + "' and date_end > '" + reg.getDateBegin() + "' ";
+            String sql = "select * from place_news where id_place = " + reg.getIdPlace() + " and id_pnews <> " + reg.getIdPlaceNews() + " and tittle = '" + reg.getTittle() + "' and date_end > '" + reg.getDateBegin() + "' ";
             result = sentence.executeQuery(sql);
 
             while (result.next()) {

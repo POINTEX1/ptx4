@@ -40,7 +40,7 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-square-o-down"></i> Lugares <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                    <c:if test="${access == 777 || access == 555 }" ><li><a href="PromoGiftMainServlet">Promociones</a></li></c:if>
+                    <c:if test="${access == 777 || access == 555 }" ><li><a href="PromoMainServlet">Promociones</a></li></c:if>
                     <c:if test="${access == 777 || access == 555 }" ><li><a href="ExchangeableMainServlet">Productos Canjebles</a></li></c:if>
                     <c:if test="${access == 777 || access == 555 }" ><li><a href="EventMainServlet">Eventos</a></li></c:if>                    
                     <c:if test="${access == 777 || access == 555 }" ><li><a href="EntryMainServlet">Lista</a></li></c:if>    

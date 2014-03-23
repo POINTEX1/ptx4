@@ -81,6 +81,7 @@ public class PlaceNewsUpdateServlet extends HttpServlet {
                     //////////////////////////////////////
 
                     String sidPlaceNews = request.getParameter("idPlaceNews");
+                    String sidPlace = request.getParameter("idPlace");
                     String snewsType = request.getParameter("newsType");
                     String tittle = request.getParameter("tittle");
                     String details = request.getParameter("details");
@@ -107,7 +108,22 @@ public class PlaceNewsUpdateServlet extends HttpServlet {
                     if (sidPlaceNews == null || sidPlaceNews.trim().equals("")) {
                         error = true;
                     } else {
-                        pnews.setIdPlaceNews(Integer.parseInt(sidPlaceNews));
+                        try {
+                            pnews.setIdPlaceNews(Integer.parseInt(sidPlaceNews));
+                        } catch (NumberFormatException n) {
+                            error = true;
+                        }
+                    }
+
+                    /* comprobar id Place */
+                    if (sidPlace == null || sidPlace.trim().equals("")) {
+                        error = true;
+                    } else {
+                        try {
+                            pnews.setIdPlace(Integer.parseInt(sidPlace));
+                        } catch (NumberFormatException n) {
+                            error = true;
+                        }
                     }
 
                     /*comprobar typeNews*/
@@ -121,7 +137,7 @@ public class PlaceNewsUpdateServlet extends HttpServlet {
                         }
                     }
 
-                    /* comprobar tittle*/
+                    /* comprobar tittle */
                     if (tittle == null || tittle.trim().equals("")) {
                         url += "&msgErrorTittle=Error al recibir título.";
                         error = true;

@@ -116,6 +116,7 @@
                             <label for="disabledSelect">Lugar</label>
                             <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${namePlace}" />" disabled>
                             <input type="hidden" name="namePlace" value="<c:out value="${namePlace}" />"/>                            
+                            <input type="hidden" name="idPlace" value="<c:out value="${idPlace}" />" />
                         </div>
                         <!-- /LUGAR -->
 

@@ -179,7 +179,6 @@
                     </div>
                 </div><!-- /.row -->
 
-                </br>
                 <!-- FOOTER -->
                 <c:import var="footer" url="/footer.jsp" />
                 <c:out value="${footer}" escapeXml="false" />

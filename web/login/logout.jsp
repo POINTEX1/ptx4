@@ -58,12 +58,12 @@
             </div>
         </div> <!-- end content -->
 
-         <!-- FOOTER -->
+        <!-- FOOTER -->
         <div id="footer">
 
-            <p>&copy; Copyright 2014 <a href="#">ON THE LIST! LTD</a>. Todos los derechos reservados.</p>
+            <p><h3><small>&copy; POINTEX Corporation 2014 - Todos los derechos reservados.</small></h3></p>
 
-        </div> <!-- end footer -->
+    </div> <!-- end footer -->
 
-    </body>
+</body>
 </html>

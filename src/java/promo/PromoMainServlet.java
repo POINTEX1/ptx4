@@ -21,8 +21,8 @@ import place.PlaceDAO;
  *
  * @author patricio alberto
  */
-@WebServlet(name = "PromoGiftMainServlet", urlPatterns = {"/PromoGiftMainServlet"})
-public class PromoGiftMainServlet extends HttpServlet {
+@WebServlet(name = "PromoMainServlet", urlPatterns = {"/PromoMainServlet"})
+public class PromoMainServlet extends HttpServlet {
 
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
@@ -85,13 +85,11 @@ public class PromoGiftMainServlet extends HttpServlet {
                         String btnDelRow = request.getParameter("btnDelRow");
                         String btnDelCol = request.getParameter("btnDelCol");
 
-                        Promo promo = new Promo();
-
                         //////////////////////////////////////////
                         // ELIMINAR POR REGISTRO
                         //////////////////////////////////////////
                         if (btnDelRow != null) {
-                            /* recibir parametros*/                                                        
+                            /* recibir parametros*/
                             int id = Integer.parseInt(request.getParameter("idPromo"));
                             try {
                                 promoDAO.delete(id);
@@ -109,7 +107,7 @@ public class PromoGiftMainServlet extends HttpServlet {
                                 String[] outerArray = request.getParameterValues("chk");
                                 int cont = 0;
                                 int i = 0;
-                                while (outerArray[i] != null) {                                  
+                                while (outerArray[i] != null) {
                                     try {
                                         promoDAO.delete(Integer.parseInt(outerArray[i]));
                                         cont++;
@@ -124,16 +122,20 @@ public class PromoGiftMainServlet extends HttpServlet {
                         }
 
                         /* obtener todas las promo-regalo */
-                        Collection<Promo> list = promoDAO.getAll();
-                        request.setAttribute("list", list);
+                        try {
+                            Collection<Promo> list = promoDAO.getAll();
+                            request.setAttribute("list", list);
 
-                        /* obtener en numero de registros encontrados */
-                        if (list.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (list.size() > 1) {
-                            request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
-                        } else if (list.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                            /* obtener en numero de registros encontrados */
+                            if (list.size() == 1) {
+                                request.setAttribute("msg", "1 registro encontrado en la base de datos.");
+                            } else if (list.size() > 1) {
+                                request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
+                            } else if (list.isEmpty()) {
+                                request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
 
                     } catch (Exception parameterException) {
