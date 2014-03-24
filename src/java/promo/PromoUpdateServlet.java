@@ -21,7 +21,7 @@ import javax.sql.DataSource;
  */
 @WebServlet(name = "PromoUpdateServlet", urlPatterns = {"/PromoUpdateServlet"})
 public class PromoUpdateServlet extends HttpServlet {
-
+    
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
 
@@ -37,24 +37,24 @@ public class PromoUpdateServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        
         request.setCharacterEncoding("UTF-8");
-
+        
         Connection conexion = null;
-
+        
         try {
-            //////////////////////////////////////////
+            /////////////////////////////////
             // ESTABLECER CONEXION
-            /////////////////////////////////////////
+            /////////////////////////////////
 
             conexion = ds.getConnection();
-
+            
             PromoDAO promoDAO = new PromoDAO();
             promoDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            //////////////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            //////////////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -72,150 +72,164 @@ public class PromoUpdateServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-                    try {
-                        /////////////////////////////////////////
-                        // RECIBIR Y COMPROBAR PARAMETROS
-                        /////////////////////////////////////////
-                        String sidPlace = request.getParameter("idPlace");
-                        String sidPromo = request.getParameter("idPromo");
-                        String namePlace = request.getParameter("namePlace");
-                        String tittle = request.getParameter("tittle");
-                        String details = request.getParameter("details");
-                        String date1 = request.getParameter("dateBegin");
-                        String date2 = request.getParameter("dateEnd");
-                        String urlImage = request.getParameter("urlImage");
-                        String spoints = request.getParameter("points");
-                        String srequest = request.getParameter("promoRequest");
-                        String reason = request.getParameter("reason");
+                    ///////////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETROS
+                    ///////////////////////////////////////
 
-                        Promo promo = new Promo();
+                    String sidPlace = request.getParameter("idPlace");
+                    String sidPromo = request.getParameter("idPromo");
+                    String tittle = request.getParameter("tittle");
+                    String details = request.getParameter("details");
+                    String date1 = request.getParameter("dateBegin");
+                    String date2 = request.getParameter("dateEnd");
+                    String urlImage = request.getParameter("urlImage");
+                    String spoints = request.getParameter("points");
+                    String srequest = request.getParameter("promoRequest");
+                    String reason = request.getParameter("reason");
 
-                        boolean error = false;
+                    /* instanciar string url */
+                    String url = "?a=target";
+                    
+                    url += "&idPromo=" + sidPromo;
+                    url += "&tittle=" + tittle;
+                    url += "&details=" + details;
+                    url += "&date1=" + date1;
+                    url += "&date2=" + date2;
+                    url += "&urlImage=" + urlImage;
+                    url += "&points=" + spoints;
+                    url += "&request=" + srequest;
+                    url += "&reason=" + reason;
+                    
+                    Promo promo = new Promo();
+                    
+                    boolean error = false;
+                    
+                    System.out.println("promoupdate" + tittle);
 
-                        /* comprobar id promo */
-                        if (sidPromo == null || sidPromo.trim().equals("")) {
-                            request.setAttribute("msgErrorIdPromo", "Error al recibir id promo.");
+                    /* comprobar id promo */
+                    if (sidPromo == null || sidPromo.trim().equals("")) {
+                        error = true;
+                    } else {
+                        try {
+                            promo.setIdPromo(Integer.parseInt(sidPromo));
+                        } catch (NumberFormatException n) {
+                            error = true;
+                        }
+                    }
+
+                    /* comprobar id Place */
+                    if (sidPlace == null || sidPlace.trim().equals("")) {
+                        error = true;
+                    } else {
+                        try {
+                            promo.setIdPlace(Integer.parseInt(sidPlace));
+                        } catch (NumberFormatException n) {
+                            error = true;
+                        }
+                    }
+
+                    /* comprobar tittle */
+                    if (tittle == null || tittle.trim().equals("")) {
+                        url += "&msgErrorTittle=Error: Debe ingresar un título para la promoción.";
+                        error = true;
+                    } else {
+                        promo.setTittle(tittle);
+                    }
+
+                    /* comprobar details */
+                    if (details == null || details.trim().equals("")) {
+                        url += "&msgErrorDetails=Error: Debe ingresar un título para la promoción.";
+                        error = true;
+                    } else {
+                        promo.setDetails(details);
+                    }
+
+                    /* comprobar url image */
+                    if (urlImage == null || urlImage.trim().equals("")) {
+                        url += "&msgErrorUrlImage=Error: Debe ingresar url de imagen.";
+                        error = true;
+                    } else {
+                        promo.setUrlImage(urlImage);
+                    }
+
+                    /* comprobar date begin */
+                    if (date1 == null || date1.trim().equals("")) {
+                        url += "&msgErrorDate=Error: Debe ingresar fecha de inicio.";
+                        error = true;
+                    } else {
+                        promo.setDateBegin(date1);
+                        /* comprobar date end */
+                        if (date2 == null || date2.trim().equals("")) {
+                            url += "msgErrorDate=Error: Debe ingresar fecha de término.";
                             error = true;
                         } else {
-                            try {
-                                promo.setIdPromo(Integer.parseInt(sidPromo));
-                            } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorIdPromo", "Error al recibir id promo.");
-                                error = true;
-                            }
-                        }
-
-                        /* comprobar id Place*/
-                        if (sidPlace == null || sidPlace.trim().equals("")) {
-                            request.setAttribute("msgErrorIdPlace", ds);
-                        }
-
-                        /* comprobar name place */
-                        if (namePlace == null || namePlace.trim().equals("")) {
-                            request.setAttribute("msgErrorNamePlace", "Error al recibir nombre de plaza.");
-                            error = true;
-                        } else {
-                            promo.setNamePlace(namePlace);
-                        }
-
-                        /* comprobar tittle */
-                        if (tittle == null || tittle.trim().equals("")) {
-                            request.setAttribute("msgErrorTittle", "Error: Debe ingresar un título para la promo o regalo.");
-                            error = true;
-                        } else {
-                            promo.setTittle(tittle);
-                        }
-
-                        /* comprobar details */
-                        if (details == null || details.trim().equals("")) {
-                            request.setAttribute("msgErrorDetails", "Error: Debe ingresar detalles para la promo o regalo.");
-                            error = true;
-                        } else {
-                            promo.setDetails(details);
-                        }
-
-                        /* comprobar url image */
-                        if (urlImage == null || urlImage.trim().equals("")) {
-                            request.setAttribute("msgErrorUrlImage", "Error: Debe ingresar url de imagen.");
-                            error = true;
-                        } else {
-                            promo.setUrlImage(urlImage);
-                        }
-
-                        /* comprobar date begin */
-                        if (date1 == null || date1.trim().equals("")) {
-                            request.setAttribute("msgErrorDate", "Error al recibir fecha de inicio.");
-                            error = true;
-                        } else {
+                            /* comparar fechas */
                             promo.setDateBegin(date1);
-                            /* comprobar date end */
-                            if (date2 == null || date2.trim().equals("")) {
-                                request.setAttribute("msgErrorDate", "Error al recibir fecha de término.");
+                            promo.setDateEnd(date2);
+                            //System.out.println("comparar fecha inicio fecha fin: " + promo.getDateBegin().compareTo(promo.getDateEnd()));
+                            if (promo.getDateBegin().compareTo(promo.getDateEnd()) >= 0) {
+                                url += "&msgErrorDate=Error: La fecha de término deber ser mayor que la fecha de inicio.";
                                 error = true;
-                            } else {
-                                /* comparar fechas */
-                                promo.setDateBegin(date1);
-                                promo.setDateEnd(date2);
-                                System.out.println("comparar fecha inicio fecha fin: " + promo.getDateBegin().compareTo(promo.getDateEnd()));
-                                if (promo.getDateBegin().compareTo(promo.getDateEnd()) >= 0) {
-                                    request.setAttribute("msgErrorDate", "Error: La fecha de término deber ser mayor que la fecha de inicio.");
-                                    error = true;
-                                }
                             }
                         }
+                    }
 
-                        /* comprobar points */
-                        if (spoints == null || spoints.trim().equals("")) {
-                            request.setAttribute("msgErrorPoints", "Error: Debe ingresar puntos que acumula esta promoción.");
+                    /* comprobar points */
+                    if (spoints == null || spoints.trim().equals("")) {
+                        url += "&msgErrorPoints=Error: Debe ingresar puntos que acumula esta promoción.";
+                        error = true;
+                    } else {
+                        try {
+                            promo.setPoints(Integer.parseInt(spoints));
+                        } catch (NumberFormatException n) {
+                            url += "&msgErrorPoints=Error: Los puntos deben ser numéricos.";
                             error = true;
-                        } else {
-                            try {
-                                promo.setPoints(Integer.parseInt(spoints));
-                            } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorPoints", "Error: Los puntos deben ser numéricos.");
-                                error = true;
-                            }
                         }
+                    }
 
-                        /* comprobar request */
-                        if (srequest == null || srequest.trim().equals("")) {
-                            request.setAttribute("msgErrorRequest", "Error al recibir la solicitud.");
+                    /* comprobar request */
+                    if (srequest == null || srequest.trim().equals("")) {
+                        error = true;
+                    } else {
+                        try {
+                            promo.setRequest(Integer.parseInt(srequest));
+                        } catch (NumberFormatException n) {
                             error = true;
-                        } else {
-                            try {
-                                promo.setRequest(Integer.parseInt(srequest));
-                            } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorRequest", "Error al recibir la solicitud.");
-                                error = true;
-                            }
                         }
+                    }
 
-                        /* comprobar reason */
-                        if (reason == null || reason.trim().equals("")) {
-                        } else {
-                            promo.setReason(reason);
-                        }
-
-                        if (!error) {
-                            /* comprobar registros duplicados */
+                    /* comprobar reason */
+                    if ((reason == null || reason.trim().equals("")) && promo.getRequest() == 2) {
+                        url += "&msgErrorReason=Error: Debe ingresar razón de rechazo.";
+                    } else {
+                        promo.setReason(reason);
+                    }
+                    
+                    if (!error) {
+                        /* comprobar registros duplicados */
+                        try {
                             boolean find = promoDAO.validateDuplicate(promo);
                             if (find) {
-                                request.setAttribute("msgErrorDup", "Error: ya existe esta promoción. Compruebe utilizando otro título u otro rango de fechas.");
+                                url += "&msgErrorDup=Error: ya existe esta promoción. Compruebe utilizando otro título u otro rango de fechas.";
                             } else {
-                                Promo aux = promoDAO.findbyPromo(promo);
-                                if (aux.getIdPlace() > 0) {
+                                /* actualizar registro */
+                                try {
                                     promoDAO.update(promo);
-                                    request.setAttribute("msgOk", "Registro actualizado exitosamente! ");
-                                } else {
-                                    request.setAttribute("msgErrorFound", "Error: El registro no existe o ha sido mientras se actualizaba.");
+                                    url += "&msgOk=Registro actualizado exitosamente!";
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
                                 }
                             }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
-                        request.setAttribute("promo", promo);
-                    } catch (Exception ex) {
-                    } finally {
-                        request.getRequestDispatcher("/promo/promoUpdate.jsp").forward(request, response);
                     }
+
+                    /* send redirect */
+                    response.setContentType("UTF-8");
+                    response.setCharacterEncoding("UTF-8");
+                    response.sendRedirect("PromoGetServlet" + url);
+                    
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
@@ -225,6 +239,7 @@ public class PromoUpdateServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {
