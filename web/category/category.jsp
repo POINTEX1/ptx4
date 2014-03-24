@@ -89,7 +89,7 @@
                     <div class="col-lg-12"> 
                         <!-- DATATABLE -->
                         <div class="table-responsive">
-                            <form action="CategoryMainServlet" method="POST" name="form">
+                            <form action="CategoryDeleteServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
                                         <div class="box">    
@@ -130,7 +130,7 @@
                                                                         <a href="CategoryGetServlet?idCategory=<c:out value="${list.idCategory}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">VER / ACTUALIZAR</font></strong></button></a>                                                                
                                                                     </td>
                                                                     <td class="center">                                                                    
-                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('CategoryMainServlet?btnDelRow=x&idCategory=<c:out value="${list.idCategory}" />');
+                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('CategoryDeleteServlet?btnDelRow=x&idCategory=<c:out value="${list.idCategory}" />');
                 return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                     </td>
                                                                 </tr>

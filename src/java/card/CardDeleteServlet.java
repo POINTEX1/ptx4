@@ -1,6 +1,11 @@
-package category;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package card;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.Collection;
 import javax.annotation.Resource;
@@ -14,10 +19,10 @@ import javax.sql.DataSource;
 
 /**
  *
- * @author patricio alberto
+ * @author patricio
  */
-@WebServlet(name = "CategoryMainServlet", urlPatterns = {"/CategoryMainServlet"})
-public class CategoryMainServlet extends HttpServlet {
+@WebServlet(name = "CardDeleteServlet", urlPatterns = {"/CardDeleteServlet"})
+public class CardDeleteServlet extends HttpServlet {
 
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
@@ -40,14 +45,14 @@ public class CategoryMainServlet extends HttpServlet {
         Connection conexion = null;
 
         try {
-            //////////////////////////////////////////
+            /////////////////////////////////////
             // ESTABLECER CONEXION
-            /////////////////////////////////////////
+            /////////////////////////////////////
 
             conexion = ds.getConnection();
 
-            CategoryDAO categoryDAO = new CategoryDAO();
-            categoryDAO.setConexion(conexion);
+            CardDAO cardDAO = new CardDAO();
+            cardDAO.setConexion(conexion);
 
             //////////////////////////////////////////
             // COMPROBAR SESSION
@@ -56,57 +61,68 @@ public class CategoryMainServlet extends HttpServlet {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
 
-                /* obtener los valores de session */
-                String userJsp = (String) session.getAttribute("username");
-                String sAccess = (String) session.getAttribute("access");
-                int access = Integer.parseInt(sAccess);
+                /* obtener parametros de session */
+                int access = Integer.parseInt((String) session.getAttribute("access"));
+                String user = (String) session.getAttribute("username");
 
-                /* asignar valores a la jsp */
-                request.setAttribute("userJsp", userJsp);
+                /* obtener los valores de session y asignar valores a la jsp */
+                request.setAttribute("userJsp", user);
                 request.setAttribute("access", access);
 
-                try {
-                    //////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    //////////////////////////////////////   
+                //////////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                //////////////////////////////////////////
 
-                    String msgDel = request.getParameter("msgDel");
-                    String msgErrorReference = request.getParameter("msgErrorReference");
+                String btnDelRow = request.getParameter("btnDelRow");
+                String btnDelCol = request.getParameter("btnDelCol");
 
-                    /* comprobar eliminacion */
-                    if (msgDel == null || msgDel.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgDel", msgDel);
-                    }
+                /* instanciar url */
+                String url = "?target=main";
 
-                    /* comprobar error de referencia */
-                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgErrorReference", msgErrorReference);
-                    }
+                Card card = new Card();
 
-                    //////////////////////////////////////////
-                    // OBTENER TOTAL DE REGISTROS
-                    //////////////////////////////////////////
+                //////////////////////////////////////////
+                // ELIMINAR POR REGISTRO
+                //////////////////////////////////////////
+                if (btnDelRow != null) {
                     try {
-                        Collection<Category> list = categoryDAO.getAll();
-                        request.setAttribute("list", list);
-
-                        if (list.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (list.size() > 1) {
-                            request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
-                        } else if (list.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                        /* recibir parámetros */
+                        int barcode = Integer.parseInt(request.getParameter("barCode"));
+                        try {
+                            cardDAO.delete(barcode);
+                            url += "&msgDel=Un registro ha sido eliminado.";
+                        } catch (Exception deleteException) {
+                            url += "&msgErrorDel=Error: No se puede eliminar un registro, existen referencias asociadas.";
                         }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+                    } catch (Exception parameterException) {
+                        parameterException.printStackTrace();
                     }
-
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("category/category.jsp").forward(request, response);
                 }
+                //////////////////////////////////////////
+                // ELIMINAR VARIOS REGISTROS
+                //////////////////////////////////////////
+                if (btnDelCol != null) {
+                    try {
+                        String[] outerArray = request.getParameterValues("chk");
+                        int cont = 0;
+                        int i = 0;
+                        while (outerArray[i] != null) {
+                            try {
+                                cardDAO.delete(Integer.parseInt(outerArray[i]));
+                                cont++;
+                                url += "&msgDel=" + cont + " registro(s) han sido eliminado(s).";
+                            } catch (Exception deleteException) {
+                                url += "&msgErrorDel=Error: No se puede eliminar un registro, existen referencias asociadas.";
+                            }
+                            i++;
+                        }
+                    } catch (Exception parameterException) {
+                    }
+                }
+
+                /* send redirect */
+                response.sendRedirect("CardMainServlet" + url);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");
@@ -115,6 +131,7 @@ public class CategoryMainServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

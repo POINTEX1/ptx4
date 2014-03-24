@@ -2,9 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package card;
+package admin;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.Collection;
 import javax.annotation.Resource;
@@ -18,10 +19,10 @@ import javax.sql.DataSource;
 
 /**
  *
- * @author patricio alberto
+ * @author patricio
  */
-@WebServlet(name = "CardMainServlet", urlPatterns = {"/CardMainServlet"})
-public class CardMainServlet extends HttpServlet {
+@WebServlet(name = "AdminDeleteServlet", urlPatterns = {"/AdminDeleteServlet"})
+public class AdminDeleteServlet extends HttpServlet {
 
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
@@ -43,15 +44,14 @@ public class CardMainServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        /////////////////////////////////////////
+        // ESTABLECER CONEXION
+        /////////////////////////////////////////
         try {
-            /////////////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////////////
-
             conexion = ds.getConnection();
 
-            CardDAO cardDAO = new CardDAO();
-            cardDAO.setConexion(conexion);
+            AdminDAO adminDAO = new AdminDAO();
+            adminDAO.setConexion(conexion);
 
             //////////////////////////////////////////
             // COMPROBAR SESSION
@@ -63,66 +63,89 @@ public class CardMainServlet extends HttpServlet {
                 /* obtener parametros de session */
                 int access = Integer.parseInt((String) session.getAttribute("access"));
                 String user = (String) session.getAttribute("username");
+                String sidUser = (String) session.getAttribute("idUser");
+                int idUser = Integer.parseInt(sidUser);
 
-                /* obtener los valores de session y asignar valores a la jsp */
-                request.setAttribute("userJsp", user);
-                request.setAttribute("access", access);
+                /* comprobar permisos de usuario */
+                if (access != 777) {
+                    request.getRequestDispatcher("/ForbiddenServlet").forward(request, response);
+                } else {
+                    /* obtener los valores de session y asignar valores a la jsp */
+                    request.setAttribute("userJsp", user);
+                    request.setAttribute("access", access);
+                    request.setAttribute("idUser", idUser);
 
-                try {
                     //////////////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETROS
-                    //////////////////////////////////////////
+                    //////////////////////////////////////////                      
 
                     String btnDelRow = request.getParameter("btnDelRow");
                     String btnDelCol = request.getParameter("btnDelCol");
 
-                    Card card = new Card();
+                    String url = "?target=main";
 
-                    /* obtener mensajes de PRG */
-                    String msgDel = request.getParameter("msgDel");
-                    String msgErrorDel = request.getParameter("msgErrorDel");
+                    //////////////////////////////////////////
+                    // ELIMINAR POR REGISTRO
+                    //////////////////////////////////////////
 
-                    /* comprobar mensajes de eliminacion */
-                    if (msgDel == null || msgDel.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgDel", msgDel);
-                    }
+                    if (btnDelRow != null) {
+                        /* recibir parametros */
+                        int id = Integer.parseInt(request.getParameter("id"));
 
-                    /* comprobar error de eliminacion */
-                    if (msgErrorDel == null || msgErrorDel.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgErrorDel", msgErrorDel);
-                    }
-
-                    /* obtener todos los registros */
-                    try {
-                        Collection<Card> listCard = cardDAO.getAll();
-                        request.setAttribute("list", listCard);
-
-                        /* mensajes de entradas */
-                        if (listCard.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (listCard.size() > 1) {
-                            request.setAttribute("msg", listCard.size() + " registros encontrados en la base de datos.");
-                        } else if (listCard.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                        /* comprobar auto eliminacion */
+                        if (id != idUser) {
+                            try {
+                                adminDAO.delete(id);
+                                url += "&msgDel=Un Administrador ha sido eliminado.";
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                                url += "&msgErrorNoDel=Error: No se pudo ejecutar la instrucción.";
+                            }
+                        } else {
+                            url += "&msgErrorNoDel=Error: El administrador no puede eliminarse a sí mismo.";
                         }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
                     }
 
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("/card/card.jsp").forward(request, response);
+                    //////////////////////////////////////////
+                    // ELIMINAR VARIOS REGISTROS
+                    //////////////////////////////////////////
+
+                    if (btnDelCol != null) {
+                        try {
+                            /* recibir parametros */
+                            String[] outerArray = request.getParameterValues("chk");
+                            int i = 0;
+                            while (outerArray[i] != null) {
+                                try {
+                                    adminDAO.delete(Integer.parseInt(outerArray[i]));
+                                    i++;
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
+                                if (i == 1) {
+                                    url += "&msgDel=Un registro ha sido eliminado.";
+                                } else if (i > 1) {
+                                    url += "&msgDel=" + i + " registros han sido eliminados.";
+                                }
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+
+                    /* send redirect */
+                    response.sendRedirect("AdminMainServlet" + url);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");
+                /*enviar al login*/
                 request.getRequestDispatcher("/login/login.jsp").forward(request, response);
             }
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

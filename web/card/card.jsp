@@ -81,7 +81,7 @@
                     <div class="col-lg-12">                        
                         <div class="table-responsive">
                             <!-- DATATABLE -->
-                            <form action="CardMainServlet" method="POST" name="form">
+                            <form action="CardDeleteServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
                                         <div class="box">   
@@ -136,7 +136,7 @@
                                                                         <a href="CardGetServlet?rut=<c:out value="${list.rut}" />&barCode=<c:out value="${list.barCode}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><font size="1">VER / ACTUALIZAR</font></button></a>
                                                                     </td>
                                                                     <td class="center">                                                                                                                                      
-                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('CardMainServlet?btnDelRow=x&barCode=<c:out value="${list.barCode}" />');
+                                                                        <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('CardDeleteServlet?btnDelRow=x&barCode=<c:out value="${list.barCode}" />');
                 return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                     </td>
                                                                 </tr>

@@ -74,67 +74,38 @@ public class CityMainServlet extends HttpServlet {
                     // RECIBIR Y COMPROBAR PARAMETROS
                     //////////////////////////////////////
 
-                    String btnDelRow = request.getParameter("btnDelRow");
-                    String btnDelCol = request.getParameter("btnDelCol");
+                    String msgDel = request.getParameter("msgDel");
+                    String msgErrorReference = request.getParameter("msgErrorReference");
 
-                    City city = new City();
-
-                    //////////////////////////////////////////
-                    // ELIMINAR POR REGISTRO
-                    //////////////////////////////////////////
-                    if (btnDelRow != null) {
-                        /* recibir parametros */
-                        city.setIdCity(Integer.parseInt(request.getParameter("idCity")));
-
-                        try {
-                            cityDAO.delete(city.getIdCity());
-                            request.setAttribute("msgDel", "Una ciudad ha sido eliminada.");
-                        } catch (Exception referenceException) {
-                            request.setAttribute("msgErrorReference", "Error: La ciudad posee referencias y no puede ser eliminada.");
-                        }
+                    /* comprobar eliminacion */
+                    if (msgDel == null || msgDel.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgDel", msgDel);
                     }
 
-                    //////////////////////////////////////////
-                    // ELIMINAR VARIOS REGISTROS
-                    //////////////////////////////////////////
-                    if (btnDelCol != null) {
-                        /* recibir parametros*/
-                        String[] outerArray = request.getParameterValues("chk");
-                        try {
-                            int i = 0;
-                            int cont = 0;
-                            while (outerArray[i] != null) {
-                                try {
-                                    cityDAO.delete(Integer.parseInt(outerArray[i]));
-                                    cont++;
-                                    if (cont == 1) {
-                                        request.setAttribute("msgDel", "Un registro ha sido eliminado.");
-                                    } else if (cont > 1) {
-                                        request.setAttribute("msgDel", cont + " registros han sido eliminados.");
-                                    }
-                                } catch (Exception ex) {
-                                    request.setAttribute("msgErrorReference", "Error: No puede eliminar la ciudad con ID: "+ outerArray[i] +", existen referencias asociadas.");
-                                }
-                                i++;
-                            }
-                        } catch (Exception ex) {
-                        }
+                    /* comprobar error de referencia */
+                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgErrorReference", msgErrorReference);
                     }
 
                     //////////////////////////////////////////
                     // OBTENER TOTAL DE REGISTROS
                     //////////////////////////////////////////
-                    Collection<City> list = cityDAO.getAll();
+                    try {
+                        Collection<City> list = cityDAO.getAll();
+                        request.setAttribute("list", list);
 
-                    if (list.size() == 1) {
-                        request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                    } else if (list.size() > 1) {
-                        request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
-                    } else if (list.isEmpty()) {
-                        request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                        if (list.size() == 1) {
+                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
+                        } else if (list.size() > 1) {
+                            request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
+                        } else if (list.isEmpty()) {
+                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
-
-                    request.setAttribute("list", list);
 
                 } catch (Exception parameterException) {
                 } finally {
@@ -148,6 +119,7 @@ public class CityMainServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

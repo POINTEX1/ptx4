@@ -1,6 +1,11 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package category;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.Collection;
 import javax.annotation.Resource;
@@ -14,11 +19,11 @@ import javax.sql.DataSource;
 
 /**
  *
- * @author patricio alberto
+ * @author patricio
  */
-@WebServlet(name = "CategoryMainServlet", urlPatterns = {"/CategoryMainServlet"})
-public class CategoryMainServlet extends HttpServlet {
-
+@WebServlet(name = "CategoryDeleteServlet", urlPatterns = {"/CategoryDeleteServlet"})
+public class CategoryDeleteServlet extends HttpServlet {
+    
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
 
@@ -34,18 +39,18 @@ public class CategoryMainServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        
         request.setCharacterEncoding("UTF-8");
-
+        
         Connection conexion = null;
-
+        
         try {
             //////////////////////////////////////////
             // ESTABLECER CONEXION
             /////////////////////////////////////////
 
             conexion = ds.getConnection();
-
+            
             CategoryDAO categoryDAO = new CategoryDAO();
             categoryDAO.setConexion(conexion);
 
@@ -65,48 +70,61 @@ public class CategoryMainServlet extends HttpServlet {
                 request.setAttribute("userJsp", userJsp);
                 request.setAttribute("access", access);
 
-                try {
-                    //////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    //////////////////////////////////////   
+                //////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                //////////////////////////////////////
 
-                    String msgDel = request.getParameter("msgDel");
-                    String msgErrorReference = request.getParameter("msgErrorReference");
+                String btnDelRow = request.getParameter("btnDelRow");
+                String btnDelCol = request.getParameter("btnDelCol");
+                
+                Category category = new Category();
+                
+                String url = "?target=main";
 
-                    /* comprobar eliminacion */
-                    if (msgDel == null || msgDel.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgDel", msgDel);
-                    }
-
-                    /* comprobar error de referencia */
-                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgErrorReference", msgErrorReference);
-                    }
-
-                    //////////////////////////////////////////
-                    // OBTENER TOTAL DE REGISTROS
-                    //////////////////////////////////////////
+                //////////////////////////////////////////
+                // ELIMINAR POR REGISTRO
+                //////////////////////////////////////////
+                if (btnDelRow != null) {
+                    /* recibir parametros */
+                    category.setIdCategory(Integer.parseInt(request.getParameter("idCategory")));
                     try {
-                        Collection<Category> list = categoryDAO.getAll();
-                        request.setAttribute("list", list);
+                        categoryDAO.delete(category.getIdCategory());
+                        url += "&msgDel=Una categoria ha sido eliminada.";
+                    } catch (Exception referenceException) {
+                        url += "&msgErrorReference=Error: Existen referencias asociadas y no puede eliminar.";
+                    }
+                }
 
-                        if (list.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (list.size() > 1) {
-                            request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
-                        } else if (list.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                //////////////////////////////////////////
+                // ELIMINAR VARIOS REGISTROS
+                //////////////////////////////////////////
+                if (btnDelCol != null) {
+                    /* recibir parametros*/
+                    String[] outerArray = request.getParameterValues("chk");
+                    try {
+                        int i = 0;
+                        int cont = 0;
+                        while (outerArray[i] != null) {
+                            try {
+                                categoryDAO.delete(Integer.parseInt(outerArray[i]));
+                                cont++;
+                                if (cont == 1) {
+                                    url += "&msgDel=Un registro ha sido eliminado.";
+                                } else if (cont > 1) {
+                                    url += "&msgDel=" + cont + " registros han sido eliminados.";
+                                }
+                            } catch (Exception ex) {
+                                url += "&msgErrorReference=Error: No puede eliminar la ciudad con ID: " + outerArray[i] + ", existen referencias asociadas.";
+                            }
+                            i++;
                         }
                     } catch (Exception ex) {
-                        ex.printStackTrace();
                     }
-
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("category/category.jsp").forward(request, response);
                 }
+
+                /* send redirect */
+                response.sendRedirect("CategoryMainServlet" + url);
+                
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");
@@ -115,6 +133,7 @@ public class CategoryMainServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

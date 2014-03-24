@@ -90,7 +90,7 @@
                     <div class="col-lg-12"> 
                         <div class="table-responsive">
                             <!-- DATA TABLE -->
-                            <form action="AdminMainServlet" method="POST" name="form">
+                            <form action="AdminDeleteServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
                                         <div class="box"> 
@@ -144,7 +144,7 @@
                                                                     </td>
                                                                     <td class="center">
                                                                         <c:if test="${list.idAdmin != idUser}" >                                                                                                                                                                       
-                                                                            <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('AdminMainServlet?btnDelRow=x&id=<c:out value="${list.idAdmin}"/>');
+                                                                            <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('AdminDeleteServlet?btnDelRow=x&id=<c:out value="${list.idAdmin}"/>');
                 return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                                 </c:if> 
                                                                     </td>

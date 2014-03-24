@@ -1,6 +1,11 @@
-package category;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package city;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.Collection;
 import javax.annotation.Resource;
@@ -14,10 +19,10 @@ import javax.sql.DataSource;
 
 /**
  *
- * @author patricio alberto
+ * @author patricio
  */
-@WebServlet(name = "CategoryMainServlet", urlPatterns = {"/CategoryMainServlet"})
-public class CategoryMainServlet extends HttpServlet {
+@WebServlet(name = "CityDeleteServlet", urlPatterns = {"/CityDeleteServlet"})
+public class CityDeleteServlet extends HttpServlet {
 
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
@@ -46,8 +51,8 @@ public class CategoryMainServlet extends HttpServlet {
 
             conexion = ds.getConnection();
 
-            CategoryDAO categoryDAO = new CategoryDAO();
-            categoryDAO.setConexion(conexion);
+            CityDAO cityDAO = new CityDAO();
+            cityDAO.setConexion(conexion);
 
             //////////////////////////////////////////
             // COMPROBAR SESSION
@@ -65,48 +70,62 @@ public class CategoryMainServlet extends HttpServlet {
                 request.setAttribute("userJsp", userJsp);
                 request.setAttribute("access", access);
 
-                try {
-                    //////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    //////////////////////////////////////   
+                //////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                //////////////////////////////////////
 
-                    String msgDel = request.getParameter("msgDel");
-                    String msgErrorReference = request.getParameter("msgErrorReference");
+                String btnDelRow = request.getParameter("btnDelRow");
+                String btnDelCol = request.getParameter("btnDelCol");
 
-                    /* comprobar eliminacion */
-                    if (msgDel == null || msgDel.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgDel", msgDel);
-                    }
+                City city = new City();
 
-                    /* comprobar error de referencia */
-                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgErrorReference", msgErrorReference);
-                    }
+                String url = "?target=main";
 
-                    //////////////////////////////////////////
-                    // OBTENER TOTAL DE REGISTROS
-                    //////////////////////////////////////////
+                //////////////////////////////////////////
+                // ELIMINAR POR REGISTRO
+                //////////////////////////////////////////
+                if (btnDelRow != null) {
+                    /* recibir parametros */
+                    city.setIdCity(Integer.parseInt(request.getParameter("idCity")));
+
                     try {
-                        Collection<Category> list = categoryDAO.getAll();
-                        request.setAttribute("list", list);
+                        cityDAO.delete(city.getIdCity());
+                        url += "&msgDel=Una ciudad ha sido eliminada.";
+                    } catch (Exception referenceException) {
+                        url += "&msgErrorReference=Error: La ciudad posee referencias y no puede ser eliminada.";
+                    }
+                }
 
-                        if (list.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (list.size() > 1) {
-                            request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
-                        } else if (list.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                //////////////////////////////////////////
+                // ELIMINAR VARIOS REGISTROS
+                //////////////////////////////////////////
+                if (btnDelCol != null) {
+                    /* recibir parametros*/
+                    String[] outerArray = request.getParameterValues("chk");
+                    try {
+                        int i = 0;
+                        int cont = 0;
+                        while (outerArray[i] != null) {
+                            try {
+                                cityDAO.delete(Integer.parseInt(outerArray[i]));
+                                cont++;
+                                if (cont == 1) {
+                                    url += "&msgDel=Un registro ha sido eliminado.";
+                                } else if (cont > 1) {
+                                    url += "&msgDel=" + cont + " registros han sido eliminados.";
+                                }
+                            } catch (Exception ex) {
+                                url += "&msgErrorReference=" + "Error: No puede eliminar la ciudad con ID: " + outerArray[i] + " existen referencias asociadas.";
+                            }
+                            i++;
                         }
                     } catch (Exception ex) {
-                        ex.printStackTrace();
                     }
-
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("category/category.jsp").forward(request, response);
                 }
+
+                /* send redirect */
+                response.sendRedirect("CityMainServlet" + url);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");
@@ -115,6 +134,7 @@ public class CategoryMainServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

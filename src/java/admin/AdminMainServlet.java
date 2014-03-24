@@ -74,56 +74,24 @@ public class AdminMainServlet extends HttpServlet {
                     request.setAttribute("access", access);
                     request.setAttribute("idUser", idUser);
 
-                    //////////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    //////////////////////////////////////////                      
+                    /* obtener mensajes de PRG */
+                    String msgDel = request.getParameter("msgDel");
+                    String msgErrorNoDel = request.getParameter("msgErrorNoDel");
 
-                    String btnDelRow = request.getParameter("btnDelRow");
-                    String btnDelCol = request.getParameter("btnDelCol");
+                    ///////////////////////////////
+                    // COMPROBAR ERRORES
+                    ///////////////////////////////
 
-                    //////////////////////////////////////////
-                    // ELIMINAR POR REGISTRO
-                    //////////////////////////////////////////
-                    if (btnDelRow != null) {
-                        /* recibir parametros */
-                        int id = Integer.parseInt(request.getParameter("id"));
-
-                        /* comprobar auto eliminacion */
-                        if (id != idUser) {
-                            try {
-                                adminDAO.delete(id);
-                                request.setAttribute("msgDel", "Un Administrador ha sido eliminado.");
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                                request.setAttribute("msgErrorNoDel", "Error: No se pudo ejecutar la instrucción.");
-                            }
-                        } else {
-                            request.setAttribute("msgErrorNoDel", "Error: El administrador no puede eliminarse a sí mismo.");
-                        }
+                    /* comprobar eliminacion */
+                    if (msgDel == null || msgDel.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgDel", msgDel);
                     }
 
-                    //////////////////////////////////////////
-                    // ELIMINAR VARIOS REGISTROS
-                    //////////////////////////////////////////
-                    if (btnDelCol != null) {
-                        try {
-                            /* recibir parametros */
-                            String[] outerArray = request.getParameterValues("chk");
-                            int i = 0;
-                            while (outerArray[i] != null) {
-                                try {
-                                    adminDAO.delete(Integer.parseInt(outerArray[i]));
-                                    i++;
-                                } catch (Exception ex) {
-                                }
-                                if (i == 1) {
-                                    request.setAttribute("msgDel", "Un registro ha sido eliminado.");
-                                } else if (i > 1) {
-                                    request.setAttribute("msgDel", i + " registros han sido eliminados.");
-                                }
-                            }
-                        } catch (Exception ex) {
-                        }
+                    /* comprobar error eliminacion */
+                    if (msgErrorNoDel == null || msgErrorNoDel.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgErrorNoDel", msgErrorNoDel);
                     }
 
                     /* obtener lista de registros */
