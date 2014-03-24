@@ -50,6 +50,12 @@
                             <li><a href="UniversityMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                             <li class="active"><i class="fa fa-edit"></i> Actualizar</li>
                         </ol>
+                        <c:if test="${msg != null}" >
+                            <div class="alert alert-dismissable alert-info">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msg}" /></strong>
+                            </div>
+                        </c:if>
                         <c:if test="${msgOk != null}" >
                             <div class="alert alert-dismissable alert-success">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -80,25 +86,31 @@
                                 <strong><c:out value="${msgErrorFound}" /></strong></br>
                             </div>
                         </c:if>
-
+                        <c:if test="${msgErrorNameUniversity != null}" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorNameUniversity}" /></strong></br>
+                            </div>
+                        </c:if>
                     </div>
+
                     <div class="col-lg-4">
                         <form role="form" action="UniversityUpdateServlet" method="POST" name="formUpdate">
                             <div class="form-group">
                                 <label for="disabledSelect">ID Universidad</label>
-                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${uni.idUniversity}" />" disabled>
-                                <input type="hidden" name="idUniversity" value="<c:out value="${uni.idUniversity}" />"/>
+                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${idUniversity}" />" disabled>
+                                <input type="hidden" name="idUniversity" value="<c:out value="${idUniversity}" />"/>
                             </div>
-                            <c:if test="${msgErrorDup == null }" >
+                            <c:if test="${msgErrorDup == null && msgErrorNameUniversity == null}" >
                                 <div class="form-group">
                                     <label>Nombre Universidad</label>
-                                    <input class="form-control" required="true" maxlength="50" name="nameUniversity" value="<c:out value="${uni.nameUniversity}" />">
+                                    <input class="form-control" required="true" maxlength="50" name="nameUniversity" value="<c:out value="${nameUniversity}" />">
                                 </div>
                             </c:if>
-                            <c:if test="${msgErrorDup != null }" >
+                            <c:if test="${msgErrorDup != null || msgErrorNameUniversity != null}" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Nombre Universidad</label>
-                                    <input class="form-control" required="true" maxlength="50" name="nameUniversity" id="inputError" value="<c:out value="${uni.nameUniversity}" />">
+                                    <input class="form-control" required="true" maxlength="50" name="nameUniversity" id="inputError" value="<c:out value="${nameUniversity}" />">
                                 </div>
                             </c:if>
                             <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>

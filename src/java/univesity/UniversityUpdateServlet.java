@@ -72,50 +72,56 @@ public class UniversityUpdateServlet extends HttpServlet {
                 /////////////////////////////////////////
                 // RECIBIR Y COMPROBAR PARAMETROS
                 ////////////////////////////////////////
-                try {
-                    String sidUniversity = request.getParameter("idUniversity");
-                    String nameUniversity = request.getParameter("nameUniversity");
 
-                    University university = new University();
+                String sidUniversity = request.getParameter("idUniversity");
+                String nameUniversity = request.getParameter("nameUniversity");
 
-                    boolean error = false;
+                /* instanciar string url */
+                String url = "?a=target";
 
-                    /* comprobar id */
-                    if (sidUniversity == null || sidUniversity.trim().equals("")) {
-                        request.setAttribute("msgErrorId", "Error al recibir ID. ");
-                        error = true;
-                    } else {
+                url += "&idUniversity=" + sidUniversity;
+                url += "&nameUniversity=" + nameUniversity;
+
+                University university = new University();
+
+                boolean error = false;
+
+                /* comprobar id */
+                if (sidUniversity == null || sidUniversity.trim().equals("")) {
+                    error = true;
+                } else {
+                    try {
                         university.setIdUniversity(Integer.parseInt(sidUniversity));
-                    }
-                    /* comprobar name */
-                    if (nameUniversity == null || nameUniversity.trim().equals("")) {
-                        request.setAttribute("msgErrorName", "Error al recibir nombre. ");
+                    } catch (NumberFormatException n) {
                         error = true;
-                    } else {
-                        university.setNameUniversity(Format.capital(nameUniversity));
                     }
+                }
+                /* comprobar name */
+                if (nameUniversity == null || nameUniversity.trim().equals("")) {
+                    url += "&msgErrorNameUniversity=Error: Debe ingresar nombre de universidad.";
+                    error = true;
+                } else {
+                    university.setNameUniversity(Format.capital(nameUniversity));
+                }
 
-                    if (!error) {
-                        /* comprobar duplicados */
-                        boolean find = universityDAO.validateDuplicate(university);
-                        if (find) {
-                            request.setAttribute("msgErrorDup", "Error: ya existe un registro con este nombre. ");
-                        } else {
-                            /* comprobar existencia */
-                            University aux = universityDAO.findById(university.getIdUniversity());
-                            if (aux != null) {
-                                universityDAO.update(university);
-                                request.setAttribute("msgOk", "Registro actualizado exitosamente! ");
-                            } else {
-                                request.setAttribute("msgErrorFound", "Error: El registro no existe o ha sido eliminado mientras se actualizaba.");
-                            }
+                if (!error) {
+                    /* comprobar duplicados */
+                    boolean find = universityDAO.validateDuplicate(university);
+                    if (find) {
+                        url += "&msgErrorDup=Error: ya existe un registro con este nombre.";
+                    } else {
+                        /* actualizar registro */
+                        try {
+                            universityDAO.update(university);
+                            url += "&msgOk=Registro actualizado exitosamente!";
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
                     }
-                    request.setAttribute("uni", university);
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("/university/universityUpdate.jsp").forward(request, response);
                 }
+                /* send redirect */
+                response.sendRedirect("UniversityGetServlet" + url);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");

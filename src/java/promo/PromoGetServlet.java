@@ -193,7 +193,6 @@ public class PromoGetServlet extends HttpServlet {
                                 request.setAttribute("msgErrorDup", msgErrorDup);
                                 request.setAttribute("dateBegin", dateBegin);
                                 request.setAttribute("dateEnd", dateEnd);
-                                request.setAttribute("tittle", tittle);
                             }
 
                             /* comprobar mensaje de exito */

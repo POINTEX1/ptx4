@@ -79,23 +79,115 @@ public class UserCardGetServlet extends HttpServlet {
                 request.setAttribute("userJsp", user);
                 request.setAttribute("access", access);
 
+                ////////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                ////////////////////////////////////////
                 try {
-                    //////////////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    /////////////////////////////////////////////
+                    /* obtener atributos de PRG */
+                    String firstName = request.getParameter("firstName");
+                    String lastName = request.getParameter("lastName");
+                    String telephone = request.getParameter("telephone");
+                    String email = request.getParameter("email");
+                    String facebook = request.getParameter("facebook");
+                    String dateBirth = request.getParameter("dateBirth");
+                    String pwd1 = request.getParameter("pwd1");
+                    String pwd2 = request.getParameter("pwd2");
 
+                    /* obtener mensajes de PRG */
+                    String msgErrorFirstName = request.getParameter("msgErrorFirstName");
+                    String msgErrorLastName = request.getParameter("msgErrorLastName");
+                    String msgErrorTelephone = request.getParameter("msgErrorTelephone");
+                    String msgErrorEmail = request.getParameter("msgErrorEmail");
+                    String msgErrorFacebook = request.getParameter("msgErrorFacebook");
+                    String msgErrorDateBirth = request.getParameter("msgErrorDateBirth");
+                    String msgErrorPwd1 = request.getParameter("msgErrorPwd1");
+                    String msgErrorPwd2 = request.getParameter("msgErrorPwd2");
+                    String msgOk = request.getParameter("msgOk");
+
+                    /* obtener parametros de busqueda */
                     String rut = request.getParameter("rut");
 
                     /* comprobar rut */
                     if (rut == null || rut.trim().equals("")) {
                     } else {
                         /* buscar cliente */
-                        UserCard reg = userCardDAO.findByRut(Integer.parseInt(rut));
-                        if (reg != null) {
-                            request.setAttribute("reg", reg);
-                            request.setAttribute("msgOk", "Se encontró el registro!");
-                        } else {
-                            request.setAttribute("msgError1", "Error: No se encontró el registro.");
+                        try {
+                            UserCard reg = userCardDAO.findByRut(Integer.parseInt(rut));
+                            if (reg != null) {
+                                /* obtener atributos del dao */
+                                request.setAttribute("rut", reg.getRut());
+                                request.setAttribute("dv", reg.getDv());
+                                request.setAttribute("facebook", reg.getFacebook());
+                                request.setAttribute("gender", reg.getGender());
+                                request.setAttribute("idCity", reg.getIdCity());
+                                request.setAttribute("idUniversity", reg.getIdUniversity());
+                                /* obtener password desde la vista */
+                                request.setAttribute("pwd1", pwd1);
+                                request.setAttribute("pwd2", pwd2);
+
+                                ///////////////////////////
+                                // COMPROBAR ERRORES
+                                ///////////////////////////
+
+                                /* comprobar firstName */
+                                if (msgErrorFirstName == null || msgErrorFirstName.trim().equals("")) {
+                                    request.setAttribute("firstName", reg.getFirstName());
+                                } else {
+                                    request.setAttribute("msgErrorFirstName", msgErrorFirstName);
+                                }
+
+                                /* comprobar lastName */
+                                if (msgErrorLastName == null || msgErrorLastName.trim().equals("")) {
+                                    request.setAttribute("lastName", reg.getLastName());
+                                } else {
+                                    request.setAttribute("msgErrorLastName", msgErrorLastName);
+                                }
+
+                                /* comprobar telephone */
+                                if (msgErrorTelephone == null || msgErrorTelephone.trim().equals("")) {
+                                    request.setAttribute("telephone", reg.getTelephone());
+                                } else {
+                                    request.setAttribute("msgErrorTelephone", msgErrorTelephone);
+                                    request.setAttribute("telephone", telephone);
+                                }
+
+                                /* comprobar email */
+                                if (msgErrorEmail == null || msgErrorEmail.trim().equals("")) {
+                                    request.setAttribute("email", reg.getEmail());
+                                } else {
+                                    request.setAttribute("msgErrorEmail", msgErrorEmail);
+                                }
+
+                                /* comprobar mensajes de exito */
+                                if (msgOk == null || msgOk.trim().equals("")) {
+                                    request.setAttribute("msg", "Se encontró el registro!");
+                                } else {
+                                    request.setAttribute("msgOk", msgOk);
+                                }
+
+                                /* comprobar dateBirth */
+                                if (msgErrorDateBirth == null || msgErrorDateBirth.trim().equals("")) {
+                                    request.setAttribute("dateBirth", reg.getDateBirth());
+                                } else {
+                                    request.setAttribute("dateBirth", dateBirth);
+                                    request.setAttribute("msgErrorDateBirth", msgErrorDateBirth);
+                                }
+
+                                if (msgErrorPwd1 == null || msgErrorPwd1.trim().equals("")) {
+                                } else {
+                                    request.setAttribute("msgErrorPwd1", msgErrorPwd1);
+                                }
+
+                                if (msgErrorPwd2 == null || msgErrorPwd2.trim().equals("")) {
+                                } else {
+                                    request.setAttribute("msgErrorPwd2", msgErrorPwd2);
+                                }
+
+                            } else {
+                                request.setAttribute("msgError1", "Error: No se encontró el registro.");
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
                     }
 
@@ -104,6 +196,7 @@ public class UserCardGetServlet extends HttpServlet {
                         Collection<City> listCity = cityDAO.getAll();
                         request.setAttribute("listCity", listCity);
                     } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
 
                     /* obtener lista de universidades */
@@ -111,6 +204,7 @@ public class UserCardGetServlet extends HttpServlet {
                         Collection<University> listUniversity = universityDAO.getAll();
                         request.setAttribute("listUniversity", listUniversity);
                     } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
 
                 } catch (Exception parameterException) {
@@ -126,6 +220,7 @@ public class UserCardGetServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

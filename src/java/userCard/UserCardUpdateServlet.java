@@ -81,216 +81,214 @@ public class UserCardUpdateServlet extends HttpServlet {
                 request.setAttribute("userJsp", user);
                 request.setAttribute("access", access);
 
-                try {
+                /////////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                ////////////////////////////////////////
 
-                    /////////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    ////////////////////////////////////////
+                String srut = request.getParameter("rut");
+                String firstname = request.getParameter("firstName");
+                String lastname = request.getParameter("lastName");
+                String telephone = request.getParameter("telephone");
+                String sidCity = request.getParameter("idCity");
+                String email = request.getParameter("email");
+                String gender = request.getParameter("gender");
+                String facebook = request.getParameter("facebook");
+                String dateBirth = request.getParameter("dateBirth");
+                String sidUniversity = request.getParameter("idUniversity");
 
-                    String srut = request.getParameter("rut"); //rut + dv
-                    String firstname = request.getParameter("firstName");
-                    String lastname = request.getParameter("lastName");
-                    String telephone = request.getParameter("telephone");
-                    String sidCity = request.getParameter("idCity");
-                    String email = request.getParameter("email");
-                    String gender = request.getParameter("gender");
-                    String facebook = request.getParameter("facebook");
-                    String dateBirth = request.getParameter("dateBirth");
-                    String sidUniversity = request.getParameter("idUniversity");
+                /* parametros para actualizar password */
+                String chkPwd = request.getParameter("chk");
+                String pwd1 = request.getParameter("pwd1");
+                String pwd2 = request.getParameter("pwd2");
 
-                    /* parametros para actualizar password */
-                    String chkPwd = request.getParameter("chk");
-                    String pwd1 = request.getParameter("pwd1");
-                    String pwd2 = request.getParameter("pwd2");
+                /* instanciar string url */
+                String url = "?a=target";
 
-                    UserCard userCardReg = new UserCard();
+                url += "&rut=" + srut;
+                url += "&firstName=" + firstname;
+                url += "&lastName=" + lastname;
+                url += "&telephone=" + telephone;
+                url += "&idCity=" + sidCity;
+                url += "&email=" + email;
+                url += "&gender=" + gender;
+                url += "&facebook=" + facebook;
+                url += "&dateBirth=" + dateBirth;
+                url += "&idUniversity=" + sidUniversity;
+                url += "&pwd1=" + pwd1;
+                url += "&pwd2=" + pwd2;
 
-                    boolean error = false;
+                UserCard userCardReg = new UserCard();
 
-                    /* comprobar rut */
-                    if (srut == null || srut.trim().equals("")) {
-                        request.setAttribute("msgErrorRut", "Error: Rut inválido. ");
+                boolean error = false;
+
+                /* comprobar rut */
+                if (srut == null || srut.trim().equals("")) {
+                    error = true;
+                } else {
+                    try {
+                        userCardReg.setRut(Integer.parseInt(srut));
+                    } catch (NumberFormatException n) {
                         error = true;
-                    } else {
-                        request.setAttribute("rut", srut);
-                        try {
-                            if (!Rut.validateRut(srut)) {
-                                error = true;
-                                request.setAttribute("msgErrorRut", "Error: Rut inválido. ");
-                            } else {
-                                userCardReg.setRut(Rut.getRut(srut));
-                                userCardReg.setDv(Rut.getDv(srut));
-
-                                /* comprobar existencia */
-                                UserCard aux = usercardDAO.findByRut(userCardReg.getRut());
-                                if (aux == null) {
-                                    request.setAttribute("msgErrorFound", "Error: El usuario no ha sido encontrado o ha sido eliminado mientras se actualizaba");
-                                    error = true;
-                                }
-                            }
-                        } catch (Exception ex) {
-                            request.setAttribute("msgErrorRut", "Error: Rut inválido. ");
-                            error = true;
-                        }
                     }
+                }
 
-                    /* comprobar firstname */
-                    if (firstname == null || firstname.trim().equals("")) {
-                        request.setAttribute("msgErrorFirstName", "Error al recibir nombre.");
+                /* comprobar firstname */
+                if (firstname == null || firstname.trim().equals("")) {
+                    url += "&msgErrorFirstName= Error: Debe ingresar nombres.";
+                    error = true;
+                } else {
+                    userCardReg.setFirstName(Format.capital(firstname));
+                }
+
+                /* comprobar lastname */
+                if (lastname == null || lastname.trim().equals("")) {
+                    url += "&msgErrorLastName=Error: Debe ingresar apellidos.";
+                    error = true;
+                } else {
+                    userCardReg.setLastName(Format.capital(lastname));
+                }
+
+                /* comprobar email */
+                if (email == null || email.trim().equals("")) {
+                    url += "&msgErrorEmail=Error: Debe ingresar email.";
+                    error = true;
+                } else {
+                    userCardReg.setEmail(email);
+                    boolean find = usercardDAO.validateDuplicateEmail(userCardReg);
+                    if (find) {
+                        url += "&msgErrorEmail=Error: ya existe un usuario con ese email.";
                         error = true;
-                    } else {
-                        userCardReg.setFirstName(Format.capital(firstname));
                     }
+                }
 
-                    /* comprobar lastname */
-                    if (lastname == null || lastname.trim().equals("")) {
-                        request.setAttribute("msgErrorLastName", "Error al recibir apellido.");
+                /* comprobar genero */
+                if (gender == null || gender.trim().equals("")) {
+                    error = true;
+                } else {
+                    try {
+                        userCardReg.setGender(Integer.parseInt(gender));
+                    } catch (NumberFormatException n) {
                         error = true;
-                    } else {
-                        userCardReg.setLastName(Format.capital(lastname));
                     }
+                }
 
-                    /* comprobar email */
-                    if (email == null || email.trim().equals("")) {
-                        request.setAttribute("msgErrorEmail", "Error al recibir email.");
+                /* comprobar id city */
+                if (sidCity == null || sidCity.trim().equals("")) {
+                    error = true;
+                } else {
+                    try {
+                        userCardReg.setIdCity(Integer.parseInt(sidCity));
+                    } catch (NumberFormatException n) {
                         error = true;
-                    } else {
-                        userCardReg.setEmail(email);
-                        boolean find = usercardDAO.validateDuplicateEmail(userCardReg);
-                        if (find) {
-                            request.setAttribute("msgErrorEmail", "Error: ya existe un usuario con ese email. ");
-                            error = true;
-                        }
                     }
+                }
 
-                    /* comprobar genero */
-                    if (gender == null || gender.trim().equals("")) {
+                /* comprobar telefono */
+                if (telephone == null || telephone.trim().equals("")) {
+                    url += "&msgErrorTelephone=Error: Debe ingresar teléfono celular.";
+                    error = true;
+                } else {
+                    try {
+                        userCardReg.setTelephone(Integer.parseInt(telephone));
+                    } catch (NumberFormatException n) {
+                        url += "&msgErrorTelephone=Error: El campo teléfono celular debe contener valores numéricos.";
                         error = true;
-                    } else {
-                        try {
-                            userCardReg.setGender(Integer.parseInt(gender));
-                        } catch (NumberFormatException n) {
-                            error = true;
-                        }
                     }
+                }
 
-                    /* comprobar id city */
-                    if (sidCity == null || sidCity.trim().equals("")) {
+                /* comprobar facebook */
+                if (facebook == null || facebook.trim().equals("")) {
+                    url += "&msgErrorFacebook=Error: Debe ingresar facebook.";
+                    error = true;
+                } else {
+                    userCardReg.setFacebook(facebook);
+                }
+
+                /* comprobar fecha de nacimiento */
+                if (dateBirth == null || dateBirth.trim().equals("")) {
+                    url += "&msgErrorDateBirth=Error: Debe ingresar fecha de nacimiento.";
+                    error = true;
+                } else {
+                    userCardReg.setDateBirth(dateBirth);
+                    /* validar que la fecha de nacimiento no sea mayor que la fecha actual */
+                    if (dateBirth.compareTo(Format.currentDate()) > -1) {
+                        url += "&msgErrorDateBirth=Error: La fecha de nacimiento no puede ser mayor que la fecha actual.";
                         error = true;
-                    } else {
-                        try {
-                            userCardReg.setIdCity(Integer.parseInt(sidCity));
-                        } catch (NumberFormatException n) {
-                            error = true;
-                        }
                     }
+                }
 
-                    /* comprobar telefono */
-                    if (telephone == null || telephone.trim().equals("")) {
-                        request.setAttribute("msgErrorTelephone", "Error al recibir telefono.");
+                /* comprobar id university */
+                if (sidUniversity == null || sidUniversity.trim().equals("")) {
+                    error = true;
+                } else {
+                    try {
+                        userCardReg.setIdUniversity(Integer.parseInt(sidUniversity));
+                    } catch (NumberFormatException n) {
                         error = true;
-                    } else {
-                        try {
-                            userCardReg.setTelephone(Integer.parseInt(telephone));
-                        } catch (NumberFormatException n) {
-                            request.setAttribute("msgErrorTelephone", "Error al recibir telefono, los valores deben ser numericos.");
-                            error = true;
-                        }
                     }
+                }
 
-                    /* comprobar facebook */
-                    if (facebook == null || facebook.trim().equals("")) {
-                        request.setAttribute("msgErrorFacebook", "Error: Debe ingresar facebook.");
-                        error = true;
+                /////////////////////////////////////////
+                // EJECUTAR LOGICA DE NEGOCIO
+                ////////////////////////////////////////
+
+                /* comprobar checkbox password */
+                if (chkPwd != null) {
+                    /* comprobar pwd1 */
+                    if (pwd1 == null || pwd1.trim().equals("")) {
+                        request.setAttribute("msgErrorPwd1", "Error: Debe ingresar password.");
+                        url += "&msgErrorPwd1=Error: Debe ingresar password.";
                     } else {
-                        userCardReg.setFacebook(facebook);
-                    }
-
-                    /* comprobar fecha de nacimiento */
-                    if (dateBirth == null || dateBirth.trim().equals("")) {
-                        request.setAttribute("msgErrorDateBirth", "Error: Debe ingresar fecha de nacimiento");
-                        error = true;
-                    } else {
-                        userCardReg.setDateBirth(dateBirth);
-                        /* validar que la fecha de nacimiento no sea mayor que la fecha actual */
-                        if (dateBirth.compareTo(Format.currentDate()) > -1) {
-                            request.setAttribute("msgErrorDateBirth", "Error: La fecha de nacimiento no puede ser mayor que la fecha actual.");
-                            error = true;
-                        }
-                    }
-
-                    /* comprobar id university */
-                    if (sidUniversity == null || sidUniversity.trim().equals("")) {
-                        error = true;
-                    } else {
-                        try {
-                            userCardReg.setIdUniversity(Integer.parseInt(sidUniversity));
-                        } catch (NumberFormatException n) {
-                            error = true;
-                        }
-                    }
-
-                    System.out.println("id uni " + userCardReg.getIdUniversity());
-
-                    /////////////////////////////////////////
-                    // ACTUALIZAR REGISTRO 
-                    ////////////////////////////////////////
-
-                    /* comprobar checkbox password */
-                    if (chkPwd != null) {
-                        /* comprobar pwd1 */
-                        if (pwd1 == null || pwd1.trim().equals("")) {
+                        userCardReg.setPwd1(pwd1);
+                        /* comprobar pwd2 */
+                        if (pwd2 == null || pwd2.trim().equals("")) {
                             request.setAttribute("msgErrorPwd1", "Error: Debe ingresar password.");
+                            url += "&msgErrorPwd1=Error: Debe ingresar password.";
                         } else {
-                            userCardReg.setPwd1(pwd1);
-                            /* comprobar pwd2 */
-                            if (pwd2 == null || pwd2.trim().equals("")) {
-                                request.setAttribute("msgErrorPwd1", "Error: Debe ingresar password.");
-                            } else {
-                                userCardReg.setPwd2(pwd2);
-                                /* comprobar coincidencias */
-                                if (!pwd1.equals(pwd2)) {
-                                    request.setAttribute("msgErrorPwd1", "Error: Las password's no coinciden");
-                                    error = true;
-                                }
-                                if (pwd1.length() < 6 || pwd2.length() < 6) {
-                                    request.setAttribute("msgErrorPwd2", "Error: La password debe poseer al menos 6 caracteres");
-                                    error = true;
-                                }
+                            userCardReg.setPwd2(pwd2);
+                            /* comprobar coincidencias */
+                            if (!pwd1.equals(pwd2)) {
+                                url += "&msgErrorPwd1=Error: Las passwords no coinciden.";
+                                error = true;
+                            }
+                            if (pwd1.length() < 6 || pwd2.length() < 6) {
+                                url += "&msgErrorPwd2=Error: La password debe poseer al menos 6 caracteres.";
+                                error = true;
+                            }
 
-                                if (!error) {
-                                    /* encriptar password */
-                                    userCardReg.setPassword(StringMD.getStringMessageDigest(pwd1, StringMD.MD5));
-                                    usercardDAO.updatePassword(userCardReg);
-                                    request.setAttribute("msgOk", "Registro actualizado exitosamente! ");
-                                }
+                            if (!error) {
+                                /* encriptar password */
+                                userCardReg.setPassword(StringMD.getStringMessageDigest(pwd1, StringMD.MD5));
+                                usercardDAO.updatePassword(userCardReg);
+                                url += "&msgOk=Registro actualizado exitosamente!";
                             }
                         }
-                    } else {
-                        if (!error) {
-                            usercardDAO.update(userCardReg);
-                            request.setAttribute("msgOk", "Registro actualizado exitosamente! ");
-                        }
                     }
+                } else {
+                    if (!error) {
+                        usercardDAO.update(userCardReg);
+                        url += "&msgOk=Registro actualizado exitosamente!";
+                    }
+                }
 
-                    /* retornar list city */
+                /* obtener list city */
+                try {
                     Collection<City> listCity = cityDAO.getAll();
                     request.setAttribute("listCity", listCity);
-
-                    /* obtener lista de universidades */
-                    try {
-                        Collection<University> listUniversity = universityDAO.getAll();
-                        request.setAttribute("listUniversity", listUniversity);
-                    } catch (Exception ex) {
-                    }
-
-                    /* retornar registro */
-                    request.setAttribute("reg", userCardReg);
-
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("/userCard/userCardUpdate.jsp").forward(request, response);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
+
+                /* obtener lista de universidades */
+                try {
+                    Collection<University> listUniversity = universityDAO.getAll();
+                    request.setAttribute("listUniversity", listUniversity);
+                } catch (Exception ex) {
+                }
+
+                /* send redirect */
+                response.sendRedirect("UserCardGetServlet" + url);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");

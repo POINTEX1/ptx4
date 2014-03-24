@@ -74,6 +74,15 @@ public class UniversityGetServlet extends HttpServlet {
                 // RECIBIR Y COMPROBAR PARAMETROS
                 //////////////////////////////////////// 
                 try {
+                    /* obtener atributos del PRG */
+                    String nameUniversity = request.getParameter("nameUniversity");
+
+                    /* obtener mensajes de PRG */
+                    String msgErrorNameUniversity = request.getParameter("msgErrorNameUniversity");
+                    String msgErrorDup = request.getParameter("msgErrorDup");
+                    String msgOk = request.getParameter("msgOk");
+
+                    /* obtener parametros de busqueda */
                     String sidUniversity = request.getParameter("idUniversity");
 
                     University university = new University();
@@ -82,14 +91,44 @@ public class UniversityGetServlet extends HttpServlet {
                     if (sidUniversity == null || sidUniversity.trim().equals("")) {
                         request.setAttribute("msgErrorId", "Error al recibir ID de Universidad.");
                     } else {
-                        university.setIdUniversity(Integer.parseInt(sidUniversity));
-                        /* comprobar existencia */
-                        University aux = universityDAO.findById(university.getIdUniversity());
-                        if (aux != null) {
-                            request.setAttribute("uni", aux);
-                            request.setAttribute("msgOk", "Se encontró el registro!");
-                        } else {
-                            request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
+                        try {
+                            university.setIdUniversity(Integer.parseInt(sidUniversity));
+                            /* comprobar existencia */
+                            University reg = universityDAO.findById(university.getIdUniversity());
+                            if (reg != null) {
+                                /* obtener atributos del dao */
+                                request.setAttribute("idUniversity", reg.getIdUniversity());
+
+                                ///////////////////////////////
+                                // COMPROBAR ERRORES
+                                ///////////////////////////////
+
+                                /* comprobar nameUniversity */
+                                if (msgErrorNameUniversity == null || msgErrorNameUniversity.trim().equals("")) {
+                                    request.setAttribute("nameUniversity", reg.getNameUniversity());
+                                } else {
+                                    request.setAttribute("msgErrorNameUniversity", msgErrorNameUniversity);
+                                }
+
+                                /* comprobar duplicaciones */
+                                if (msgErrorDup == null || msgErrorDup.trim().equals("")) {
+                                } else {
+                                    request.setAttribute("msgErrorDup", msgErrorDup);
+                                    request.setAttribute("nameUniversity", nameUniversity);
+                                }
+
+                                /* comprobar mensajes de exito */
+                                if (msgOk == null || msgOk.trim().equals("")) {
+                                    request.setAttribute("msg", "Se encontró el registro!");
+                                } else {
+                                    request.setAttribute("msgOk", msgOk);
+                                }
+
+                            } else {
+                                request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
                     }
                 } catch (Exception parameterException) {
