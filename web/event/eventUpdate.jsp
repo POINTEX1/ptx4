@@ -31,6 +31,9 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
 
+        <!-- disabledButton -->
+        <script src="js/disabledButton.js"></script>
+
         <script type="text/javascript">
             function changeDisplay() {
                 if (document.formUpdate.eventRequest.value == 2) {
@@ -186,7 +189,7 @@
                             </div>
                         </c:if>
                         <!-- /MENSAJE DE ERROR DE SOLICITUD -->
-                        
+
                         <!-- MENSAJE DE ERROR DE RAZON -->
                         <c:if test="${msgErrorReason != null }" >
                             <div class="alert alert-dismissable alert-danger">
@@ -195,7 +198,7 @@
                             </div>
                         </c:if>
                         <!-- /MENSAJE DE ERROR DE RAZON -->
-                        
+
                         <!-- MENSAJE DE ERROR EVENTO -->
                         <c:if test="${msgErrorEvent != null}" >
                             <div class="alert alert-dismissable alert-danger">
@@ -207,7 +210,7 @@
                     </div>
                     <div class="col-lg-4">
                         <!-- FORMULARIO -->
-                        <form role="form" action="EventUpdateServlet" method="POST" name="formUpdate">
+                        <form role="form" action="EventUpdateServlet" method="POST" id="formUpdate" name="formUpdate">
                             <!-- LUGARES -->
                             <div class="form-group">
                                 <label for="disabledSelect">Lugar</label>
@@ -336,7 +339,7 @@
                                     <textarea class="form-control" name="reason" maxlength="255" rows="4"><c:out value="${reason}" /></textarea>
                             </div>
                             <!-- /RAZON RECHAZO -->
-                            <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>
+                            <button type="submit" name="btnUpdate" class="btn btn-default" onclick="disabledButtonUpdate();"><strong><font size="1"><object name="btn1">ACTUALIZAR</object><object name="btn2" hidden="true">ACTUALIZANDO...</object></font></strong></button>
                         </form>
                         <!-- FORMULARIO -->
                     </div>

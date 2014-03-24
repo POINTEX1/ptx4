@@ -31,6 +31,10 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
 
+        <!-- disabledButton -->
+        <script src="js/disabledButton.js"></script>
+
+
         <script type="text/javascript">
             function changeDisplay() {
                 if (document.formUpdate.promoRequest.value == 2) {
@@ -122,7 +126,7 @@
                         </c:if>                      
                     </div>
                     <div class="col-lg-4">
-                        <form role="form" action="PromoUpdateServlet" method="POST" name="formUpdate">
+                        <form role="form" action="PromoUpdateServlet" method="POST" id="formUpdate" name="formUpdate">
                             <div class="form-group">
                                 <label for="disabledSelect">Lugar</label>
                                 <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${namePlace}" />" disabled>
@@ -214,7 +218,7 @@
                                     <label>Razón de rechazo</label>
                                     <textarea class="form-control" name="reason" maxlength="255" rows="4"><c:out value="${reason}" /></textarea>
                             </div>
-                            <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>
+                            <button type="submit" name="btnUpdate" class="btn btn-default" onclick="disabledButtonUpdate();"><strong><font size="1"><object name="btn1">ACTUALIZAR</object><object name="btn2" hidden="true">ACTUALIZANDO...</object></font></strong></button>
                         </form>
 
                     </div>

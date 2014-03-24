@@ -30,6 +30,10 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>    
+        
+        <!-- disabledButton -->
+        <script src="js/disabledButton.js"></script>
+        
     </head>
 
     <body>
@@ -128,7 +132,7 @@
 
                     <div class="col-lg-4">
                         <!-- FORMULARIO -->
-                        <form role="form" action="DressCodeUpdateServlet" method="POST" name="formUpdate">
+                        <form role="form" action="DressCodeUpdateServlet" method="POST" id="formUpdate" name="formUpdate">
                             <!-- ID -->
                             <div class="form-group">
                                 <label for="disabledSelect">ID</label>
@@ -196,7 +200,7 @@
                                 </div>
                             </c:if>
                             <!-- /URL IMAGEN -->
-                            <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>
+                            <button type="submit" name="btnUpdate" class="btn btn-default" onclick="disabledButtonUpdate();"><strong><font size="1"><object name="btn1">ACTUALIZAR</object><object name="btn2" hidden="true">ACTUALIZANDO...</object></font></strong></button>
                         </form>
                         <!-- /FORMULARIO -->
                     </div>

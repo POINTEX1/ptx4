@@ -32,6 +32,9 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
 
+        <!-- disabledButton -->
+        <script src="js/disabledButton.js"></script>
+
         <script type="text/javascript">
             function changeDisplay() {
                 chk = document.getElementById("chk");
@@ -44,15 +47,7 @@
                     pwd.style.display = 'none';
                 }
             }
-        </script>
-        <script type="text/javascript">
-            function disabledButton() {
-                if (document.formUpdate.btnUpdate.disabled == false) {
-                    document.getElementById("formUpdate").submit();
-                    document.formUpdate.btnUpdate.disabled = true;
-                }
-            }
-        </script>
+        </script>        
     </head>
 
     <body>
@@ -207,7 +202,8 @@
                                 </c:if>                                  
                             </div>
                             <!-- /PASSWORD -->
-                            <button type="submit" name="btnUpdate" class="btn btn-default" onClick="disabledButton()"><strong><font size="1">ACTUALIZAR</font></strong></button>
+                                                        
+                            <button type="submit" name="btnUpdate" class="btn btn-default" onclick="disabledButtonUpdate();"><strong><font size="1"><object name="btn1">ACTUALIZAR</object><object name="btn2" hidden="true">ACTUALIZANDO...</object></font></strong></button>
                         </form>
                         <!-- /FORMULARIO -->
                     </div>

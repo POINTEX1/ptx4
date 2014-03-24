@@ -6,3 +6,12 @@ function disabledButtonAdd() {
         document.formAdd.btn2.hidden = false;
     }
 }
+
+function disabledButtonUpdate() {
+    if (document.formUpdate.btnUpdate.disabled == false) {
+        document.getElementById("formUpdate").submit();
+        document.formUpdate.btnUpdate.disabled = true;
+        document.formUpdate.btn1.hidden = true;
+        document.formUpdate.btn2.hidden = false;
+    }
+}

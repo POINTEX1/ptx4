@@ -31,6 +31,10 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
+        
+        <!-- disabledButton -->
+        <script src="js/disabledButton.js"></script>
+
 
     </head>
 
@@ -110,7 +114,7 @@
                 </div>
                 <div class="col-lg-4">
                     <!-- FORMULARIO -->
-                    <form role="form" action="PlaceNewsUpdateServlet" method="POST" name="formUpdate">
+                    <form role="form" action="PlaceNewsUpdateServlet" method="POST" id="formUpdate" name="formUpdate">
                         <!-- LUGAR -->
                         <div class="form-group">
                             <label for="disabledSelect">Lugar</label>
@@ -208,7 +212,7 @@
                         </c:if>                         
                         <!-- /FECHA INICIO-TERMINO -->
 
-                        <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>
+                        <button type="submit" name="btnUpdate" class="btn btn-default" onclick="disabledButtonUpdate();"><strong><font size="1"><object name="btn1">ACTUALIZAR</object><object name="btn2" hidden="true">ACTUALIZANDO...</object></font></strong></button>
                     </form>
                     <!-- FORMULARIO -->
                 </div>

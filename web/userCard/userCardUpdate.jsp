@@ -37,6 +37,9 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
 
+        <!-- disabledButton -->
+        <script src="js/disabledButton.js"></script>
+
         <script type="text/javascript">
             function changeDisplay() {
                 chk = document.getElementById("chk");
@@ -137,7 +140,7 @@
                         </c:if>
                     </div>
                     <div class="col-lg-4">
-                        <form role="form" action="UserCardUpdateServlet" method="POST" name="formUpdate">
+                        <form role="form" action="UserCardUpdateServlet" method="POST" id="formUpdate" name="formUpdate">
                             <div class="form-group">
                                 <label for="disabledSelect">Rut</label>
                                 <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${rut}" />-<c:out value="${dv}" />" disabled>
@@ -278,7 +281,7 @@
                                     </div>
                                 </c:if>                              
                             </div>
-                            <button type="submit" name="update" class="btn btn-default">Update</button>
+                            <button type="submit" name="btnUpdate" class="btn btn-default" onclick="disabledButtonUpdate();"><strong><font size="1"><object name="btn1">ACTUALIZAR</object><object name="btn2" hidden="true">ACTUALIZANDO...</object></font></strong></button>
                         </form>
 
                     </div>

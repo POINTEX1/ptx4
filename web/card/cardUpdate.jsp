@@ -31,14 +31,8 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
 
-        <script type="text/javascript">
-            function disabledButton() {
-                if (document.formUpdate.btnUpdate.disabled == false) {
-                    document.getElementById("formUpdate").submit();
-                    document.formUpdate.btnUpdate.disabled = true;
-                }
-            }
-        </script> 
+        <!-- disabledButton -->
+        <script src="js/disabledButton.js"></script>
 
     </head>
 
@@ -204,7 +198,7 @@
                                 <input class="form-control" type="datetime-local" required="true" name="dateEndCard" value="<c:out value="${dateEnd}" />">
                             </div>
                             <!-- /FECHA DE TERMINO -->                            
-                            <button type="submit" name="btnUpdate" class="btn btn-default" onclick="disabledButton();"><strong><font size="1">ACTUALIZAR</font></strong></button>
+                            <button type="submit" name="btnUpdate" class="btn btn-default" onclick="disabledButtonUpdate();"><strong><font size="1"><object name="btn1">ACTUALIZAR</object><object name="btn2" hidden="true">ACTUALIZANDO...</object></font></strong></button>
                         </form>
                         <!-- /FORMULARIO -->
                     </div>

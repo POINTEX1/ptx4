@@ -30,6 +30,10 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
+        
+        <!-- disabledButton -->
+        <script src="js/disabledButton.js"></script>
+
     </head>
 
     <body>
@@ -81,7 +85,7 @@
 
                     </div>
                     <div class="col-lg-4">
-                        <form role="form" action="PointUpdateServlet" method="POST" name="formUpdate">
+                        <form role="form" action="PointUpdateServlet" method="POST" id="formUpdate" name="formUpdate">
                             <div class="form-group">
                                 <label for="disabledSelect">Lugar</label>
                                 <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${namePlace}" />" disabled>
@@ -105,7 +109,7 @@
                                     <input type="number" class="form-control" min="0" max="99999" name="points" value="<c:out value="${points}" />">
                                 </div>
                             </c:if>                   
-                            <button type="submit" class="btn btn-default"><strong><font size="1">ACTUALIZAR</font></strong></button>
+                            <button type="submit" name="btnUpdate" class="btn btn-default" onclick="disabledButtonUpdate();"><strong><font size="1"><object name="btn1">ACTUALIZAR</object><object name="btn2" hidden="true">ACTUALIZANDO...</object></font></strong></button>
                         </form>
                     </div>
                 </div><!-- /.row -->
