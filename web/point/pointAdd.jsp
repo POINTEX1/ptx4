@@ -30,108 +30,112 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
+
+        <!-- disabledButton -->
+        <script src="js/disabledButton.js"></script>
     </head>
-</head>
 
-<body>
+    <body>
 
-    <div id="wrapper">
+        <div id="wrapper">
 
-        <!-- Sidebar -->
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <c:import var="menu" url="/mainMenu.jsp" />
-        <c:out value="${menu}" escapeXml="false" />
-        <!-- /.navbar-collapse -->
+            <!-- Sidebar -->
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <c:import var="menu" url="/mainMenu.jsp" />
+            <c:out value="${menu}" escapeXml="false" />
+            <!-- /.navbar-collapse -->
 
-        <div id="page-wrapper">
+            <div id="page-wrapper">
 
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1>Mantenedor <small> Puntos</small></h1>
-                    <ol class="breadcrumb">
-                        <li><a href="PointMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
-                        <li class="active"><i class="fa fa-edit"></i> Agregar</li>
-                    </ol>
-                    <c:if test="${msg != null}" >
-                        <div class="alert alert-info alert-dismissable">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            <td><strong><c:out value="${msg}" /></strong></td>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgOk != null}" >
-                        <div class="alert alert-dismissable alert-success">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgOk}" /></strong>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorPoints != null }" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorPoints}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorInsert != null }" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorInsert}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <c:if test="${msgErrorRut != null }" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorRut}" /></strong></br>
-                        </div>
-                    </c:if>
-                </div>
-                <div class="col-lg-4">
-                    <form role="form" action="PointAddServlet" method="POST" name="formAdd">                        
-                        <div class="form-group">
-                            <label>Lugar</label>
-                            <select class="form-control" name="idPlace">
-                                <c:forEach var="listPlace" items="${listPlace}">  
-                                    <option value="<c:out value="${listPlace.idPlace}" />" <c:if test="${point.idPlace == listPlace.idPlace}">selected</c:if>> <c:out value="${listPlace.namePlace}" /> </option>
-                                </c:forEach>
-                            </select>                                
-                        </div>  
-                        <c:if test="${msgErrorRut == null }" >
-                            <div class="form-group">
-                                <label>Rut</label>
-                                <input type="text" class="form-control" maxlenth="12" name="rut" value="<c:out value="${rut}" />">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1>Mantenedor <small> Puntos</small></h1>
+                        <ol class="breadcrumb">
+                            <li><a href="PointMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
+                            <li class="active"><i class="fa fa-edit"></i> Agregar</li>
+                        </ol>
+                        <c:if test="${msg != null}" >
+                            <div class="alert alert-info alert-dismissable">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <td><strong><c:out value="${msg}" /></strong></td>
                             </div>
                         </c:if>
-                        <c:if test="${msgErrorRut != null }" >
-                            <div class="form-group has-error">
-                                <label class="control-label" for="inputError">Rut</label>
-                                <input type="text" class="form-control" maxlength="12" name="rut" id="inputError" value="<c:out value="${rut}" />">
+                        <c:if test="${msgOk != null}" >
+                            <div class="alert alert-dismissable alert-success">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgOk}" /></strong>
                             </div>
                         </c:if>
                         <c:if test="${msgErrorPoints != null }" >
-                            <div class="form-group has-error">
-                                <label class="control-label" for="inputError">Puntos</label>
-                                <input type="number" class="form-control" min="0" max="99999" name="points" id="inputError" value="<c:out value="${point.points}" />">
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorPoints}" /></strong></br>
                             </div>
                         </c:if>
-                        <c:if test="${msgErrorPoints == null }" >
-                            <div class="form-group">
-                                <label>Puntos</label>
-                                <input type="number" class="form-control" min="0" max="99999" name="points" value="<c:out value="${point.points}" />">
+                        <c:if test="${msgErrorInsert != null }" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorInsert}" /></strong></br>
                             </div>
-                        </c:if>                                               
-                        <button type="submit" name="add" class="btn btn-default"><strong><font size="1">AGREGAR</font></strong></button>
-                        <button type="reset" class="btn btn-default"><strong><font size="1">RESET</font></strong></button> 
-                    </form>
-                </div>
-            </div><!-- /.row -->
+                        </c:if>
+                        <c:if test="${msgErrorRut != null }" >
+                            <div class="alert alert-dismissable alert-danger">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msgErrorRut}" /></strong></br>
+                            </div>
+                        </c:if>
+                    </div>
+                    <div class="col-lg-4">
+                        <form role="form" action="PointAddServlet" method="POST" id="formAdd" name="formAdd">                        
+                            <div class="form-group">
+                                <label>Lugar</label>
+                                <select class="form-control" name="idPlace">
+                                    <c:forEach var="listPlace" items="${listPlace}">  
+                                        <option value="<c:out value="${listPlace.idPlace}" />" <c:if test="${point.idPlace == listPlace.idPlace}">selected</c:if>> <c:out value="${listPlace.namePlace}" /> </option>
+                                    </c:forEach>
+                                </select>                                
+                            </div>  
+                            <c:if test="${msgErrorRut == null }" >
+                                <div class="form-group">
+                                    <label>Rut</label>
+                                    <input type="text" class="form-control" maxlenth="12" name="rut" value="<c:out value="${rut}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorRut != null }" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Rut</label>
+                                    <input type="text" class="form-control" maxlength="12" name="rut" id="inputError" value="<c:out value="${rut}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorPoints != null }" >
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Puntos</label>
+                                    <input type="number" class="form-control" min="0" max="99999" name="points" id="inputError" value="<c:out value="${point.points}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorPoints == null }" >
+                                <div class="form-group">
+                                    <label>Puntos</label>
+                                    <input type="number" class="form-control" min="0" max="99999" name="points" value="<c:out value="${point.points}" />">
+                                </div>
+                            </c:if>    
 
-            </br>
-            <!-- FOOTER -->
-            <c:import var="footer" url="/footer.jsp" />
-            <c:out value="${footer}" escapeXml="false" />
-            <!-- /FOOTER -->
+                            <input type="hidden" name="add" value="ok"/>
+                            <button type="submit" name="btnAdd" class="btn btn-default" onclick="disabledButtonAdd();"><strong><font size="1"><object name="btn1">AGREGAR</object><object name="btn2" hidden="true">AGREGANDO...</object></font></strong></button>
+                            <button type="reset" class="btn btn-default"><strong><font size="1">RESET</font></strong></button> 
+                        </form>
+                    </div>
+                </div><!-- /.row -->
 
-        </div><!-- /#page-wrapper -->
+                </br>
+                <!-- FOOTER -->
+                <c:import var="footer" url="/footer.jsp" />
+                <c:out value="${footer}" escapeXml="false" />
+                <!-- /FOOTER -->
 
-    </div><!-- /#wrapper -->
+            </div><!-- /#page-wrapper -->
 
-</body>
+        </div><!-- /#wrapper -->
+
+    </body>
 </html>

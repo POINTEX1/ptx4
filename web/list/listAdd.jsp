@@ -31,6 +31,9 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
 
+        <!-- disabledButton -->
+        <script src="js/disabledButton.js"></script>
+
     </head>
 
     <body>
@@ -137,7 +140,7 @@
                     </div>
                     <div class="col-lg-4">
                         <!-- FORMULARIO -->
-                        <form role="form" action="ListAddServlet" method="POST" name="formAdd">  
+                        <form role="form" action="ListAddServlet" method="POST" id="formAdd" name="formAdd">  
                             <!-- OPTION EVENTO -->
                             <p><label>Ingresar Evento:</label></p>
                             <div class="form-group">
@@ -172,7 +175,8 @@
                             <!-- BARCODE -->
 
                             <!-- BOTONES -->
-                            <button type="submit" name="add" class="btn btn-default"><strong><font size="1">AGREGAR</font></strong></button>
+                            <input type="hidden" name="add" value="ok"/>
+                            <button type="submit" name="btnAdd" class="btn btn-default" onclick="disabledButtonAdd();"><strong><font size="1"><object name="btn1">AGREGAR</object><object name="btn2" hidden="true">AGREGANDO...</object></font></strong></button>
                             <button type="reset" class="btn btn-default"><strong><font size="1">RESET</font></strong></button> 
                             <!-- /BOTONES -->
                         </form>

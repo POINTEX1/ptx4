@@ -36,6 +36,10 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
+        
+        <!-- disabledButton -->
+        <script src="js/disabledButton.js"></script>
+        
     </head>
     <body>
         <div id="wrapper">
@@ -133,7 +137,7 @@
 
                 <div class="col-lg-4">
                     <!-- FORMULARIO -->
-                    <form role="form" action="CardAddServlet" method="POST" name="formAdd">                        
+                    <form role="form" action="CardAddServlet" method="POST" id="formAdd" name="formAdd">                        
                         <!-- RUT-DV -->
                         <div class="form-group">
                             <label for="disabledSelect">RUT</label>
@@ -156,13 +160,13 @@
                         <c:if test="${msgErrorBarCode == null}">
                             <div class="form-group">
                                 <label>Codigo de Barra </label>
-                                <input class="form-control" required="true" type="number" min="10000000" max="99999999" name="barCode" value="<c:out value="${reg.barCode}" />">
+                                <input class="form-control" required="true" maxlength="8" name="barCode" value="<c:out value="${reg.barCode}" />">
                             </div>
                         </c:if>
                         <c:if test="${msgErrorBarCode != null}">
                             <div class="form-group has-error">
                                 <label class="control-label" for="inputError">Codigo de Barra </label>
-                                <input class="form-control" required="true" type="number" min="10000000" max="99999999" name="barCode" id="inputError" value="<c:out value="${reg.barCode}" />">
+                                <input class="form-control" required="true"  maxlength="8" name="barCode" id="inputError" value="<c:out value="${reg.barCode}" />">
                             </div>
                         </c:if>
                         <!-- /BARCODE -->
@@ -179,8 +183,9 @@
                             <!-- /TIPO TARJETA -->
 
                             <!-- BOTONES -->
-                            <button type="submit" name="add" class="btn btn-default">AGREGAR</button>
-                            <button type="reset" class="btn btn-default">RESET</button> 
+                            <input type="hidden" name="add" value="ok"/>
+                            <button type="submit" name="btnAdd" class="btn btn-default" onclick="disabledButtonAdd();"><strong><font size="1"><object name="btn1">AGREGAR</object><object name="btn2" hidden="true">AGREGANDO...</object></font></strong></button>
+                            <button type="reset" class="btn btn-default"><strong><font size="1">RESET</font></strong></button>
                             <!-- /BOTONES -->
                         </form>
                         <!-- FORMULARIO -->

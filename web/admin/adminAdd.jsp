@@ -36,14 +36,8 @@
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
 
-        <script type="text/javascript">
-            function disabledButton() {
-                if (document.formAdd.btnAdd.disabled == false) {
-                    document.getElementById("formAdd").submit();
-                    document.formAdd.btnAdd.disabled = true;
-                }
-            }
-        </script>
+        <!-- disabledButton -->
+        <script src="js/disabledButton.js"></script>
 
     </head>
 
@@ -206,7 +200,7 @@
 
                             <!-- BOTONES -->     
                             <input type="hidden" name="add" value="1"/>
-                            <button type="submit" name="btnAdd" class="btn btn-default" onclick="disabledButton();"><strong><font size="1">AGREGAR</font></strong></button>
+                            <button type="submit" name="btnAdd" class="btn btn-default" onclick="disabledButtonAdd();"><strong><font size="1"><object name="btn1">AGREGAR</object><object name="btn2" hidden="true">AGREGANDO...</object></font></strong></button>
                             <button type="reset" class="btn btn-default"><strong><font size="1">RESET</font></strong></button> 
                             <!-- /BOTONES -->
                         </form>

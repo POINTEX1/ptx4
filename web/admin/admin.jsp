@@ -39,6 +39,8 @@
 
         <!-- export excel -->
         <script src="js/export-excel.js"></script>
+        
+        <script src="js/disabledButton.js"></script>
 
         <script>
             function confirmar(url)
@@ -51,7 +53,7 @@
                 {
                     return false;
                 }
-            }
+            }            
         </script>                 
 
     </head>

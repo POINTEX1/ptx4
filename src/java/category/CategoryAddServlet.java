@@ -94,7 +94,7 @@ public class CategoryAddServlet extends HttpServlet {
                             }
                         }
                     } else {
-                        request.setAttribute("msg", "Ingrese una ciudad.");
+                        request.setAttribute("msg", "Ingrese una categoria.");
                     }
 
                     request.setAttribute("category", category);

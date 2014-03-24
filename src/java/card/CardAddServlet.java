@@ -70,16 +70,10 @@ public class CardAddServlet extends HttpServlet {
                 request.setAttribute("userJsp", user);
                 request.setAttribute("access", access);
 
-                //////////////////////////////////////////
-                // DECLARAR VARIABLES DE INSTANCIA
                 /////////////////////////////////////////
-
-                Card card = new Card();
-
+                // RECIBIR Y COMPROBAR PARAMETROS
+                /////////////////////////////////////////
                 try {
-                    //////////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    /////////////////////////////////////////
 
                     //Recibir rut de verify.jsp
                     String srut = request.getParameter("rut");
@@ -89,6 +83,8 @@ public class CardAddServlet extends HttpServlet {
                     String barcode = request.getParameter("barCode");
                     String cardtype = request.getParameter("cardType");
                     String btnAdd = request.getParameter("add");
+
+                    Card card = new Card();
 
                     boolean error = false;
 
@@ -185,7 +181,7 @@ public class CardAddServlet extends HttpServlet {
                             }
                         }
 
-                        /////////////////////////////////////////
+                        ////////////////////////////////////////
                         // INSERTAR REGISTRO
                         ////////////////////////////////////////
 
@@ -194,12 +190,15 @@ public class CardAddServlet extends HttpServlet {
                                 cardDAO.insert(card);
                                 request.setAttribute("msgOk", "Registro ingresado exitosamente! ");
                             } catch (Exception sqlException) {
+                                sqlException.printStackTrace();
                             }
                         }
                     }
+
+                    request.setAttribute("reg", card);
+
                 } catch (Exception parameterException) {
                 } finally {
-                    request.setAttribute("reg", card);
                     request.getRequestDispatcher("/card/cardAdd.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {

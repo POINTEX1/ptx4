@@ -34,7 +34,11 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
+
+        <!-- disabledButton -->
+        <script src="js/disabledButton.js"></script>
     </head>
+
     <body>
         <div id="wrapper">
 
@@ -129,7 +133,7 @@
                     </div>
                     <div class="col-lg-4">
                         <!-- FORMULARIO -->
-                        <form role="form" action="ClientNewsAddServlet" method="POST" name="formAdd">                        
+                        <form role="form" action="ClientNewsAddServlet" method="POST" id="formAdd" name="formAdd">                        
                             <!-- TITULO NOTICIA -->
                             <c:if test="${msgErrorDup == null && msgErrorTittle == null }" >
                                 <div class="form-group">
@@ -173,53 +177,32 @@
                             <!-- RUT --> 
 
                             <!-- FECHA DE INICIO -->
-                            <c:choose>
-                                <c:when test="${msgErrorDup == null && msgErrorDate == null }">
-                                    <div class="form-group">
-                                        <label>Fecha de Inicio</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateBegin" value="<c:out value="${cnews.dateBegin}" />">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Fecha de Término</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateEnd" value="<c:out value="${cnews.dateEnd}" />">
-                                    </div>
-                                </c:when>
-                                <c:when test="${msgErrorDup != null && msgErrorDate == null }">
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">Fecha de Inicio</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateBegin" id="inputError" value="<c:out value="${cnews.dateBegin}" />">
-                                    </div>
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">Fecha de Término</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateEnd" id="inputError" value="<c:out value="${cnews.dateEnd}" />">
-                                    </div>
-                                </c:when>
-                                <c:when test="${msgErrorDup == null && msgErrorDate != null }">
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">Fecha de Inicio</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateBegin" id="inputError" value="<c:out value="${cnews.dateBegin}" />">
-                                    </div>
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">Fecha de Término</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateEnd" id="inputError" value="<c:out value="${cnews.dateEnd}" />">
-                                    </div>
-                                </c:when>
-                                <c:otherwise>
-                                    <div class="form-group">
-                                        <label>Fecha de Inicio</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateBegin" value="<c:out value="${cnews.dateBegin}" />">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Fecha de Término</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateEnd" value="<c:out value="${cnews.dateEnd}" />">
-                                    </div>
-                                </c:otherwise>
-                            </c:choose>
+                            <c:if test="${msgErrorDup == null && msgErrorDate == null}">
+                                <div class="form-group">
+                                    <label>Fecha de Inicio</label>
+                                    <input class="form-control" type="datetime-local" required="true" name="dateBegin" value="<c:out value="${cnews.dateBegin}" />">
+                                </div>
+                                <div class="form-group">
+                                    <label>Fecha de Término</label>
+                                    <input class="form-control" type="datetime-local" required="true" name="dateEnd" value="<c:out value="${cnews.dateEnd}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorDup != null || msgErrorDate != null}">
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Fecha de Inicio</label>
+                                    <input class="form-control" type="datetime-local" required="true" name="dateBegin" id="inputError" value="<c:out value="${cnews.dateBegin}" />">
+                                </div>
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Fecha de Término</label>
+                                    <input class="form-control" type="datetime-local" required="true" name="dateEnd" id="inputError" value="<c:out value="${cnews.dateEnd}" />">
+                                </div>
+                            </c:if>                            
                             <!-- FECHA DE INICIO -->
 
                             <!-- BOTONES -->
-                            <button type="submit" name="add" class="btn btn-default">Add</button>
-                            <button type="reset" class="btn btn-default">Reset</button> 
+                            <input type="hidden" name="add" value="ok"/>
+                            <button type="submit" name="btnAdd" class="btn btn-default" onclick="disabledButtonAdd();"><strong><font size="1"><object name="btn1">AGREGAR</object><object name="btn2" hidden="true">AGREGANDO...</object></font></strong></button>
+                            <button type="reset" class="btn btn-default"><strong><font size="1">RESET</font></strong></button>
                             <!-- BOTONES -->
                         </form>
                         <!-- /FORMULARIO -->
