@@ -2,9 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package orderCard;
+package news;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.Collection;
 import javax.annotation.Resource;
@@ -20,8 +21,8 @@ import javax.sql.DataSource;
  *
  * @author patricio
  */
-@WebServlet(name = "OrderCardMainServlet", urlPatterns = {"/OrderCardMainServlet"})
-public class OrderCardMainServlet extends HttpServlet {
+@WebServlet(name = "NewsDeleteServlet", urlPatterns = {"/NewsDeleteServlet"})
+public class NewsDeleteServlet extends HttpServlet {
 
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
@@ -43,15 +44,16 @@ public class OrderCardMainServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        /////////////////////////////////////////
+        // ESTABLECER CONEXION
+        /////////////////////////////////////////
         try {
-            //////////////////////////////////////////
-            // ESTABLECER CONEXION
-            //////////////////////////////////////////
-
             conexion = ds.getConnection();
 
-            OrderCardDAO orderCardDAO = new OrderCardDAO();
-            orderCardDAO.setConexion(conexion);
+            NewsDAO newsDAO = new NewsDAO();
+            newsDAO.setConexion(conexion);
+
+
 
             //////////////////////////////////////////
             // COMPROBAR SESSION
@@ -60,54 +62,87 @@ public class OrderCardMainServlet extends HttpServlet {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
 
-                /* obtener parametros de session */
+                /* obtener nivel de acceso acceso */
                 int access = Integer.parseInt((String) session.getAttribute("access"));
+                /* obtener nombre de usuario */
                 String username = (String) session.getAttribute("username");
 
                 /* comprobar permisos de usuario */
-                if (access != 777) {
+                if (access != 555 && access != 777) {
+                    /* ACCESO PROHIBIDO */
                     request.getRequestDispatcher("/ForbiddenServlet").forward(request, response);
                 } else {
-                    /* obtener los valores de session y asignar valores a la jsp */
+                    /* ACCESO PERMITIDO */
+
+                    /* asginar nombre de usuario */
                     request.setAttribute("userJsp", username);
+                    /* asignar nivel de acceso */
                     request.setAttribute("access", access);
 
-                    //////////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
+                    /////////////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETOS
                     /////////////////////////////////////////
 
-                    String msgDel = request.getParameter("msgDel");
-                    String msgErrorReference = request.getParameter("msgErrorReference");
+                    /* obtener parametro para eliminar única fila */
+                    String btnDelRow = request.getParameter("btnDelRow");
 
-                    /* comprobar eliminacion */
-                    if (msgDel == null || msgDel.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgDel", msgDel);
-                    }
+                    /* obtener parametro para eliminar varias filas */
+                    String btnDelCol = request.getParameter("btnDelCol");
 
-                    /* comprobar error de eliminacion */
-                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgErrorReference", msgErrorReference);
-                    }
+                    /* instanciar point */
+                    News news = new News();
 
-                    /* obtener lista de order card */
-                    try {
-                        Collection<OrderCard> listOrderCard = orderCardDAO.getAll();
-                        request.setAttribute("list", listOrderCard);
+                    /* instanciar url */
+                    String url = "?target=main";
 
-                        if (listOrderCard.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (listOrderCard.size() > 1) {
-                            request.setAttribute("msg", listOrderCard.size() + " registros encontrados en la base de datos.");
-                        } else if (listOrderCard.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                    //////////////////////////////////////////
+                    // ELIMINAR POR REGISTRO
+                    //////////////////////////////////////////
+                    if (btnDelRow != null) {
+                        /* recibir parametros */
+                        try {
+                            int id = Integer.parseInt(request.getParameter("idNews"));
+                            try {
+                                newsDAO.delete(id);
+                                url += "&msgDel=Un registro ha sido eliminado.";
+                            } catch (Exception referenceException) {
+                                url += "&msgErrorReference=Error: No puede eliminar el registro, existen referencias asociadas.";
+                            }
+                        } catch (NumberFormatException n) {
                         }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
                     }
 
-                    request.getRequestDispatcher("/orderCard/orderCard.jsp").forward(request, response);
+                    //////////////////////////////////////////
+                    // ELIMINAR VARIOS REGISTOS
+                    //////////////////////////////////////////
+                    if (btnDelCol != null) {
+                        try {
+                            /* recibir parametros del array */
+                            String[] outerArray = request.getParameterValues("chk");
+
+                            int cont = 0; //contador de registros eliminados
+                            int i = 0; //puntero del array
+
+                            while (outerArray[i] != null) {
+                                try {
+                                    newsDAO.delete(Integer.parseInt(outerArray[i]));
+                                    cont++;
+                                    if (cont == 1) {
+                                        url += "&msgDel=Un registro ha sido eliminado.";
+                                    } else if (cont > 1) {
+                                        url += "&msgDel=" + cont + " registros han sido eliminados.";
+                                    }
+                                } catch (Exception referenceException) {
+                                    url += "&msgErrorReference=Error: No puede eliminar, existen registros asociados.";
+                                }
+                                i++;
+                            }
+                        } catch (Exception ex) {
+                        }
+                    }
+
+                    /* send redirect */
+                    response.sendRedirect("NewsMainServlet" + url);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
@@ -117,7 +152,7 @@ public class OrderCardMainServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
-            /* cerrar la conexion */
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

@@ -85,7 +85,7 @@
                     <div class="col-lg-12">  
                         <!-- DATATABLE -->
                         <div class="table-responsive">
-                            <form action="OrderCardMainServlet" method="POST" name="form">
+                            <form action="OrderCardDeleteServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
                                         <div class="box">   
@@ -157,7 +157,7 @@
                                                                     <a href="OrderCardGetServlet?idOrder=<c:out value="${list.idOrder}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">VER / ACTUALIZAR</font></strong></button></a>
                                                                 </td>
                                                                 <td class="center">                                                                    
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('OrderCardMainServlet?btnDelRow=x&idOrder=<c:out value="${list.idOrder}" />');
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('OrderCardDeleteServlet?btnDelRow=x&idOrder=<c:out value="${list.idOrder}" />');
                 return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>

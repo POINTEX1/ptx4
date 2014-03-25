@@ -77,85 +77,35 @@ public class PlaceCategoryMainServlet extends HttpServlet {
                         // RECIBIR Y COMPROBAR PARAMETROS
                         /////////////////////////////////////////
 
-                        String btnDelRow = request.getParameter("btnDelRow");
-                        String btnDelCol = request.getParameter("btnDelCol");
+                        String msgDel = request.getParameter("msgDel");
+                        String msgErrorReference = request.getParameter("msgErrorReference");
 
-                        PlaceCategory placeCategory = new PlaceCategory();
-
-                        boolean error = false;
-
-                        //////////////////////////////////////////
-                        // ELIMINAR POR REGISTRO
-                        //////////////////////////////////////////
-                        if (btnDelRow != null) {
-                            /* comprobar id place */
-                            try {
-                                int idPlace = Integer.parseInt(request.getParameter("idPlace"));
-                                placeCategory.setIdPlace(idPlace);
-                            } catch (NumberFormatException n) {
-                                error = true;
-                            }
-                            /* comprobar id category */
-                            try {
-                                int idCategory = Integer.parseInt(request.getParameter("idCategory"));
-                                placeCategory.setIdCategory(idCategory);
-                            } catch (NumberFormatException n) {
-                                error = true;
-                            }
-
-                            if (!error) {
-                                try {
-                                    placeCategoryDAO.delete(placeCategory);
-                                    request.setAttribute("msgDel", "Un registro ha sido eliminado.");
-                                } catch (Exception referenceException) {
-                                    request.setAttribute("msgErrorReference", "Error: No se puede eliminar, existen errores en la ejecución.");
-                                }
-                            }
-                        }
-                        //////////////////////////////////////////
-                        // ELIMINAR VARIOS REGISTROS
-                        //////////////////////////////////////////
-                        if (btnDelCol != null) {
-                            try {
-                                String[] outerArray = request.getParameterValues("chk");
-                                int cont = 0;
-                                int i = 0;
-                                while (outerArray[i] != null) {
-                                    String string = outerArray[i];
-                                    String[] parts = string.split("-");
-                                    placeCategory.setIdPlace(Integer.parseInt(parts[0]));
-                                    placeCategory.setIdCategory(Integer.parseInt(parts[1]));
-                                    try {
-                                        placeCategoryDAO.delete(placeCategory);
-                                        cont++;
-                                    } catch (Exception ex) {
-                                        ex.printStackTrace();
-                                    }
-                                    if (cont == 1) {
-                                        request.setAttribute("msgDel", "Un registro ha sido eliminado.");
-                                    } else if (cont > 1) {
-                                        request.setAttribute("msgDel", cont + " registros han sido eliminados");
-                                    }
-                                    i++;
-                                }
-                            } catch (Exception parameterException) {
-                            }
-                        }
-                        //////////////////////////////////////////
-                        // ESTABLECER ATRIBUTOS AL REQUEST
-                        /////////////////////////////////////////
-
-                        Collection<PlaceCategory> placeCategoryList = placeCategoryDAO.getAll();
-
-                        if (placeCategoryList.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (placeCategoryList.size() > 1) {
-                            request.setAttribute("msg", placeCategoryList.size() + " registros encontrados en la base de datos.");
-                        } else if (placeCategoryList.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                        /* comprobar eliminacion */
+                        if (msgDel == null || msgDel.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgDel", msgDel);
                         }
 
-                        request.setAttribute("list", placeCategoryList);
+                        /* comprobar error de eliminacion */
+                        if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorReference", msgErrorReference);
+                        }
+
+                        /* obtener lista de placeCategory */
+                        try {
+                            Collection<PlaceCategory> placeCategoryList = placeCategoryDAO.getAll();
+                            request.setAttribute("list", placeCategoryList);
+                            if (placeCategoryList.size() == 1) {
+                                request.setAttribute("msg", "1 registro encontrado en la base de datos.");
+                            } else if (placeCategoryList.size() > 1) {
+                                request.setAttribute("msg", placeCategoryList.size() + " registros encontrados en la base de datos.");
+                            } else if (placeCategoryList.isEmpty()) {
+                                request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
 
                     } catch (Exception parameterException) {
                     } finally {

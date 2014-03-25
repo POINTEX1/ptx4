@@ -89,7 +89,7 @@
                     <div class="col-lg-12"> 
                         <div class="table-responsive">
                             <!-- DATATABLE -->
-                            <form action="EntryMainServlet" method="POST" name="form">
+                            <form action="ListDeleteServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
                                         <div class="box"> 
@@ -139,7 +139,7 @@
                                                                 <td class="center"><c:out value="${list.lastName}" /></td>
                                                                 <td class="center"><c:out value="${list.createTime}" /></td>
                                                                 <td class="center">                                                                   
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('EntryMainServlet?btnDelRow=x&idEvent=<c:out value="${list.idEvent}" />&rut=<c:out value="${list.rut}" />&barCode=<c:out value="${list.barCode}" />');
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('ListDeleteServlet?btnDelRow=x&idEvent=<c:out value="${list.idEvent}" />&rut=<c:out value="${list.rut}" />&barCode=<c:out value="${list.barCode}" />');
                 return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>

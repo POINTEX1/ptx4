@@ -78,51 +78,22 @@ public class PlaceMainServlet extends HttpServlet {
                         // RECIBIR Y COMPROBAR PARAMETROS
                         /////////////////////////////////////////
 
-                        String btnDelRow = request.getParameter("btnDelRow");
-                        String btnDelCol = request.getParameter("btnDelCol");
+                        String msgDel = request.getParameter("msgDel");
+                        String msgErrorReference = request.getParameter("msgErrorReference");
 
-                        //////////////////////////////////////////
-                        // ELIMINAR POR REGISTRO
-                        //////////////////////////////////////////
-                        if (btnDelRow != null) {
-                            /* recibir parametro */
-                            int id = Integer.parseInt(request.getParameter("idPlace"));
-                            try {
-                                placeDAO.delete(id);
-                                request.setAttribute("msgDel", "Un registro ha sido eliminado.");
-                            } catch (Exception referenceException) {
-                                request.setAttribute("msgErrorReference", "Error: No se puede eliminar, existen registros asociados.");
-                            }
+                        /* comprobar eliminacion */
+                        if (msgDel == null || msgDel.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgDel", msgDel);
                         }
-                        //////////////////////////////////////////
-                        // ELIMINAR VARIOS REGISTROS
-                        //////////////////////////////////////////
-                        if (btnDelCol != null) {
-                            try {
-                                String[] outerArray = request.getParameterValues("chk");
-                                int cont = 0;
-                                int i = 0;
-                                while (outerArray[i] != null) {
-                                    try {
-                                        placeDAO.delete(Integer.parseInt(outerArray[i]));
-                                        cont++;
-                                        if (cont == 1) {
-                                            request.setAttribute("msgDel", "Un registro ha sido eliminado.");
-                                        } else if (cont > 1) {
-                                            request.setAttribute("msgDel", cont + " registros han sido eliminados");
-                                        }
-                                    } catch (Exception referenceException) {
-                                        request.setAttribute("msgDel", "Error: No se pudo eliminar, existen registros asociados.");
-                                    }
-                                    i++;
-                                }
-                            } catch (Exception parameterException) {
-                            }
-                        }
-                        //////////////////////////////////////////
-                        // ESTABLECER ATRIBUTOS AL REQUEST
-                        /////////////////////////////////////////
 
+                        /* comprobar error de eliminacion */
+                        if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorReference", msgErrorReference);
+                        }
+
+                        /* obtener lista de lugares */
                         try {
                             Collection<Place> listPlace = placeDAO.getAll();
                             request.setAttribute("list", listPlace);

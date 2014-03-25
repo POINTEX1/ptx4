@@ -2,9 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package orderCard;
+package exchangeable;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.Collection;
 import javax.annotation.Resource;
@@ -20,8 +21,8 @@ import javax.sql.DataSource;
  *
  * @author patricio
  */
-@WebServlet(name = "OrderCardMainServlet", urlPatterns = {"/OrderCardMainServlet"})
-public class OrderCardMainServlet extends HttpServlet {
+@WebServlet(name = "ExchangeableDeleteServlet", urlPatterns = {"/ExchangeableDeleteServlet"})
+public class ExchangeableDeleteServlet extends HttpServlet {
 
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
@@ -46,12 +47,12 @@ public class OrderCardMainServlet extends HttpServlet {
         try {
             //////////////////////////////////////////
             // ESTABLECER CONEXION
-            //////////////////////////////////////////
+            /////////////////////////////////////////
 
             conexion = ds.getConnection();
 
-            OrderCardDAO orderCardDAO = new OrderCardDAO();
-            orderCardDAO.setConexion(conexion);
+            ExchangeableDAO exDAO = new ExchangeableDAO();
+            exDAO.setConexion(conexion);
 
             //////////////////////////////////////////
             // COMPROBAR SESSION
@@ -65,49 +66,66 @@ public class OrderCardMainServlet extends HttpServlet {
                 String username = (String) session.getAttribute("username");
 
                 /* comprobar permisos de usuario */
-                if (access != 777) {
+                if (access != 555 && access != 777) {
                     request.getRequestDispatcher("/ForbiddenServlet").forward(request, response);
                 } else {
+
                     /* obtener los valores de session y asignar valores a la jsp */
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-                    //////////////////////////////////////////
+                    ////////////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETROS
-                    /////////////////////////////////////////
+                    ////////////////////////////////////////
 
-                    String msgDel = request.getParameter("msgDel");
-                    String msgErrorReference = request.getParameter("msgErrorReference");
+                    String btnDelRow = request.getParameter("btnDelRow");
+                    String btnDelCol = request.getParameter("btnDelCol");
 
-                    /* comprobar eliminacion */
-                    if (msgDel == null || msgDel.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgDel", msgDel);
-                    }
+                    /* instanciar url */
+                    String url = "?target=main";
 
-                    /* comprobar error de eliminacion */
-                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgErrorReference", msgErrorReference);
-                    }
-
-                    /* obtener lista de order card */
-                    try {
-                        Collection<OrderCard> listOrderCard = orderCardDAO.getAll();
-                        request.setAttribute("list", listOrderCard);
-
-                        if (listOrderCard.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (listOrderCard.size() > 1) {
-                            request.setAttribute("msg", listOrderCard.size() + " registros encontrados en la base de datos.");
-                        } else if (listOrderCard.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                    //////////////////////////////////////////
+                    // ELIMINAR POR REGISTRO
+                    //////////////////////////////////////////
+                    if (btnDelRow != null) {
+                        /* recibir parametros */
+                        try {
+                            int id = Integer.parseInt(request.getParameter("idExchangeable"));
+                            /* eliminar producto canjeable */
+                            try {
+                                exDAO.delete(id);
+                                url += "&msgDel=Un Registro ha sido eliminado.";
+                            } catch (Exception referenceException) {
+                                url += "&msgErrorReference=Error: No puede eliminar, existen registros asociadas.";
+                            }
+                        } catch (NumberFormatException n) {
                         }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
                     }
 
-                    request.getRequestDispatcher("/orderCard/orderCard.jsp").forward(request, response);
+                    //////////////////////////////////////////
+                    // ELIMINAR VARIOS REGISTRO
+                    //////////////////////////////////////////
+                    if (btnDelCol != null) {
+                        try {
+                            String[] outerArray = request.getParameterValues("chk");
+
+                            int cont = 0;
+                            int i = 0;
+                            while (outerArray[i] != null) {
+                                try {
+                                    exDAO.delete(Integer.parseInt(outerArray[i]));
+                                    cont++;
+                                    url += "&msgDel=" + cont + " registros han sido eliminados.";
+                                } catch (Exception ex) {
+                                    url += "&msgErrorReference=Error: No puede eliminar un producto canjeable, existen registros asociados.";
+                                }
+                                i++;
+                            }
+                        } catch (Exception parameterException) {
+                        }
+                    }
+                    /* send redirect */
+                    response.sendRedirect("ExchangeableMainServlet" + url);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
@@ -117,7 +135,7 @@ public class OrderCardMainServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
-            /* cerrar la conexion */
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

@@ -2,11 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package orderCard;
+package event;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,9 +19,9 @@ import javax.sql.DataSource;
  *
  * @author patricio
  */
-@WebServlet(name = "OrderCardMainServlet", urlPatterns = {"/OrderCardMainServlet"})
-public class OrderCardMainServlet extends HttpServlet {
-
+@WebServlet(name = "EventDeleteServlet", urlPatterns = {"/EventDeleteServlet"})
+public class EventDeleteServlet extends HttpServlet {
+    
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
 
@@ -38,20 +37,19 @@ public class OrderCardMainServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        
         request.setCharacterEncoding("UTF-8");
-
+        
         Connection conexion = null;
-
+        
         try {
-            //////////////////////////////////////////
+            /////////////////////////////////////////
             // ESTABLECER CONEXION
-            //////////////////////////////////////////
-
+            /////////////////////////////////////////
             conexion = ds.getConnection();
-
-            OrderCardDAO orderCardDAO = new OrderCardDAO();
-            orderCardDAO.setConexion(conexion);
+            
+            EventDAO eventDAO = new EventDAO();
+            eventDAO.setConexion(conexion);
 
             //////////////////////////////////////////
             // COMPROBAR SESSION
@@ -65,49 +63,74 @@ public class OrderCardMainServlet extends HttpServlet {
                 String username = (String) session.getAttribute("username");
 
                 /* comprobar permisos de usuario */
-                if (access != 777) {
+                if (access != 555 && access != 777) {
                     request.getRequestDispatcher("/ForbiddenServlet").forward(request, response);
                 } else {
+
                     /* obtener los valores de session y asignar valores a la jsp */
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-                    //////////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
+                    /////////////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETOS
                     /////////////////////////////////////////
 
-                    String msgDel = request.getParameter("msgDel");
-                    String msgErrorReference = request.getParameter("msgErrorReference");
+                    String btnDelRow = request.getParameter("btnDelRow");
+                    String btnDelCol = request.getParameter("btnDelCol");
+                    
+                    Event event = new Event();
 
-                    /* comprobar eliminacion */
-                    if (msgDel == null || msgDel.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgDel", msgDel);
-                    }
+                    /* instanciar url */
+                    String url = "?target=main";
 
-                    /* comprobar error de eliminacion */
-                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgErrorReference", msgErrorReference);
-                    }
-
-                    /* obtener lista de order card */
-                    try {
-                        Collection<OrderCard> listOrderCard = orderCardDAO.getAll();
-                        request.setAttribute("list", listOrderCard);
-
-                        if (listOrderCard.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (listOrderCard.size() > 1) {
-                            request.setAttribute("msg", listOrderCard.size() + " registros encontrados en la base de datos.");
-                        } else if (listOrderCard.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                    //////////////////////////////////
+                    // ELIMINAR POR REGISTRO
+                    //////////////////////////////////
+                    if (btnDelRow != null) {
+                        /* recibir parametros */
+                        try {
+                            int id = Integer.parseInt(request.getParameter("idEvent"));
+                            try {
+                                eventDAO.delete(id);
+                                url += "&msgDel=Un registro ha sido eliminado.";
+                            } catch (Exception referenceException) {
+                                url += "&msgErrorReference=Error: No puede eliminar el registro, existen referencias asociadas.";
+                            }
+                        } catch (NumberFormatException n) {
+                            n.printStackTrace();
                         }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
                     }
 
-                    request.getRequestDispatcher("/orderCard/orderCard.jsp").forward(request, response);
+                    ///////////////////////////////////
+                    // ELIMINAR VARIOS REGISTOS
+                    ///////////////////////////////////
+                    if (btnDelCol != null) {
+                        try {
+                            /* recibir parametros */
+                            String[] outerArray = request.getParameterValues("chk");
+                            
+                            int cont = 0;
+                            int i = 0;
+                            while (outerArray[i] != null) {
+                                try {
+                                    eventDAO.delete(Integer.parseInt(outerArray[i]));
+                                    cont++;
+                                    if (cont == 1) {
+                                        url += "&msgDel=Un registro ha sido eliminado.";
+                                    } else if (cont > 1) {
+                                        url += "&msgDel=" + cont + "registros han sido eliminados";
+                                    }
+                                } catch (Exception referenceException) {
+                                    url += "&msgErrorReference=Error: No puede eliminar" + event.getTittle() + ", existen registros asociados.";
+                                }
+                                i++;
+                            }
+                        } catch (Exception ex) {
+                        }
+                    }
+
+                    /* send redirect */
+                    response.sendRedirect("EventMainServlet" + url);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
@@ -117,7 +140,7 @@ public class OrderCardMainServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
-            /* cerrar la conexion */
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

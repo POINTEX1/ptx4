@@ -80,103 +80,31 @@ public class EntryMainServlet extends HttpServlet {
                         // RECIBIR Y COMPROBAR PARAMETROS
                         //////////////////////////////////////////
 
-                        String btnDelRow = request.getParameter("btnDelRow");
-                        String btnDelCol = request.getParameter("btnDelCol");
+                        String msgDel = request.getParameter("msgDel");
+                        String msgErrorReference = request.getParameter("msgErrorReference");
 
-                        String sidEvent = request.getParameter("idEvent");
-                        String srut = request.getParameter("rut");
-                        String sBarCode = request.getParameter("barCode");
-
-                        List entry = new List();
-
-                        boolean error = false;
-
-                        //////////////////////////////////////////
-                        // ELIMINAR POR REGISTRO
-                        //////////////////////////////////////////
-                        if (btnDelRow != null) {
-
-                            /* comprobar id event */
-                            if (sidEvent == null || sidEvent.trim().equals("")) {
-                                error = true;
-                            } else {
-                                try {
-                                    entry.setIdEvent(Integer.parseInt(sidEvent));
-                                } catch (NumberFormatException n) {
-                                    error = true;
-                                }
-                            }
-
-                            /* comprobar rut */
-                            if (srut == null || srut.trim().equals("")) {
-                                error = true;
-                            } else {
-                                try {
-                                    entry.setRut(Integer.parseInt(srut));
-                                } catch (NumberFormatException n) {
-                                    error = true;
-                                }
-                            }
-
-                            /* comprobar bar code */
-                            if (sBarCode == null || sBarCode.trim().equals("")) {
-                                error = true;
-                            } else {
-                                try {
-                                    entry.setBarCode(Integer.parseInt(sBarCode));
-                                } catch (NumberFormatException n) {
-                                    error = true;
-                                }
-                            }
-
-                            if (!error) {
-                                try {
-                                    entryDAO.delete(entry);
-                                    request.setAttribute("msgDel", "Un Registro ha sido eliminado.");
-                                } catch (Exception deleteException) {
-                                }
-                            }
+                        /* comprobar eliminacion */
+                        if (msgDel == null || msgDel.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgDel", msgDel);
                         }
-                        //////////////////////////////////////////
-                        // ELIMINAR VARIOS REGISTROS
-                        //////////////////////////////////////////
-                        if (btnDelCol != null) {
-                            try {
-                                /* recibir parametros */
-                                String[] outerArray = request.getParameterValues("chk");
 
-                                int cont = 0;
-                                int i = 0;
-                                while (outerArray[i] != null) {
-                                    String string = outerArray[i];
-                                    String[] parts = string.split("-");
-                                    entry.setIdEvent(Integer.parseInt(parts[0]));
-                                    entry.setRut(Integer.parseInt(parts[1]));
-                                    entry.setBarCode(Integer.parseInt(parts[2]));
-
-                                    try {
-                                        entryDAO.delete(entry);
-                                        cont++;
-                                        if (cont > 1) {
-                                            request.setAttribute("msgDel", cont + " registos han sido eliminados.");
-                                        } else if (cont == 1) {
-                                            request.setAttribute("msgDel", " Un registro ha sido eliminado.");
-                                        }
-                                    } catch (Exception deleteException) {
-                                    }
-                                    i++;
-                                }
-                            } catch (Exception paramemterException) {
-                            }
+                        /* comprobar error de eliminacion */
+                        if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorReference", msgErrorReference);
                         }
-                        //////////////////////////////////////////
-                        // ESTABLECER ATRIBUTOS AL REQUEST
-                        //////////////////////////////////////////
 
-                        Collection<List> listEntry = entryDAO.getAll();
-                        request.setAttribute("msg", listEntry.size() + " registros encontrados en la base de datos.");
+                        /* obtener collection de listas */
+                        try {
+                            Collection<List> listEntry = entryDAO.getAll();
+                            request.setAttribute("msg", listEntry.size() + " registros encontrados en la base de datos.");
 
-                        request.setAttribute("list", listEntry);
+                            request.setAttribute("list", listEntry);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+
                     } catch (Exception parameterException) {
                     } finally {
                         request.getRequestDispatcher("list/list.jsp").forward(request, response);
@@ -190,6 +118,7 @@ public class EntryMainServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

@@ -78,48 +78,19 @@ public class ExchangeableMainServlet extends HttpServlet {
                         // RECIBIR Y COMPROBAR PARAMETROS
                         ////////////////////////////////////////
 
-                        String btnDelRow = request.getParameter("btnDelRow");
-                        String btnDelCol = request.getParameter("btnDelCol");
+                        String msgDel = request.getParameter("msgDel");
+                        String msgErrorReference = request.getParameter("msgErrorReference");
 
-                        //////////////////////////////////////////
-                        // ELIMINAR POR REGISTRO
-                        //////////////////////////////////////////
-                        if (btnDelRow != null) {
-                            /* recibir parametros */
-                            try {
-                                int id = Integer.parseInt(request.getParameter("idExchangeable"));
-                                /* eliminar producto canjeable */
-                                try {
-                                    exDAO.delete(id);
-                                    request.setAttribute("msgDel", "Un Registro ha sido eliminado");
-                                } catch (Exception referenceException) {
-                                    request.setAttribute("msgErrorReference", "Error: No puede eliminar, existen referencias asociadas.");
-                                }
-                            } catch (NumberFormatException n) {
-                            }
+                        /* comprobar eliminacion */
+                        if (msgDel == null || msgDel.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgDel", msgDel);
                         }
 
-                        //////////////////////////////////////////
-                        // ELIMINAR VARIOS REGISTRO
-                        //////////////////////////////////////////
-                        if (btnDelCol != null) {
-                            try {
-                                String[] outerArray = request.getParameterValues("chk");
-
-                                int cont = 0;
-                                int i = 0;
-                                while (outerArray[i] != null) {
-                                    try {
-                                        exDAO.delete(Integer.parseInt(outerArray[i]));
-                                        cont++;
-                                        request.setAttribute("msgDel", cont + " registro(s) han sido eliminado(s).");
-                                    } catch (Exception ex) {
-                                        request.setAttribute("msgErrorReference", "Error: No puede eliminar una promo o regalos, existen clientes asociados.");
-                                    }
-                                    i++;
-                                }
-                            } catch (Exception parameterException) {
-                            }
+                        /* comprobar errores de eliminacion */
+                        if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorReference", msgErrorReference);
                         }
 
                         /* obtener productos canjeables */
@@ -151,6 +122,7 @@ public class ExchangeableMainServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

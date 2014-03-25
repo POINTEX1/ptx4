@@ -80,15 +80,19 @@ public class AdminDAO {
 
     public Admin findById(int id) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Admin reg = null;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from admin where id_admin = " + id + " ";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from admin where id_admin = ? ";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, id);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -281,7 +285,7 @@ public class AdminDAO {
             sentence.setString(1, admin.getUsername());
             sentence.setString(2, admin.getEmail());
             sentence.setInt(3, admin.getIdAdmin());
-            
+
             sentence.executeUpdate();
 
         } catch (MySQLSyntaxErrorException ex) {

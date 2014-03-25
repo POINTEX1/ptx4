@@ -170,7 +170,6 @@
 
         </div><!-- /#wrapper -->
 
-
         <script type="text/javascript" src="js/jquery.min.js"></script>
         <script type="text/javascript" src="js/imperiobootstrap.min.js"></script>
         <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>

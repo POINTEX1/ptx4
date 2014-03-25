@@ -81,67 +81,28 @@ public class NewsMainServlet extends HttpServlet {
                     /////////////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETOS
                     /////////////////////////////////////////
+
+                    String msgDel = request.getParameter("msgDel");
+                    String msgErrorReference = request.getParameter("msgErrorReference");
+
+                    /* comprobar eliminacion */
+                    if (msgDel == null || msgDel.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgDel", msgDel);
+                    }
+
+                    /* comprobar error de eliminacion */
+                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgErrorReference", msgErrorReference);
+                    }
+
+                    ////////////////////////////////////////
+                    // ASIGNAR REGISTROS A LA VISTA
+                    ////////////////////////////////////////
+
+                    /* obtener lista de noticias */
                     try {
-                        /* obtener parametro para eliminar única fila */
-                        String btnDelRow = request.getParameter("btnDelRow");
-
-                        /* obtener parametro para eliminar varias filas */
-                        String btnDelCol = request.getParameter("btnDelCol");
-
-                        /* instanciar point */
-                        News news = new News();
-
-                        //////////////////////////////////////////
-                        // ELIMINAR POR REGISTRO
-                        //////////////////////////////////////////
-                        if (btnDelRow != null) {
-                            /* recibir parametros */
-                            try {
-                                int id = Integer.parseInt(request.getParameter("idNews"));
-                                try {
-                                    newsDAO.delete(news.getIdNews());
-                                    request.setAttribute("msgDel", "Un registro ha sido eliminado.");
-                                } catch (Exception referenceException) {
-                                    request.setAttribute("msgErrorReference", "Error: No puede eliminar el registro, existen referencias asociadas.");
-                                }
-                            } catch (NumberFormatException n) {
-                            }
-                        }
-
-                        //////////////////////////////////////////
-                        // ELIMINAR VARIOS REGISTOS
-                        //////////////////////////////////////////
-                        if (btnDelCol != null) {
-                            try {
-                                /* recibir parametros del array */
-                                String[] outerArray = request.getParameterValues("chk");
-
-                                int cont = 0; //contador de registros eliminados
-                                int i = 0; //puntero del array
-
-                                while (outerArray[i] != null) {
-                                    try {
-                                        newsDAO.delete(Integer.parseInt(outerArray[i]));
-                                        cont++;
-                                        if (cont == 1) {
-                                            request.setAttribute("msgDel", "Un registro ha sido eliminado.");
-                                        } else if (cont > 1) {
-                                            request.setAttribute("msgDel", cont + " registros han sido eliminados");
-                                        }
-                                    } catch (Exception referenceException) {
-                                        request.setAttribute("msgErrorReference", "Error: No puede eliminar, existen registros asociados.");
-                                    }
-                                    i++;
-                                }
-                            } catch (Exception ex) {
-                            }
-                        }
-
-                        ////////////////////////////////////////
-                        // ASIGNAR REGISTROS A LA VISTA
-                        ////////////////////////////////////////
-
-                        /* obtener lista de noticias */
                         Collection<News> newsList = newsDAO.getAll();
                         request.setAttribute("list", newsList);
 
@@ -153,11 +114,11 @@ public class NewsMainServlet extends HttpServlet {
                         } else if (newsList.isEmpty()) {
                             request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
                         }
-
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("/news/news.jsp").forward(request, response);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
+
+                    request.getRequestDispatcher("/news/news.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
@@ -167,6 +128,7 @@ public class NewsMainServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

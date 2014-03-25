@@ -85,7 +85,7 @@
                 <div class="row">                  
                     <div class="col-lg-12">  
                         <div class="table-responsive">
-                            <form action="PlaceCategoryMainServlet" method="POST" name="form">
+                            <form action="PlaceCategoryDeleteServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
                                         <div class="box">                                
@@ -123,7 +123,7 @@
                                                                 <td class="center"><c:out value="${list.idCategory}" /></td>                                                                
                                                                 <td class="center"><c:out value="${list.nameCategory}" /></td>                                                                
                                                                 <td class="center">                                                                    
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('PlaceCategoryMainServlet?btnDelRow=x&idPlace=<c:out value="${list.idPlace}" />&idCategory=<c:out value="${list.idCategory}" />');
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('PlaceCategoryDeleteServlet?btnDelRow=x&idPlace=<c:out value="${list.idPlace}" />&idCategory=<c:out value="${list.idCategory}" />');
                 return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>

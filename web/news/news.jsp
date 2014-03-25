@@ -86,7 +86,7 @@
                     <div class="col-lg-12">                        
                         <div class="table-responsive">
                             <!-- DATATABLE -->
-                            <form action="NewsMainServlet" method="POST" name="form">
+                            <form action="NewsDeleteServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
                                         <div class="box">  
@@ -137,13 +137,13 @@
                                                                     <c:if test="${list.newsType == 4}">Atención</c:if>
                                                                     </td>
                                                                     <td class="center"><c:out value="${list.urlImage}" /></td>
-                                                                <td><c:out value="${list.dateBegin}" /></td>
+                                                                <td class="center"><c:out value="${list.dateBegin}" /></td>
                                                                 <td class="center"><c:out value="${list.dateEnd}" /></td>
                                                                 <td class="center">      
                                                                     <a href="NewsGetServlet?idNews=<c:out value="${list.idNews}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><font size="1">VER / ACTUALIZAR</font></button></a>                                                               
                                                                 </td>
                                                                 <td class="center">                                                                    
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('NewsMainServlet?btnDelRow=x&idNews=<c:out value="${list.idNews}" />');
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('NewsDeleteServlet?btnDelRow=x&idNews=<c:out value="${list.idNews}" />');
                 return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>

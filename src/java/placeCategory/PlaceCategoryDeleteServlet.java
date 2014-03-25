@@ -2,9 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package orderCard;
+package placeCategory;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.Collection;
 import javax.annotation.Resource;
@@ -20,8 +21,8 @@ import javax.sql.DataSource;
  *
  * @author patricio
  */
-@WebServlet(name = "OrderCardMainServlet", urlPatterns = {"/OrderCardMainServlet"})
-public class OrderCardMainServlet extends HttpServlet {
+@WebServlet(name = "PlaceCategoryDeleteServlet", urlPatterns = {"/PlaceCategoryDeleteServlet"})
+public class PlaceCategoryDeleteServlet extends HttpServlet {
 
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
@@ -50,8 +51,8 @@ public class OrderCardMainServlet extends HttpServlet {
 
             conexion = ds.getConnection();
 
-            OrderCardDAO orderCardDAO = new OrderCardDAO();
-            orderCardDAO.setConexion(conexion);
+            PlaceCategoryDAO placeCategoryDAO = new PlaceCategoryDAO();
+            placeCategoryDAO.setConexion(conexion);
 
             //////////////////////////////////////////
             // COMPROBAR SESSION
@@ -76,38 +77,77 @@ public class OrderCardMainServlet extends HttpServlet {
                     // RECIBIR Y COMPROBAR PARAMETROS
                     /////////////////////////////////////////
 
-                    String msgDel = request.getParameter("msgDel");
-                    String msgErrorReference = request.getParameter("msgErrorReference");
+                    String btnDelRow = request.getParameter("btnDelRow");
+                    String btnDelCol = request.getParameter("btnDelCol");
 
-                    /* comprobar eliminacion */
-                    if (msgDel == null || msgDel.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgDel", msgDel);
-                    }
+                    PlaceCategory placeCategory = new PlaceCategory();
 
-                    /* comprobar error de eliminacion */
-                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgErrorReference", msgErrorReference);
-                    }
+                    boolean error = false;
 
-                    /* obtener lista de order card */
-                    try {
-                        Collection<OrderCard> listOrderCard = orderCardDAO.getAll();
-                        request.setAttribute("list", listOrderCard);
+                    /* instanciar url */
+                    String url = "?target=main";
 
-                        if (listOrderCard.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (listOrderCard.size() > 1) {
-                            request.setAttribute("msg", listOrderCard.size() + " registros encontrados en la base de datos.");
-                        } else if (listOrderCard.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                    //////////////////////////////////////////
+                    // ELIMINAR POR REGISTRO
+                    //////////////////////////////////////////
+                    if (btnDelRow != null) {
+                        /* comprobar id place */
+                        try {
+                            int idPlace = Integer.parseInt(request.getParameter("idPlace"));
+                            placeCategory.setIdPlace(idPlace);
+                        } catch (NumberFormatException n) {
+                            error = true;
                         }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+                        /* comprobar id category */
+                        try {
+                            int idCategory = Integer.parseInt(request.getParameter("idCategory"));
+                            placeCategory.setIdCategory(idCategory);
+                        } catch (NumberFormatException n) {
+                            error = true;
+                        }
+
+                        if (!error) {
+                            try {
+                                placeCategoryDAO.delete(placeCategory);
+                                url += "&msgDel=Un registro ha sido eliminado.";
+                            } catch (Exception referenceException) {
+                                url += "&msgErrorReference=Error: No se puede eliminar, existen errores en la ejecución.";
+                            }
+                        }
+                    }
+                    //////////////////////////////////////////
+                    // ELIMINAR VARIOS REGISTROS
+                    //////////////////////////////////////////
+                    if (btnDelCol != null) {
+                        try {
+                            String[] outerArray = request.getParameterValues("chk");
+                            int cont = 0;
+                            int i = 0;
+                            while (outerArray[i] != null) {
+                                String string = outerArray[i];
+                                String[] parts = string.split("-");
+                                placeCategory.setIdPlace(Integer.parseInt(parts[0]));
+                                placeCategory.setIdCategory(Integer.parseInt(parts[1]));
+                                try {
+                                    placeCategoryDAO.delete(placeCategory);
+                                    cont++;
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
+                                if (cont == 1) {
+                                    url += "&msgDel=Un registro ha sido eliminado.";
+
+                                } else if (cont > 1) {
+                                    url += "&msgDel=" + cont + "registros han sido eliminados.";
+                                }
+                                i++;
+                            }
+                        } catch (Exception parameterException) {
+                        }
                     }
 
-                    request.getRequestDispatcher("/orderCard/orderCard.jsp").forward(request, response);
+                    /* send redirect */
+                    response.sendRedirect("PlaceMainServlet" + url);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
@@ -117,7 +157,6 @@ public class OrderCardMainServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
-            /* cerrar la conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {
