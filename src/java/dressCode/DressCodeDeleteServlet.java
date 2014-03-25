@@ -2,14 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package clientExchangeCheck;
+package dressCode;
 
-import city.City;
-import city.CityDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
-import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,8 +19,8 @@ import javax.sql.DataSource;
  *
  * @author patricio
  */
-@WebServlet(name = "ClientExchangeCheckMainServlet", urlPatterns = {"/ClientExchangeCheckMainServlet"})
-public class ClientExchangeCheckMainServlet extends HttpServlet {
+@WebServlet(name = "DressCodeDeleteServlet", urlPatterns = {"/DressCodeDeleteServlet"})
+public class DressCodeDeleteServlet extends HttpServlet {
 
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
@@ -42,24 +38,23 @@ public class ClientExchangeCheckMainServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-
         request.setCharacterEncoding("UTF-8");
 
         Connection conexion = null;
 
         try {
-            //////////////////////////////////////////
+            ////////////////////////////////////
             // ESTABLECER CONEXION
-            /////////////////////////////////////////
+            ////////////////////////////////////
 
             conexion = ds.getConnection();
 
-            ClientExchangeCheckDAO cecDAO = new ClientExchangeCheckDAO();
-            cecDAO.setConnection(conexion);
+            DressCodeDAO dressCodeDAO = new DressCodeDAO();
+            dressCodeDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -73,48 +68,69 @@ public class ClientExchangeCheckMainServlet extends HttpServlet {
                 request.setAttribute("userJsp", userJsp);
                 request.setAttribute("access", access);
 
-                try {
-                    //////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    //////////////////////////////////////
+                //////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                //////////////////////////////////////
 
-                    String msgDel = request.getParameter("msgDel");
-                    String msgErrorReference = request.getParameter("msgErrorReference");
+                String btnDelRow = request.getParameter("btnDelRow");
+                String btnDelCol = request.getParameter("btnDelCol");
 
-                    /* comprobar eliminacion */
-                    if (msgDel == null || msgDel.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgDel", msgDel);
-                    }
+                DressCode dressCode = new DressCode();
 
-                    /* comprobar error de referencia */
-                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgErrorReference", msgErrorReference);
-                    }
+                /* instanciar url */
+                String url = "?target=main";
 
-                    //////////////////////////////////////////
-                    // OBTENER TOTAL DE REGISTROS
-                    //////////////////////////////////////////
+                ////////////////////////////////
+                // ELIMINAR POR REGISTRO
+                ////////////////////////////////
+                if (btnDelRow != null) {
+                    /* recibir parametros */
+                    String id = request.getParameter("idDressCode");
                     try {
-                        Collection<ClientExchangeCheck> list = cecDAO.getAll();
-                        request.setAttribute("list", list);
+                        dressCode.setIdDressCode(Integer.parseInt(id));
+                        /* eliminar registro */
+                        try {
+                            dressCodeDAO.delete(dressCode.getIdDressCode());
+                            url += "&msgDel=Un registro ha sido eliminado.";
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            url += "&msgErrorDel=Error al eliminar registro, verifique parámetros.";
+                        }
+                    } catch (NumberFormatException n) {
+                    }
+                }
 
-                        if (list.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (list.size() > 1) {
-                            request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
-                        } else if (list.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                ///////////////////////////////////
+                // ELIMINAR VARIOS REGISTROS
+                ///////////////////////////////////
+                if (btnDelCol != null) {
+                    /* recibir parametros*/
+                    String[] outerArray = request.getParameterValues("chk");
+                    try {
+                        int i = 0;
+                        int cont = 0;
+                        while (outerArray[i] != null) {
+                            try {
+                                dressCodeDAO.delete(Integer.parseInt(outerArray[i]));
+                                cont++;
+                                if (cont == 1) {
+                                    url += "&msgDel=Un registro ha sido eliminado.";
+                                } else if (cont > 1) {
+                                    url += "&msgDel=" + cont + " registros han sido eliminados.";
+                                }
+                            } catch (Exception ex) {
+                                url += "&msgErrorReference=Error: No puede eliminar registro con ID: " + outerArray[i] + ", existen referencias asociadas.";
+                            }
+                            i++;
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
-
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("/clientExchangeCheck/clientExchangeCheck.jsp").forward(request, response);
                 }
+
+                /* send redirect */
+                response.sendRedirect("DressCodeMainServlet" + url);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");

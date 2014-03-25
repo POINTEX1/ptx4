@@ -85,7 +85,7 @@
                     <div class="col-lg-12">                        
                         <!-- DATATABLE -->
                         <div class="table-responsive">
-                            <form action="ClientNewsMainServlet" method="POST" name="form">
+                            <form action="ClientNewsDeleteServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
                                         <div class="box">   
@@ -144,7 +144,7 @@
                                                                     <a href="ClientNewsGetServlet?idClientNews=<c:out value="${list.idClientNews}" />&rut=<c:out value="${list.rut}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><font size="1">VER / ACTUALIZAR</font></button></a>                                                               
                                                                 </td>
                                                                 <td class="center">                                                                    
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('ClientNewsMainServlet?btnDelRow=x&idClientNews=<c:out value="${list.idClientNews}" />');
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('ClientNewsDeleteServlet?btnDelRow=x&idClientNews=<c:out value="${list.idClientNews}" />');
                 return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>

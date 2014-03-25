@@ -31,7 +31,7 @@ public class ClientExchangeCheckDAO {
         this.conexion = conexion;
     }
 
-    public Collection<ClientExchangeCheck> getAll()  {
+    public Collection<ClientExchangeCheck> getAll() {
         Statement sentence = null;
         ResultSet result = null;
         Collection<ClientExchangeCheck> list = new ArrayList<ClientExchangeCheck>();
@@ -78,29 +78,29 @@ public class ClientExchangeCheckDAO {
         }
         return list;
     }
-    
-    public ClientExchangeCheck findByRutIdCheck(ClientExchangeCheck reg){
+
+    public ClientExchangeCheck findByRutIdCheck(ClientExchangeCheck reg) {
+
         Statement sentence = null;
+
         ResultSet result = null;
 
-        
-     
-        try{
-         sentence=conexion.createStatement();
-         String sql="select * from exchangeable e, user_card u, client_exchange_check cec where  cec.id_check="+reg.getIdCheck()+" and cec.rut="+reg.getRut()+"  and cec.id_exchangeable=e.id_exchangeable and cec.rut=u.rut ";
-         result= sentence.executeQuery(sql);
-         
-         while(result.next()){
-            /*Instanciar el objeto*/
-            reg= new ClientExchangeCheck();
-            /*obtener resultset*/
-            reg.setIdCheck(result.getInt("id_check"));
-            reg.setRut(result.getInt("rut"));
-            reg.setDv(result.getString("dv"));
-            reg.setIdExchangeable(result.getInt("id_exchangeable"));
-            
-         }
-        }catch (MySQLSyntaxErrorException ex) {
+        try {
+            sentence = conexion.createStatement();
+            String sql = "select * from exchangeable e, user_card u, client_exchange_check cec where  cec.id_check=" + reg.getIdCheck() + " and cec.rut=" + reg.getRut() + "  and cec.id_exchangeable=e.id_exchangeable and cec.rut=u.rut ";
+            result = sentence.executeQuery(sql);
+
+            while (result.next()) {
+                /*Instanciar el objeto*/
+                reg = new ClientExchangeCheck();
+                /*obtener resultset*/
+                reg.setIdCheck(result.getInt("id_check"));
+                reg.setRut(result.getInt("rut"));
+                reg.setDv(result.getString("dv"));
+                reg.setIdExchangeable(result.getInt("id_exchangeable"));
+
+            }
+        } catch (MySQLSyntaxErrorException ex) {
             System.out.println("Error de sintaxis en ClientExchangeCheckDao, findbyRutIdPromo() : " + ex);
             throw new RuntimeException("MySQL Syntax Exception en ClientExchangeCheckDao, findbyRutIdPromo() : " + ex);
         } catch (MySQLIntegrityConstraintViolationException ex) {
@@ -122,8 +122,9 @@ public class ClientExchangeCheckDAO {
         }
         return reg;
     }
-    
+
     public void insert(ClientExchangeCheck reg) {
+
         PreparedStatement sentence = null;
 
         try {
@@ -152,16 +153,21 @@ public class ClientExchangeCheckDAO {
             }
         }
     }
-    
-    public void delete(int id){
-      PreparedStatement sentence = null;
-      
-      try{
-        String sql = "delete from client_exchange_check	 where id_check = ?";
-        sentence = conexion.prepareStatement(sql);
-        sentence.setInt(1, id);
-        sentence.executeUpdate();
-      }catch (MySQLSyntaxErrorException ex) {
+
+    public void delete(int id) {
+
+        PreparedStatement sentence = null;
+
+        try {
+            String sql = "delete from client_exchange_check where id_check = ?";
+            
+            sentence = conexion.prepareStatement(sql);
+            
+            sentence.setInt(1, id);
+            
+            sentence.executeUpdate();
+            
+        } catch (MySQLSyntaxErrorException ex) {
             System.out.println("Error de sintaxis en ClientExchangeCheckDAO, delete() : " + ex);
             throw new RuntimeException("MySQL Syntax Exception en ClientExchangeCheckDAO, delete() : " + ex);
         } catch (MySQLIntegrityConstraintViolationException ex) {
@@ -178,6 +184,4 @@ public class ClientExchangeCheckDAO {
             }
         }
     }
-    
-    
 }

@@ -77,83 +77,43 @@ public class ClientPromoMainServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-                    try {
-                        //////////////////////////////////////
-                        // RECIBIR Y COMPROBAR PARAMETROS
-                        //////////////////////////////////////
 
-                        String btnDelRow = request.getParameter("btnDelRow");
-                        String btnDelCol = request.getParameter("btnDelCol");
 
-                        ClientPromo pglReg = new ClientPromo();
+                    /* obtener mensaje de eliminacion */
+                    String msgDel = request.getParameter("msgDel");
 
-                        //////////////////////////////////////////
-                        // ELIMINAR POR REGISTRO
-                        //////////////////////////////////////////
-                        if (btnDelRow != null) {
-                            /* recibir parametros */
-                            pglReg.setIdPromo(Integer.parseInt(request.getParameter("idPromo")));
-                            pglReg.setRut(Integer.parseInt(request.getParameter("rut")));
+                    /* obtener mensaje de eliminacion */
+                    String msgErrorReference = request.getParameter("msgErrorReference");
 
-                            try {
-                                pglDAO.delete(pglReg);
-                                request.setAttribute("msgDel", "Un Registro ha sido eliminado.");
-                            } catch (Exception ex) {
-                                request.setAttribute("msgErrorReference", "Error: No puede eliminar, existen clientes asociados.");
-                            }
-                        }
-
-                        //////////////////////////////////////////
-                        // ELIMINAR VARIOS REGISTRO
-                        //////////////////////////////////////////
-                        if (btnDelCol != null) {
-                            try {
-                                /* recibir parametros */
-                                String[] outerArray = request.getParameterValues("chk");
-                                int cont = 0;
-                                int i = 0;
-                                while (outerArray[i] != null) {
-                                    String string = outerArray[i];
-                                    String[] parts = string.split("-");
-                                    pglReg.setIdPromo(Integer.parseInt(parts[0]));
-                                    pglReg.setRut(Integer.parseInt(parts[1]));
-
-                                    try {
-                                        pglDAO.delete(pglReg);
-                                        cont++;
-                                        if (cont == 1) {
-                                            request.setAttribute("msgDel", "Un registro ha sido eliminado.");
-                                        } else if (cont > 1) {
-                                            request.setAttribute("msgDel", cont + " registros han sido eliminados.");
-                                        }
-                                    } catch (Exception deleteException) {
-                                        request.setAttribute("msgErrorReference", "Error: No puede eliminar, existen clientes asociados.");
-                                    }
-                                    i++;
-                                }
-                            } catch (Exception parameterException) {
-                            }
-                        }
-
-                        /* obtener promo de clientes */
-                        try {
-                            Collection<ClientPromo> list = pglDAO.getAll();
-                            request.setAttribute("list", list);
-
-                            if (list.size() == 1) {
-                                request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                            } else if (list.size() > 1) {
-                                request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
-                            } else if (list.isEmpty()) {
-                                request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
-                            }
-                        } catch (Exception ex) {
-                        }
-
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("/clientPromo/clientPromo.jsp").forward(request, response);
+                    /* comprobar eliminacion */
+                    if (msgDel == null || msgDel.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgDel", msgDel);
                     }
+
+                    /* comprobar error de eliminacion */
+                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgErrorReference", msgErrorReference);
+                    }
+
+                    /* obtener promo de clientes */
+                    try {
+                        Collection<ClientPromo> list = pglDAO.getAll();
+                        request.setAttribute("list", list);
+
+                        if (list.size() == 1) {
+                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
+                        } else if (list.size() > 1) {
+                            request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
+                        } else if (list.isEmpty()) {
+                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                    request.getRequestDispatcher("/clientPromo/clientPromo.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */

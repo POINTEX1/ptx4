@@ -86,7 +86,7 @@
                     <div class="col-lg-12"> 
                         <!-- DATATABLE -->
                         <div class="table-responsive">
-                            <form action="ClientPromoCheckoutMainServlet" method="POST" name="form">
+                            <form action="ClientPromoCheckoutDeleteServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
                                         <div class="box">  
@@ -132,7 +132,7 @@
                                                                 <td class="center"><c:out value="${list.rut}" />-<c:out value="${list.dv}" /></td>                                                                
                                                                 <td class="center"><c:out value="${list.createTime}" /></td>                                                                
                                                                 <td class="center">                                                                   
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('ClientPromoCheckoutMainServlet?btnDelRow=x&idCheck=<c:out value="${list.idCheck}" />');
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('ClientPromoCheckoutDeleteServlet?btnDelRow=x&idCheck=<c:out value="${list.idCheck}" />');
                 return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>

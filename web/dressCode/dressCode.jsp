@@ -90,7 +90,7 @@
                     <div class="col-lg-12"> 
                         <div class="table-responsive">
                             <!-- DATATABLE -->
-                            <form action="DressCodeMainServlet" method="POST" name="form">
+                            <form action="DressCodeDeleteServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
                                         <div class="box">
@@ -133,7 +133,7 @@
                                                                     <a href="DressCodeGetServlet?idDressCode=<c:out value="${list.idDressCode}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">VER / ACTUALIZAR</font></strong></button></a>                                                                
                                                                 </td>
                                                                 <td class="center">                                                                    
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('DressCodeMainServlet?btnDelRow=x&idDressCode=<c:out value="${list.idDressCode}" />');
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('DressCodeDeleteServlet?btnDelRow=x&idDressCode=<c:out value="${list.idDressCode}" />');
                 return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>

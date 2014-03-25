@@ -77,59 +77,22 @@ public class DressCodeMainServlet extends HttpServlet {
                     // RECIBIR Y COMPROBAR PARAMETROS
                     //////////////////////////////////////
 
-                    String btnDelRow = request.getParameter("btnDelRow");
-                    String btnDelCol = request.getParameter("btnDelCol");
+                    String msgDel = request.getParameter("msgDel");
+                    String msgErrorReference = request.getParameter("msgErrorReference");
 
-                    DressCode dressCode = new DressCode();
-
-                    //////////////////////////////////////////
-                    // ELIMINAR POR REGISTRO
-                    //////////////////////////////////////////
-                    if (btnDelRow != null) {
-                        /* recibir parametros */
-                        String id = request.getParameter("idDressCode");
-                        try {
-                            dressCode.setIdDressCode(Integer.parseInt(id));
-                            /* eliminar registro */
-                            try {
-                                dressCodeDAO.delete(dressCode.getIdDressCode());
-                                request.setAttribute("msgDel", "Un registro ha sido eliminado.");
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                                request.setAttribute("msgErrorDel", "Error al eliminar registro, verifique parámetros.");
-                            }
-                        } catch (NumberFormatException n) {
-                        }
+                    /* comprobar eliminacion */
+                    if (msgDel == null || msgDel.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgDel", msgDel);
                     }
 
-                    //////////////////////////////////////////
-                    // ELIMINAR VARIOS REGISTROS
-                    //////////////////////////////////////////
-                    if (btnDelCol != null) {
-                        /* recibir parametros*/
-                        String[] outerArray = request.getParameterValues("chk");
-                        try {
-                            int i = 0;
-                            int cont = 0;
-                            while (outerArray[i] != null) {
-                                try {
-                                    dressCodeDAO.delete(Integer.parseInt(outerArray[i]));
-                                    cont++;
-                                    if (cont == 1) {
-                                        request.setAttribute("msgDel", "Un registro ha sido eliminado.");
-                                    } else if (cont > 1) {
-                                        request.setAttribute("msgDel", cont + " registros han sido eliminados.");
-                                    }
-                                } catch (Exception ex) {
-                                    request.setAttribute("msgErrorReference", "Error: No puede eliminar registro con ID: " + outerArray[i] + ", existen referencias asociadas.");
-                                }
-                                i++;
-                            }
-                        } catch (Exception ex) {
-                        }
+                    /* comprobar error de eliminacion */
+                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgErrorReference", msgErrorReference);
                     }
 
-                    /* obtener datos de BD */
+                    /* obtener lista de codigos de vestir */
                     try {
                         Collection<DressCode> list = dressCodeDAO.getAll();
                         request.setAttribute("list", list);

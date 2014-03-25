@@ -104,7 +104,7 @@
 
                     </div>
                     <div class="col-lg-4">
-                        <form role="form" action="PromoGiftListAddServlet" method="POST" id="formAdd" name="formAdd"> 
+                        <form role="form" action="ClientPromoAddServlet" method="POST" id="formAdd" name="formAdd"> 
                             <div class="form-group">
                                 <label>Plaza</label>
                                 <select class="form-control" name="idPlace">

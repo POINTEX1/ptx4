@@ -86,7 +86,7 @@
                 <div class="row">                  
                     <div class="col-lg-12">  
                         <div class="table-responsive">
-                            <form action="ClientPromoGiftMainServlet" method="POST" name="form">
+                            <form action="ClientPromoDeleteServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
                                         <div class="box">                                
@@ -125,7 +125,7 @@
                                                                 <td class="center"><c:out value="${list.rut}" />-<c:out value="${list.dv}" /></td>                                                                
                                                                 <td class="center"><c:out value="${list.points}" /></td>                                                                
                                                                 <td class="center">                                                                  
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('ClientPromoGiftMainServlet?btnDelRow=x&idPromo=<c:out value="${list.idPromo}" />&rut=<c:out value="${list.rut}" />');
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('ClientPromoDeleteServlet?btnDelRow=x&idPromo=<c:out value="${list.idPromo}" />&rut=<c:out value="${list.rut}" />');
                 return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>

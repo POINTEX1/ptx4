@@ -2,9 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package clientNews;
+package clientPromo;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.Collection;
 import javax.annotation.Resource;
@@ -15,13 +16,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
+import place.PlaceDAO;
 
 /**
  *
- * @author alexander
+ * @author patricio
  */
-@WebServlet(name = "ClientNewsMainServlet", urlPatterns = {"/ClientNewsMainServlet"})
-public class ClientNewsMainServlet extends HttpServlet {
+@WebServlet(name = "ClientPromoDeleteServlet", urlPatterns = {"/ClientPromoDeleteServlet"})
+public class ClientPromoDeleteServlet extends HttpServlet {
 
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
@@ -43,14 +45,18 @@ public class ClientNewsMainServlet extends HttpServlet {
 
         Connection conexion = null;
 
-        /////////////////////////////////////////
-        // ESTABLECER CONEXION
-        /////////////////////////////////////////
         try {
+            //////////////////////////////////////////
+            // ESTABLECER CONEXION
+            /////////////////////////////////////////
+
             conexion = ds.getConnection();
 
-            ClientNewsDAO cnewsDAO = new ClientNewsDAO();
-            cnewsDAO.setConexion(conexion);
+            ClientPromoDAO pglDAO = new ClientPromoDAO();
+            pglDAO.setConexion(conexion);
+
+            PlaceDAO placeDAO = new PlaceDAO();
+            placeDAO.setConexion(conexion);
 
             //////////////////////////////////////////
             // COMPROBAR SESSION
@@ -59,61 +65,81 @@ public class ClientNewsMainServlet extends HttpServlet {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
 
-                /* obtener nivel de acceso acceso */
+                /* obtener parametros de session */
                 int access = Integer.parseInt((String) session.getAttribute("access"));
-                /* obtener nombre de usuario */
                 String username = (String) session.getAttribute("username");
 
                 /* comprobar permisos de usuario */
                 if (access != 555 && access != 777) {
-                    /* ACCESO PROHIBIDO */
                     request.getRequestDispatcher("/ForbiddenServlet").forward(request, response);
                 } else {
-                    /* ACCESO PERMITIDO */
 
-                    /* asginar nombre de usuario */
+                    /* obtener los valores de session y asignar valores a la jsp */
                     request.setAttribute("userJsp", username);
-                    /* asignar nivel de acceso */
                     request.setAttribute("access", access);
 
-                    ////////////////////////////////////////
-                    //  MOSTRAR VALORES
-                    ////////////////////////////////////////
+                    //////////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETROS
+                    //////////////////////////////////////
 
-                    /* obtener mensajes de PRG */
-                    String msgDel = request.getParameter("msgDel");
-                    String msgErrorReference = request.getParameter("msgErrorReference");
+                    String btnDelRow = request.getParameter("btnDelRow");
+                    String btnDelCol = request.getParameter("btnDelCol");
 
-                    /* comprobar eliminacion */
-                    if (msgDel == null || msgDel.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgDel", msgDel);
-                    }
+                    ClientPromo pglReg = new ClientPromo();
 
-                    /* comprobar error de eliminacion */
-                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgErrorReference", msgErrorReference);
-                    }
+                    /* instanciar url */
+                    String url = "?target=main";
 
-                    /* obtener lista de client noticias */
-                    try {
-                        Collection<ClientNews> cnewsList = cnewsDAO.getAll();
-                        request.setAttribute("list", cnewsList);
+                    //////////////////////////////////////////
+                    // ELIMINAR POR REGISTRO
+                    //////////////////////////////////////////
+                    if (btnDelRow != null) {
+                        /* recibir parametros */
+                        pglReg.setIdPromo(Integer.parseInt(request.getParameter("idPromo")));
+                        pglReg.setRut(Integer.parseInt(request.getParameter("rut")));
 
-                        /* obtener en numero de registros encontrados */
-                        if (cnewsList.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (cnewsList.size() > 1) {
-                            request.setAttribute("msg", cnewsList.size() + " registros encontrados en la base de datos.");
-                        } else if (cnewsList.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                        try {
+                            pglDAO.delete(pglReg);
+                            url += "&msgDel=Un Registro ha sido eliminado.";
+                        } catch (Exception ex) {
+                            url += "&msgErrorReference=Error: No puede eliminar, existen clientes asociados.";
                         }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
                     }
 
-                    request.getRequestDispatcher("/clientNews/clientNews.jsp").forward(request, response);
+                    //////////////////////////////////////////
+                    // ELIMINAR VARIOS REGISTRO
+                    //////////////////////////////////////////
+                    if (btnDelCol != null) {
+                        try {
+                            /* recibir parametros */
+                            String[] outerArray = request.getParameterValues("chk");
+                            int cont = 0;
+                            int i = 0;
+                            while (outerArray[i] != null) {
+                                String string = outerArray[i];
+                                String[] parts = string.split("-");
+                                pglReg.setIdPromo(Integer.parseInt(parts[0]));
+                                pglReg.setRut(Integer.parseInt(parts[1]));
+
+                                try {
+                                    pglDAO.delete(pglReg);
+                                    cont++;
+                                    if (cont == 1) {
+                                        url += "&msgDel=Un registro ha sido eliminado.";
+                                    } else if (cont > 1) {
+                                        url += "&msgDel=" + cont + " registros han sido eliminados.";
+                                    }
+                                } catch (Exception deleteException) {
+                                    url += "&msgErrorReference=Error: No puede eliminar, existen clientes asociados.";
+                                }
+                                i++;
+                            }
+                        } catch (Exception parameterException) {
+                        }
+                    }
+
+                    /* send redirect */
+                    response.sendRedirect("ClientPromoMainServlet" + url);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */

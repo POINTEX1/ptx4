@@ -6,6 +6,7 @@ package clientPromoCheckout;
 
 import clientPromo.ClientPromoDAO;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.Collection;
 import javax.annotation.Resource;
@@ -23,8 +24,8 @@ import promo.PromoDAO;
  *
  * @author patricio
  */
-@WebServlet(name = "ClientPromoCheckoutMainServlet", urlPatterns = {"/ClientPromoCheckoutMainServlet"})
-public class ClientPromoCheckoutMainServlet extends HttpServlet {
+@WebServlet(name = "ClientPromoCheckoutDeleteServlet", urlPatterns = {"/ClientPromoCheckoutDeleteServlet"})
+public class ClientPromoCheckoutDeleteServlet extends HttpServlet {
 
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
@@ -85,45 +86,67 @@ public class ClientPromoCheckoutMainServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
+
                     //////////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETROS
                     //////////////////////////////////////
 
-                    /* obtener mensajes */
-                    String msgDel = request.getParameter("msgDel");
-                    String msgErrorReference = request.getParameter("msgErrorReference");
+                    String btnDelRow = request.getParameter("btnDelRow");
+                    String btnDelCol = request.getParameter("btnDelCol");
 
-                    /* comprobar eliminacion */
-                    if (msgDel == null || msgDel.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgDel", msgDel);
-                    }
+                    ClientPromoCheckout clientPromoCheckout = new ClientPromoCheckout();
 
-                    /* comprobar error de eliminacion */
-                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgErrorReference", msgErrorReference);
-                    }
+                    /* instanciar url */
+                    String url = "?target=main";
 
-                    /* obtener promo de clientes cobradas */
-                    try {
-                        Collection<ClientPromoCheckout> list = clientPromoCheckoutDAO.getAll();
-                        request.setAttribute("list", list);
-
-                        if (list.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (list.size() > 1) {
-                            request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
-                        } else if (list.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                    //////////////////////////////////////////
+                    // ELIMINAR POR REGISTRO
+                    //////////////////////////////////////////
+                    if (btnDelRow != null) {
+                        /* recibir parametros */
+                        try {
+                            clientPromoCheckout.setIdCheck(Integer.parseInt(request.getParameter("idCheck")));
+                            try {
+                                clientPromoCheckoutDAO.delete(clientPromoCheckout.getIdCheck());
+                                url += "&msgDel=Un Registro ha sido eliminado.";
+                            } catch (Exception ex) {
+                                url += "&smgErrorReference=Error: No puede eliminar, existen registros asociados.";
+                            }
+                        } catch (NumberFormatException n) {
+                            n.printStackTrace();
                         }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
                     }
 
-                    /* despachar a la vista */
-                    request.getRequestDispatcher("/clientPromoCheckout/clientPromoCheckout.jsp").forward(request, response);
+                    //////////////////////////////////////////
+                    // ELIMINAR VARIOS REGISTRO
+                    //////////////////////////////////////////
+                    if (btnDelCol != null) {
+                        try {
+                            /* recibir parametros */
+                            String[] outerArray = request.getParameterValues("chk");
+                            int cont = 0;
+                            int i = 0;
+                            while (outerArray[i] != null) {
+                                try {
+                                    clientPromoCheckoutDAO.delete(Integer.parseInt(outerArray[i]));
+                                    cont++;
+                                    if (cont == 1) {
+                                        url += "&msgDel=Un Registro ha sido eliminado.";
+                                    } else if (cont > 1) {
+                                        url += "&msgDel=" + cont + " registros han sido eliminados.";
+                                    }
+                                } catch (Exception deleteException) {
+                                    url += "&smgErrorReference=Error: No puede eliminar, existen registros asociados.";
+                                }
+                                i++;
+                            }
+                        } catch (Exception parameterException) {
+                            parameterException.printStackTrace();
+                        }
+                    }
 
+                    /* send redirect */
+                    response.sendRedirect("ClientPromoCheckoutMainServlet" + url);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
