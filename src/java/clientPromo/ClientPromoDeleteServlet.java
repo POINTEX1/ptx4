@@ -102,7 +102,7 @@ public class ClientPromoDeleteServlet extends HttpServlet {
                             pglDAO.delete(pglReg);
                             url += "&msgDel=Un Registro ha sido eliminado.";
                         } catch (Exception ex) {
-                            url += "&msgErrorReference=Error: No puede eliminar, existen clientes asociados.";
+                            url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro, existen dependencias asociadas.";
                         }
                     }
 
@@ -110,31 +110,30 @@ public class ClientPromoDeleteServlet extends HttpServlet {
                     // ELIMINAR VARIOS REGISTRO
                     //////////////////////////////////////////
                     if (btnDelCol != null) {
+                        /* recibir parametros */
+                        String[] outerArray = request.getParameterValues("chk");
+                        int cont = 0;
+                        int i = 0;
                         try {
-                            /* recibir parametros */
-                            String[] outerArray = request.getParameterValues("chk");
-                            int cont = 0;
-                            int i = 0;
                             while (outerArray[i] != null) {
                                 String string = outerArray[i];
                                 String[] parts = string.split("-");
                                 pglReg.setIdPromo(Integer.parseInt(parts[0]));
                                 pglReg.setRut(Integer.parseInt(parts[1]));
-
                                 try {
                                     pglDAO.delete(pglReg);
                                     cont++;
-                                    if (cont == 1) {
-                                        url += "&msgDel=Un registro ha sido eliminado.";
-                                    } else if (cont > 1) {
-                                        url += "&msgDel=" + cont + " registros han sido eliminados.";
-                                    }
-                                } catch (Exception deleteException) {
-                                    url += "&msgErrorReference=Error: No puede eliminar, existen clientes asociados.";
+                                } catch (Exception ex) {
+                                    url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro, existen dependencias asociadas.";
                                 }
                                 i++;
                             }
-                        } catch (Exception parameterException) {
+                        } catch (Exception ex) {
+                        }
+                        if (cont == 1) {
+                            url += "&msgDel=Un registro ha sido eliminado.";
+                        } else if (cont > 1) {
+                            url += "&msgDel=" + cont + " registros han sido eliminados.";
                         }
                     }
 

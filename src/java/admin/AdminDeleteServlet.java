@@ -99,10 +99,10 @@ public class AdminDeleteServlet extends HttpServlet {
                                 url += "&msgDel=Un Administrador ha sido eliminado.";
                             } catch (Exception ex) {
                                 ex.printStackTrace();
-                                url += "&msgErrorNoDel=Error: No se pudo ejecutar la instrucción.";
+                                url += "&msgErrorConstraint=Error: No se pudo ejecutar la instrucción.";
                             }
                         } else {
-                            url += "&msgErrorNoDel=Error: El administrador no puede eliminarse a sí mismo.";
+                            url += "&msgErrorConstraint=Error: El administrador no puede eliminarse a sí mismo.";
                         }
                     }
 
@@ -111,26 +111,29 @@ public class AdminDeleteServlet extends HttpServlet {
                     //////////////////////////////////////////
 
                     if (btnDelCol != null) {
+                        /* recibir parametros */
+                        String[] outerArray = request.getParameterValues("chk");
+                        int i = 0;
+                        int cont = 0;
                         try {
-                            /* recibir parametros */
-                            String[] outerArray = request.getParameterValues("chk");
-                            int i = 0;
                             while (outerArray[i] != null) {
                                 try {
                                     adminDAO.delete(Integer.parseInt(outerArray[i]));
-                                    i++;
+                                    cont++;
                                 } catch (Exception ex) {
+                                    url += "&msgErrorConstraint=Error: No se pudo ejecutar la instrucción.";
                                     ex.printStackTrace();
                                 }
-                                if (i == 1) {
-                                    url += "&msgDel=Un registro ha sido eliminado.";
-                                } else if (i > 1) {
-                                    url += "&msgDel=" + i + " registros han sido eliminados.";
-                                }
+                                i++;
                             }
                         } catch (Exception ex) {
-                            ex.printStackTrace();
                         }
+                        if (i == 1) {
+                            url += "&msgDel=Un registro ha sido eliminado.";
+                        } else if (i > 1) {
+                            url += "&msgDel=" + cont + " registros han sido eliminados.";
+                        }
+
                     }
 
                     /* send redirect */

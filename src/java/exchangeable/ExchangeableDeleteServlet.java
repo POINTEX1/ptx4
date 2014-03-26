@@ -5,9 +5,7 @@
 package exchangeable;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
-import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -45,18 +43,18 @@ public class ExchangeableDeleteServlet extends HttpServlet {
         Connection conexion = null;
 
         try {
-            //////////////////////////////////////////
+            ////////////////////////////////
             // ESTABLECER CONEXION
-            /////////////////////////////////////////
+            ////////////////////////////////
 
             conexion = ds.getConnection();
 
             ExchangeableDAO exDAO = new ExchangeableDAO();
             exDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -74,9 +72,9 @@ public class ExchangeableDeleteServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-                    ////////////////////////////////////////
+                    /////////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETROS
-                    ////////////////////////////////////////
+                    /////////////////////////////////////
 
                     String btnDelRow = request.getParameter("btnDelRow");
                     String btnDelCol = request.getParameter("btnDelCol");
@@ -84,9 +82,9 @@ public class ExchangeableDeleteServlet extends HttpServlet {
                     /* instanciar url */
                     String url = "?target=main";
 
-                    //////////////////////////////////////////
+                    //////////////////////////////////
                     // ELIMINAR POR REGISTRO
-                    //////////////////////////////////////////
+                    //////////////////////////////////
                     if (btnDelRow != null) {
                         /* recibir parametros */
                         try {
@@ -96,32 +94,37 @@ public class ExchangeableDeleteServlet extends HttpServlet {
                                 exDAO.delete(id);
                                 url += "&msgDel=Un Registro ha sido eliminado.";
                             } catch (Exception referenceException) {
-                                url += "&msgErrorReference=Error: No puede eliminar, existen registros asociadas.";
+                                url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro, existen dependencias asociadas.";
                             }
                         } catch (NumberFormatException n) {
                         }
                     }
 
-                    //////////////////////////////////////////
+                    ///////////////////////////////////
                     // ELIMINAR VARIOS REGISTRO
-                    //////////////////////////////////////////
+                    ///////////////////////////////////
                     if (btnDelCol != null) {
+                        /* obtener parametros */
+                        String[] outerArray = request.getParameterValues("chk");
+                        int cont = 0;
+                        int i = 0;
                         try {
-                            String[] outerArray = request.getParameterValues("chk");
-
-                            int cont = 0;
-                            int i = 0;
                             while (outerArray[i] != null) {
                                 try {
                                     exDAO.delete(Integer.parseInt(outerArray[i]));
                                     cont++;
                                     url += "&msgDel=" + cont + " registros han sido eliminados.";
                                 } catch (Exception ex) {
-                                    url += "&msgErrorReference=Error: No puede eliminar un producto canjeable, existen registros asociados.";
+                                    url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro, existen dependencias asociadas.";
                                 }
                                 i++;
                             }
                         } catch (Exception parameterException) {
+                        }
+                        if (cont == 1) {
+                            url += "&msgDel=Un registro ha sido eliminado.";
+                        } else if (cont > 1) {
+                            url += "&msgDel=" + cont + "registros han sido eliminados";
                         }
                     }
                     /* send redirect */

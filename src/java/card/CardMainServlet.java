@@ -73,14 +73,8 @@ public class CardMainServlet extends HttpServlet {
                     // RECIBIR Y COMPROBAR PARAMETROS
                     //////////////////////////////////////////
 
-                    String btnDelRow = request.getParameter("btnDelRow");
-                    String btnDelCol = request.getParameter("btnDelCol");
-
-                    Card card = new Card();
-
-                    /* obtener mensajes de PRG */
                     String msgDel = request.getParameter("msgDel");
-                    String msgErrorDel = request.getParameter("msgErrorDel");
+                    String msgErrorConstraint = request.getParameter("msgErrorConstraint");
 
                     /* comprobar mensajes de eliminacion */
                     if (msgDel == null || msgDel.trim().equals("")) {
@@ -89,9 +83,9 @@ public class CardMainServlet extends HttpServlet {
                     }
 
                     /* comprobar error de eliminacion */
-                    if (msgErrorDel == null || msgErrorDel.trim().equals("")) {
+                    if (msgErrorConstraint == null || msgErrorConstraint.trim().equals("")) {
                     } else {
-                        request.setAttribute("msgErrorDel", msgErrorDel);
+                        request.setAttribute("msgErrorConstraint", msgErrorConstraint);
                     }
 
                     /* obtener todos los registros */
@@ -108,7 +102,6 @@ public class CardMainServlet extends HttpServlet {
                             request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
                         }
                     } catch (Exception ex) {
-                        ex.printStackTrace();
                     }
 
                 } catch (Exception parameterException) {

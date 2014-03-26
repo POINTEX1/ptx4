@@ -52,6 +52,15 @@
 </c:if>
 <!-- /MENSAJE DE ERROR DE REFERENCIA -->
 
+<!-- MENSAJE DE ERROR DE REFERENCIA -->
+<c:if test="${msgErrorConstraint != null}" >
+    <div class="alert alert-dismissable alert-danger">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong><c:out value="${msgErrorContraint}" /></strong></br>
+    </div>
+</c:if>
+<!-- /MENSAJE DE ERROR DE REFERENCIA -->
+
 <!-- MENSAJE DE ERROR ELIMINACION -->
 <c:if test="${msgErrorNoDel != null}" >
     <div class="alert alert-dismissable alert-danger">

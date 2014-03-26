@@ -73,48 +73,44 @@ public class ClientExchangeCheckMainServlet extends HttpServlet {
                 request.setAttribute("userJsp", userJsp);
                 request.setAttribute("access", access);
 
-                try {
-                    //////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    //////////////////////////////////////
 
-                    String msgDel = request.getParameter("msgDel");
-                    String msgErrorReference = request.getParameter("msgErrorReference");
+                //////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                //////////////////////////////////////
 
-                    /* comprobar eliminacion */
-                    if (msgDel == null || msgDel.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgDel", msgDel);
-                    }
+                String msgDel = request.getParameter("msgDel");
+                String msgErrorConstraint = request.getParameter("msgErrorConstraint");
 
-                    /* comprobar error de referencia */
-                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgErrorReference", msgErrorReference);
-                    }
-
-                    //////////////////////////////////////////
-                    // OBTENER TOTAL DE REGISTROS
-                    //////////////////////////////////////////
-                    try {
-                        Collection<ClientExchangeCheck> list = cecDAO.getAll();
-                        request.setAttribute("list", list);
-
-                        if (list.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (list.size() > 1) {
-                            request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
-                        } else if (list.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("/clientExchangeCheck/clientExchangeCheck.jsp").forward(request, response);
+                /* comprobar eliminacion */
+                if (msgDel == null || msgDel.trim().equals("")) {
+                } else {
+                    request.setAttribute("msgDel", msgDel);
                 }
+
+                /* comprobar error de referencia */
+                if (msgErrorConstraint == null || msgErrorConstraint.trim().equals("")) {
+                } else {
+                    request.setAttribute("msgErrorConstraint", msgErrorConstraint);
+                }
+
+                /* obtener lista de productos canjeados */
+                try {
+                    Collection<ClientExchangeCheck> list = cecDAO.getAll();
+                    request.setAttribute("list", list);
+
+                    if (list.size() == 1) {
+                        request.setAttribute("msg", "1 registro encontrado en la base de datos.");
+                    } else if (list.size() > 1) {
+                        request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
+                    } else if (list.isEmpty()) {
+                        request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                request.getRequestDispatcher("/clientExchangeCheck/clientExchangeCheck.jsp").forward(request, response);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");

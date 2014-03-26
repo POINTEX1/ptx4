@@ -75,7 +75,7 @@ public class CityMainServlet extends HttpServlet {
                     //////////////////////////////////////
 
                     String msgDel = request.getParameter("msgDel");
-                    String msgErrorReference = request.getParameter("msgErrorReference");
+                    String msgErrorConstraint = request.getParameter("msgErrorContraint");
 
                     /* comprobar eliminacion */
                     if (msgDel == null || msgDel.trim().equals("")) {
@@ -84,9 +84,9 @@ public class CityMainServlet extends HttpServlet {
                     }
 
                     /* comprobar error de referencia */
-                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
+                    if (msgErrorConstraint == null || msgErrorConstraint.trim().equals("")) {
                     } else {
-                        request.setAttribute("msgErrorReference", msgErrorReference);
+                        request.setAttribute("msgErrorConstraint", msgErrorConstraint);
                     }
 
                     //////////////////////////////////////////

@@ -77,13 +77,12 @@ public class ClientPromoMainServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
+                    /////////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETROS
+                    /////////////////////////////////////
 
-
-                    /* obtener mensaje de eliminacion */
                     String msgDel = request.getParameter("msgDel");
-
-                    /* obtener mensaje de eliminacion */
-                    String msgErrorReference = request.getParameter("msgErrorReference");
+                    String msgErrorConstraint = request.getParameter("msgErrorConstraint");
 
                     /* comprobar eliminacion */
                     if (msgDel == null || msgDel.trim().equals("")) {
@@ -92,9 +91,9 @@ public class ClientPromoMainServlet extends HttpServlet {
                     }
 
                     /* comprobar error de eliminacion */
-                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
+                    if (msgErrorConstraint == null || msgErrorConstraint.trim().equals("")) {
                     } else {
-                        request.setAttribute("msgErrorReference", msgErrorReference);
+                        request.setAttribute("msgErrorConstraint", msgErrorConstraint);
                     }
 
                     /* obtener promo de clientes */
@@ -110,7 +109,6 @@ public class ClientPromoMainServlet extends HttpServlet {
                             request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
                         }
                     } catch (Exception ex) {
-                        ex.printStackTrace();
                     }
 
                     request.getRequestDispatcher("/clientPromo/clientPromo.jsp").forward(request, response);

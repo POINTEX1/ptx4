@@ -6,9 +6,7 @@ package clientPromoCheckout;
 
 import clientPromo.ClientPromoDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
-import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -66,9 +64,9 @@ public class ClientPromoCheckoutDeleteServlet extends HttpServlet {
             ClientPromoCheckoutDAO clientPromoCheckoutDAO = new ClientPromoCheckoutDAO();
             clientPromoCheckoutDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            /////////////////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            /////////////////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -86,7 +84,6 @@ public class ClientPromoCheckoutDeleteServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-
                     //////////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETROS
                     //////////////////////////////////////
@@ -99,9 +96,9 @@ public class ClientPromoCheckoutDeleteServlet extends HttpServlet {
                     /* instanciar url */
                     String url = "?target=main";
 
-                    //////////////////////////////////////////
+                    //////////////////////////////////////
                     // ELIMINAR POR REGISTRO
-                    //////////////////////////////////////////
+                    //////////////////////////////////////
                     if (btnDelRow != null) {
                         /* recibir parametros */
                         try {
@@ -110,38 +107,36 @@ public class ClientPromoCheckoutDeleteServlet extends HttpServlet {
                                 clientPromoCheckoutDAO.delete(clientPromoCheckout.getIdCheck());
                                 url += "&msgDel=Un Registro ha sido eliminado.";
                             } catch (Exception ex) {
-                                url += "&smgErrorReference=Error: No puede eliminar, existen registros asociados.";
+                                url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro, existen dependencias asociadas.";
                             }
                         } catch (NumberFormatException n) {
-                            n.printStackTrace();
                         }
                     }
 
-                    //////////////////////////////////////////
+                    //////////////////////////////////////
                     // ELIMINAR VARIOS REGISTRO
-                    //////////////////////////////////////////
+                    //////////////////////////////////////
                     if (btnDelCol != null) {
+                        /* recibir parametros */
+                        String[] outerArray = request.getParameterValues("chk");
+                        int cont = 0;
+                        int i = 0;
                         try {
-                            /* recibir parametros */
-                            String[] outerArray = request.getParameterValues("chk");
-                            int cont = 0;
-                            int i = 0;
                             while (outerArray[i] != null) {
                                 try {
                                     clientPromoCheckoutDAO.delete(Integer.parseInt(outerArray[i]));
                                     cont++;
-                                    if (cont == 1) {
-                                        url += "&msgDel=Un Registro ha sido eliminado.";
-                                    } else if (cont > 1) {
-                                        url += "&msgDel=" + cont + " registros han sido eliminados.";
-                                    }
-                                } catch (Exception deleteException) {
-                                    url += "&smgErrorReference=Error: No puede eliminar, existen registros asociados.";
+                                } catch (Exception ex) {
+                                    url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro, existen dependencias asociadas.";
                                 }
                                 i++;
                             }
-                        } catch (Exception parameterException) {
-                            parameterException.printStackTrace();
+                        } catch (Exception ex) {
+                        }
+                        if (cont == 1) {
+                            url += "&msgDel=Un Registro ha sido eliminado.";
+                        } else if (cont > 1) {
+                            url += "&msgDel=" + cont + " registros han sido eliminados.";
                         }
                     }
 

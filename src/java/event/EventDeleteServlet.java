@@ -21,7 +21,7 @@ import javax.sql.DataSource;
  */
 @WebServlet(name = "EventDeleteServlet", urlPatterns = {"/EventDeleteServlet"})
 public class EventDeleteServlet extends HttpServlet {
-    
+
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
 
@@ -37,23 +37,23 @@ public class EventDeleteServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         request.setCharacterEncoding("UTF-8");
-        
+
         Connection conexion = null;
-        
+
         try {
-            /////////////////////////////////////////
+            ///////////////////////////////////
             // ESTABLECER CONEXION
-            /////////////////////////////////////////
+            ///////////////////////////////////
             conexion = ds.getConnection();
-            
+
             EventDAO eventDAO = new EventDAO();
             eventDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ///////////////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ///////////////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -71,13 +71,13 @@ public class EventDeleteServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-                    /////////////////////////////////////////
+                    //////////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETOS
-                    /////////////////////////////////////////
+                    //////////////////////////////////////
 
                     String btnDelRow = request.getParameter("btnDelRow");
                     String btnDelCol = request.getParameter("btnDelCol");
-                    
+
                     Event event = new Event();
 
                     /* instanciar url */
@@ -94,10 +94,9 @@ public class EventDeleteServlet extends HttpServlet {
                                 eventDAO.delete(id);
                                 url += "&msgDel=Un registro ha sido eliminado.";
                             } catch (Exception referenceException) {
-                                url += "&msgErrorReference=Error: No puede eliminar el registro, existen referencias asociadas.";
+                                url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro, existen dependencias asociadas.";
                             }
                         } catch (NumberFormatException n) {
-                            n.printStackTrace();
                         }
                     }
 
@@ -105,27 +104,26 @@ public class EventDeleteServlet extends HttpServlet {
                     // ELIMINAR VARIOS REGISTOS
                     ///////////////////////////////////
                     if (btnDelCol != null) {
+                        /* recibir parametros */
+                        String[] outerArray = request.getParameterValues("chk");
+                        int cont = 0;
+                        int i = 0;
                         try {
-                            /* recibir parametros */
-                            String[] outerArray = request.getParameterValues("chk");
-                            
-                            int cont = 0;
-                            int i = 0;
                             while (outerArray[i] != null) {
                                 try {
                                     eventDAO.delete(Integer.parseInt(outerArray[i]));
                                     cont++;
-                                    if (cont == 1) {
-                                        url += "&msgDel=Un registro ha sido eliminado.";
-                                    } else if (cont > 1) {
-                                        url += "&msgDel=" + cont + "registros han sido eliminados";
-                                    }
                                 } catch (Exception referenceException) {
-                                    url += "&msgErrorReference=Error: No puede eliminar" + event.getTittle() + ", existen registros asociados.";
+                                    url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro " + event.getTittle() + ", existen dependencias asociadas.";
                                 }
                                 i++;
                             }
                         } catch (Exception ex) {
+                        }
+                        if (cont == 1) {
+                            url += "&msgDel=Un registro ha sido eliminado.";
+                        } else if (cont > 1) {
+                            url += "&msgDel=" + cont + "registros han sido eliminados";
                         }
                     }
 

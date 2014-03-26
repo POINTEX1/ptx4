@@ -43,20 +43,18 @@ public class NewsMainServlet extends HttpServlet {
 
         Connection conexion = null;
 
-        /////////////////////////////////////////
+        /////////////////////////////
         // ESTABLECER CONEXION
-        /////////////////////////////////////////
+        /////////////////////////////
         try {
             conexion = ds.getConnection();
 
             NewsDAO newsDAO = new NewsDAO();
             newsDAO.setConexion(conexion);
 
-
-
-            //////////////////////////////////////////
+            //////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            //////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -78,12 +76,12 @@ public class NewsMainServlet extends HttpServlet {
                     /* asignar nivel de acceso */
                     request.setAttribute("access", access);
 
-                    /////////////////////////////////////////
+                    ///////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETOS
-                    /////////////////////////////////////////
+                    ///////////////////////////////////
 
                     String msgDel = request.getParameter("msgDel");
-                    String msgErrorReference = request.getParameter("msgErrorReference");
+                    String msgErrorConstraint = request.getParameter("msgErrorConstraint");
 
                     /* comprobar eliminacion */
                     if (msgDel == null || msgDel.trim().equals("")) {
@@ -92,14 +90,10 @@ public class NewsMainServlet extends HttpServlet {
                     }
 
                     /* comprobar error de eliminacion */
-                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
+                    if (msgErrorConstraint == null || msgErrorConstraint.trim().equals("")) {
                     } else {
-                        request.setAttribute("msgErrorReference", msgErrorReference);
+                        request.setAttribute("msgErrorConstraint", msgErrorConstraint);
                     }
-
-                    ////////////////////////////////////////
-                    // ASIGNAR REGISTROS A LA VISTA
-                    ////////////////////////////////////////
 
                     /* obtener lista de noticias */
                     try {

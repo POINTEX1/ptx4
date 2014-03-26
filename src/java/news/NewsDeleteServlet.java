@@ -5,9 +5,7 @@
 package news;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
-import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -44,9 +42,9 @@ public class NewsDeleteServlet extends HttpServlet {
 
         Connection conexion = null;
 
-        /////////////////////////////////////////
+        /////////////////////////////
         // ESTABLECER CONEXION
-        /////////////////////////////////////////
+        /////////////////////////////
         try {
             conexion = ds.getConnection();
 
@@ -55,9 +53,9 @@ public class NewsDeleteServlet extends HttpServlet {
 
 
 
-            //////////////////////////////////////////
+            ////////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -79,25 +77,19 @@ public class NewsDeleteServlet extends HttpServlet {
                     /* asignar nivel de acceso */
                     request.setAttribute("access", access);
 
-                    /////////////////////////////////////////
+                    //////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETOS
-                    /////////////////////////////////////////
+                    //////////////////////////////////
 
-                    /* obtener parametro para eliminar única fila */
                     String btnDelRow = request.getParameter("btnDelRow");
-
-                    /* obtener parametro para eliminar varias filas */
                     String btnDelCol = request.getParameter("btnDelCol");
-
-                    /* instanciar point */
-                    News news = new News();
 
                     /* instanciar url */
                     String url = "?target=main";
 
-                    //////////////////////////////////////////
+                    ///////////////////////////
                     // ELIMINAR POR REGISTRO
-                    //////////////////////////////////////////
+                    ///////////////////////////
                     if (btnDelRow != null) {
                         /* recibir parametros */
                         try {
@@ -106,38 +98,38 @@ public class NewsDeleteServlet extends HttpServlet {
                                 newsDAO.delete(id);
                                 url += "&msgDel=Un registro ha sido eliminado.";
                             } catch (Exception referenceException) {
-                                url += "&msgErrorReference=Error: No puede eliminar el registro, existen referencias asociadas.";
+                                url += "&msgErrorConstraint=Error: No puede eliminar el registro, existen dependencias asociadas.";
                             }
                         } catch (NumberFormatException n) {
                         }
                     }
 
-                    //////////////////////////////////////////
+                    ////////////////////////////////
                     // ELIMINAR VARIOS REGISTOS
-                    //////////////////////////////////////////
+                    ////////////////////////////////
                     if (btnDelCol != null) {
+
+                        /* recibir parametros del array */
+                        String[] outerArray = request.getParameterValues("chk");
+
+                        int cont = 0; //contador de registros eliminados
+                        int i = 0; //puntero del array
                         try {
-                            /* recibir parametros del array */
-                            String[] outerArray = request.getParameterValues("chk");
-
-                            int cont = 0; //contador de registros eliminados
-                            int i = 0; //puntero del array
-
                             while (outerArray[i] != null) {
                                 try {
                                     newsDAO.delete(Integer.parseInt(outerArray[i]));
                                     cont++;
-                                    if (cont == 1) {
-                                        url += "&msgDel=Un registro ha sido eliminado.";
-                                    } else if (cont > 1) {
-                                        url += "&msgDel=" + cont + " registros han sido eliminados.";
-                                    }
-                                } catch (Exception referenceException) {
-                                    url += "&msgErrorReference=Error: No puede eliminar, existen registros asociados.";
+                                } catch (Exception ex) {
+                                    url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro, existen dependencias asociadas.";
                                 }
                                 i++;
                             }
                         } catch (Exception ex) {
+                        }
+                        if (cont == 1) {
+                            url += "&msgDel=Un registro ha sido eliminado.";
+                        } else if (cont > 1) {
+                            url += "&msgDel=" + cont + " registros han sido eliminados.";
                         }
                     }
 

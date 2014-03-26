@@ -4,10 +4,7 @@
  */
 package dressCode;
 
-import city.City;
-import city.CityDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.Collection;
 import javax.annotation.Resource;
@@ -47,18 +44,18 @@ public class DressCodeMainServlet extends HttpServlet {
         Connection conexion = null;
 
         try {
-            //////////////////////////////////////////
+            ///////////////////////////////////
             // ESTABLECER CONEXION
-            /////////////////////////////////////////
+            ///////////////////////////////////
 
             conexion = ds.getConnection();
 
             DressCodeDAO dressCodeDAO = new DressCodeDAO();
             dressCodeDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -72,45 +69,41 @@ public class DressCodeMainServlet extends HttpServlet {
                 request.setAttribute("userJsp", userJsp);
                 request.setAttribute("access", access);
 
-                try {
-                    //////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    //////////////////////////////////////
+                //////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                //////////////////////////////////////
 
-                    String msgDel = request.getParameter("msgDel");
-                    String msgErrorReference = request.getParameter("msgErrorReference");
+                String msgDel = request.getParameter("msgDel");
+                String msgErrorConstraint = request.getParameter("msgErrorConstraint");
 
-                    /* comprobar eliminacion */
-                    if (msgDel == null || msgDel.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgDel", msgDel);
-                    }
-
-                    /* comprobar error de eliminacion */
-                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgErrorReference", msgErrorReference);
-                    }
-
-                    /* obtener lista de codigos de vestir */
-                    try {
-                        Collection<DressCode> list = dressCodeDAO.getAll();
-                        request.setAttribute("list", list);
-                        if (list.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (list.size() > 1) {
-                            request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
-                        } else if (list.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("/dressCode/dressCode.jsp").forward(request, response);
+                /* comprobar eliminacion */
+                if (msgDel == null || msgDel.trim().equals("")) {
+                } else {
+                    request.setAttribute("msgDel", msgDel);
                 }
+
+                /* comprobar error de eliminacion */
+                if (msgErrorConstraint == null || msgErrorConstraint.trim().equals("")) {
+                } else {
+                    request.setAttribute("msgErrorConstraint", msgErrorConstraint);
+                }
+
+                /* obtener lista de codigos de vestir */
+                try {
+                    Collection<DressCode> list = dressCodeDAO.getAll();
+                    request.setAttribute("list", list);
+                    if (list.size() == 1) {
+                        request.setAttribute("msg", "1 registro encontrado en la base de datos.");
+                    } else if (list.size() > 1) {
+                        request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
+                    } else if (list.isEmpty()) {
+                        request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                    }
+                } catch (Exception ex) {
+                }
+
+                request.getRequestDispatcher("/dressCode/dressCode.jsp").forward(request, response);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");

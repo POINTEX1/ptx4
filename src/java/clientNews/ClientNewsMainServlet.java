@@ -82,7 +82,7 @@ public class ClientNewsMainServlet extends HttpServlet {
 
                     /* obtener mensajes de PRG */
                     String msgDel = request.getParameter("msgDel");
-                    String msgErrorReference = request.getParameter("msgErrorReference");
+                    String msgErrorConstraint = request.getParameter("msgErrorContraint");
 
                     /* comprobar eliminacion */
                     if (msgDel == null || msgDel.trim().equals("")) {
@@ -91,9 +91,9 @@ public class ClientNewsMainServlet extends HttpServlet {
                     }
 
                     /* comprobar error de eliminacion */
-                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
+                    if (msgErrorConstraint == null || msgErrorConstraint.trim().equals("")) {
                     } else {
-                        request.setAttribute("msgErrorReference", msgErrorReference);
+                        request.setAttribute("msgErrorConstraint", msgErrorConstraint);
                     }
 
                     /* obtener lista de client noticias */
@@ -110,7 +110,6 @@ public class ClientNewsMainServlet extends HttpServlet {
                             request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
                         }
                     } catch (Exception ex) {
-                        ex.printStackTrace();
                     }
 
                     request.getRequestDispatcher("/clientNews/clientNews.jsp").forward(request, response);

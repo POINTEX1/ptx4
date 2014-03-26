@@ -5,9 +5,7 @@
 package list;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
-import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -46,9 +44,9 @@ public class ListDeleteServlet extends HttpServlet {
         Connection conexion = null;
 
         try {
-            //////////////////////////////////////////
+            ////////////////////////////////////
             // ESTABLECER CONEXION
-            //////////////////////////////////////////
+            ////////////////////////////////////
             conexion = ds.getConnection();
 
             ListDAO entryDAO = new ListDAO();
@@ -57,9 +55,9 @@ public class ListDeleteServlet extends HttpServlet {
             PlaceDAO placeDAO = new PlaceDAO();
             placeDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////////////////
             // COMPROBAR SESSION
-            //////////////////////////////////////////
+            ////////////////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -76,9 +74,9 @@ public class ListDeleteServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-                    //////////////////////////////////////////
+                    //////////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETROS
-                    //////////////////////////////////////////
+                    //////////////////////////////////////
 
                     String btnDelRow = request.getParameter("btnDelRow");
                     String btnDelCol = request.getParameter("btnDelCol");
@@ -94,9 +92,9 @@ public class ListDeleteServlet extends HttpServlet {
                     /* instanciar url */
                     String url = "?target=main";
 
-                    //////////////////////////////////////////
+                    ////////////////////////////////////
                     // ELIMINAR POR REGISTRO
-                    //////////////////////////////////////////
+                    ////////////////////////////////////
                     if (btnDelRow != null) {
 
                         /* comprobar id event */
@@ -137,7 +135,7 @@ public class ListDeleteServlet extends HttpServlet {
                                 entryDAO.delete(entry);
                                 url += "&msgDel=Un Registro ha sido eliminado.";
                             } catch (Exception deleteException) {
-                                url += "&msgErrorReference=Error: No puede eliminar el registro, posee referencias asociadas.";
+                                url += "&msgErrorConstraint=Error: No puede eliminar el registro, existen dependencias asociadas.";
                             }
                         }
                     }
@@ -145,32 +143,31 @@ public class ListDeleteServlet extends HttpServlet {
                     // ELIMINAR VARIOS REGISTROS
                     //////////////////////////////////////////
                     if (btnDelCol != null) {
+                        /* recibir parametros */
+                        String[] outerArray = request.getParameterValues("chk");
+                        int cont = 0;
+                        int i = 0;
                         try {
-                            /* recibir parametros */
-                            String[] outerArray = request.getParameterValues("chk");
-
-                            int cont = 0;
-                            int i = 0;
                             while (outerArray[i] != null) {
                                 String string = outerArray[i];
                                 String[] parts = string.split("-");
                                 entry.setIdEvent(Integer.parseInt(parts[0]));
                                 entry.setRut(Integer.parseInt(parts[1]));
                                 entry.setBarCode(Integer.parseInt(parts[2]));
-
                                 try {
                                     entryDAO.delete(entry);
                                     cont++;
-                                    if (cont > 1) {
-                                        url += "&msgDel=" + cont + " registos han sido eliminados.";
-                                    } else if (cont == 1) {
-                                        url += "&msgDel=Un registro ha sido eliminado.";
-                                    }
-                                } catch (Exception deleteException) {
+                                } catch (Exception ex) {
+                                    url += "&msgErrorConstraint=Error: No puede eliminar el registro, existen dependencias asociadas.";
                                 }
                                 i++;
                             }
-                        } catch (Exception paramemterException) {
+                        } catch (Exception ex) {
+                        }
+                        if (cont > 1) {
+                            url += "&msgDel=" + cont + " registos han sido eliminados.";
+                        } else if (cont == 1) {
+                            url += "&msgDel=Un registro ha sido eliminado.";
                         }
                     }
 

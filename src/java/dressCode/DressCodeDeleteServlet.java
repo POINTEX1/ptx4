@@ -94,7 +94,7 @@ public class DressCodeDeleteServlet extends HttpServlet {
                             url += "&msgDel=Un registro ha sido eliminado.";
                         } catch (Exception ex) {
                             ex.printStackTrace();
-                            url += "&msgErrorDel=Error al eliminar registro, verifique parámetros.";
+                            url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro, existen dependencias asociadas.";
                         }
                     } catch (NumberFormatException n) {
                     }
@@ -106,25 +106,24 @@ public class DressCodeDeleteServlet extends HttpServlet {
                 if (btnDelCol != null) {
                     /* recibir parametros*/
                     String[] outerArray = request.getParameterValues("chk");
+                    int i = 0;
+                    int cont = 0;
                     try {
-                        int i = 0;
-                        int cont = 0;
                         while (outerArray[i] != null) {
                             try {
                                 dressCodeDAO.delete(Integer.parseInt(outerArray[i]));
                                 cont++;
-                                if (cont == 1) {
-                                    url += "&msgDel=Un registro ha sido eliminado.";
-                                } else if (cont > 1) {
-                                    url += "&msgDel=" + cont + " registros han sido eliminados.";
-                                }
                             } catch (Exception ex) {
-                                url += "&msgErrorReference=Error: No puede eliminar registro con ID: " + outerArray[i] + ", existen referencias asociadas.";
+                                url += "&msgErrorConstraint=Error: No puede eliminar registro con ID: " + outerArray[i] + ", existen referencias asociadas.";
                             }
                             i++;
                         }
                     } catch (Exception ex) {
-                        ex.printStackTrace();
+                    }
+                    if (cont == 1) {
+                        url += "&msgDel=Un registro ha sido eliminado.";
+                    } else if (cont > 1) {
+                        url += "&msgDel=" + cont + " registros han sido eliminados.";
                     }
                 }
 

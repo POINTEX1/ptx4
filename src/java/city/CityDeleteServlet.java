@@ -5,9 +5,7 @@
 package city;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
-import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -87,12 +85,11 @@ public class CityDeleteServlet extends HttpServlet {
                 if (btnDelRow != null) {
                     /* recibir parametros */
                     city.setIdCity(Integer.parseInt(request.getParameter("idCity")));
-
                     try {
                         cityDAO.delete(city.getIdCity());
-                        url += "&msgDel=Una ciudad ha sido eliminada.";
-                    } catch (Exception referenceException) {
-                        url += "&msgErrorReference=Error: La ciudad posee referencias y no puede ser eliminada.";
+                        url += "&msgDel=Un registro ha sido eliminado.";
+                    } catch (Exception ex) {
+                        url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro, existen dependencias asociadas.";
                     }
                 }
 
@@ -102,24 +99,24 @@ public class CityDeleteServlet extends HttpServlet {
                 if (btnDelCol != null) {
                     /* recibir parametros*/
                     String[] outerArray = request.getParameterValues("chk");
+                    int i = 0;
+                    int cont = 0;
                     try {
-                        int i = 0;
-                        int cont = 0;
                         while (outerArray[i] != null) {
                             try {
                                 cityDAO.delete(Integer.parseInt(outerArray[i]));
                                 cont++;
-                                if (cont == 1) {
-                                    url += "&msgDel=Un registro ha sido eliminado.";
-                                } else if (cont > 1) {
-                                    url += "&msgDel=" + cont + " registros han sido eliminados.";
-                                }
                             } catch (Exception ex) {
-                                url += "&msgErrorReference=" + "Error: No puede eliminar la ciudad con ID: " + outerArray[i] + " existen referencias asociadas.";
+                                url += "&msgErrorConstraint=" + "Error: No puede eliminar la ciudad con ID: " + outerArray[i] + " existen referencias asociadas.";
                             }
                             i++;
                         }
                     } catch (Exception ex) {
+                    }
+                    if (cont == 1) {
+                        url += "&msgDel=Un registro ha sido eliminado.";
+                    } else if (cont > 1) {
+                        url += "&msgDel=" + cont + " registros han sido eliminados.";
                     }
                 }
 

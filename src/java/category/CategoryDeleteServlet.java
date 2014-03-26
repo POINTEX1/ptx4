@@ -23,7 +23,7 @@ import javax.sql.DataSource;
  */
 @WebServlet(name = "CategoryDeleteServlet", urlPatterns = {"/CategoryDeleteServlet"})
 public class CategoryDeleteServlet extends HttpServlet {
-    
+
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
 
@@ -39,18 +39,18 @@ public class CategoryDeleteServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         request.setCharacterEncoding("UTF-8");
-        
+
         Connection conexion = null;
-        
+
         try {
             //////////////////////////////////////////
             // ESTABLECER CONEXION
             /////////////////////////////////////////
 
             conexion = ds.getConnection();
-            
+
             CategoryDAO categoryDAO = new CategoryDAO();
             categoryDAO.setConexion(conexion);
 
@@ -76,9 +76,9 @@ public class CategoryDeleteServlet extends HttpServlet {
 
                 String btnDelRow = request.getParameter("btnDelRow");
                 String btnDelCol = request.getParameter("btnDelCol");
-                
+
                 Category category = new Category();
-                
+
                 String url = "?target=main";
 
                 //////////////////////////////////////////
@@ -89,9 +89,9 @@ public class CategoryDeleteServlet extends HttpServlet {
                     category.setIdCategory(Integer.parseInt(request.getParameter("idCategory")));
                     try {
                         categoryDAO.delete(category.getIdCategory());
-                        url += "&msgDel=Una categoria ha sido eliminada.";
-                    } catch (Exception referenceException) {
-                        url += "&msgErrorReference=Error: Existen referencias asociadas y no puede eliminar.";
+                        url += "&msgDel=Un registro ha sido eliminado.";
+                    } catch (Exception ex) {
+                        url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro, existen dependencias asociadas.";
                     }
                 }
 
@@ -101,30 +101,30 @@ public class CategoryDeleteServlet extends HttpServlet {
                 if (btnDelCol != null) {
                     /* recibir parametros*/
                     String[] outerArray = request.getParameterValues("chk");
+                    int i = 0;
+                    int cont = 0;
                     try {
-                        int i = 0;
-                        int cont = 0;
                         while (outerArray[i] != null) {
                             try {
                                 categoryDAO.delete(Integer.parseInt(outerArray[i]));
                                 cont++;
-                                if (cont == 1) {
-                                    url += "&msgDel=Un registro ha sido eliminado.";
-                                } else if (cont > 1) {
-                                    url += "&msgDel=" + cont + " registros han sido eliminados.";
-                                }
                             } catch (Exception ex) {
-                                url += "&msgErrorReference=Error: No puede eliminar la ciudad con ID: " + outerArray[i] + ", existen referencias asociadas.";
+                                url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro" + outerArray[i] + ", existen dependencias asociadas.";
                             }
                             i++;
                         }
                     } catch (Exception ex) {
                     }
+                    if (cont == 1) {
+                        url += "&msgDel=Un registro ha sido eliminado.";
+                    } else if (cont > 1) {
+                        url += "&msgDel=" + cont + " registros han sido eliminados.";
+                    }
                 }
 
                 /* send redirect */
                 response.sendRedirect("CategoryMainServlet" + url);
-                
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");

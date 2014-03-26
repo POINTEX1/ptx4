@@ -75,40 +75,36 @@ public class EntryMainServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-                    try {
-                        //////////////////////////////////////////
-                        // RECIBIR Y COMPROBAR PARAMETROS
-                        //////////////////////////////////////////
+                    //////////////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETROS
+                    //////////////////////////////////////////
 
-                        String msgDel = request.getParameter("msgDel");
-                        String msgErrorReference = request.getParameter("msgErrorReference");
+                    String msgDel = request.getParameter("msgDel");
+                    String msgErrorConstraint = request.getParameter("msgErrorConstraint");
 
-                        /* comprobar eliminacion */
-                        if (msgDel == null || msgDel.trim().equals("")) {
-                        } else {
-                            request.setAttribute("msgDel", msgDel);
-                        }
-
-                        /* comprobar error de eliminacion */
-                        if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
-                        } else {
-                            request.setAttribute("msgErrorReference", msgErrorReference);
-                        }
-
-                        /* obtener collection de listas */
-                        try {
-                            Collection<List> listEntry = entryDAO.getAll();
-                            request.setAttribute("msg", listEntry.size() + " registros encontrados en la base de datos.");
-
-                            request.setAttribute("list", listEntry);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("list/list.jsp").forward(request, response);
+                    /* comprobar eliminacion */
+                    if (msgDel == null || msgDel.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgDel", msgDel);
                     }
+
+                    /* comprobar error de eliminacion */
+                    if (msgErrorConstraint == null || msgErrorConstraint.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgErrorConstraint", msgErrorConstraint);
+                    }
+
+                    /* obtener collection de listas */
+                    try {
+                        Collection<List> listEntry = entryDAO.getAll();
+                        request.setAttribute("msg", listEntry.size() + " registros encontrados en la base de datos.");
+
+                        request.setAttribute("list", listEntry);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                    request.getRequestDispatcher("list/list.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */

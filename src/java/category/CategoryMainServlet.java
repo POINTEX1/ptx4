@@ -65,48 +65,42 @@ public class CategoryMainServlet extends HttpServlet {
                 request.setAttribute("userJsp", userJsp);
                 request.setAttribute("access", access);
 
-                try {
-                    //////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    //////////////////////////////////////   
+                //////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                //////////////////////////////////////   
 
-                    String msgDel = request.getParameter("msgDel");
-                    String msgErrorReference = request.getParameter("msgErrorReference");
+                String msgDel = request.getParameter("msgDel");
+                String msgErrorConstraint = request.getParameter("msgErrorConstraint");
 
-                    /* comprobar eliminacion */
-                    if (msgDel == null || msgDel.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgDel", msgDel);
-                    }
-
-                    /* comprobar error de referencia */
-                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgErrorReference", msgErrorReference);
-                    }
-
-                    //////////////////////////////////////////
-                    // OBTENER TOTAL DE REGISTROS
-                    //////////////////////////////////////////
-                    try {
-                        Collection<Category> list = categoryDAO.getAll();
-                        request.setAttribute("list", list);
-
-                        if (list.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (list.size() > 1) {
-                            request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
-                        } else if (list.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("category/category.jsp").forward(request, response);
+                /* comprobar eliminacion */
+                if (msgDel == null || msgDel.trim().equals("")) {
+                } else {
+                    request.setAttribute("msgDel", msgDel);
                 }
+
+                /* comprobar error de referencia */
+                if (msgErrorConstraint == null || msgErrorConstraint.trim().equals("")) {
+                } else {
+                    request.setAttribute("msgErrorConstraint", msgErrorConstraint);
+                }
+
+                /* obtener lista de category */
+                try {
+                    Collection<Category> list = categoryDAO.getAll();
+                    request.setAttribute("list", list);
+
+                    if (list.size() == 1) {
+                        request.setAttribute("msg", "1 registro encontrado en la base de datos.");
+                    } else if (list.size() > 1) {
+                        request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
+                    } else if (list.isEmpty()) {
+                        request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                    }
+                } catch (Exception ex) {
+                }
+
+                request.getRequestDispatcher("category/category.jsp").forward(request, response);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");
@@ -115,6 +109,7 @@ public class CategoryMainServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

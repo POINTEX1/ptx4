@@ -26,7 +26,7 @@ import userCard.UserCardDAO;
  */
 @WebServlet(name = "ClientExchangeCheckDeleteServlet", urlPatterns = {"/ClientExchangeCheckDeleteServlet"})
 public class ClientExchangeCheckDeleteServlet extends HttpServlet {
-    
+
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
 
@@ -42,27 +42,27 @@ public class ClientExchangeCheckDeleteServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         request.setCharacterEncoding("UTF-8");
-        
+
         Connection conexion = null;
-        
+
         try {
             /////////////////////////////////////////
             // ESTABLECER CONEXION
             /////////////////////////////////////////
 
-            conexion = ds.getConnection();            
-            
+            conexion = ds.getConnection();
+
             ClientExchangeCheckDAO cecDAO = new ClientExchangeCheckDAO();
             cecDAO.setConnection(conexion);
-            
+
             ExchangeableDAO eDAO = new ExchangeableDAO();
             eDAO.setConexion(conexion);
-            
+
             UserCardDAO ucDAO = new UserCardDAO();
             ucDAO.setConexion(conexion);
-            
+
             PlaceDAO pDAO = new PlaceDAO();
             pDAO.setConexion(conexion);
 
@@ -92,9 +92,9 @@ public class ClientExchangeCheckDeleteServlet extends HttpServlet {
 
                     String btnDelRow = request.getParameter("btnDelRow");
                     String btnDelCol = request.getParameter("btnDelCol");
-                    
+
                     ClientExchangeCheck clientCheck = new ClientExchangeCheck();
-                    
+
                     String url = "?target=main";
 
                     //////////////////////////////////////////
@@ -103,12 +103,12 @@ public class ClientExchangeCheckDeleteServlet extends HttpServlet {
                     if (btnDelRow != null) {
                         /* recibir parametros */
                         clientCheck.setIdCheck(Integer.parseInt(request.getParameter("idCheck")));
-                        
+
                         try {
                             cecDAO.delete(clientCheck.getIdCheck());
                             url += "&msgDel=Un Registro ha sido eliminado.";
                         } catch (Exception ex) {
-                            url += "&msgErrorReference=Error: No puede eliminar, existen clientes asociados.";
+                            url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro, existen dependencias asociadas.";
                         }
                     }
 
@@ -116,26 +116,26 @@ public class ClientExchangeCheckDeleteServlet extends HttpServlet {
                     // ELIMINAR VARIOS REGISTROS
                     //////////////////////////////////////////
                     if (btnDelCol != null) {
+                        /* recibir parametros */
+                        String[] outerArray = request.getParameterValues("chk");
+                        int cont = 0;
+                        int i = 0;
                         try {
-                            /* recibir parametros */
-                            String[] outerArray = request.getParameterValues("chk");
-                            int cont = 0;
-                            int i = 0;
                             while (outerArray[i] != null) {
                                 try {
                                     cecDAO.delete(Integer.parseInt(outerArray[i]));
                                     cont++;
-                                    if (cont == 1) {
-                                        url += "&msgDel=Un registro ha sido eliminado.";
-                                    } else if (cont > 1) {
-                                        url += "&msgDel=" + cont + " registros han sido eliminados.";
-                                    }
                                 } catch (Exception deleteException) {
-                                    url += "&msgErrorReference=Error: No puede eliminar, existen clientes asociados.";
+                                    url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro, existen dependencias asociadas.";
                                 }
                                 i++;
                             }
                         } catch (Exception parameterException) {
+                        }
+                        if (cont == 1) {
+                            url += "&msgDel=Un registro ha sido eliminado.";
+                        } else if (cont > 1) {
+                            url += "&msgDel=" + cont + " registros han sido eliminados.";
                         }
                     }
 

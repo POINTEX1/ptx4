@@ -74,13 +74,12 @@ public class AdminMainServlet extends HttpServlet {
                     request.setAttribute("access", access);
                     request.setAttribute("idUser", idUser);
 
-                    /* obtener mensajes de PRG */
-                    String msgDel = request.getParameter("msgDel");
-                    String msgErrorNoDel = request.getParameter("msgErrorNoDel");
+                    //////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETOS
+                    //////////////////////////////////
 
-                    ///////////////////////////////
-                    // COMPROBAR ERRORES
-                    ///////////////////////////////
+                    String msgDel = request.getParameter("msgDel");
+                    String msgErrorConstraint = request.getParameter("msgErrorConstraint");
 
                     /* comprobar eliminacion */
                     if (msgDel == null || msgDel.trim().equals("")) {
@@ -89,9 +88,9 @@ public class AdminMainServlet extends HttpServlet {
                     }
 
                     /* comprobar error eliminacion */
-                    if (msgErrorNoDel == null || msgErrorNoDel.trim().equals("")) {
+                    if (msgErrorConstraint == null || msgErrorConstraint.trim().equals("")) {
                     } else {
-                        request.setAttribute("msgErrorNoDel", msgErrorNoDel);
+                        request.setAttribute("msgErrorConstraint", msgErrorConstraint);
                     }
 
                     /* obtener lista de registros */
@@ -107,7 +106,6 @@ public class AdminMainServlet extends HttpServlet {
                             request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
                         }
                     } catch (Exception ex) {
-                        request.setAttribute("msgError", "Existen errores, verifique instrucciones.");
                     }
 
                     request.getRequestDispatcher("/admin/admin.jsp").forward(request, response);

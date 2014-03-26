@@ -43,18 +43,18 @@ public class DressCodeUpdateServlet extends HttpServlet {
         Connection conexion = null;
 
         try {
-            /////////////////////////////////////////
+            ///////////////////////////////////
             // ESTABLECER CONEXION
-            //////////////////////////////////////// 
+            ///////////////////////////////////
 
             conexion = ds.getConnection();
 
             DressCodeDAO dressCodeDAO = new DressCodeDAO();
             dressCodeDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ///////////////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ///////////////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -68,9 +68,9 @@ public class DressCodeUpdateServlet extends HttpServlet {
                 request.setAttribute("userJsp", userJsp);
                 request.setAttribute("access", access);
 
-                /////////////////////////////////////////
+                //////////////////////////////////////
                 // RECIBIR Y COMPROBAR PARAMETROS
-                //////////////////////////////////////// 
+                //////////////////////////////////////
 
                 String sidDressCode = request.getParameter("idDressCode");
                 String nameDressCode = request.getParameter("nameDressCode");

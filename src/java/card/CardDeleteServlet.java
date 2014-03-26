@@ -79,8 +79,6 @@ public class CardDeleteServlet extends HttpServlet {
                 /* instanciar url */
                 String url = "?target=main";
 
-                Card card = new Card();
-
                 //////////////////////////////////////////
                 // ELIMINAR POR REGISTRO
                 //////////////////////////////////////////
@@ -92,7 +90,7 @@ public class CardDeleteServlet extends HttpServlet {
                             cardDAO.delete(barcode);
                             url += "&msgDel=Un registro ha sido eliminado.";
                         } catch (Exception deleteException) {
-                            url += "&msgErrorDel=Error: No se puede eliminar un registro, existen referencias asociadas.";
+                            url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro, existen dependencias asociadas.";
                         }
                     } catch (Exception parameterException) {
                         parameterException.printStackTrace();
@@ -102,21 +100,25 @@ public class CardDeleteServlet extends HttpServlet {
                 // ELIMINAR VARIOS REGISTROS
                 //////////////////////////////////////////
                 if (btnDelCol != null) {
+                    String[] outerArray = request.getParameterValues("chk");
+                    int cont = 0;
+                    int i = 0;
                     try {
-                        String[] outerArray = request.getParameterValues("chk");
-                        int cont = 0;
-                        int i = 0;
                         while (outerArray[i] != null) {
                             try {
                                 cardDAO.delete(Integer.parseInt(outerArray[i]));
                                 cont++;
-                                url += "&msgDel=" + cont + " registro(s) han sido eliminado(s).";
                             } catch (Exception deleteException) {
-                                url += "&msgErrorDel=Error: No se puede eliminar un registro, existen referencias asociadas.";
+                                url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro, existen dependencias asociadas.";
                             }
                             i++;
                         }
-                    } catch (Exception parameterException) {
+                    } catch (Exception ex) {
+                    }
+                    if (cont == 1) {
+                        url += "&msgDel=Un registro ha sido eliminado.";
+                    } else if (cont > 1) {
+                        url += "&msgDel=" + cont + " registros han sido eliminados.";
                     }
                 }
 
