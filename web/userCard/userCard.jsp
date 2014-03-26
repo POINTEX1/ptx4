@@ -85,7 +85,7 @@
                     <div class="col-lg-12">                        
                         <div class="table-responsive">
 
-                            <form action="ClientMainServlet" method="POST" name="form">
+                            <form action="UserCardDeleteServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
                                         <div class="box">                                
@@ -125,7 +125,7 @@
                                                                     <a href="UserCardGetServlet?rut=<c:out value="${list.rut}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><font size="1">VER / ACTUALIZAR</font></button></a>                                                               
                                                                 </td>
                                                                 <td class="center">                                                                    
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('ClientMainServlet?btnDelRow=x&rut=<c:out value="${list.rut}" />');
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('UserCardDeleteServlet?btnDelRow=x&rut=<c:out value="${list.rut}" />');
                 return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>

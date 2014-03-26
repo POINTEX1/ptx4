@@ -68,56 +68,27 @@ public class ClientMainServlet extends HttpServlet {
                 request.setAttribute("userJsp", user);
                 request.setAttribute("access", access);
 
+                ////////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                ////////////////////////////////////////
+
+                String msgDel = request.getParameter("msgDel");
+                String msgErrorReference = request.getParameter("msgErrorReference");
+
+                /* comprobar eliminacion */
+                if (msgDel == null || msgDel.trim().equals("")) {
+                } else {
+                    request.setAttribute("msgDel", msgDel);
+                }
+
+                /* comprobar error de eliminacion */
+                if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
+                } else {
+                    request.setAttribute("msgErrorReference", msgErrorReference);
+                }
+
+                /* obtener el total de registros */
                 try {
-                    ////////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    ////////////////////////////////////////
-
-                    String btnDelRow = request.getParameter("btnDelRow");
-                    String btnDelCol = request.getParameter("btnDelCol");
-
-                    UserCard usercard = new UserCard();
-
-                    ////////////////////////////////////////
-                    // ELIMINAR POR REGISTRO
-                    ////////////////////////////////////////
-                    if (btnDelRow != null) {
-                        /* recibir parametros */
-                        int rut = Integer.parseInt(request.getParameter("rut"));
-                        try {
-                            usercardDAO.delete(rut);
-                            request.setAttribute("msgDel", "Un registro ha sido eliminado.");
-                        } catch (Exception referenceException) {
-                            request.setAttribute("ErrorReference", "Error: No se puede eliminar usuarios con tarjetas asociadas.");
-                        }
-                    }
-
-                    ////////////////////////////////////////
-                    // ELIMINAR VARIOS REGISTOS
-                    ////////////////////////////////////////
-                    if (btnDelCol != null) {
-                        try {
-                            /* recibir parametros */
-                            String[] outerArray = request.getParameterValues("chk");
-                            int cont = 0;
-                            int i = 0;
-                            while (outerArray[i] != null) {
-                                try {
-                                    usercardDAO.delete(Integer.parseInt(outerArray[i]));
-                                    cont++;
-                                    request.setAttribute("msgDel", cont + " registros(s) han sido eliminado(s)");
-                                } catch (Exception referenceException) {
-                                    outerArray = null;
-                                    request.setAttribute("ErrorReference", "Error: No puede eliminar un usuario, existen dependencias.");
-                                }
-                                i++;
-                            }
-
-                        } catch (Exception parameterException) {
-                        }
-                    }
-
-                    /* obtener el total de registros */
                     Collection<UserCard> listClient = usercardDAO.getAll();
                     request.setAttribute("list", listClient);
 
@@ -128,11 +99,11 @@ public class ClientMainServlet extends HttpServlet {
                     } else if (listClient.isEmpty()) {
                         request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
                     }
-
-                } catch (Exception getAllException) {
-                } finally {
-                    request.getRequestDispatcher("/userCard/userCard.jsp").forward(request, response);
+                } catch (Exception ex) {
                 }
+
+                request.getRequestDispatcher("/userCard/userCard.jsp").forward(request, response);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");
@@ -141,6 +112,7 @@ public class ClientMainServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

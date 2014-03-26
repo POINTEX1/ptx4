@@ -77,71 +77,43 @@ public class PromoMainServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-                    try {
-                        ////////////////////////////////////////
-                        // RECIBIR Y COMPROBAR PARAMETROS
-                        ////////////////////////////////////////
+                    ////////////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETROS
+                    ////////////////////////////////////////
 
-                        String btnDelRow = request.getParameter("btnDelRow");
-                        String btnDelCol = request.getParameter("btnDelCol");
+                    String msgDel = request.getParameter("msgDel");
+                    String msgErrorReference = request.getParameter("msgErrorReference");
 
-                        //////////////////////////////////////////
-                        // ELIMINAR POR REGISTRO
-                        //////////////////////////////////////////
-                        if (btnDelRow != null) {
-                            /* recibir parametros*/
-                            int id = Integer.parseInt(request.getParameter("idPromo"));
-                            try {
-                                promoDAO.delete(id);
-                                request.setAttribute("msgDel", "Un Registro ha sido eliminado");
-                            } catch (Exception referenceException) {
-                                request.setAttribute("msgErrorReference", "Error: No puede eliminar, existen clientes asociados.");
-                            }
-                        }
-
-                        //////////////////////////////////////////
-                        // ELIMINAR VARIOS REGISTRO
-                        //////////////////////////////////////////
-                        if (btnDelCol != null) {
-                            try {
-                                String[] outerArray = request.getParameterValues("chk");
-                                int cont = 0;
-                                int i = 0;
-                                while (outerArray[i] != null) {
-                                    try {
-                                        promoDAO.delete(Integer.parseInt(outerArray[i]));
-                                        cont++;
-                                        request.setAttribute("msgDel", cont + " registro(s) han sido eliminado(s).");
-                                    } catch (Exception ex) {
-                                        request.setAttribute("msgErrorReference", "Error: No puede eliminar una promo o regalos, existen clientes asociados.");
-                                    }
-                                    i++;
-                                }
-                            } catch (Exception parameterException) {
-                            }
-                        }
-
-                        /* obtener todas las promo-regalo */
-                        try {
-                            Collection<Promo> list = promoDAO.getAll();
-                            request.setAttribute("list", list);
-
-                            /* obtener en numero de registros encontrados */
-                            if (list.size() == 1) {
-                                request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                            } else if (list.size() > 1) {
-                                request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
-                            } else if (list.isEmpty()) {
-                                request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
-                            }
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("/promo/promo.jsp").forward(request, response);
+                    /* comprobar eliminacion */
+                    if (msgDel == null || msgDel.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgDel", msgDel);
                     }
+
+                    /* comprobar error de eliminacion */
+                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgErrorReference", msgErrorReference);
+                    }
+
+                    /* obtener lista de promociones */
+                    try {
+                        Collection<Promo> list = promoDAO.getAll();
+                        request.setAttribute("list", list);
+
+                        /* obtener en numero de registros encontrados */
+                        if (list.size() == 1) {
+                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
+                        } else if (list.size() > 1) {
+                            request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
+                        } else if (list.isEmpty()) {
+                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                    request.getRequestDispatcher("/promo/promo.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
@@ -151,6 +123,7 @@ public class PromoMainServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

@@ -2,11 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package placeNews;
+package userCard;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,10 +17,10 @@ import javax.sql.DataSource;
 
 /**
  *
- * @author alexander
+ * @author patricio
  */
-@WebServlet(name = "PlaceNewsMainServlet", urlPatterns = {"/PlaceNewsMainServlet"})
-public class PlaceNewsMainServlet extends HttpServlet {
+@WebServlet(name = "UserCardDeleteServlet", urlPatterns = {"/UserCardDeleteServlet"})
+public class UserCardDeleteServlet extends HttpServlet {
 
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
@@ -47,10 +46,11 @@ public class PlaceNewsMainServlet extends HttpServlet {
             /////////////////////////////////////////
             // ESTABLECER CONEXION
             /////////////////////////////////////////
+
             conexion = ds.getConnection();
 
-            PlaceNewsDAO pnewsDAO = new PlaceNewsDAO();
-            pnewsDAO.setConexion(conexion);
+            UserCardDAO usercardDAO = new UserCardDAO();
+            usercardDAO.setConexion(conexion);
 
             //////////////////////////////////////////
             // COMPROBAR SESSION
@@ -61,55 +61,67 @@ public class PlaceNewsMainServlet extends HttpServlet {
 
                 /* obtener parametros de session */
                 int access = Integer.parseInt((String) session.getAttribute("access"));
-                String username = (String) session.getAttribute("username");
+                String user = (String) session.getAttribute("username");
 
-                /* comprobar permisos de usuario */
-                if (access != 555 && access != 777) {
-                    request.getRequestDispatcher("/ForbiddenServlet").forward(request, response);
-                } else {
+                /* obtener los valores de session y asignar valores a la jsp */
+                request.setAttribute("userJsp", user);
+                request.setAttribute("access", access);
 
-                    /* obtener los valores de session y asignar valores a la jsp */
-                    request.setAttribute("userJsp", username);
-                    request.setAttribute("access", access);
+                ////////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                ////////////////////////////////////////
 
+                String btnDelRow = request.getParameter("btnDelRow");
+                String btnDelCol = request.getParameter("btnDelCol");
+
+                /* instanciar url */
+                String url = "?target=main";
+
+                ////////////////////////////////////////
+                // ELIMINAR POR REGISTRO
+                ////////////////////////////////////////
+                if (btnDelRow != null) {
+                    /* recibir parametros */
+                    int rut = Integer.parseInt(request.getParameter("rut"));
                     try {
-                        /////////////////////////////////////////
-                        // RECIBIR Y COMPROBAR PARAMETOS
-                        /////////////////////////////////////////                     
-
-                        String msgDel = request.getParameter("msgDel");
-                        String msgErrorReference = request.getParameter("msgErrorReference");
-
-                        /* comprobar eliminacion */
-                        if (msgDel == null || msgDel.trim().equals("")) {
-                        } else {
-                            request.setAttribute("msgDel", msgDel);
-                        }
-
-                        /* comprobar error de eliminacion */
-                        if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
-                        } else {
-                            request.setAttribute("msgErrorReference", msgErrorReference);
-                        }
-
-                        /* obtener lista de placeNews */
-                        try {
-                            Collection<PlaceNews> listPlaceNews = pnewsDAO.getAll();
-                            request.setAttribute("list", listPlaceNews);
-
-                            if (listPlaceNews.size() > 1) {
-                                request.setAttribute("msg", listPlaceNews.size() + " registros encontrados en la base de datos.");
-                            } else if (listPlaceNews.isEmpty()) {
-                                request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
-                            }
-                        } catch (Exception ex) {
-                        }
-
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("/placeNews/placeNews.jsp").forward(request, response);
+                        usercardDAO.delete(rut);
+                        url += "&msgDel=Un registro ha sido eliminado.";
+                    } catch (Exception referenceException) {
+                        url += "&msgErrorReference=Error: No se puede eliminar usuarios con tarjetas asociadas.";
                     }
                 }
+
+                ////////////////////////////////////////
+                // ELIMINAR VARIOS REGISTOS
+                ////////////////////////////////////////
+                if (btnDelCol != null) {
+
+                    /* recibir parametros */
+                    String[] outerArray = request.getParameterValues("chk");
+                    int cont = 0;
+                    int i = 0;
+                    try {
+                        while (outerArray[i] != null) {
+                            try {
+                                usercardDAO.delete(Integer.parseInt(outerArray[i]));
+                                cont++;
+                            } catch (Exception referenceException) {
+                                url += "&msgErrorReference=Error de restricción: No puede eliminar un registro, existen dependencias.";
+                            }
+                            i++;
+                        }
+                    } catch (Exception parameterException) {
+                    }
+                    if (cont == 1) {
+                        url += "&msgDel=Un registro ha sido eliminado.";
+                    } else if (cont > 1) {
+                        url += "&msgDel=" + cont + " registros han sido eliminados.";
+                    }
+                }
+
+                /* send redirect */
+                response.sendRedirect("ClientMainServlet" + url);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");

@@ -1,6 +1,11 @@
-package point;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package promo;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.Collection;
 import javax.annotation.Resource;
@@ -11,13 +16,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
+import place.PlaceDAO;
 
 /**
  *
- * @author patricio alberto
+ * @author patricio
  */
-@WebServlet(name = "PointMainServlet", urlPatterns = {"/PointMainServlet"})
-public class PointMainServlet extends HttpServlet {
+@WebServlet(name = "PromoDeleteServlet", urlPatterns = {"/PromoDeleteServlet"})
+public class PromoDeleteServlet extends HttpServlet {
 
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
@@ -39,73 +45,89 @@ public class PointMainServlet extends HttpServlet {
 
         Connection conexion = null;
 
-        /////////////////////////////////////////
-        // ESTABLECER CONEXION
-        /////////////////////////////////////////
         try {
+            //////////////////////////////////////////
+            // ESTABLECER CONEXION
+            /////////////////////////////////////////
+
             conexion = ds.getConnection();
 
-            PointDAO pointDAO = new PointDAO();
-            pointDAO.setConexion(conexion);
+            PromoDAO promoDAO = new PromoDAO();
+            promoDAO.setConexion(conexion);
 
-            /////////////////////////////////
+            PlaceDAO placeDAO = new PlaceDAO();
+            placeDAO.setConexion(conexion);
+
+            //////////////////////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////
+            /////////////////////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
 
-                /* obtener nivel de acceso acceso */
+                /* obtener parametros de session */
                 int access = Integer.parseInt((String) session.getAttribute("access"));
-                /* obtener nombre de usuario */
                 String username = (String) session.getAttribute("username");
 
                 /* comprobar permisos de usuario */
                 if (access != 555 && access != 777) {
-                    /* ACCESO PROHIBIDO */
                     request.getRequestDispatcher("/ForbiddenServlet").forward(request, response);
                 } else {
-                    /* ACCESO PERMITIDO */
 
-                    /* asginar nombre de usuario */
+                    /* obtener los valores de session y asignar valores a la jsp */
                     request.setAttribute("userJsp", username);
-                    /* asignar nivel de acceso */
                     request.setAttribute("access", access);
 
-                    //////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETOS
-                    //////////////////////////////////////
 
-                    String msgDel = request.getParameter("msgDel");
-                    String msgErrorReference = request.getParameter("msgErrorReference");
+                    ////////////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETROS
+                    ////////////////////////////////////////
 
-                    /* comprobar eliminacion */
-                    if (msgDel == null || msgDel.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgDel", msgDel);
-                    }
+                    String btnDelRow = request.getParameter("btnDelRow");
+                    String btnDelCol = request.getParameter("btnDelCol");
 
-                    /* comprobar error de eliminacion */
-                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgErrorReference", msgErrorReference);
-                    }
+                    /* instanciar url */
+                    String url = "?target=main";
 
-                    /* obtener lista de points */
-                    try {
-                        Collection<Point> pointList = pointDAO.getAll();
-                        request.setAttribute("list", pointList);
-
-                        if (pointList.size() > 1) {
-                            request.setAttribute("msg", pointList.size() + " registros encontrados en la base de datos.");
-                        } else if (pointList.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                    //////////////////////////////////////////
+                    // ELIMINAR POR REGISTRO
+                    //////////////////////////////////////////
+                    if (btnDelRow != null) {
+                        /* recibir parametros*/
+                        int id = Integer.parseInt(request.getParameter("idPromo"));
+                        try {
+                            promoDAO.delete(id);
+                            url += "&msgDel=Un Registro ha sido eliminado.";
+                        } catch (Exception referenceException) {
+                            url += "&msgErrorReference=Error: No puede eliminar, existen clientes asociados.";
                         }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
                     }
 
-                    request.getRequestDispatcher("/point/point.jsp").forward(request, response);
+                    //////////////////////////////////////////
+                    // ELIMINAR VARIOS REGISTRO
+                    //////////////////////////////////////////
+                    if (btnDelCol != null) {
+                        try {
+                            String[] outerArray = request.getParameterValues("chk");
+                            int cont = 0;
+                            int i = 0;
+                            while (outerArray[i] != null) {
+                                try {
+                                    promoDAO.delete(Integer.parseInt(outerArray[i]));
+                                    cont++;
+                                    url += "&msgDel=" + cont + "registro(s) han sido eliminado(s).";
+                                } catch (Exception ex) {
+                                    url += "&msgErrorReference=Error: No puede eliminar una promo o regalos, existen clientes asociados.";
+                                }
+                                i++;
+                            }
+                        } catch (Exception parameterException) {
+                        }
+                    }
+
+                    /* send redirect */
+                    response.sendRedirect("PromoMainServlet" + url);
+
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */

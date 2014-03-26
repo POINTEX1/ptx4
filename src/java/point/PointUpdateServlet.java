@@ -137,7 +137,7 @@ public class PointUpdateServlet extends HttpServlet {
                         /* comprobar existencia */
                         try {
                             pointDAO.update(point);
-                            url += "msgOk=Registro actualizado exitosamente!";
+                            url += "&msgOk=Registro actualizado exitosamente!";
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }

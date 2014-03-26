@@ -90,9 +90,9 @@ public class ClientPromoDeleteServlet extends HttpServlet {
                     /* instanciar url */
                     String url = "?target=main";
 
-                    //////////////////////////////////////////
+                    //////////////////////////////////////
                     // ELIMINAR POR REGISTRO
-                    //////////////////////////////////////////
+                    //////////////////////////////////////
                     if (btnDelRow != null) {
                         /* recibir parametros */
                         pglReg.setIdPromo(Integer.parseInt(request.getParameter("idPromo")));

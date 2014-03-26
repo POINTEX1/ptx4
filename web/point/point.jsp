@@ -86,7 +86,7 @@
                 <div class="row">                  
                     <div class="col-lg-12"> 
                         <div class="table-responsive">
-                            <form action="PointMainServlet" method="POST" name="form">
+                            <form action="PointDeleteServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
                                         <div class="box">                                
@@ -132,7 +132,7 @@
                                                                     <a href="PointGetServlet?idPlace=<c:out value="${list.idPlace}" />&rut=<c:out value="${list.rut}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">VER / ACTUALIZAR</font></strong></button></a>
                                                                 </td>
                                                                 <td class="center">                                                                    
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('PointMainServlet?btnDelRow=x&idPlace=<c:out value="${list.idPlace}" />&rut=<c:out value="${list.rut}" />');
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('PointDeleteServlet?btnDelRow=x&idPlace=<c:out value="${list.idPlace}" />&rut=<c:out value="${list.rut}" />');
                 return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>

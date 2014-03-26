@@ -86,7 +86,7 @@
                     <div class="col-lg-12">  
                         <div class="table-responsive">
 
-                            <form action="PromoMainServlet" method="POST" name="form">
+                            <form action="PromoDeleteServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
                                         <div class="box">                                
@@ -136,7 +136,7 @@
                                                                     <a href="PromoGetServlet?idPlace=<c:out value="${list.idPlace}" />&idPromo=<c:out value="${list.idPromo}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">VER / ACTUALIZAR</font></strong></button></a>
                                                                 </td>
                                                                 <td class="center">                                                                   
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('PromoGiftMainServlet?btnDelRow=x&idPromo=<c:out value="${list.idPromo}" />');
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('PromoDeleteServlet?btnDelRow=x&idPromo=<c:out value="${list.idPromo}" />');
                 return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>

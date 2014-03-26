@@ -1,4 +1,8 @@
-package point;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package univesity;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -14,10 +18,10 @@ import javax.sql.DataSource;
 
 /**
  *
- * @author patricio alberto
+ * @author patricio
  */
-@WebServlet(name = "PointMainServlet", urlPatterns = {"/PointMainServlet"})
-public class PointMainServlet extends HttpServlet {
+@WebServlet(name = "UniversityDeleteServlet", urlPatterns = {"/UniversityDeleteServlet"})
+public class UniversityDeleteServlet extends HttpServlet {
 
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
@@ -45,68 +49,82 @@ public class PointMainServlet extends HttpServlet {
         try {
             conexion = ds.getConnection();
 
-            PointDAO pointDAO = new PointDAO();
-            pointDAO.setConexion(conexion);
+            UniversityDAO universityDAO = new UniversityDAO();
+            universityDAO.setConexion(conexion);
 
-            /////////////////////////////////
+            //////////////////////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////
+            /////////////////////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
 
-                /* obtener nivel de acceso acceso */
-                int access = Integer.parseInt((String) session.getAttribute("access"));
-                /* obtener nombre de usuario */
-                String username = (String) session.getAttribute("username");
+                /* obtener los valores de session */
+                String userJsp = (String) session.getAttribute("username");
+                String sAccess = (String) session.getAttribute("access");
+                int access = Integer.parseInt(sAccess);
 
-                /* comprobar permisos de usuario */
-                if (access != 555 && access != 777) {
-                    /* ACCESO PROHIBIDO */
-                    request.getRequestDispatcher("/ForbiddenServlet").forward(request, response);
-                } else {
-                    /* ACCESO PERMITIDO */
+                /* asignar valores a la jsp */
+                request.setAttribute("userJsp", userJsp);
+                request.setAttribute("access", access);
 
-                    /* asginar nombre de usuario */
-                    request.setAttribute("userJsp", username);
-                    /* asignar nivel de acceso */
-                    request.setAttribute("access", access);
+                //////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                //////////////////////////////////////
 
-                    //////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETOS
-                    //////////////////////////////////////
+                String btnDelRow = request.getParameter("btnDelRow");
+                String btnDelCol = request.getParameter("btnDelCol");
 
-                    String msgDel = request.getParameter("msgDel");
-                    String msgErrorReference = request.getParameter("msgErrorReference");
+                University university = new University();
 
-                    /* comprobar eliminacion */
-                    if (msgDel == null || msgDel.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgDel", msgDel);
-                    }
+                /* instanciar url */
+                String url = "?target=main";
 
-                    /* comprobar error de eliminacion */
-                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgErrorReference", msgErrorReference);
-                    }
-
-                    /* obtener lista de points */
+                //////////////////////////////////////////
+                // ELIMINAR POR REGISTRO
+                //////////////////////////////////////////
+                if (btnDelRow != null) {
+                    /* recibir parametros */
+                    university.setIdUniversity(Integer.parseInt(request.getParameter("idUniversity")));
+                    /* eliminar registro */
                     try {
-                        Collection<Point> pointList = pointDAO.getAll();
-                        request.setAttribute("list", pointList);
+                        universityDAO.delete(university.getIdUniversity());
+                        url += "&msgDel=Un registro ha sido eliminado.";
+                    } catch (Exception referenceException) {
+                        url += "&msgErrorReference=Error: El registro posee referencias y no puede ser eliminado.";
+                    }
+                }
 
-                        if (pointList.size() > 1) {
-                            request.setAttribute("msg", pointList.size() + " registros encontrados en la base de datos.");
-                        } else if (pointList.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                //////////////////////////////////////////
+                // ELIMINAR VARIOS REGISTROS
+                //////////////////////////////////////////
+                if (btnDelCol != null) {
+                    /* recibir parametros */
+                    String[] outerArray = request.getParameterValues("chk");
+                    int i = 0;
+                    int cont = 0;
+                    try {
+                        while (outerArray[i] != null) {
+                            try {
+                                universityDAO.delete(Integer.parseInt(outerArray[i]));
+                                cont++;
+                            } catch (Exception ex) {
+                                url += "&msgErrorReference=Error: No puede eliminar el registro con ID: " + outerArray[i] + ", existen referencias asociadas.";
+                            }
+                            i++;
                         }
                     } catch (Exception ex) {
-                        ex.printStackTrace();
                     }
-
-                    request.getRequestDispatcher("/point/point.jsp").forward(request, response);
+                    if (cont == 1) {
+                        url += "&msgDel=Un registro ha sido eliminado.";
+                    } else if (cont > 1) {
+                        url += "&msgDel=" + cont + " registros han sido eliminados.";
+                    }
                 }
+
+                /* send redirect */
+                response.sendRedirect("UniversityMainServlet" + url);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");

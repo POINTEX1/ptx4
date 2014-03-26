@@ -88,7 +88,7 @@
                 <div class="row">                  
                     <div class="col-lg-12"> 
                         <div class="table-responsive">
-                            <form action="UniversityMainServlet" method="POST" name="form">
+                            <form action="UniversityDeleteServlet" method="POST" name="form">
                                 <div class="row-fluid">
                                     <div class="span12">                            
                                         <div class="box">                                
@@ -125,7 +125,7 @@
                                                                     <a href="UniversityGetServlet?idUniversity=<c:out value="${list.idUniversity}" />"><button class="btn btn-primary btn-mini" name="btnUpOne" type="button"><strong><font size="1">VER / ACTUALIZAR</font></strong></button></a>                                                                
                                                                 </td>
                                                                 <td class="center">                                                                    
-                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('UniversityMainServlet?btnDelRow=x&idUniversity=<c:out value="${list.idUniversity}" />');
+                                                                    <button class="btn btn-danger btn-mini delete" name="btnDelRow" onclick="confirmar('UniversityDeleteServlet?btnDelRow=x&idUniversity=<c:out value="${list.idUniversity}" />');
                 return false;"><strong><font size="1">ELIMINAR</font></strong></button>
                                                                 </td>
                                                             </tr>
