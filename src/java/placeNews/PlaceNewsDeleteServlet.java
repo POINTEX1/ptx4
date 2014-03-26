@@ -5,9 +5,7 @@
 package placeNews;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
-import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -23,7 +21,7 @@ import javax.sql.DataSource;
  */
 @WebServlet(name = "PlaceNewsDeleteServlet", urlPatterns = {"/PlaceNewsDeleteServlet"})
 public class PlaceNewsDeleteServlet extends HttpServlet {
-    
+
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
 
@@ -39,23 +37,23 @@ public class PlaceNewsDeleteServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         request.setCharacterEncoding("UTF-8");
-        
+
         Connection conexion = null;
-        
+
         try {
-            /////////////////////////////////////////
+            ////////////////////////////
             // ESTABLECER CONEXION
-            /////////////////////////////////////////
+            ////////////////////////////
             conexion = ds.getConnection();
-            
+
             PlaceNewsDAO pnewsDAO = new PlaceNewsDAO();
             pnewsDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -73,21 +71,21 @@ public class PlaceNewsDeleteServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-                    /////////////////////////////////////////
+                    ///////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETOS
-                    /////////////////////////////////////////
+                    ///////////////////////////////////
 
                     String btnDelRow = request.getParameter("btnDelRow");
                     String btnDelCol = request.getParameter("btnDelCol");
-                    
+
                     PlaceNews pnews = new PlaceNews();
 
                     /* instanciar url */
                     String url = "?target=main";
 
-                    //////////////////////////////////////////
+                    ////////////////////////////
                     // ELIMINAR POR REGISTRO
-                    //////////////////////////////////////////
+                    ////////////////////////////
                     if (btnDelRow != null) {
                         /* recibir parametros */
                         try {
@@ -95,38 +93,37 @@ public class PlaceNewsDeleteServlet extends HttpServlet {
                             try {
                                 pnewsDAO.delete(id);
                                 url += "&msgDel=Un registro ha sido eliminado.";
-                            } catch (Exception referenceException) {
-                                url += "&msgErrorReference=Error: No puede eliminar el registro, existen referencias asociadas.";
+                            } catch (Exception ex) {
+                                url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro, existen dependencias asociadas.";
                             }
                         } catch (NumberFormatException n) {
                         }
                     }
 
-                    //////////////////////////////////////////
+                    //////////////////////////////
                     // ELIMINAR VARIOS REGISTOS
-                    //////////////////////////////////////////
+                    //////////////////////////////
                     if (btnDelCol != null) {
+                        /* recibir parametros */
+                        String[] outerArray = request.getParameterValues("chk");
+                        int cont = 0;
+                        int i = 0;
                         try {
-                            /* recibir parametros */
-                            String[] outerArray = request.getParameterValues("chk");
-                            
-                            int cont = 0;
-                            int i = 0;
                             while (outerArray[i] != null) {
                                 try {
                                     pnewsDAO.delete(Integer.parseInt(outerArray[i]));
                                     cont++;
-                                    if (cont == 1) {
-                                        url += "&msgDel=Un registro ha sido eliminado.";
-                                    } else if (cont > 1) {
-                                        url += "&msgDel" + cont + " registros han sido eliminados.";
-                                    }
-                                } catch (Exception referenceException) {
-                                    url += "&msgErrorReference=Error: No puede eliminar " + pnews.getTittle() + ", existen registros asociados.";
+                                } catch (Exception ex) {
+                                    url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro: " + pnews.getTittle() + ", existen dependencias asociadas.";
                                 }
                                 i++;
                             }
                         } catch (Exception ex) {
+                        }
+                        if (cont == 1) {
+                            url += "&msgDel=Un registro ha sido eliminado.";
+                        } else if (cont > 1) {
+                            url += "&msgDel" + cont + " registros han sido eliminados.";
                         }
                     }
 

@@ -82,42 +82,43 @@ public class PlaceDeleteServlet extends HttpServlet {
                     /* instanciar url */
                     String url = "?target=main";
 
-                    //////////////////////////////////////
+                    /////////////////////////////
                     // ELIMINAR POR REGISTRO
-                    //////////////////////////////////////
+                    /////////////////////////////
                     if (btnDelRow != null) {
                         /* recibir parametro */
                         int id = Integer.parseInt(request.getParameter("idPlace"));
                         try {
                             placeDAO.delete(id);
                             url += "&msgDel=Un registro ha sido eliminado.";
-                        } catch (Exception referenceException) {
-                            url += "&msgErrorReference=Error: No se puede eliminar, existen registros asociados.";
+                        } catch (Exception ex) {
+                            url += "&msgConstraint=Error de restricción: No puede eliminar el registro, existen dependencias asociadas.";
                         }
                     }
-                    //////////////////////////////////////////
+                    /////////////////////////////////
                     // ELIMINAR VARIOS REGISTROS
-                    //////////////////////////////////////////
+                    /////////////////////////////////
                     if (btnDelCol != null) {
+
+                        String[] outerArray = request.getParameterValues("chk");
+                        int cont = 0;
+                        int i = 0;
                         try {
-                            String[] outerArray = request.getParameterValues("chk");
-                            int cont = 0;
-                            int i = 0;
                             while (outerArray[i] != null) {
                                 try {
                                     placeDAO.delete(Integer.parseInt(outerArray[i]));
                                     cont++;
-                                    if (cont == 1) {
-                                        url += "&msgDel=Un registro ha sido eliminado.";
-                                    } else if (cont > 1) {
-                                        url += "&msgDel=" + cont + "registros han sido eliminados.";
-                                    }
-                                } catch (Exception referenceException) {
-                                    url += "&msgDel=Error: No se pudo eliminar, existen registros asociados.";
+                                } catch (Exception ex) {
+                                    url += "&msgConstraint=Error de restricción: No puede eliminar el registro, existen dependencias asociadas.";
                                 }
                                 i++;
                             }
-                        } catch (Exception parameterException) {
+                        } catch (Exception ex) {
+                        }
+                        if (cont == 1) {
+                            url += "&msgDel=Un registro ha sido eliminado.";
+                        } else if (cont > 1) {
+                            url += "&msgDel=" + cont + "registros han sido eliminados.";
                         }
                     }
                     /* send redirect */

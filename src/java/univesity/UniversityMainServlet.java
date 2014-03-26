@@ -4,8 +4,6 @@
  */
 package univesity;
 
-import city.City;
-import city.CityDAO;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.Collection;
@@ -54,9 +52,9 @@ public class UniversityMainServlet extends HttpServlet {
             UniversityDAO universityDAO = new UniversityDAO();
             universityDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -75,7 +73,7 @@ public class UniversityMainServlet extends HttpServlet {
                 //////////////////////////////////////
 
                 String msgDel = request.getParameter("msgDel");
-                String msgErrorReference = request.getParameter("msgErrorReference");
+                String msgErrorConstraint = request.getParameter("msgErrorConstraint");
 
                 /* comprobar eliminacion */
                 if (msgDel == null || msgDel.trim().equals("")) {
@@ -84,9 +82,9 @@ public class UniversityMainServlet extends HttpServlet {
                 }
 
                 /* comprobar error de eliminacion */
-                if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
+                if (msgErrorConstraint == null || msgErrorConstraint.trim().equals("")) {
                 } else {
-                    request.setAttribute("msgErrorReference", msgErrorReference);
+                    request.setAttribute("msgErrorContraint", msgErrorConstraint);
                 }
 
                 /* obtener lista de universidades */

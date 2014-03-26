@@ -42,18 +42,18 @@ public class PointDeleteServlet extends HttpServlet {
 
         Connection conexion = null;
 
-        /////////////////////////////////////////
+        ///////////////////////////
         // ESTABLECER CONEXION
-        /////////////////////////////////////////
+        ///////////////////////////
         try {
             conexion = ds.getConnection();
 
             PointDAO pointDAO = new PointDAO();
             pointDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ///////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ///////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -75,9 +75,9 @@ public class PointDeleteServlet extends HttpServlet {
                     /* asignar nivel de acceso */
                     request.setAttribute("access", access);
 
-                    /////////////////////////////////////////
+                    ///////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETOS
-                    /////////////////////////////////////////
+                    ///////////////////////////////////
 
                     /* obtener parametro para eliminar única fila */
                     String btnDelRow = request.getParameter("btnDelRow");
@@ -91,9 +91,9 @@ public class PointDeleteServlet extends HttpServlet {
                     /* instanciar url */
                     String url = "?target=main";
 
-                    //////////////////////////////////////////
+                    //////////////////////////////
                     // ELIMINAR POR REGISTRO
-                    //////////////////////////////////////////
+                    //////////////////////////////
                     if (btnDelRow != null) {
                         /* recibir parametros */
                         point.setIdPlace(Integer.parseInt(request.getParameter("idPlace")));
@@ -107,17 +107,15 @@ public class PointDeleteServlet extends HttpServlet {
                         }
                     }
 
-                    //////////////////////////////////////////
+                    ////////////////////////////////
                     // ELIMINAR VARIOS REGISTOS
-                    //////////////////////////////////////////
+                    ////////////////////////////////
                     if (btnDelCol != null) {
+                        /* recibir parametros del array */
+                        String[] outerArray = request.getParameterValues("chk");
+                        int cont = 0;
+                        int i = 0;
                         try {
-                            /* recibir parametros del array */
-                            String[] outerArray = request.getParameterValues("chk");
-
-                            int cont = 0; //contador de registros eliminados
-                            int i = 0; //puntero del array
-
                             while (outerArray[i] != null) {
                                 /* descomponer parametros indices */
                                 String string = outerArray[i];
@@ -125,23 +123,21 @@ public class PointDeleteServlet extends HttpServlet {
 
                                 point.setIdPlace(Integer.parseInt(parts[0]));
                                 point.setRut(Integer.parseInt(parts[1]));
-
                                 try {
                                     /* eliminar registros */
                                     pointDAO.delete(point);
                                     cont++;
-                                    if (cont == 1) {
-                                        url += "&msgDel=Un registro ha sido eliminado.";
-                                    } else if (cont > 1) {
-                                        url += "&msgDel=" + cont + " registros han sido eliminados.";
-                                    }
                                 } catch (Exception referenceException) {
-                                    url += "&msgErrorReference=Error: No puede eliminar, existen registros asociados.";
+                                    url += "&msgErrorConstraint=Error: No puede eliminar el registro, existen dependencias asociadas.";
                                 }
                                 i++;
                             }
                         } catch (Exception ex) {
-                            ex.printStackTrace();
+                        }
+                        if (cont == 1) {
+                            url += "&msgDel=Un registro ha sido eliminado.";
+                        } else if (cont > 1) {
+                            url += "&msgDel=" + cont + " registros han sido eliminados.";
                         }
                     }
 

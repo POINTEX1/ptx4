@@ -44,9 +44,9 @@ public class PlaceMainServlet extends HttpServlet {
         Connection conexion = null;
 
         try {
-            //////////////////////////////////////////
+            /////////////////////////////
             // ESTABLECER CONEXION
-            //////////////////////////////////////////
+            /////////////////////////////
 
             conexion = ds.getConnection();
 
@@ -54,9 +54,9 @@ public class PlaceMainServlet extends HttpServlet {
             PlaceDAO placeDAO = new PlaceDAO();
             placeDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            /////////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            /////////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -74,12 +74,12 @@ public class PlaceMainServlet extends HttpServlet {
                     request.setAttribute("access", access);
 
                     try {
-                        //////////////////////////////////////////
+                        ////////////////////////////////////
                         // RECIBIR Y COMPROBAR PARAMETROS
-                        /////////////////////////////////////////
+                        ////////////////////////////////////
 
                         String msgDel = request.getParameter("msgDel");
-                        String msgErrorReference = request.getParameter("msgErrorReference");
+                        String msgErrorConstraint = request.getParameter("msgErrorConstraint");
 
                         /* comprobar eliminacion */
                         if (msgDel == null || msgDel.trim().equals("")) {
@@ -88,9 +88,9 @@ public class PlaceMainServlet extends HttpServlet {
                         }
 
                         /* comprobar error de eliminacion */
-                        if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
+                        if (msgErrorConstraint == null || msgErrorConstraint.trim().equals("")) {
                         } else {
-                            request.setAttribute("msgErrorReference", msgErrorReference);
+                            request.setAttribute("msgErrorConstraint", msgErrorConstraint);
                         }
 
                         /* obtener lista de lugares */
@@ -106,8 +106,8 @@ public class PlaceMainServlet extends HttpServlet {
                                 request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
                             }
                         } catch (Exception ex) {
-                            ex.printStackTrace();
                         }
+
                     } catch (Exception parameterException) {
                     } finally {
                         request.getRequestDispatcher("/place/place.jsp").forward(request, response);
@@ -121,6 +121,7 @@ public class PlaceMainServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

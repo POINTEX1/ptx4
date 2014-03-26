@@ -46,9 +46,9 @@ public class PromoDeleteServlet extends HttpServlet {
         Connection conexion = null;
 
         try {
-            //////////////////////////////////////////
+            ////////////////////////////
             // ESTABLECER CONEXION
-            /////////////////////////////////////////
+            ////////////////////////////
 
             conexion = ds.getConnection();
 
@@ -58,9 +58,9 @@ public class PromoDeleteServlet extends HttpServlet {
             PlaceDAO placeDAO = new PlaceDAO();
             placeDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -79,9 +79,9 @@ public class PromoDeleteServlet extends HttpServlet {
                     request.setAttribute("access", access);
 
 
-                    ////////////////////////////////////////
+                    /////////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETROS
-                    ////////////////////////////////////////
+                    /////////////////////////////////////
 
                     String btnDelRow = request.getParameter("btnDelRow");
                     String btnDelCol = request.getParameter("btnDelCol");
@@ -89,9 +89,9 @@ public class PromoDeleteServlet extends HttpServlet {
                     /* instanciar url */
                     String url = "?target=main";
 
-                    //////////////////////////////////////////
+                    ///////////////////////////////
                     // ELIMINAR POR REGISTRO
-                    //////////////////////////////////////////
+                    ///////////////////////////////
                     if (btnDelRow != null) {
                         /* recibir parametros*/
                         int id = Integer.parseInt(request.getParameter("idPromo"));
@@ -103,25 +103,29 @@ public class PromoDeleteServlet extends HttpServlet {
                         }
                     }
 
-                    //////////////////////////////////////////
+                    ///////////////////////////////
                     // ELIMINAR VARIOS REGISTRO
-                    //////////////////////////////////////////
+                    ///////////////////////////////
                     if (btnDelCol != null) {
+                        String[] outerArray = request.getParameterValues("chk");
+                        int cont = 0;
+                        int i = 0;
                         try {
-                            String[] outerArray = request.getParameterValues("chk");
-                            int cont = 0;
-                            int i = 0;
                             while (outerArray[i] != null) {
                                 try {
                                     promoDAO.delete(Integer.parseInt(outerArray[i]));
                                     cont++;
-                                    url += "&msgDel=" + cont + "registro(s) han sido eliminado(s).";
                                 } catch (Exception ex) {
-                                    url += "&msgErrorReference=Error: No puede eliminar una promo o regalos, existen clientes asociados.";
+                                    url += "&msgErrorConstraint=Error de restricción: No puede eliminar un registro, existen dependencias asociadas.";
                                 }
                                 i++;
                             }
-                        } catch (Exception parameterException) {
+                        } catch (Exception ex) {
+                        }
+                        if (cont == 1) {
+                            url += "&msgDel=Un registro ha sido eliminado.";
+                        } else if (cont > 1) {
+                            url += "&msgDel=" + cont + " registros han sido eliminados.";
                         }
                     }
 

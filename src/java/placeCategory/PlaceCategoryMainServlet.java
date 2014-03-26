@@ -44,18 +44,18 @@ public class PlaceCategoryMainServlet extends HttpServlet {
         Connection conexion = null;
 
         try {
-            //////////////////////////////////////////
+            //////////////////////////
             // ESTABLECER CONEXION
-            //////////////////////////////////////////
+            //////////////////////////
 
             conexion = ds.getConnection();
 
             PlaceCategoryDAO placeCategoryDAO = new PlaceCategoryDAO();
             placeCategoryDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            /////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            /////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -72,45 +72,40 @@ public class PlaceCategoryMainServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-                    try {
-                        //////////////////////////////////////////
-                        // RECIBIR Y COMPROBAR PARAMETROS
-                        /////////////////////////////////////////
+                    ///////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETROS
+                    ///////////////////////////////////
 
-                        String msgDel = request.getParameter("msgDel");
-                        String msgErrorReference = request.getParameter("msgErrorReference");
+                    String msgDel = request.getParameter("msgDel");
+                    String msgErrorConstraint = request.getParameter("msgErrorConstraint");
 
-                        /* comprobar eliminacion */
-                        if (msgDel == null || msgDel.trim().equals("")) {
-                        } else {
-                            request.setAttribute("msgDel", msgDel);
-                        }
-
-                        /* comprobar error de eliminacion */
-                        if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
-                        } else {
-                            request.setAttribute("msgErrorReference", msgErrorReference);
-                        }
-
-                        /* obtener lista de placeCategory */
-                        try {
-                            Collection<PlaceCategory> placeCategoryList = placeCategoryDAO.getAll();
-                            request.setAttribute("list", placeCategoryList);
-                            if (placeCategoryList.size() == 1) {
-                                request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                            } else if (placeCategoryList.size() > 1) {
-                                request.setAttribute("msg", placeCategoryList.size() + " registros encontrados en la base de datos.");
-                            } else if (placeCategoryList.isEmpty()) {
-                                request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
-                            }
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("/placeCategory/placeCategory.jsp").forward(request, response);
+                    /* comprobar eliminacion */
+                    if (msgDel == null || msgDel.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgDel", msgDel);
                     }
+
+                    /* comprobar error de eliminacion */
+                    if (msgErrorConstraint == null || msgErrorConstraint.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgErrorConstraint", msgErrorConstraint);
+                    }
+
+                    /* obtener lista de placeCategory */
+                    try {
+                        Collection<PlaceCategory> placeCategoryList = placeCategoryDAO.getAll();
+                        request.setAttribute("list", placeCategoryList);
+                        if (placeCategoryList.size() == 1) {
+                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
+                        } else if (placeCategoryList.size() > 1) {
+                            request.setAttribute("msg", placeCategoryList.size() + " registros encontrados en la base de datos.");
+                        } else if (placeCategoryList.isEmpty()) {
+                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                        }
+                    } catch (Exception ex) {
+                    }
+
+                    request.getRequestDispatcher("/placeCategory/placeCategory.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
@@ -120,6 +115,7 @@ public class PlaceCategoryMainServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

@@ -6,7 +6,6 @@ package univesity;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -43,18 +42,18 @@ public class UniversityDeleteServlet extends HttpServlet {
 
         Connection conexion = null;
 
-        /////////////////////////////////////////
+        ////////////////////////////
         // ESTABLECER CONEXION
-        /////////////////////////////////////////
+        ////////////////////////////
         try {
             conexion = ds.getConnection();
 
             UniversityDAO universityDAO = new UniversityDAO();
             universityDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -68,9 +67,9 @@ public class UniversityDeleteServlet extends HttpServlet {
                 request.setAttribute("userJsp", userJsp);
                 request.setAttribute("access", access);
 
-                //////////////////////////////////////
+                ////////////////////////////////////
                 // RECIBIR Y COMPROBAR PARAMETROS
-                //////////////////////////////////////
+                ////////////////////////////////////
 
                 String btnDelRow = request.getParameter("btnDelRow");
                 String btnDelCol = request.getParameter("btnDelCol");
@@ -80,9 +79,9 @@ public class UniversityDeleteServlet extends HttpServlet {
                 /* instanciar url */
                 String url = "?target=main";
 
-                //////////////////////////////////////////
+                ///////////////////////////////
                 // ELIMINAR POR REGISTRO
-                //////////////////////////////////////////
+                ///////////////////////////////
                 if (btnDelRow != null) {
                     /* recibir parametros */
                     university.setIdUniversity(Integer.parseInt(request.getParameter("idUniversity")));
@@ -91,13 +90,13 @@ public class UniversityDeleteServlet extends HttpServlet {
                         universityDAO.delete(university.getIdUniversity());
                         url += "&msgDel=Un registro ha sido eliminado.";
                     } catch (Exception referenceException) {
-                        url += "&msgErrorReference=Error: El registro posee referencias y no puede ser eliminado.";
+                        url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro, existen dependencias asociadas";
                     }
                 }
 
-                //////////////////////////////////////////
+                ////////////////////////////////
                 // ELIMINAR VARIOS REGISTROS
-                //////////////////////////////////////////
+                ////////////////////////////////
                 if (btnDelCol != null) {
                     /* recibir parametros */
                     String[] outerArray = request.getParameterValues("chk");
@@ -109,7 +108,7 @@ public class UniversityDeleteServlet extends HttpServlet {
                                 universityDAO.delete(Integer.parseInt(outerArray[i]));
                                 cont++;
                             } catch (Exception ex) {
-                                url += "&msgErrorReference=Error: No puede eliminar el registro con ID: " + outerArray[i] + ", existen referencias asociadas.";
+                                url += "&msgErrorConstraint=Error de restricción: No puede eliminar el registro con ID: " + outerArray[i] + ", existen dependencias asociadas.";
                             }
                             i++;
                         }

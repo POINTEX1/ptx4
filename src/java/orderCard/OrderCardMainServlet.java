@@ -77,7 +77,7 @@ public class OrderCardMainServlet extends HttpServlet {
                     /////////////////////////////////////////
 
                     String msgDel = request.getParameter("msgDel");
-                    String msgErrorReference = request.getParameter("msgErrorReference");
+                    String msgErrorConstraint = request.getParameter("msgErrorConstraint");
 
                     /* comprobar eliminacion */
                     if (msgDel == null || msgDel.trim().equals("")) {
@@ -86,9 +86,9 @@ public class OrderCardMainServlet extends HttpServlet {
                     }
 
                     /* comprobar error de eliminacion */
-                    if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
+                    if (msgErrorConstraint == null || msgErrorConstraint.trim().equals("")) {
                     } else {
-                        request.setAttribute("msgErrorReference", msgErrorReference);
+                        request.setAttribute("msgErrorConstraint", msgErrorConstraint);
                     }
 
                     /* obtener lista de order card */
@@ -104,7 +104,6 @@ public class OrderCardMainServlet extends HttpServlet {
                             request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
                         }
                     } catch (Exception ex) {
-                        ex.printStackTrace();
                     }
 
                     request.getRequestDispatcher("/orderCard/orderCard.jsp").forward(request, response);

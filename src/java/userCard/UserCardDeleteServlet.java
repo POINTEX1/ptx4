@@ -43,18 +43,18 @@ public class UserCardDeleteServlet extends HttpServlet {
         Connection conexion = null;
 
         try {
-            /////////////////////////////////////////
+            ///////////////////////////
             // ESTABLECER CONEXION
-            /////////////////////////////////////////
+            ///////////////////////////
 
             conexion = ds.getConnection();
 
             UserCardDAO usercardDAO = new UserCardDAO();
             usercardDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ///////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ///////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -67,9 +67,9 @@ public class UserCardDeleteServlet extends HttpServlet {
                 request.setAttribute("userJsp", user);
                 request.setAttribute("access", access);
 
-                ////////////////////////////////////////
+                ////////////////////////////////////
                 // RECIBIR Y COMPROBAR PARAMETROS
-                ////////////////////////////////////////
+                ////////////////////////////////////
 
                 String btnDelRow = request.getParameter("btnDelRow");
                 String btnDelCol = request.getParameter("btnDelCol");
@@ -77,25 +77,24 @@ public class UserCardDeleteServlet extends HttpServlet {
                 /* instanciar url */
                 String url = "?target=main";
 
-                ////////////////////////////////////////
+                /////////////////////////////
                 // ELIMINAR POR REGISTRO
-                ////////////////////////////////////////
+                /////////////////////////////
                 if (btnDelRow != null) {
                     /* recibir parametros */
                     int rut = Integer.parseInt(request.getParameter("rut"));
                     try {
                         usercardDAO.delete(rut);
                         url += "&msgDel=Un registro ha sido eliminado.";
-                    } catch (Exception referenceException) {
-                        url += "&msgErrorReference=Error: No se puede eliminar usuarios con tarjetas asociadas.";
+                    } catch (Exception ex) {
+                        url += "&msgErrorConstraint=Error: No se puede eliminar usuarios con tarjetas asociadas.";
                     }
                 }
 
-                ////////////////////////////////////////
+                ////////////////////////////////
                 // ELIMINAR VARIOS REGISTOS
-                ////////////////////////////////////////
+                ////////////////////////////////
                 if (btnDelCol != null) {
-
                     /* recibir parametros */
                     String[] outerArray = request.getParameterValues("chk");
                     int cont = 0;
@@ -105,12 +104,12 @@ public class UserCardDeleteServlet extends HttpServlet {
                             try {
                                 usercardDAO.delete(Integer.parseInt(outerArray[i]));
                                 cont++;
-                            } catch (Exception referenceException) {
-                                url += "&msgErrorReference=Error de restricción: No puede eliminar un registro, existen dependencias.";
+                            } catch (Exception ex) {
+                                url += "&msgErrorConstraint=Error de restricción: No puede eliminar un registro, existen dependencias.";
                             }
                             i++;
                         }
-                    } catch (Exception parameterException) {
+                    } catch (Exception ex) {
                     }
                     if (cont == 1) {
                         url += "&msgDel=Un registro ha sido eliminado.";

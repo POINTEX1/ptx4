@@ -44,17 +44,17 @@ public class PlaceNewsMainServlet extends HttpServlet {
         Connection conexion = null;
 
         try {
-            /////////////////////////////////////////
+            /////////////////////////////
             // ESTABLECER CONEXION
-            /////////////////////////////////////////
+            /////////////////////////////
             conexion = ds.getConnection();
 
             PlaceNewsDAO pnewsDAO = new PlaceNewsDAO();
             pnewsDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            /////////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            /////////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -72,43 +72,39 @@ public class PlaceNewsMainServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-                    try {
-                        /////////////////////////////////////////
-                        // RECIBIR Y COMPROBAR PARAMETOS
-                        /////////////////////////////////////////                     
+                    ///////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETOS
+                    ///////////////////////////////////
 
-                        String msgDel = request.getParameter("msgDel");
-                        String msgErrorReference = request.getParameter("msgErrorReference");
+                    String msgDel = request.getParameter("msgDel");
+                    String msgErrorConstraint = request.getParameter("msgErrorConstraint");
 
-                        /* comprobar eliminacion */
-                        if (msgDel == null || msgDel.trim().equals("")) {
-                        } else {
-                            request.setAttribute("msgDel", msgDel);
-                        }
-
-                        /* comprobar error de eliminacion */
-                        if (msgErrorReference == null || msgErrorReference.trim().equals("")) {
-                        } else {
-                            request.setAttribute("msgErrorReference", msgErrorReference);
-                        }
-
-                        /* obtener lista de placeNews */
-                        try {
-                            Collection<PlaceNews> listPlaceNews = pnewsDAO.getAll();
-                            request.setAttribute("list", listPlaceNews);
-
-                            if (listPlaceNews.size() > 1) {
-                                request.setAttribute("msg", listPlaceNews.size() + " registros encontrados en la base de datos.");
-                            } else if (listPlaceNews.isEmpty()) {
-                                request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
-                            }
-                        } catch (Exception ex) {
-                        }
-
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("/placeNews/placeNews.jsp").forward(request, response);
+                    /* comprobar eliminacion */
+                    if (msgDel == null || msgDel.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgDel", msgDel);
                     }
+
+                    /* comprobar error de eliminacion */
+                    if (msgErrorConstraint == null || msgErrorConstraint.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgErrorConstraint", msgErrorConstraint);
+                    }
+
+                    /* obtener lista de placeNews */
+                    try {
+                        Collection<PlaceNews> listPlaceNews = pnewsDAO.getAll();
+                        request.setAttribute("list", listPlaceNews);
+
+                        if (listPlaceNews.size() > 1) {
+                            request.setAttribute("msg", listPlaceNews.size() + " registros encontrados en la base de datos.");
+                        } else if (listPlaceNews.isEmpty()) {
+                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
+                        }
+                    } catch (Exception ex) {
+                    }
+
+                    request.getRequestDispatcher("/placeNews/placeNews.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
