@@ -32,15 +32,17 @@ public class OrderCardDAO {
 
     public Collection<OrderCard> getAll() {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<OrderCard> list = new ArrayList<OrderCard>();
 
         try {
-            sentence = conexion.createStatement();
             String sql = "select * from order_card oc, user_card uc where oc.rut = uc.rut order by oc.id_order desc";
-            result = sentence.executeQuery(sql);
+
+            sentence = conexion.prepareStatement(sql);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objetos */
@@ -83,15 +85,19 @@ public class OrderCardDAO {
 
     public OrderCard findById(int id) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         OrderCard reg = null;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from order_card oc, user_card uc where oc.id_order = " + id + " and oc.rut = uc.rut ";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from order_card oc, user_card uc where oc.id_order = ? and oc.rut = uc.rut ";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, id);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* definir objeto */

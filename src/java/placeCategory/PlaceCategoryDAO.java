@@ -32,17 +32,17 @@ public class PlaceCategoryDAO {
 
     public Collection<PlaceCategory> getAll() {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<PlaceCategory> list = new ArrayList<PlaceCategory>();
 
         try {
-            sentence = conexion.createStatement();
-
             String sql = "select * from place_category pc, category ca, place pl, city ci where pc.id_category = ca.id_category and pc.id_place = pl.id_place and pl.id_city = ci.id_city ";
 
-            result = sentence.executeQuery(sql);
+            sentence = conexion.prepareStatement(sql);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -82,15 +82,20 @@ public class PlaceCategoryDAO {
 
     public PlaceCategory findById(int idPlace, int idCategory) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         PlaceCategory reg = null;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from place_category pc, place pl, category ca, city ci where pc.id_place = pl.id_place and pc.id_category = ca.id_category and pc.id_place = " + idPlace + " and pc.id_category = " + idCategory + " and pl.id_city = ci.id_city";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from place_category pc, place pl, category ca, city ci where pc.id_place = pl.id_place and pc.id_category = ca.id_category and pc.id_place = ? and pc.id_category = ? and pl.id_city = ci.id_city";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, idPlace);
+            sentence.setInt(2, idCategory);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */

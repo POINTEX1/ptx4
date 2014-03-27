@@ -10,7 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -32,15 +31,17 @@ public class DressCodeDAO {
 
     public Collection<DressCode> getAll() {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<DressCode> list = new ArrayList<DressCode>();
 
         try {
-            sentence = conexion.createStatement();
             String sql = "select * from dress_code";
-            result = sentence.executeQuery(sql);
+
+            sentence = conexion.prepareStatement(sql);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -79,15 +80,19 @@ public class DressCodeDAO {
 
     public DressCode findById(int id) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         DressCode reg = null;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from dress_code where id_dress_code = " + id + "";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from dress_code where id_dress_code = ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, id);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* definir objeto */
@@ -124,15 +129,19 @@ public class DressCodeDAO {
 
     public boolean findByName(String name) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         boolean find = false;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from dress_code where name_dress_code = '" + name + "'";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from dress_code where name_dress_code = ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setString(1, name);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 find = true;
@@ -162,15 +171,20 @@ public class DressCodeDAO {
 
     public boolean findByIdName(int id, String name) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         boolean find = false;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from dress_code where name_dress_code = '" + name + "' and id_dress_code <> " + id + "";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from dress_code where name_dress_code = ? and id_dress_code <> ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setString(1, name);
+            sentence.setInt(2, id);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 find = true;

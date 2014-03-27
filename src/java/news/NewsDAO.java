@@ -32,15 +32,19 @@ public class NewsDAO {
 
     public News findByNews(News news) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         News reg = null;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from news where id_news = " + news.getIdNews() + "";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from news where id_news = ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, news.getIdNews());
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -53,7 +57,6 @@ public class NewsDAO {
                 reg.setUrlImage(result.getString("url_image"));
                 reg.setDateBegin(result.getString("date_begin"));
                 reg.setDateEnd(result.getString("date_end"));
-
             }
 
         } catch (MySQLSyntaxErrorException ex) {
@@ -81,15 +84,17 @@ public class NewsDAO {
 
     public Collection<News> getAll() {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<News> list = new ArrayList<News>();
 
         try {
-            sentence = conexion.createStatement();
             String sql = "select * from news";
-            result = sentence.executeQuery(sql);
+
+            sentence = conexion.prepareStatement(sql);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -131,15 +136,21 @@ public class NewsDAO {
 
     public boolean validateDuplicate(News reg) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         boolean find = false;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from news where id_news <> " + reg.getIdNews() + " and tittle = '" + reg.getTittle() + "' and date_end > '" + reg.getDateBegin() + "' ";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from news where id_news <> ? and tittle = ? and date_end > ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, reg.getIdNews());
+            sentence.setString(2, reg.getTittle());
+            sentence.setString(3, reg.getDateBegin());
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* obtener resultSet */
@@ -255,7 +266,7 @@ public class NewsDAO {
 
             sentence.executeUpdate();
 
-       } catch (MySQLSyntaxErrorException ex) {
+        } catch (MySQLSyntaxErrorException ex) {
             System.out.println("Error de sintaxis en NewsDAO, update() : " + ex);
             throw new RuntimeException("MySQL Syntax Exception en NewsDAO, update() : " + ex);
         } catch (MySQLIntegrityConstraintViolationException ex) {

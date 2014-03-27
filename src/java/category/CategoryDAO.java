@@ -28,15 +28,17 @@ public class CategoryDAO {
 
     public Collection<Category> getAll() {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<Category> list = new ArrayList<Category>();
 
         try {
-            sentence = conexion.createStatement();
             String sql = "select * from category";
-            result = sentence.executeQuery(sql);
+
+            sentence = conexion.prepareStatement(sql);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -73,15 +75,19 @@ public class CategoryDAO {
 
     public Category findById(int idCategory) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Category reg = null;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from category where id_category = " + idCategory + "";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from category where id_category = ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, idCategory);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -116,15 +122,20 @@ public class CategoryDAO {
 
     public boolean findByName(int id, String name) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         boolean find = false;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from category where id_category <> " + id + " and name_category = '" + name + "' ";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from category where id_category <> ? and name_category = ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, id);
+            sentence.setString(2, name);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 find = true;

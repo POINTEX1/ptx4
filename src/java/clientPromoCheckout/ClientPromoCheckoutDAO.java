@@ -10,7 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -32,15 +31,17 @@ public class ClientPromoCheckoutDAO {
 
     public Collection<ClientPromoCheckout> getAll() {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<ClientPromoCheckout> list = new ArrayList<ClientPromoCheckout>();
 
         try {
-            sentence = conexion.createStatement();
             String sql = "select * from client_promo_check cpc, place pl, promo pr, user_card uc where uc.rut = cpc.rut and pr.id_promo = cpc.id_promo and pr.id_place = pl.id_place order by cpc.id_check desc";
-            result = sentence.executeQuery(sql);
+
+            sentence = conexion.prepareStatement(sql);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */

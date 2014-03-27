@@ -33,17 +33,17 @@ public class PointDAO {
 
     public Collection<Point> getAll() {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<Point> list = new ArrayList<Point>();
 
         try {
-            sentence = conexion.createStatement();
-
             String sql = "select * from point pt, user_card uc, place pl, city ci where pt.rut = uc.rut and pt.id_place = pl.id_place and pl.id_city = ci.id_city ";
 
-            result = sentence.executeQuery(sql);
+            sentence = conexion.prepareStatement(sql);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -87,15 +87,20 @@ public class PointDAO {
 
     public Point findByPoint(Point point) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Point reg = null;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from point pt, place pl where pt.id_place = " + point.getIdPlace() + " and pt.rut = " + point.getRut() + " and pt.id_place = pl.id_place ";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from point pt, place pl where pt.id_place = ? and pt.rut = ? and pt.id_place = pl.id_place ";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, point.getIdPlace());
+            sentence.setInt(2, point.getRut());
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* liberar recursos */
@@ -264,13 +269,14 @@ public class PointDAO {
         PreparedStatement sentence = null;
 
         try {
-            String sql = "update point set points = points + ? where id_place = ? and rut = ? ";
+            String sql = "update point set points = points + ?, total_point = total_point + ? where id_place = ? and rut = ? ";
 
             sentence = conexion.prepareStatement(sql);
 
             sentence.setInt(1, points);
-            sentence.setInt(2, reg.getIdPlace());
-            sentence.setInt(3, reg.getRut());
+            sentence.setInt(2, points);
+            sentence.setInt(3, reg.getIdPlace());
+            sentence.setInt(4, reg.getRut());
 
             sentence.executeUpdate();
 

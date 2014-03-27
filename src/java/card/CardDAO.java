@@ -32,15 +32,17 @@ public class CardDAO {
 
     public Collection<Card> getAll() {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<Card> list = new ArrayList<Card>();
 
         try {
-            sentence = conexion.createStatement();
             String sql = "select * from card";
-            result = sentence.executeQuery(sql);
+
+            sentence = conexion.prepareStatement(sql);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -81,14 +83,19 @@ public class CardDAO {
 
     public Card findByBarCode(int barcode) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Card reg = null;
+
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from card where bar_code = " + barcode + " ";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from card where bar_code = ? ";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, barcode);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objetos */
@@ -126,15 +133,20 @@ public class CardDAO {
 
     public Card findbyBarCodeJoin(Card card) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Card reg = null;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from card c, user_card u where c.rut = u.rut and c.bar_code = " + card.getBarCode() + " and u.rut = " + card.getRut() + "";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from card c, user_card u where c.rut = u.rut and c.bar_code = ? and u.rut = ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, card.getBarCode());
+            sentence.setInt(2, card.getRut());
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -175,15 +187,19 @@ public class CardDAO {
 
     public Card findbyRutJoin(Card card) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Card reg = null;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from user_card  where rut = " + card.getRut() + " ";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from user_card  where rut = ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, card.getRut());
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */

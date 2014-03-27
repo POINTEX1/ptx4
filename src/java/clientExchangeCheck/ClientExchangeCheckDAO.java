@@ -11,7 +11,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -32,13 +31,18 @@ public class ClientExchangeCheckDAO {
     }
 
     public Collection<ClientExchangeCheck> getAll() {
-        Statement sentence = null;
+
+        PreparedStatement sentence = null;
         ResultSet result = null;
+
         Collection<ClientExchangeCheck> list = new ArrayList<ClientExchangeCheck>();
+
         try {
-            sentence = conexion.createStatement();
             String sql = "select * from  client_exchange_check cec, user_card uc, exchangeable e, place pl  where uc.rut = cec.rut and e.id_exchangeable = cec.id_exchangeable and pl.id_place = e.id_place order by cec.id_exchangeable desc";
-            result = sentence.executeQuery(sql);
+
+            sentence = conexion.prepareStatement(sql);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /*Instanciar objeto*/
@@ -81,14 +85,18 @@ public class ClientExchangeCheckDAO {
 
     public ClientExchangeCheck findByRutIdCheck(ClientExchangeCheck reg) {
 
-        Statement sentence = null;
-
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from exchangeable e, user_card u, client_exchange_check cec where  cec.id_check=" + reg.getIdCheck() + " and cec.rut=" + reg.getRut() + "  and cec.id_exchangeable=e.id_exchangeable and cec.rut=u.rut ";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from exchangeable e, user_card u, client_exchange_check cec where  cec.id_check = ? and cec.rut = ? and cec.id_exchangeable = e.id_exchangeable and cec.rut = u.rut ";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, reg.getIdCheck());
+            sentence.setInt(2, reg.getRut());
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /*Instanciar el objeto*/
@@ -160,13 +168,13 @@ public class ClientExchangeCheckDAO {
 
         try {
             String sql = "delete from client_exchange_check where id_check = ?";
-            
+
             sentence = conexion.prepareStatement(sql);
-            
+
             sentence.setInt(1, id);
-            
+
             sentence.executeUpdate();
-            
+
         } catch (MySQLSyntaxErrorException ex) {
             System.out.println("Error de sintaxis en ClientExchangeCheckDAO, delete() : " + ex);
             throw new RuntimeException("MySQL Syntax Exception en ClientExchangeCheckDAO, delete() : " + ex);

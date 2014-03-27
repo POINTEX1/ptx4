@@ -33,15 +33,17 @@ public class UniversityDAO {
 
     public Collection<University> getAll() {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<University> list = new ArrayList<University>();
 
         try {
-            sentence = conexion.createStatement();
             String sql = "select * from university";
-            result = sentence.executeQuery(sql);
+
+            sentence = conexion.prepareStatement(sql);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -78,15 +80,19 @@ public class UniversityDAO {
 
     public University findById(int id) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         University reg = null;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from university where id_university = " + id + " ";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from university where id_university = ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, id);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -121,15 +127,20 @@ public class UniversityDAO {
 
     public boolean validateDuplicate(University reg) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         boolean find = false;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from university where id_university <> " + reg.getIdUniversity() + " and name_university = '" + reg.getNameUniversity() + "'";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from university where id_university <> ? and name_university = ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, reg.getIdUniversity());
+            sentence.setString(2, reg.getNameUniversity());
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 find = true;

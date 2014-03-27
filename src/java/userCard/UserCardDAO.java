@@ -32,15 +32,17 @@ public class UserCardDAO {
 
     public Collection<UserCard> getAll() {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<UserCard> list = new ArrayList<UserCard>();
 
         try {
-            sentence = conexion.createStatement();
             String sql = "select * from user_card uc, university un where uc.id_university = un.id_university ";
-            result = sentence.executeQuery(sql);
+
+            sentence = conexion.prepareStatement(sql);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -88,15 +90,19 @@ public class UserCardDAO {
 
     public UserCard findByRut(int rut) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         UserCard reg = null;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from user_card uc, university un where rut = " + rut + " and uc.id_university = un.id_university ";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from user_card uc, university un where rut = ? and uc.id_university = un.id_university ";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, rut);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -141,15 +147,20 @@ public class UserCardDAO {
 
     public boolean validateDuplicateEmail(UserCard reg) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         boolean find = false;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from user_card where rut <> " + reg.getRut() + " and email = '" + reg.getEmail() + "' ";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from user_card where rut <> ? and email = ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, reg.getRut());
+            sentence.setString(2, reg.getEmail());
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 find = true;
@@ -180,15 +191,19 @@ public class UserCardDAO {
 
     public Collection<UserCard> findByGender(int gender) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<UserCard> list = new ArrayList<UserCard>();
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from user_card where genre = " + gender + "";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from user_card where genre = ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, gender);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -274,37 +289,6 @@ public class UserCardDAO {
         }
     }
 
-    public void delete(int rut) {
-
-        PreparedStatement sentence = null;
-
-        try {
-            String sql = "delete from user_card where rut = ? ";
-
-            sentence = conexion.prepareStatement(sql);
-
-            sentence.setInt(1, rut);
-
-            sentence.executeUpdate();
-
-        } catch (MySQLSyntaxErrorException ex) {
-            System.out.println("Error de sintaxis en UserCardDAO, delete() : " + ex);
-            throw new RuntimeException("MySQL Syntax Exception en UserCardDAO, delete() : " + ex);
-        } catch (MySQLIntegrityConstraintViolationException ex) {
-            System.out.println("MySQL Excepción de integridad en UserCardDAO, delete() : " + ex);
-            throw new RuntimeException("MySQL Excepción de integridad en UserCardDAO, delete() : " + ex);
-        } catch (SQLException ex) {
-            System.out.println("MySQL Excepción inesperada en UserCardDAO, delete() : " + ex);
-            throw new RuntimeException("MySQL Excepción inesperada en UserCardDAO, delete() : " + ex);
-        } finally {
-            /* liberar recursos */
-            try {
-                sentence.close();
-            } catch (Exception noGestionar) {
-            }
-        }
-    }
-
     public void update(UserCard user) {
 
         PreparedStatement sentence = null;
@@ -322,8 +306,8 @@ public class UserCardDAO {
             sentence.setString(7, user.getFacebook());
             sentence.setString(8, user.getDateBirth());
             sentence.setInt(9, user.getIdUniversity());
-            sentence.setInt(10, user.getRut());            
-            
+            sentence.setInt(10, user.getRut());
+
             sentence.executeUpdate();
 
         } catch (MySQLSyntaxErrorException ex) {
@@ -367,6 +351,37 @@ public class UserCardDAO {
         } catch (SQLException ex) {
             System.out.println("MySQL Excepción inesperada en UserCardDAO, updatePassword() : " + ex);
             throw new RuntimeException("MySQL Excepción inesperada en UserCardDAO, updatePassword() : " + ex);
+        } finally {
+            /* liberar recursos */
+            try {
+                sentence.close();
+            } catch (Exception noGestionar) {
+            }
+        }
+    }
+
+    public void delete(int rut) {
+
+        PreparedStatement sentence = null;
+
+        try {
+            String sql = "delete from user_card where rut = ? ";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, rut);
+
+            sentence.executeUpdate();
+
+        } catch (MySQLSyntaxErrorException ex) {
+            System.out.println("Error de sintaxis en UserCardDAO, delete() : " + ex);
+            throw new RuntimeException("MySQL Syntax Exception en UserCardDAO, delete() : " + ex);
+        } catch (MySQLIntegrityConstraintViolationException ex) {
+            System.out.println("MySQL Excepción de integridad en UserCardDAO, delete() : " + ex);
+            throw new RuntimeException("MySQL Excepción de integridad en UserCardDAO, delete() : " + ex);
+        } catch (SQLException ex) {
+            System.out.println("MySQL Excepción inesperada en UserCardDAO, delete() : " + ex);
+            throw new RuntimeException("MySQL Excepción inesperada en UserCardDAO, delete() : " + ex);
         } finally {
             /* liberar recursos */
             try {

@@ -10,7 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -32,15 +31,17 @@ public class PlaceDAO {
 
     public Collection<Place> getAll() {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<Place> list = new ArrayList<Place>();
 
         try {
-            sentence = conexion.createStatement();
             String sql = "select * from place pl, city ci where pl.id_city = ci.id_city";
-            result = sentence.executeQuery(sql);
+
+            sentence = conexion.prepareStatement(sql);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto*/
@@ -82,15 +83,19 @@ public class PlaceDAO {
 
     public Place findById(int id) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Place reg = null;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from place pl, city ci where id_place = " + id + " and pl.id_city = ci.id_city";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from place pl, city ci where id_place = ? and pl.id_city = ci.id_city";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, id);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -133,15 +138,20 @@ public class PlaceDAO {
 
     public boolean validateDuplicate(Place reg) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         boolean find = false;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from place where name_place = '" + reg.getNamePlace() + "' and id_place <> " + reg.getIdPlace() + "";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from place where name_place = ? and id_place <> ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setString(1, reg.getNamePlace());
+            sentence.setInt(2, reg.getIdPlace());
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 find = true;

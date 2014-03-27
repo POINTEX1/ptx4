@@ -32,15 +32,17 @@ public class CityDAO {
 
     public Collection<City> getAll() {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<City> list = new ArrayList<City>();
 
-        try {
-            sentence = conexion.createStatement();
+        try {            
             String sql = "select * from city order by name_city asc";
-            result = sentence.executeQuery(sql);
+            
+            sentence = conexion.prepareStatement(sql);
+            
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -77,15 +79,20 @@ public class CityDAO {
 
     public boolean validateDuplicateName(City reg) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         boolean find = false;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from city where id_city <> " + reg.getIdCity() + " and name_city = '" + reg.getNameCity() + "'";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from city where id_city <> ? and name_city = ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, reg.getIdCity());
+            sentence.setString(2, reg.getNameCity());
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 find = true;
@@ -116,15 +123,19 @@ public class CityDAO {
 
     public City findbyIdCity(City city) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         City reg = null;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from city where id_city = " + city.getIdCity() + " ";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from city where id_city = ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, city.getIdCity());
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */

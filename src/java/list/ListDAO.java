@@ -10,7 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -32,15 +31,17 @@ public class ListDAO {
 
     public Collection<List> getAll() {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<List> list = new ArrayList<List>();
 
         try {
-            sentence = conexion.createStatement();
             String sql = "select * from list l, user_card uc, place pl, event e, card c where l.rut = uc.rut and l.rut = c.rut and pl.id_place = e.id_place and l.id_event = e.id_event group by l.id_event, l.rut order by l.create_time desc";
-            result = sentence.executeQuery(sql);
+
+            sentence = conexion.prepareStatement(sql);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */

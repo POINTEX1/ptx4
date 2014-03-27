@@ -177,9 +177,7 @@
                             <!--DATATABLE -->
                         </div>
                     </div>
-                </div><!-- /.row -->
-
-                <p>&nbsp;</p>
+                </div><!-- /.row -->                
 
                 <c:import var="footer" url="/footer.jsp" />
                 <c:out value="${footer}" escapeXml="false" />

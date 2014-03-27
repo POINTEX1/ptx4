@@ -32,15 +32,17 @@ public class AdminDAO {
 
     public Collection<Admin> getAll() {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<Admin> list = new ArrayList<Admin>();
 
-        try {
-            sentence = conexion.createStatement();
+        try {            
             String sql = "select * from admin";
-            result = sentence.executeQuery(sql);
+            
+            sentence = conexion.prepareStatement(sql);
+            
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instaciar objeto */
@@ -130,16 +132,20 @@ public class AdminDAO {
 
     public boolean validateDuplicateUsername(Admin reg) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         boolean find = false;
 
         try {
+            String sql = "select * from admin where id_admin <> ? and username = ?";
 
-            sentence = conexion.createStatement();
-            String sql = "select * from admin where id_admin <> " + reg.getIdAdmin() + " and username = '" + reg.getUsername() + "'";
-            result = sentence.executeQuery(sql);
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, reg.getIdAdmin());
+            sentence.setString(2, reg.getUsername());
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 find = true;
@@ -170,16 +176,21 @@ public class AdminDAO {
 
     public boolean validateDuplicateEmail(Admin reg) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         boolean find = false;
 
         try {
 
-            sentence = conexion.createStatement();
-            String sql = "select * from admin where id_admin <> " + reg.getIdAdmin() + " and email = '" + reg.getEmail() + "'";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from admin where id_admin <> ? and email = ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, reg.getIdAdmin());
+            sentence.setString(2, reg.getEmail());
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 find = true;
@@ -340,16 +351,20 @@ public class AdminDAO {
 
     public Admin findByUserPass(String username, String pwdCrypted) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Admin reg = null;
 
         try {
+            String sql = "select * from admin where username = ? and password = ?";
 
-            sentence = conexion.createStatement();
-            String sql = "select * from admin where username = '" + username + "' and password = '" + pwdCrypted + "'";
-            result = sentence.executeQuery(sql);
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setString(1, username);
+            sentence.setString(2, pwdCrypted);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */

@@ -14,10 +14,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 
-
 /**
  *
- * @author alexander
+ * @author alexander corrección: patricio
  */
 public class ClientNewsDAO {
 
@@ -31,17 +30,21 @@ public class ClientNewsDAO {
         this.conexion = conexion;
     }
 
-   public ClientNews findByClientNews(ClientNews cnews) {
+    public ClientNews findByClientNews(ClientNews cnews) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         ClientNews reg = null;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from client_news cn, user_card uc where cn.id_cnews = " + cnews.getIdClientNews() + " and cn.rut = uc.rut ";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from client_news cn, user_card uc where cn.id_cnews = ? and cn.rut = uc.rut ";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, cnews.getIdClientNews());
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -56,7 +59,6 @@ public class ClientNewsDAO {
                 reg.setLastName(result.getString("last_name"));
                 reg.setDateBegin(result.getString("date_begin"));
                 reg.setDateEnd(result.getString("date_end"));
-
             }
 
         } catch (MySQLSyntaxErrorException ex) {
@@ -84,19 +86,22 @@ public class ClientNewsDAO {
 
     public Collection<ClientNews> getAll() {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<ClientNews> list = new ArrayList<ClientNews>();
 
         try {
-            sentence = conexion.createStatement();
             String sql = "select * from client_news cn, user_card uc where cn.rut = uc.rut order by cn.id_cnews desc";
-            result = sentence.executeQuery(sql);
+
+            sentence = conexion.prepareStatement(sql);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
+                /* instanciar objeto */
                 ClientNews reg = new ClientNews();
-
+                /* obtener resultset */
                 reg.setIdClientNews(result.getInt("id_cnews"));
                 reg.setTittle(result.getString("tittle"));
                 reg.setNewsType(result.getInt("news_type"));
@@ -135,15 +140,22 @@ public class ClientNewsDAO {
 
     public boolean validateDuplicate(ClientNews reg) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         boolean find = false;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from client_news where id_cnews <> " + reg.getIdClientNews() + " and rut = " + reg.getRut() + " and tittle = '" + reg.getTittle() + "' and date_end > '" + reg.getDateBegin() + "' ";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from client_news where id_cnews <> ? and rut = ? and tittle = ? and date_end > ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, reg.getIdClientNews());
+            sentence.setInt(2, reg.getRut());
+            sentence.setString(3, reg.getTittle());
+            sentence.setString(4, reg.getDateBegin());
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* obtener resultSet */
@@ -258,7 +270,7 @@ public class ClientNewsDAO {
 
             sentence.executeUpdate();
 
-         } catch (MySQLSyntaxErrorException ex) {
+        } catch (MySQLSyntaxErrorException ex) {
             System.out.println("Error de sintaxis en ClientNewsDAO, update() : " + ex);
             throw new RuntimeException("MySQL Syntax Exception en ClientNewsDAO, update() : " + ex);
         } catch (MySQLIntegrityConstraintViolationException ex) {
@@ -276,4 +288,3 @@ public class ClientNewsDAO {
         }
     }
 }
-

@@ -32,15 +32,17 @@ public class EventDAO {
 
     public Collection<Event> getAll() {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<Event> list = new ArrayList<Event>();
 
         try {
-            sentence = conexion.createStatement();
             String sql = "select * from event e, place p, dress_code dc where e.id_dress_code = dc.id_dress_code and e.id_place = p.id_place order by e.id_event desc";
-            result = sentence.executeQuery(sql);
+
+            sentence = conexion.prepareStatement(sql);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -87,15 +89,22 @@ public class EventDAO {
 
     public boolean findDuplicate(Event reg) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         boolean find = false;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from event where id_place = " + reg.getIdPlace() + " and id_event <> " + reg.getIdEvent() + " and tittle = '" + reg.getTittle() + "' and date_end > '" + reg.getDateBegin() + "' and request = 1";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from event where id_place = ? and id_event <> ? and tittle = ? and date_end > ? and request <> 2";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, reg.getIdPlace());
+            sentence.setInt(2, reg.getIdEvent());
+            sentence.setString(3, reg.getTittle());
+            sentence.setString(4, reg.getDateBegin());
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* obtener resultSet */
@@ -127,15 +136,20 @@ public class EventDAO {
 
     public Event findByPlaceEvent(Event event) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Event reg = null;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from event e, place p, dress_code dc where e.id_place = " + event.getIdPlace() + " and e.id_event = " + event.getIdEvent() + " and e.id_place = p.id_place and e.id_dress_code = dc.id_dress_code";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from event e, place p, dress_code dc where e.id_place = ? and e.id_event = ? and e.id_place = p.id_place and e.id_dress_code = dc.id_dress_code";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, event.getIdPlace());
+            sentence.setInt(2, event.getIdEvent());
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -180,14 +194,18 @@ public class EventDAO {
 
     public Collection<Event> findByEvent(int idEvent) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<Event> list = new ArrayList<Event>();
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from event e, place pl, dress_code dc where e.id_dress_code = dc.id_dress_code and e.id_place = pl.id_place and e.id_event = " + idEvent + " and e.request = 1 ";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from event e, place pl, dress_code dc where e.id_dress_code = dc.id_dress_code and e.id_place = pl.id_place and e.id_event = ? and e.request <> 2 ";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, idEvent);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -235,14 +253,21 @@ public class EventDAO {
 
     public Collection<Event> findbyRangeDatePlace(String date1, int idPlace) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<Event> list = new ArrayList<Event>();
+
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from event e, place p, dress_code dc where e.id_dress_code = dc.id_dress_code and e.date_begin <= '" + date1 + "' and e.date_end >= '" + date1 + "' and e.id_place = " + idPlace + " and e.id_place = p.id_place and e.request = 1";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from event e, place p, dress_code dc where e.id_dress_code = dc.id_dress_code and e.date_begin <= ? and e.date_end >= ? and e.id_place = ? and e.id_place = p.id_place and e.request <> 2";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setString(1, date1);
+            sentence.setString(2, date1);
+            sentence.setInt(3, idPlace);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */

@@ -10,7 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -32,15 +31,17 @@ public class ParameterDAO {
 
     public Collection<Parameter> getAll() {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<Parameter> list = new ArrayList<Parameter>();
 
         try {
-            sentence = conexion.createStatement();
             String sql = "select * from parameter where id_parameter = 1";
-            result = sentence.executeQuery(sql);
+
+            sentence = conexion.prepareStatement(sql);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 Parameter reg = new Parameter();
@@ -63,7 +64,7 @@ public class ParameterDAO {
                 list.add(reg);
             }
 
-         } catch (MySQLSyntaxErrorException ex) {
+        } catch (MySQLSyntaxErrorException ex) {
             System.out.println("Error de sintaxis en ParameterDAO, getAll() : " + ex);
             throw new RuntimeException("MySQL Syntax Exception en ParameterDAO, getAll() : " + ex);
         } catch (MySQLIntegrityConstraintViolationException ex) {
@@ -109,7 +110,7 @@ public class ParameterDAO {
             sentence.setString(12, reg.getBanerTopFindPlace());
             sentence.setString(13, reg.getBanerTopConfiguration());
             sentence.setString(14, reg.getBanerTopSocialNetworks());
-            
+
             sentence.executeUpdate();
 
         } catch (MySQLSyntaxErrorException ex) {
@@ -130,4 +131,3 @@ public class ParameterDAO {
         }
     }
 }
-

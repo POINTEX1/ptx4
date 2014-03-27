@@ -33,15 +33,17 @@ public class PromoDAO {
 
     public Collection<Promo> getAll() {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<Promo> list = new ArrayList<Promo>();
 
         try {
-            sentence = conexion.createStatement();
             String sql = "select * from promo pr, place pl where pr.id_place = pl.id_place order by id_promo desc";
-            result = sentence.executeQuery(sql);
+
+            sentence = conexion.prepareStatement(sql);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -85,15 +87,22 @@ public class PromoDAO {
 
     public boolean validateDuplicate(Promo reg) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         boolean find = false;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from promo where id_place = " + reg.getIdPlace() + " and id_promo <> " + reg.getIdPromo() + " and tittle = '" + reg.getTittle() + "' and date_end > '" + reg.getDateBegin() + "' and request = 1";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from promo where id_place = ? and id_promo <> ? and tittle = ? and date_end > ? and request <> 2";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, reg.getIdPlace());
+            sentence.setInt(2, reg.getIdPromo());
+            sentence.setString(3, reg.getTittle());
+            sentence.setString(4, reg.getDateBegin());
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* obtener resultSet */
@@ -125,15 +134,19 @@ public class PromoDAO {
 
     public Promo findbyPromo(Promo promo) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Promo reg = null;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from promo pr, place pl where pr.id_place = pl.id_place and pr.id_promo = " + promo.getIdPromo() + "";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from promo pr, place pl where pr.id_place = pl.id_place and pr.id_promo = ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, promo.getIdPromo());
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -176,15 +189,19 @@ public class PromoDAO {
 
     public Promo findbyIdPromo(int id) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Promo reg = null;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from promo pr, place pl where pr.id_place = pl.id_place and pr.id_promo = " + id + "";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from promo pr, place pl where pr.id_place = pl.id_place and pr.id_promo = ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, id);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */

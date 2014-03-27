@@ -10,7 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -32,15 +31,19 @@ public class PlaceNewsDAO {
 
     public PlaceNews findByPlaceNews(int id) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         PlaceNews reg = null;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from place_news pn, place pl where pn.id_pnews = " + id + " and pn.id_place = pl.id_place ";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from place_news pn, place pl where pn.id_pnews = ? and pn.id_place = pl.id_place ";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, id);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -82,15 +85,17 @@ public class PlaceNewsDAO {
 
     public Collection<PlaceNews> getAll() {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<PlaceNews> list = new ArrayList<PlaceNews>();
 
         try {
-            sentence = conexion.createStatement();
             String sql = "select * from place_news pn, place pl where pn.id_place = pl.id_place order by pn.id_pnews desc";
-            result = sentence.executeQuery(sql);
+
+            sentence = conexion.prepareStatement(sql);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 PlaceNews reg = new PlaceNews();
@@ -133,15 +138,22 @@ public class PlaceNewsDAO {
 
     public boolean validateDuplicate(PlaceNews reg) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         boolean find = false;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from place_news where id_place = " + reg.getIdPlace() + " and id_pnews <> " + reg.getIdPlaceNews() + " and tittle = '" + reg.getTittle() + "' and date_end > '" + reg.getDateBegin() + "' ";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from place_news where id_place = ? and id_pnews <> ? and tittle = ? and date_end > ?";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, reg.getIdPlace());
+            sentence.setInt(2, reg.getIdPlaceNews());
+            sentence.setString(3, reg.getTittle());
+            sentence.setString(4, reg.getDateBegin());
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* obtener resultSet */

@@ -10,7 +10,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -32,15 +31,17 @@ public class ClientPromoDAO {
 
     public Collection<ClientPromo> getAll() {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         Collection<ClientPromo> list = new ArrayList<ClientPromo>();
 
-        try {
-            sentence = conexion.createStatement();
+        try {            
             String sql = "select * from client_promo cp, place pl, promo pr where pr.id_promo = cp.id_promo and pr.id_place = pl.id_place order by cp.id_promo desc";
-            result = sentence.executeQuery(sql);
+           
+            sentence = conexion.prepareStatement(sql);
+            
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
@@ -82,15 +83,20 @@ public class ClientPromoDAO {
 
     public ClientPromo findbyRutIdPromo(int rut, int idPromo) {
 
-        Statement sentence = null;
+        PreparedStatement sentence = null;
         ResultSet result = null;
 
         ClientPromo reg = null;
 
         try {
-            sentence = conexion.createStatement();
-            String sql = "select * from client_promo cp, place pl, promo pr where cp.id_promo = " + idPromo + " and cp.rut = " + rut + " and cp.id_promo = pr.id_promo and pl.id_place = pr.id_place";
-            result = sentence.executeQuery(sql);
+            String sql = "select * from client_promo cp, place pl, promo pr where cp.id_promo = ? and cp.rut = ? and cp.id_promo = pr.id_promo and pl.id_place = pr.id_place";
+
+            sentence = conexion.prepareStatement(sql);
+
+            sentence.setInt(1, idPromo);
+            sentence.setInt(2, rut);
+
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 /* instanciar objeto */
