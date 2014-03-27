@@ -225,7 +225,7 @@ public class EventGetServlet extends HttpServlet {
 
                                 /* comprobar mensaje de exito */
                                 if (msgOk == null || msgOk.trim().equals("")) {
-                                    request.setAttribute("msgOk", "Se encontró el registro!");
+                                    request.setAttribute("msg", "Se encontró el registro!");
                                 } else {
                                     request.setAttribute("msgOk", msgOk);
                                 }

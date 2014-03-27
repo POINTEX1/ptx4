@@ -55,6 +55,15 @@
                         </ol>                                        
                         <!-- /TITULO DE MANTENEDOR -->
 
+                        <!-- MENSAJE INFORMATIVO -->
+                        <c:if test="${msg != null}" >
+                            <div class="alert alert-dismissable alert-info">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msg}" /></strong>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE INFORMATIVO -->
+
                         <!-- MENSAJE DE ERROR DE RUT -->
                         <c:if test="${msgErrorRut != null}" >
                             <div class="alert alert-dismissable alert-danger">

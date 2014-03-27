@@ -164,14 +164,14 @@
                                 <!-- RUT -->
                             <c:if test="${msgErrorRut == null}">
                                 <div class="form-group">
-                                    <label>Rut (ex: 12345678-9)</label>
-                                    <input class="form-control" required="true" maxlength="12" name="rut" value="<c:out value="${cnews.rut}" />-<c:out value="${cnews.dv}" />">
+                                    <label>RUT</label>
+                                    <input class="form-control" required="true" maxlength="12" name="rut" value="<c:out value="${rut}" />">
                                 </div>
                             </c:if>
                             <c:if test="${msgErrorRut != null}">
                                 <div class="form-group has-error">
-                                    <label class="control-label" for="inputError">Rut (ex: 12345678-9)</label>
-                                    <input class="form-control" required="true" maxlength="12" name="rut" id="inputError" value="<c:out value="${cnews.rut}" />-<c:out value="${cnews.dv}" />">
+                                    <label class="control-label" for="inputError">RUT</label>
+                                    <input class="form-control" required="true" maxlength="12" name="rut" id="inputError" value="<c:out value="${rut}" />">
                                 </div>
                             </c:if> 
                             <!-- RUT --> 

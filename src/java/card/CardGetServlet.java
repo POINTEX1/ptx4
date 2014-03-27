@@ -76,7 +76,7 @@ public class CardGetServlet extends HttpServlet {
                 // RECIBIR Y COMPROBAR PARAMETROS
                 //////////////////////////////////////////
                 try {
-                    /* recibir atributos por PRG */                    
+                    /* recibir atributos por PRG */
                     String cardType = request.getParameter("cardType");
                     String dateBegin = request.getParameter("dateBegin");
                     String dateEnd = request.getParameter("dateEnd");
@@ -84,7 +84,7 @@ public class CardGetServlet extends HttpServlet {
                     /* recibir mensajes de PRG */
                     String msgOk = request.getParameter("msgOk");
                     String msgErrorRut = request.getParameter("msgErrorRut");
-                    String msgErrorDv = request.getParameter("msgErrorDv");                    
+                    String msgErrorDv = request.getParameter("msgErrorDv");
                     String msgErrorBarCode = request.getParameter("msgErrorBarCode");
                     String msgErrorType = request.getParameter("msgErrorType");
                     String msgErrorDateBegin = request.getParameter("msgErrorDateBegin");
@@ -161,7 +161,7 @@ public class CardGetServlet extends HttpServlet {
 
                             /* comprobar mensaje de exito */
                             if (msgOk == null || msgOk.trim().equals("")) {
-                                request.setAttribute("msgOk", "Se encontró el registro!");
+                                request.setAttribute("msg", "Se encontró el registro!");
                             } else {
                                 request.setAttribute("msgOk", msgOk);
                             }

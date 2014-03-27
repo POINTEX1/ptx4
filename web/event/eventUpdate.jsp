@@ -65,6 +65,15 @@
                             <li class="active"><i class="fa fa-edit"></i> Actualizar</li>
                         </ol>
                         <!-- /TITULO MANTENEDOR -->
+                        
+                        <!-- MENSAJE INFORMATIVO -->
+                        <c:if test="${msg != null}" >
+                            <div class="alert alert-dismissable alert-info">
+                                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                <strong><c:out value="${msg}" /></strong>
+                            </div>
+                        </c:if>
+                        <!-- /MENSAJE INFORMATIVO -->
 
                         <!-- MENSAJE DE EXITO -->
                         <c:if test="${msgOk != null}" >

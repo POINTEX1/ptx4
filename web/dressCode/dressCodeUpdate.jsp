@@ -59,7 +59,7 @@
 
                         <!-- MENSAJE INFORMATIVO -->
                         <c:if test="${msg != null}" >
-                            <div class="alert alert-info alert-dismissable">
+                            <div class="alert alert-info alert-info">
                                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                 <td><strong><c:out value="${msg}" /></strong></td>
                             </div>

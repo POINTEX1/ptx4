@@ -194,11 +194,7 @@ public class PlaceGetServlet extends HttpServlet {
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
-                    }
-
-                    //////////////////////////////////////////
-                    // ESTABLECER ATRIBUTOS AL REQUEST
-                    /////////////////////////////////////////
+                    }                
 
                     /* obtener listado de ciudades */
                     try {

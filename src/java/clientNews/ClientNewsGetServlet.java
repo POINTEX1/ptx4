@@ -169,7 +169,7 @@ public class ClientNewsGetServlet extends HttpServlet {
                                 }
 
                                 if (msgOk == null || msgOk.trim().equals("")) {
-                                    request.setAttribute("msgOk", "El registro ha sido encontrado!");
+                                    request.setAttribute("msg", "El registro ha sido encontrado!");
                                 } else {
                                     request.setAttribute("msgOk", msgOk);
                                 }

@@ -139,10 +139,8 @@ public class AdminGetServlet extends HttpServlet {
 
                                 /* mensaje de exito */
                                 if (msgOk == null || msgOk.trim().equals("")) {
-                                    /* al encontrar */
-                                    request.setAttribute("msgOk", "Se encontró el registro!");
+                                    request.setAttribute("msg", "Se encontró el registro!");
                                 } else {
-                                    /* al actualizar */
                                     request.setAttribute("msgOk", msgOk);
                                 }
                             } else {
