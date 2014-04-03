@@ -338,7 +338,7 @@ public class UserCardDAO {
             sentence = conexion.prepareStatement(sql);
 
             sentence.setString(1, user.getPassword());
-            sentence.setInt(2, user.getRut());
+            sentence.setInt(2, user.getRut());            
 
             sentence.executeUpdate();
 

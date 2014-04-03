@@ -74,46 +74,176 @@ public class ParameterGetServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
+                    ////////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETOS
+                    ////////////////////////////////////
 
-                    Parameter reg = null;
-                    try {
+                    /* recibir atributos por PRG */
+                    String waitingCard = request.getParameter("waitingCard");
+                    String numberEvent = request.getParameter("numberEvent");
+                    String numberPromo = request.getParameter("numberPromo");
+                    String banerCentralEvent = request.getParameter("banerCentralEvent");
+                    String banerCentralPromo = request.getParameter("banerCentralPromo");
+                    String banerCentralExchangeable = request.getParameter("banerCentralExchangeable");
+                    String banerCentralVip = request.getParameter("banerCentralVip");
+                    String banerCentralAboutUs = request.getParameter("banerCentralAboutUs");
+                    String banerTopEvent = request.getParameter("banerTopEvent");
+                    String banerTopPromo = request.getParameter("banerTopPromo");
+                    String banerTopMyPlace = request.getParameter("banerTopMyPlace");
+                    String banerTopFindPlace = request.getParameter("banerTopFindPlace");
+                    String banerTopConfiguration = request.getParameter("banerTopConfiguration");
+                    String banerTopSocialNetworks = request.getParameter("banerTopSocialNetworks");
+
+                    /* recibir mensajes por PRG */
+                    String msgErrorWaitingCard = request.getParameter("msgErrorWaitingCard");
+                    String msgErrorNumberEvent = request.getParameter("msgErrorNumberEvent");
+                    String msgErrorNumberPromo = request.getParameter("msgErrorNumberPromo");
+                    String msgErrorBanerCentralEvent = request.getParameter("msgErrorBanerCentralEvent");
+                    String msgErrorBanerCentralPromo = request.getParameter("msgErrorBanerCentralPromo");
+                    String msgErrorBanerCentralExchange = request.getParameter("msgErrorBanerCentralExchange");
+                    String msgErrorBanerCentralVip = request.getParameter("msgErrorBanerCentralVip");
+                    String msgErrorBanerCentralAboutUs = request.getParameter("msgErrorBanerCentralAboutUs");
+                    String msgErrorBanerTopEvent = request.getParameter("msgErrorBanerTopEvent");
+                    String msgErrorBanerTopPromo = request.getParameter("msgErrorBanerTopPromo");
+                    String msgErrorBanerTopMyPlace = request.getParameter("msgErrorBanerTopMyPlace");
+                    String msgErrorBanerTopFindPlace = request.getParameter("msgErrorBanerTopFindPlace");
+                    String msgErrorBanerTopConfiguration = request.getParameter("msgErrorBanerTopConfiguration");
+                    String msgErrorBanerTopSocialNetworks = request.getParameter("msgErrorBanerTopSocialNetworks");
+                    String msgOk = request.getParameter("msgOk");
+                    String msgErrorUpdate = request.getParameter("msgErrorUpdate");
 
 
-                        ////////////////////////////////////////
-                        // OBTENER REGISTROS DE DAO's
-                        ////////////////////////////////////////
+                    /* obtener parametros de configuracion */
+                    Parameter reg = parameterDAO.getAll();
 
-                        Collection<Parameter> listParameter = parameterDAO.getAll();
-
-                        if (listParameter.size() > 0) {
-                            for (Parameter aux : listParameter) {
-                                reg = aux;
-                                request.setAttribute("waitingCard", reg.getWaitingCard());
-                                request.setAttribute("numberEvent", reg.getNumberEvent());
-                                request.setAttribute("numberPromo", reg.getNumberPromo());
-                                request.setAttribute("banerCentralEvent", reg.getBanerCentralEvent());
-                                request.setAttribute("banerCentralPromo", reg.getBanerCentralPromo());
-                                request.setAttribute("banerCentralExchangeable", reg.getBanerCentralExchangeable());
-                                request.setAttribute("banerCentralVip", reg.getBanerCentralVip());
-                                request.setAttribute("banerCentralAboutUs", reg.getBanerCentralAboutUs());
-                                request.setAttribute("banerTopEvent", reg.getBanerTopEvent());
-                                request.setAttribute("banerTopPromo", reg.getBanerTopPromo());
-                                request.setAttribute("banerTopMyPlace", reg.getBanerTopMyPlace());
-                                request.setAttribute("banerTopFindPlace", reg.getBanerTopFindPlace());
-                                request.setAttribute("banerTopConfiguration", reg.getBanerTopConfiguration());
-                                request.setAttribute("banerTopSocialNetworks", reg.getBanerTopSocialNetworks());
-                                request.setAttribute("msg", "registros encontrados en la base de datos.");
-                            }
-                        } else {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
-                        }
-
-
-
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("/parameter/parameterUpdate.jsp").forward(request, response);
+                    /* comprobar waiting card */
+                    if (msgErrorWaitingCard == null || msgErrorWaitingCard.trim().equals("")) {
+                        request.setAttribute("waitingCard", reg.getWaitingCard());
+                    } else {
+                        request.setAttribute("waitingCard", waitingCard);
+                        request.setAttribute("msgErrorWaitingCard", msgErrorWaitingCard);
                     }
+
+                    /* comprobar number event */
+                    if (msgErrorNumberEvent == null || msgErrorNumberEvent.trim().equals("")) {
+                        request.setAttribute("numberEvent", reg.getNumberEvent());
+                    } else {
+                        request.setAttribute("numberEvent", numberEvent);
+                        request.setAttribute("msgErrorNumberEvent", msgErrorNumberEvent);
+                    }
+
+                    /* comprobar number promo */
+                    if (msgErrorNumberPromo == null || msgErrorNumberPromo.trim().equals("")) {
+                        request.setAttribute("numberPromo", reg.getNumberPromo());
+                    } else {
+                        request.setAttribute("numberPromo", numberPromo);
+                        request.setAttribute("msgErrorNumberPromo", msgErrorNumberPromo);
+                    }
+
+                    /* comprobar baner central event */
+                    if (msgErrorBanerCentralEvent == null || msgErrorBanerCentralEvent.trim().equals("")) {
+                        request.setAttribute("banerCentralEvent", reg.getBanerCentralEvent());
+                    } else {
+                        request.setAttribute("banerCentralEvent", banerCentralEvent);
+                        request.setAttribute("msgErrorBanerCentralEvent", msgErrorBanerCentralEvent);
+                    }
+
+                    /* comprobar baner central promo */
+                    if (msgErrorBanerCentralPromo == null || msgErrorBanerCentralPromo.trim().equals("")) {
+                        request.setAttribute("banerCentralPromo", reg.getBanerCentralPromo());
+                    } else {
+                        request.setAttribute("banerCentralPromo", banerCentralPromo);
+                        request.setAttribute("msgErrorBanerCentralPromo", msgErrorBanerCentralPromo);
+                    }
+
+                    /* comprobar baner central exchangeable */
+                    if (msgErrorBanerCentralExchange == null || msgErrorBanerCentralExchange.trim().equals("")) {
+                        request.setAttribute("banerCentralExchange", reg.getBanerCentralExchangeable());
+                    } else {
+                        request.setAttribute("banerCentralExchange", banerCentralExchangeable);
+                        request.setAttribute("msgErrorBanerCentralExchange", msgErrorBanerCentralExchange);
+                    }
+
+                    /* comprobar baner central vip */
+                    if (msgErrorBanerCentralVip == null || msgErrorBanerCentralVip.trim().equals("")) {
+                        request.setAttribute("banerCentralVip", reg.getBanerCentralVip());
+                    } else {
+                        request.setAttribute("banerCentralVip", banerCentralVip);
+                        request.setAttribute("msgErrorBanerCentralVip", msgErrorBanerCentralVip);
+                    }
+
+                    /* comprobar baner central about us */
+                    if (msgErrorBanerCentralAboutUs == null || msgErrorBanerCentralAboutUs.trim().equals("")) {
+                        request.setAttribute("banerCentralAboutUs", reg.getBanerCentralAboutUs());
+                    } else {
+                        request.setAttribute("banerCentralAboutUs", banerCentralAboutUs);
+                        request.setAttribute("msgErrorBanerCentralAboutUs", msgErrorBanerCentralAboutUs);
+                    }
+
+                    /* comprobar baner top event */
+                    if (msgErrorBanerTopEvent == null || msgErrorBanerTopEvent.trim().equals("")) {
+                        request.setAttribute("banerTopEvent", reg.getBanerTopEvent());
+                    } else {
+                        request.setAttribute("banerTopEvent", banerTopEvent);
+                        request.setAttribute("msgErrorBanerTopEvent", msgErrorBanerTopEvent);
+                    }
+
+                    /* comprobar baner top promo */
+                    if (msgErrorBanerTopPromo == null || msgErrorBanerTopPromo.trim().equals("")) {
+                        request.setAttribute("banerTopPromo", reg.getBanerTopPromo());
+                    } else {
+                        request.setAttribute("banerTopPromo", banerTopPromo);
+                        request.setAttribute("msgErrorBanerTopPromo", msgErrorBanerTopPromo);
+                    }
+
+                    /* comprobar baner top my place */
+                    if (msgErrorBanerTopMyPlace == null || msgErrorBanerTopMyPlace.trim().equals("")) {
+                        request.setAttribute("banerTopMyPlace", reg.getBanerTopMyPlace());
+                    } else {
+                        request.setAttribute("banerTopMyPlace", banerTopMyPlace);
+                        request.setAttribute("msgErrorBanerTopMyPlace", msgErrorBanerTopMyPlace);
+                    }
+
+                    /* comprobar baner top find place */
+                    if (msgErrorBanerTopFindPlace == null || msgErrorBanerTopFindPlace.trim().equals("")) {
+                        request.setAttribute("banerTopFindPlace", reg.getBanerTopFindPlace());
+                    } else {
+                        request.setAttribute("banerTopFindPlace", banerTopFindPlace);
+                        request.setAttribute("msgErrorBanerTopFindPlace", msgErrorBanerTopFindPlace);
+                    }
+
+                    /* comprobar baner top configuration */
+                    if (msgErrorBanerTopConfiguration == null || msgErrorBanerTopConfiguration.trim().equals("")) {
+                        request.setAttribute("banerTopConfiguration", reg.getBanerTopConfiguration());
+                    } else {
+                        request.setAttribute("banerTopConfiguration", banerTopConfiguration);
+                        request.setAttribute("msgErrorBanerTopConfiguration", msgErrorBanerTopConfiguration);
+                    }
+
+                    /* comprobar baner top social networks */
+                    if (msgErrorBanerTopSocialNetworks == null || msgErrorBanerTopSocialNetworks.trim().equals("")) {
+                        request.setAttribute("banerTopSocialNetworks", reg.getBanerTopSocialNetworks());
+                    } else {
+                        request.setAttribute("banerTopSocialNetworks", banerTopSocialNetworks);
+                        request.setAttribute("msgErrorBanerTopSocialNetworks", msgErrorBanerTopSocialNetworks);
+                    }
+
+                    /* comprobar error de actualizacion */
+                    if (msgErrorUpdate == null || msgErrorUpdate.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgErrorUpdate", msgErrorUpdate);
+                    }
+
+                    /* comprobar mensaje de exito */
+                    if (msgOk == null || msgOk.trim().equals("")) {
+                        request.setAttribute("msg", "actualice los datos de configuración.");
+                    } else {
+                        request.setAttribute("msgOk", msgOk);
+                    }
+
+                    /* despachar a la vista */
+                    request.getRequestDispatcher("/parameter/parameterUpdate.jsp").forward(request, response);
+
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
@@ -123,6 +253,7 @@ public class ParameterGetServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

@@ -29,12 +29,12 @@ public class ParameterDAO {
         this.conexion = conexion;
     }
 
-    public Collection<Parameter> getAll() {
+    public Parameter getAll() {
 
         PreparedStatement sentence = null;
         ResultSet result = null;
 
-        Collection<Parameter> list = new ArrayList<Parameter>();
+        Parameter reg = null;
 
         try {
             String sql = "select * from parameter where id_parameter = 1";
@@ -44,7 +44,7 @@ public class ParameterDAO {
             result = sentence.executeQuery();
 
             while (result.next()) {
-                Parameter reg = new Parameter();
+                reg = new Parameter();
                 reg.setWaitingCard(result.getInt("id_parameter"));
                 reg.setWaitingCard(result.getInt("waiting_card"));
                 reg.setNumberEvent(result.getInt("number_event"));
@@ -60,8 +60,6 @@ public class ParameterDAO {
                 reg.setBanerTopFindPlace(result.getString("baner_top_fplace"));
                 reg.setBanerTopConfiguration(result.getString("baner_top_configuration"));
                 reg.setBanerTopSocialNetworks(result.getString("baner_top_social_networks"));
-
-                list.add(reg);
             }
 
         } catch (MySQLSyntaxErrorException ex) {
@@ -84,7 +82,7 @@ public class ParameterDAO {
             } catch (Exception noGestionar) {
             }
         }
-        return list;
+        return reg;
     }
 
     public void update(Parameter reg) {

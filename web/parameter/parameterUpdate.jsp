@@ -30,7 +30,7 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
-        
+
         <!-- disabledButton -->
         <script src="js/disabledButton.js"></script>
 
@@ -49,7 +49,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <!-- TITULO MANTENEDOR -->
-                        <h1>Mantenedor <small> Actualizar</small></h1>
+                        <h1>Configuración <small> Actualizar</small></h1>
                         <ol class="breadcrumb">
                             <li class="active"><i class="fa fa-edit"></i> Actualizar</li>
                         </ol>
@@ -199,14 +199,14 @@
                         </c:if>
                         <!-- /MENSAJE DE ERROR DE BANER SUPERIOR DE REDES SOCIALES -->
 
-                        <!--- MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO --->
-                        <c:if test="${msgErrorFound != null}" >
+                        <!--- MENSAJE DE ERROR DE REGISTRO ACTUALIZADO --->
+                        <c:if test="${msgErrorUpdate != null}" >
                             <div class="alert alert-dismissable alert-danger">
                                 <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorFound}" /></strong></br>
+                                <strong><c:out value="${msgErrorUpdate}" /></strong></br>
                             </div>
                         </c:if>
-                        <!--- /MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO --->
+                        <!--- /MENSAJE DE ERROR DE REGISTRO ACTUALIZADO --->
                     </div>
                     <div class="col-lg-4">
                         <!-- FORMULARIO -->
@@ -287,16 +287,16 @@
                             <!-- /BANER CENTRAL PROMOCION -->
 
                             <!-- BANER CENTRAL DE PRODUCTOS CANEJABLES -->
-                            <c:if test="${msgErrorBanerCentralExchangeable == null}" >
+                            <c:if test="${msgErrorBanerCentralExchange == null}" >
                                 <div class="form-group">
                                     <label>Baner central de productos canjeables (Url Image)</label>
-                                    <input class="form-control" required="true" maxlength="200" name="banerCentralExchangeable" value="<c:out value="${banerCentralExchangeable}" />">
+                                    <input class="form-control" required="true" maxlength="200" name="banerCentralExchange" value="<c:out value="${banerCentralExchange}" />">
                                 </div>
                             </c:if>
-                            <c:if test="${msgErrorBanerCentralExchangeable != null}" >
+                            <c:if test="${msgErrorBanerCentralExchange != null}" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Baner central de productos canjeables (Url Image)</label>
-                                    <input class="form-control" required="true" maxlength="200" id="inputError" name="banerCentralExchangeable" value="<c:out value="${banerCentralExchangeable}" />">
+                                    <input class="form-control" required="true" maxlength="200" id="inputError" name="banerCentralExchange" value="<c:out value="${banerCentralExchange}" />">
                                 </div>
                             </c:if>
                             <!-- BANER CENTRAL DE PRODUCTOS CANEJABLES -->
@@ -323,7 +323,7 @@
                                     <input class="form-control" required="true" maxlength="200" name="banerCentralAboutUs" value="<c:out value="${banerCentralAboutUs}" />">
                                 </div>
                             </c:if>
-                            <c:if test="${msgErrorBanerCentralVip != null}" >
+                            <c:if test="${msgErrorBanerCentralAboutUs != null}" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Baner central de sobre nostros (Url Image)</label>
                                     <input class="form-control" required="true" maxlength="200" id="inputError" name="banerCentralAboutUs" value="<c:out value="${banerCentralAboutUs}" />">

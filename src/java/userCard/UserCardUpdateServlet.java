@@ -113,9 +113,7 @@ public class UserCardUpdateServlet extends HttpServlet {
                 url += "&gender=" + gender;
                 url += "&facebook=" + facebook;
                 url += "&dateBirth=" + dateBirth;
-                url += "&idUniversity=" + sidUniversity;
-                url += "&pwd1=" + pwd1;
-                url += "&pwd2=" + pwd2;
+                url += "&idUniversity=" + sidUniversity;                
 
                 UserCard userCardReg = new UserCard();
 
@@ -255,11 +253,11 @@ public class UserCardUpdateServlet extends HttpServlet {
                                 url += "&msgErrorPwd2=Error: La password debe poseer al menos 6 caracteres.";
                                 error = true;
                             }
-
+                                                        
                             if (!error) {
                                 /* encriptar password */
                                 userCardReg.setPassword(StringMD.getStringMessageDigest(pwd1, StringMD.MD5));
-                                usercardDAO.updatePassword(userCardReg);
+                                usercardDAO.updatePassword(userCardReg);                                
                                 url += "&msgOk=Registro actualizado exitosamente!";
                             }
                         }

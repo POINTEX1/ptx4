@@ -158,6 +158,13 @@ public class UserCardGetServlet extends HttpServlet {
                                     request.setAttribute("msgErrorEmail", msgErrorEmail);
                                 }
 
+                                /* comprobar facebook */
+                                if (msgErrorFacebook == null || msgErrorFacebook.trim().equals("")) {
+                                    request.setAttribute("facebook", reg.getFacebook());
+                                } else {
+                                    request.setAttribute("msgErrorFacebook", msgErrorFacebook);
+                                }
+
                                 /* comprobar mensajes de exito */
                                 if (msgOk == null || msgOk.trim().equals("")) {
                                     request.setAttribute("msg", "Se encontró el registro!");
