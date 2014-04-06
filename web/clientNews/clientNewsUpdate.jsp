@@ -30,7 +30,7 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
-        
+
         <!-- disabledButton -->
         <script src="js/disabledButton.js"></script>
 
@@ -51,93 +51,16 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <!-- TITULO MANTENEDOR -->
-                        <h1>Mantenedor <small> Noticias</small></h1>
+                        <h1>Mantenedor <small> Noticias Cliente</small></h1>
                         <ol class="breadcrumb">
                             <li><a href="ClientNewsMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                             <li class="active"><i class="fa fa-edit"></i> Actualizar</li>
                         </ol>
                         <!-- /TITULO MANTENEDOR -->
-                        
-                        <!-- MENSAJE INFORMATIVO -->
-                        <c:if test="${msg != null}" >
-                            <div class="alert alert-dismissable alert-info">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msg}" /></strong>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE INFORMATIVO -->
 
-                        <!-- MENSAJE DE EXITO -->
-                        <c:if test="${msgOk != null}" >
-                            <div class="alert alert-dismissable alert-success">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgOk}" /></strong>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE EXITO -->
-
-                        <!-- MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
-                        <c:if test="${msgErrorFound != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorFound}" /></strong></br>
-                            </div>
-                        </c:if> 
-                        <!-- /MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
-
-                        <!-- MENSAJE DE ERROR DE REGISTRO DUPLICADO -->
-                        <c:if test="${msgErrorDup != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorDup}" /></strong></br>
-                            </div>
-                        </c:if> 
-                        <!-- /MENSAJE DE ERROR DE REGISTRO DUPLICADO -->
-
-                        <!-- MENSAJE DE ERROR DE TITULO -->
-                        <c:if test="${msgErrorTittle != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorTittle}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE TITULO -->
-
-                        <!-- MENSAJE DE ERROR DE ID CLIENT NEWS -->
-                        <c:if test="${msgErrorIdClientNews != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorIdClientNews}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE ID CLIENT NEWS -->
-
-                        <!-- MENSAJE DE ERROR DE RUT -->
-                        <c:if test="${msgErrorRut != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorRut}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE RUT -->
-
-                        <!-- MENSAJE DE ERROR DE TIPO DE NOTICIA -->
-                        <c:if test="${msgErrorNewsType != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorNewsType}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE TIPO DE NOTICIA -->
-
-                        <!-- MENSAJE DE ERROR DE FECHA -->
-                        <c:if test="${msgErrorDate != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorDate}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE FECHA -->
+                        <!-- MENSAJES -->
+                        <c:import var="formMsg" url="/formMsg.jsp" />
+                        <c:out value="${formMsg}" escapeXml="false" />
                     </div>
                     <div class="col-lg-4">
                         <!-- FORMULARIO -->
@@ -192,50 +115,34 @@
                                 </div>
                                 <!-- /TIPO DE NOTICIA -->
 
-                                <!-- FECHAS -->
-                            <c:choose>
-                                <c:when test="${msgErrorDup == null && msgErrorDate == null }">
-                                    <div class="form-group">
-                                        <label>Fecha de Inicio</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateBegin" value="<c:out value="${dateBegin}" />">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Fecha de Término</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateEnd" value="<c:out value="${dateEnd}" />">
-                                    </div>
-                                </c:when>
-                                <c:when test="${msgErrorDup != null && msgErrorDate == null }">
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">Fecha de Inicio</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateBegin" id="inputError" value="<c:out value="${dateBegin}" />">
-                                    </div>
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">Fecha de Término</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateEnd" id="inputError" value="<c:out value="${dateEnd}" />">
-                                    </div>
-                                </c:when>
-                                <c:when test="${msgErrorDup == null && msgErrorDate != null }">
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">Fecha de Inicio</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateBegin" id="inputError" value="<c:out value="${dateBegin}" />">
-                                    </div>
-                                    <div class="form-group has-error">
-                                        <label class="control-label" for="inputError">Fecha de Término</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateEnd" id="inputError" value="<c:out value="${dateEnd}" />">
-                                    </div>
-                                </c:when>
-                                <c:otherwise>
-                                    <div class="form-group">
-                                        <label>Fecha de Inicio</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateBegin" value="<c:out value="${dateBegin}" />">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Fecha de Término</label>
-                                        <input class="form-control" type="datetime-local" required="true" name="dateEnd" value="<c:out value="${dateEnd}" />">
-                                    </div>
-                                </c:otherwise>
-                            </c:choose>
-                            <!-- /FECHAS -->
+                                <!-- FECHA DE INICIO -->
+                            <c:if test="${msgErrorDup == null && msgErrorDate == null && msgErrorDateBegin == null}">
+                                <div class="form-group">
+                                    <label>Fecha de Inicio</label>
+                                    <input class="form-control" type="datetime-local" required="true" name="dateBegin" value="<c:out value="${dateBegin}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorDup != null || msgErrorDate != null || msgErrorDateBegin != null}">
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Fecha de Inicio</label>
+                                    <input class="form-control" type="datetime-local" required="true" name="dateBegin" id="inputError" value="<c:out value="${dateBegin}" />">
+                                </div>
+                            </c:if>
+
+                            <!-- FECHA DE TERMINO -->
+                            <c:if test="${msgErrorDup == null  && msgErrorDate == null && msgErrorDateEnd == null}">
+                                <div class="form-group">
+                                    <label>Fecha de Término</label>
+                                    <input class="form-control" type="datetime-local" required="true" name="dateEnd" value="<c:out value="${dateEnd}" />">
+                                </div>
+                            </c:if>                            
+                            <c:if test="${msgErrorDup != null || msgErrorDate != null || msgErrorDateEnd != null}">
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Fecha de Término</label>
+                                    <input class="form-control" type="datetime-local" required="true" name="dateEnd" id="inputError" value="<c:out value="${dateEnd}" />">
+                                </div>
+                            </c:if>
+
                             <button type="submit" name="btnUpdate" class="btn btn-default" onclick="disabledButtonUpdate();"><strong><font size="1"><object name="btn1">ACTUALIZAR</object><object name="btn2" hidden="true">ACTUALIZANDO...</object></font></strong></button>
                         </form>
                         <!-- /FORMULARIO -->           

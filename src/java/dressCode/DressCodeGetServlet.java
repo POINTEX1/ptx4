@@ -4,8 +4,12 @@
  */
 package dressCode;
 
+import Helpers.Message;
+import Helpers.MessageList;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -42,19 +46,18 @@ public class DressCodeGetServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        //////////////////////////
+        // ESTABLECER CONEXION
+        //////////////////////////
         try {
-            //////////////////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////////////////
-
             conexion = ds.getConnection();
 
             DressCodeDAO dressCodeDAO = new DressCodeDAO();
             dressCodeDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            /////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            /////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -68,41 +71,45 @@ public class DressCodeGetServlet extends HttpServlet {
                 request.setAttribute("userJsp", userJsp);
                 request.setAttribute("access", access);
 
-                try {
-                    /////////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    //////////////////////////////////////// 
+                ////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                ////////////////////////////////////
 
-                    /* recibir parametros de PRG */
-                    String nameDressCode = request.getParameter("nameDressCode");
-                    String menDetails = request.getParameter("menDetails");
-                    String womenDetails = request.getParameter("womenDetails");
-                    String urlImage = request.getParameter("urlImage");
+                /* recibir parametros de PRG */
+                String nameDressCode = request.getParameter("nameDressCode");
+                String menDetails = request.getParameter("menDetails");
+                String womenDetails = request.getParameter("womenDetails");
+                String urlImage = request.getParameter("urlImage");
 
-                    /* recibir mensaje de PRG */
-                    String msgErrorNameDressCode = request.getParameter("msgErrorNameDressCode");
-                    String msgErrorMenDetails = request.getParameter("msgErrorMenDetails");
-                    String msgErrorWomenDetails = request.getParameter("msgErrorWomenDetails");
-                    String msgErrorUrlImage = request.getParameter("msgErrorUrlImage");
-                    String msgOk = request.getParameter("msgOk");
+                /* recibir mensaje de PRG */
+                String msgErrorNameDressCode = request.getParameter("msgErrorNameDressCode");
+                String msgErrorMenDetails = request.getParameter("msgErrorMenDetails");
+                String msgErrorWomenDetails = request.getParameter("msgErrorWomenDetails");
+                String msgErrorUrlImage = request.getParameter("msgErrorUrlImage");
+                String msgOk = request.getParameter("msgOk");
 
-                    /* parametros de busqueda */
-                    String sidDressCode = request.getParameter("idDressCode");
+                /* parametros de busqueda */
+                String sidDressCode = request.getParameter("idDressCode");
 
-                    DressCode dressCode = new DressCode();
+                /* instanciar codigo de vestir */
+                DressCode dressCode = new DressCode();
 
-                    /* comprobar id dressCode */
-                    if (sidDressCode == null || sidDressCode.trim().equals("")) {
-                        request.setAttribute("msgErrorId", "Error al recibir parámetro");
-                    } else {
-                        try {
-                            dressCode.setIdDressCode(Integer.parseInt(sidDressCode));
-                        } catch (NumberFormatException n) {
-                        }
-                        /* buscar dressCode */
+                /* instanciar lista de mensajes */
+                Collection<Message> msgList = new ArrayList<Message>();
+
+                /* comprobar id dressCode */
+                if (sidDressCode == null || sidDressCode.trim().equals("")) {
+                } else {
+                    /*establecer id */
+                    try {
+                        dressCode.setIdDressCode(Integer.parseInt(sidDressCode));
+                    } catch (NumberFormatException n) {
+                    }
+                    /* buscar dressCode */
+                    try {
                         DressCode reg = dressCodeDAO.findById(dressCode.getIdDressCode());
-                        if (reg != null) {
 
+                        if (reg != null) {
                             /* obtener atributos del dao */
                             request.setAttribute("idDressCode", reg.getIdDressCode());
 
@@ -110,7 +117,8 @@ public class DressCodeGetServlet extends HttpServlet {
                             if (msgErrorNameDressCode == null || msgErrorNameDressCode.trim().equals("")) {
                                 request.setAttribute("nameDressCode", reg.getNameDressCode());
                             } else {
-                                request.setAttribute("msgErrorNameDressCode", msgErrorNameDressCode);
+                                request.setAttribute("msgErrorNameDressCode", true);
+                                msgList.add(MessageList.addMessage(msgErrorNameDressCode));
                                 request.setAttribute("nameDressCode", nameDressCode);
                             }
 
@@ -118,7 +126,8 @@ public class DressCodeGetServlet extends HttpServlet {
                             if (msgErrorMenDetails == null || msgErrorMenDetails.trim().equals("")) {
                                 request.setAttribute("menDetails", reg.getMenDetails());
                             } else {
-                                request.setAttribute("msgErrorMenDetails", msgErrorMenDetails);
+                                request.setAttribute("msgErrorMenDetails", true);
+                                msgList.add(MessageList.addMessage(msgErrorMenDetails));
                                 request.setAttribute("menDetails", menDetails);
                             }
 
@@ -126,7 +135,8 @@ public class DressCodeGetServlet extends HttpServlet {
                             if (msgErrorWomenDetails == null || msgErrorWomenDetails.trim().equals("")) {
                                 request.setAttribute("womenDetails", reg.getWomenDetails());
                             } else {
-                                request.setAttribute("msgErrorWomenDetails", msgErrorWomenDetails);
+                                request.setAttribute("msgErrorWomenDetails", true);
+                                msgList.add(MessageList.addMessage(msgErrorWomenDetails));
                                 request.setAttribute("womenDetails", womenDetails);
                             }
 
@@ -134,7 +144,8 @@ public class DressCodeGetServlet extends HttpServlet {
                             if (msgErrorUrlImage == null || msgErrorUrlImage.trim().equals("")) {
                                 request.setAttribute("urlImage", reg.getUrlImage());
                             } else {
-                                request.setAttribute("msgErrorUrlImage", msgErrorUrlImage);
+                                request.setAttribute("msgErrorUrlImage", true);
+                                msgList.add(MessageList.addMessage(msgErrorUrlImage));
                                 request.setAttribute("urlImage", urlImage);
                             }
 
@@ -145,13 +156,22 @@ public class DressCodeGetServlet extends HttpServlet {
                             }
 
                         } else {
-                            request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
+                            request.setAttribute("msgErrorFound", true);
+                            msgList.add(MessageList.addMessage("El registro no ha sido encontrado."));
                         }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("/dressCode/dressCodeUpdate.jsp").forward(request, response);
                 }
+
+                /* establecer lista de mensajes a la peticion */
+                if (!msgList.isEmpty()) {
+                    request.setAttribute("msgList", msgList);
+                }
+
+                /* despachar a la vista */
+                request.getRequestDispatcher("/dressCode/dressCodeUpdate.jsp").forward(request, response);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");
@@ -160,6 +180,7 @@ public class DressCodeGetServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

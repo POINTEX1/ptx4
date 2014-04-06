@@ -68,78 +68,10 @@
                             <li><a href="AdminMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                             <li class="active"><i class="fa fa-edit"></i> Actualizar</li>
                         </ol>
-
-                        <!-- MENSAJE INFORMATIVO -->
-                        <c:if test="${msg != null}" >
-                            <div class="alert alert-dismissable alert-info">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msg}" /></strong>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE INFORMATIVO -->
-
-                        <!-- MENSAJE DE EXITO -->
-                        <c:if test="${msgOk != null}" >
-                            <div class="alert alert-dismissable alert-success">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgOk}" /></strong>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE EXITO -->
-
-                        <!-- MENSAJE DE ERROR DE ID ADMIN -->
-                        <c:if test="${msgErrorId != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorId}" /></strong></br>
-                            </div>
-                        </c:if> 
-                        <!-- /MENSAJE DE ERROR DE ID ADMIN -->
-
-                        <!-- MENSAJE DE ERROR DE USERNAME -->
-                        <c:if test="${msgErrorUsername != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorUsername}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE USERNAME -->
-
-                        <!-- MENSAJE DE ERROR DE EMAIL -->
-                        <c:if test="${msgErrorEmail != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorEmail}" /></strong></br>
-                            </div>
-                        </c:if> 
-                        <!-- /MENSAJE DE ERROR DE EMAIL -->
-
-                        <!-- MENSAJE DE ERROR DE 1° PASSWORD -->
-                        <c:if test="${msgErrorPwd1 != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorPwd1}" /></strong></br>
-                            </div>
-                        </c:if> 
-                        <!-- /MENSAJE DE ERROR DE 1° PASSWORD -->
-
-                        <!-- MENSAJE DE ERROR DE 2° PASSWORD -->
-                        <c:if test="${msgErrorPwd2 != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorPwd2}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE 2° PASSWORD -->
-
-                        <!-- MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
-                        <c:if test="${msgErrorFound != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorFound}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
+                        
+                        <!-- MENSAJES -->
+                        <c:import var="formMsg" url="/formMsg.jsp" />
+                        <c:out value="${formMsg}" escapeXml="false" />
                     </div>
 
                     <div class="col-lg-4">

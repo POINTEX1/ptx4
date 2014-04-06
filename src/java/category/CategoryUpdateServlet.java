@@ -44,18 +44,18 @@ public class CategoryUpdateServlet extends HttpServlet {
         Connection conexion = null;
 
         try {
-            /////////////////////////////////////////
+            ///////////////////////////
             // ESTABLECER CONEXION
-            //////////////////////////////////////// 
+            ///////////////////////////
 
             conexion = ds.getConnection();
 
             CategoryDAO categoryDAO = new CategoryDAO();
             categoryDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -70,36 +70,35 @@ public class CategoryUpdateServlet extends HttpServlet {
                 request.setAttribute("access", access);
 
 
-                /////////////////////////////////////////
+                ////////////////////////////////////
                 // RECIBIR Y COMPROBAR PARAMETROS
-                /////////////////////////////////////////
+                ////////////////////////////////////
 
                 String sidCategory = request.getParameter("idCategory");
                 String nameCategory = request.getParameter("nameCategory");
+
+                String url = "?a=target";
+
+                url += "&idCategory=" + sidCategory;
+                url += "&nameCategory=" + nameCategory;
 
                 Category category = new Category();
 
                 boolean error = false;
 
-                String url = "?a=target";
-
                 /* comprobar ID */
-                url += "&idCategory=" + sidCategory;
                 if (sidCategory == null || sidCategory.trim().equals("")) {
-                    url += "&msgErrorId=Error al recibir ID.";
                     error = true;
                 } else {
                     try {
                         category.setIdCategory(Integer.parseInt(sidCategory));
                     } catch (NumberFormatException n) {
-                        url += "&msgErrorId=Error al recibir ID.";
                         error = true;
                     }
                 }
                 /* comprobar name category */
-                url += "&nameCategory=" + nameCategory;
                 if (nameCategory == null || nameCategory.trim().equals("")) {
-                    url += "&msgErrorNameCategory= Error: Debe ingresar nombre de categoría.";
+                    url += "&msgErrorNameCategory=Debe ingresar nombre de categoría.";
                     error = true;
                 } else {
                     category.setNameCategory(Format.capital(nameCategory));
@@ -108,18 +107,13 @@ public class CategoryUpdateServlet extends HttpServlet {
                 if (!error) {
                     /* comprobar duplicados */
                     if (categoryDAO.findByName(category.getIdCategory(), category.getNameCategory())) {
-                        url += "&msgErrorDup=Error: ya existe una categoría con ese nombre.";
+                        url += "&msgErrorDup=Ya existe una categoría con ese nombre.";
                     } else {
-                        /* comprobar existencia */
-                        Category aux = categoryDAO.findById(category.getIdCategory());
-                        if (aux != null) {
-                            try {
-                                categoryDAO.update(category);
-                                url += "msgOk=Registro actualizado exitosamente!";
-                            } catch (Exception ex) {
-                            }
-                        } else {
-                            url += "msgErrorFound=Error: La ciudad no existe o ha sido eliminada mientras se actualizaba.";
+                        try {
+                            categoryDAO.update(category);
+                            url += "&msgOk=Registro actualizado exitosamente.";
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
                     }
                 }
@@ -134,6 +128,7 @@ public class CategoryUpdateServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

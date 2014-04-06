@@ -4,8 +4,12 @@
  */
 package admin;
 
+import Helpers.Message;
+import Helpers.MessageList;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -42,18 +46,18 @@ public class AdminGetServlet extends HttpServlet {
 
         Connection conexion = null;
 
-        /////////////////////////////////////////
+        /////////////////////////
         // ESTABLECER CONEXION
-        /////////////////////////////////////////
+        /////////////////////////
         try {
             conexion = ds.getConnection();
 
             AdminDAO adminDAO = new AdminDAO();
             adminDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -71,9 +75,9 @@ public class AdminGetServlet extends HttpServlet {
                     request.setAttribute("access", access);
 
 
-                    /////////////////////////////////////////
+                    ////////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETROS
-                    ////////////////////////////////////////
+                    ////////////////////////////////////
 
                     /* recibir parametro de busqueda */
                     String sid = request.getParameter("id");
@@ -90,66 +94,87 @@ public class AdminGetServlet extends HttpServlet {
                     String msgErrorPwd2 = request.getParameter("msgErrorPwd2");
                     String msgOk = request.getParameter("msgOk");
 
+                    /* instanciar lista de mensajes */
+                    Collection<Message> msgList = new ArrayList<Message>();
 
                     /* comprobar id admin */
                     if (sid == null || sid.trim().equals("")) {
-                        request.setAttribute("msgErrorId", "Error al recibir id Admin.");
                     } else {
-                        int id = Integer.parseInt(sid);
-                        /* buscar admin por id */
+                        /* establecer id */
+                        int id = 0;
                         try {
-                            Admin reg = adminDAO.findById(id);
-                            if (reg != null) {
-                                /* obtener atributos */
-                                request.setAttribute("id", id);
+                            id = Integer.parseInt(sid);
+                        } catch (NumberFormatException n) {
+                        }
 
-                                /* mensajes de error por id */
-                                if (msgErrorId == null || msgErrorId.trim().equals("")) {
-                                } else {
-                                    request.setAttribute("msgErrorId", msgErrorId);
-                                }
-
-                                /* mensaje de error por username */
-                                if (msgErrorUsername == null || msgErrorUsername.trim().equals("")) {
-                                    request.setAttribute("username", reg.getUsername());
-                                } else {
-                                    request.setAttribute("username", username);
-                                    request.setAttribute("msgErrorUsername", msgErrorUsername);
-                                }
-
-                                /* mensaje de error por email */
-                                if (msgErrorEmail == null || msgErrorEmail.trim().equals("")) {
-                                    request.setAttribute("email", reg.getEmail());
-                                } else {
-                                    request.setAttribute("email", email);
-                                    request.setAttribute("msgErrorEmail", msgErrorEmail);
-                                }
-
-                                /* mensaje de error por pwd1 */
-                                if (msgErrorPwd1 == null || msgErrorPwd1.trim().equals("")) {
-                                } else {
-                                    request.setAttribute("msgErrorPwd1", msgErrorPwd1);
-                                }
-
-                                /* mensaje de error pwd2 */
-                                if (msgErrorPwd2 == null || msgErrorPwd2.trim().equals("")) {
-                                } else {
-                                    request.setAttribute("msgErrorPwd2", msgErrorPwd2);
-                                }
-
-                                /* mensaje de exito */
-                                if (msgOk == null || msgOk.trim().equals("")) {
-                                    request.setAttribute("msg", "Se encontró el registro!");
-                                } else {
-                                    request.setAttribute("msgOk", msgOk);
-                                }
-                            } else {
-                                request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
-                            }
+                        /* buscar admin por id */
+                        Admin reg = null;
+                        try {
+                            reg = adminDAO.findById(id);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
+
+                        if (reg != null) {
+                            /* obtener atributos */
+                            request.setAttribute("id", id);
+
+                            /* mensajes de error por id */
+                            if (msgErrorId == null || msgErrorId.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorId", true);
+                                msgList.add(MessageList.addMessage(msgErrorId));
+                            }
+
+                            /* mensaje de error por username */
+                            if (msgErrorUsername == null || msgErrorUsername.trim().equals("")) {
+                                request.setAttribute("username", reg.getUsername());
+                            } else {
+                                request.setAttribute("username", username);
+                                request.setAttribute("msgErrorUsername", true);
+                                msgList.add(MessageList.addMessage(msgErrorUsername));
+                            }
+
+                            /* mensaje de error por email */
+                            if (msgErrorEmail == null || msgErrorEmail.trim().equals("")) {
+                                request.setAttribute("email", reg.getEmail());
+                            } else {
+                                request.setAttribute("email", email);
+                                request.setAttribute("msgErrorEmail", true);
+                                msgList.add(MessageList.addMessage(msgErrorEmail));
+                            }
+
+                            /* mensaje de error por pwd1 */
+                            if (msgErrorPwd1 == null || msgErrorPwd1.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorPwd1", true);
+                                msgList.add(MessageList.addMessage(msgErrorPwd1));
+                            }
+
+                            /* mensaje de error pwd2 */
+                            if (msgErrorPwd2 == null || msgErrorPwd2.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorPwd2", true);
+                                msgList.add(MessageList.addMessage(msgErrorPwd2));
+                            }
+
+                            /* mensaje de exito */
+                            if (msgOk == null || msgOk.trim().equals("")) {
+                                request.setAttribute("msg", "Se encontró el registro!");
+                            } else {
+                                request.setAttribute("msgOk", msgOk);
+                            }
+                        } else {
+                            request.setAttribute("msgErrorFound", true);
+                            msgList.add(MessageList.addMessage("No se encontró el registro."));
+                        }
                     }
+
+                    /* establecer lista a la petición */
+                    if (!msgList.isEmpty()) {
+                        request.setAttribute("msgList", msgList);
+                    }
+
                     /* despachar a la vista */
                     request.getRequestDispatcher("/admin/adminUpdate.jsp").forward(request, response);
                 }

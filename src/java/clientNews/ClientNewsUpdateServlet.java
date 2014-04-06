@@ -43,18 +43,18 @@ public class ClientNewsUpdateServlet extends HttpServlet {
         Connection conexion = null;
 
         try {
-            /////////////////////////////////////////
+            /////////////////////////
             // ESTABLECER CONEXION
-            /////////////////////////////////////////
+            /////////////////////////
 
             conexion = ds.getConnection();
 
             ClientNewsDAO cnewsDAO = new ClientNewsDAO();
             cnewsDAO.setConexion(conexion);
 
-            /////////////////////////////////////////
+            /////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            /////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -68,9 +68,9 @@ public class ClientNewsUpdateServlet extends HttpServlet {
                     request.getRequestDispatcher("/ForbiddenServlet").forward(request, response);
                 }
 
-                /////////////////////////////////////////
+                ////////////////////////////////////
                 // RECIBIR Y COMPROBAR PARAMETROS
-                /////////////////////////////////////////
+                ////////////////////////////////////
 
                 String sidClientNews = request.getParameter("idClientNews");
                 String srut = request.getParameter("rut");
@@ -79,6 +79,7 @@ public class ClientNewsUpdateServlet extends HttpServlet {
                 String sdateBegin = request.getParameter("dateBegin");
                 String sdateEnd = request.getParameter("dateEnd");
 
+                /* instanciar clientNews */
                 ClientNews cnews = new ClientNews();
 
                 boolean error = false;
@@ -86,8 +87,14 @@ public class ClientNewsUpdateServlet extends HttpServlet {
                 /* instanciar string url */
                 String url = "?a=target";
 
-                /* comprobar id news */
                 url += "&idClientNews=" + sidClientNews;
+                url += "&tittle=" + stittle;
+                url += "&newsType=" + snewsType;
+                url += "&rut=" + srut;
+                url += "&dateBegin=" + sdateBegin;
+                url += "&dateEnd=" + sdateEnd;
+
+                /* comprobar id news */
                 if (sidClientNews == null || sidClientNews.trim().equals("")) {
                     url += "&msgErrorIdClientNews=Error al recibir id cliente noticias.";
                     error = true;
@@ -101,7 +108,6 @@ public class ClientNewsUpdateServlet extends HttpServlet {
                 }
 
                 /* comprobar tittle */
-                url += "&tittle=" + stittle;
                 if (stittle == null || stittle.trim().equals("")) {
                     url += "&msgErrorTittle=Error: Debe ingresar un titulo para la noticia.";
                     error = true;
@@ -110,7 +116,6 @@ public class ClientNewsUpdateServlet extends HttpServlet {
                 }
 
                 /* comprobar type news */
-                url += "&newsType=" + snewsType;
                 if (snewsType == null || snewsType.trim().equals("")) {
                     url += "&msgErrorNewsType=Error al recibir tipo de noticia.";
                     error = true;
@@ -124,7 +129,6 @@ public class ClientNewsUpdateServlet extends HttpServlet {
                 }
 
                 /* comprobar rut */
-                url += "&rut=" + srut;
                 if (srut == null || srut.trim().equals("") || srut.length() < 2) {
                     url += "&msgErrorRut=Error al recibir RUT.";
                     error = true;
@@ -137,41 +141,42 @@ public class ClientNewsUpdateServlet extends HttpServlet {
                     }
                 }
 
-                /* comprobar dateBegin */
-                url += "&dateBegin=" + sdateBegin;
-                url += "&dateEnd=" + sdateEnd;
+                /* comprobar date begin */
+                cnews.setDateBegin(sdateBegin);
                 if (sdateBegin == null || sdateBegin.trim().equals("")) {
-                    url += "&msgErrorDate=Error al recibir fecha de inicio.";
+                    url += "&msgErrorDateBegin=Debe ingresar fecha de inicio.";
                     error = true;
-                } else {
-                    /* comprobar dateEnd */
-                    if (sdateEnd == null || sdateEnd.trim().equals("")) {
-                        url += "&msgErrorDate=Error: Debe ingresar fecha de inicio.";
-                        error = true;
-                    } else {
-                        /* comparar fechas */
-                        cnews.setDateBegin(sdateBegin);
-                        cnews.setDateEnd(sdateEnd);
-                        //System.out.println("Comparar fecha 1 y fecha 2: " + event.getDateBegin().compareTo(event.getDateEnd()));
-                        if (cnews.getDateBegin().compareTo(cnews.getDateEnd()) >= 0) {
-                            url += "&msgErrorDate=Error: La fecha de térrmino debe ser mayor que la fecha de inicio.";
-                            error = true;
-                        }
-                    }
                 }
+
+                /* comprobar date end */
+                cnews.setDateEnd(sdateEnd);
+                if (sdateEnd == null || sdateEnd.trim().equals("")) {
+                    url += "&msgErrorDateEnd=Debe ingresar fecha de término.";
+                    error = true;
+                }
+
+                /* comparar fecha de inicio con fecha de término */
+                if (cnews.getDateBegin().compareTo(cnews.getDateEnd()) >= 0) {
+                    url += "&msgErrorDate=La fecha de inicio no puede ser mayor o igual que la fecha de término.";
+                    error = true;
+                }
+
                 if (!error) {
                     /* comprobar registros duplicados */
-                    boolean find = cnewsDAO.validateDuplicate(cnews);
-                    if (find) {
-                        url += "&msgErrorDup=Error: ya existe esta noticia. Compruebe utilizando otro tÃ­tulo u otro rango de fechas.";
-                    } else {
-                        ClientNews aux = cnewsDAO.findByClientNews(cnews);
-                        if (aux != null) {
-                            cnewsDAO.update(cnews);
-                            url += "&msgOk=Registro actualizado exitosamente!";
+                    try {
+                        boolean find = cnewsDAO.validateDuplicate(cnews);
+                        if (find) {
+                            url += "&msgErrorDup=Ya existe esta noticia. Compruebe utilizando otro título u otro rango de fechas.";
                         } else {
-                            url += "&msgErrorFound=Error: El registro no existe o ha sido mientras se actualizaba.";
+                            try {
+                                cnewsDAO.update(cnews);
+                                url += "&msgOk=Registro actualizado exitosamente.";
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
                         }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                 }
                 /* send redirect */

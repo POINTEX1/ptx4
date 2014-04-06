@@ -39,77 +39,25 @@
     <body>
 
         <div id="wrapper">
-
             <!-- Collect the nav links, forms, and other content for toggling -->
             <c:import var="menu" url="/mainMenu.jsp" />
             <c:out value="${menu}" escapeXml="false" />
             <!-- /.navbar-collapse -->
 
             <div id="page-wrapper">
-
                 <div class="row">                    
                     <div class="col-lg-12">
                         <!-- TITULO MANTENEDOR -->
-                        <h1>Mantenedor <small> Categorias</small></h1>
+                        <h1>Mantenedor <small> Categorías</small></h1>
                         <ol class="breadcrumb">
                             <li><a href="CategoryMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                             <li class="active"><i class="fa fa-edit"></i> Actualizar</li>
                         </ol>
                         <!-- /TITULO MANTENEDOR -->
 
-                        <!-- MENSAJE INFORMATIVO -->
-                        <c:if test="${msg != null}" >
-                            <div class="alert alert-dismissable alert-info">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msg}" /></strong>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE INFORMATIVO -->
-
-                        <!-- MENSAJE DE EXITO -->
-                        <c:if test="${msgOk != null}" >
-                            <div class="alert alert-dismissable alert-success">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgOk}" /></strong>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE EXITO -->
-
-                        <!-- MENSAJE DE ERROR DE ID CATEGORIA -->
-                        <c:if test="${msgErrorId != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorId}" /></strong></br>
-                            </div>
-                        </c:if> 
-                        <!-- /MENSAJE DE ERROR DE ID CATEGORIA-->
-
-                        <!-- MENSAJE DE ERROR DE NOMBRE CATEGORIA -->
-                        <c:if test="${msgErrorNameCategory != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorNameCategory}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE NOMBRE CATEGORIA -->
-
-                        <!-- MENSAJE DE ERROR DE REGISTRO DUPLICADO -->
-                        <c:if test="${msgErrorDup != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorDup}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE REGISTRO DUPLICADO -->
-
-                        <!-- MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
-                        <c:if test="${msgErrorFound != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorFound}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
+                        <!-- MENSAJES -->
+                        <c:import var="formMsg" url="/formMsg.jsp" />
+                        <c:out value="${formMsg}" escapeXml="false" />
                     </div>
 
                     <div class="col-lg-4">

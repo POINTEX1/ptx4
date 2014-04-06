@@ -30,10 +30,10 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>    
-        
+
         <!-- disabledButton -->
         <script src="js/disabledButton.js"></script>
-        
+
     </head>
 
     <body>
@@ -57,77 +57,9 @@
                         </ol>
                         <!-- /TITULO MANTENEDOR -->
 
-                        <!-- MENSAJE INFORMATIVO -->
-                        <c:if test="${msg != null}" >
-                            <div class="alert alert-info alert-info">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <td><strong><c:out value="${msg}" /></strong></td>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE INFORMATIVO -->
-
-                        <!-- MENSAJE DE EXITO -->
-                        <c:if test="${msgOk != null}" >
-                            <div class="alert alert-dismissable alert-success">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgOk}" /></strong>
-                            </div>
-                        </c:if> 
-                        <!-- /MENSAJE DE EXITO -->
-
-                        <!-- MENSAJE DE ERROR DE ID -->
-                        <c:if test="${msgErrorId != null }" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorId}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE ID -->
-
-                        <!-- MENSAJE DE ERROR DE REGISTRO DUPLICADO -->
-                        <c:if test="${msgErrorDup != null }" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorDup}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE REGISTRO DUPLICADO -->
-
-                        <!-- MENSAJE DE ERROR DE TITULO -->
-                        <c:if test="${msgErrorNameDressCode != null }" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorNameDressCode}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE TITULO -->
-
-                        <!-- MENSAJE DE ERROR DE DETALLE HOMBRES -->
-                        <c:if test="${msgErrorMenDetails != null }" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorMenDetails}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE DETALLE HOMBRES -->
-
-                        <!-- MENSAJE DE ERROR DE DETALLES MUJERES -->
-                        <c:if test="${msgErrorWomenDetails != null }" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorWomenDetails}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE DETALLES MUJERES -->
-
-                        <!-- MENSAJE DE ERROR DE URL -->
-                        <c:if test="${msgErrorUrlImage != null }" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorUrlImage}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE URL -->
+                        <!-- MENSAJES -->
+                        <c:import var="formMsg" url="/formMsg.jsp" />
+                        <c:out value="${formMsg}" escapeXml="false" />
                     </div>
 
                     <div class="col-lg-4">

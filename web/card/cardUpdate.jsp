@@ -37,14 +37,11 @@
     </head>
 
     <body>
-
         <div id="wrapper">
-
             <c:import var="menu" url="/mainMenu.jsp" />
             <c:out value="${menu}" escapeXml="false" />
 
             <div id="page-wrapper">
-
                 <div class="row">
                     <div class="col-lg-12">
                         <!-- TITULO DE MANTENEDOR -->
@@ -55,105 +52,11 @@
                         </ol>                                        
                         <!-- /TITULO DE MANTENEDOR -->
 
-                        <!-- MENSAJE INFORMATIVO -->
-                        <c:if test="${msg != null}" >
-                            <div class="alert alert-dismissable alert-info">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msg}" /></strong>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE INFORMATIVO -->
-
-                        <!-- MENSAJE DE ERROR DE RUT -->
-                        <c:if test="${msgErrorRut != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorRut}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE RUT -->
-
-                        <!-- MENSAJE DE ERROR DE DV -->
-                        <c:if test="${msgErrorDv != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorDv}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE DV -->
-
-                        <!-- MENSAJE DE ERROR DE FIRSTNAME -->
-                        <c:if test="${msgErrorFirstName != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorFirstName}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE FIRSTNAME -->
-
-                        <!-- MENSAJE DE ERROR DE LASTNAME -->
-                        <c:if test="${msgErrorLastName != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorLastName}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE LASTNAME -->
-
-                        <!-- MENSAJE DE ERROR DE BARCODE -->
-                        <c:if test="${msgErrorBarCode != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorBarCode}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE BARCODE -->
-
-                        <!-- MENSAJE DE ERROR DE TIPO DE TARJETA -->
-                        <c:if test="${msgErrorType != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorType}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE TIPO DE TARJETA -->
-
-                        <!-- MENSAJE DE ERROR DE FECHA DE INICIO -->
-                        <c:if test="${msgErrorDateBegin != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorDateBegin}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE FECHA DE INICIO -->
-
-                        <!-- MENSAJE DE EROR DE FECHA DE TERMINO -->
-                        <c:if test="${msgErrorDateEnd != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorDateEnd}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE EROR DE FECHA DE TERMINO -->
-
-                        <!-- MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
-                        <c:if test="${msgErrorFound != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorFound}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
-
-                        <!-- MENSAJE DE EXITO -->
-                        <c:if test="${msgOk != null}" >
-                            <div class="alert alert-dismissable alert-success">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgOk}" /></strong>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE EXITO -->
+                        <!-- MENSAJES -->
+                        <c:import var="formMsg" url="/formMsg.jsp" />
+                        <c:out value="${formMsg}" escapeXml="false" />
                     </div>
+
                     <div class="col-lg-4">
                         <!-- FORMULARIO -->
                         <form role="form" action="CardUpdateServlet" method="POST" id="formUpdate" name="formUpdate">
@@ -177,15 +80,15 @@
                             <!-- FIRSTNAME-LASTNAME -->
                             <div class="form-group">
                                 <label for="disabledSelect">Nombre</label>
-                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${firstName}" /> <c:out value="${lastName}" />" disabled>
-                                <input type="hidden" name="firstName" value="<c:out value="${firstName}" /> "/>
+                                <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${firstName}" /><c:out value="${lastName}" />" disabled>
+                                <input type="hidden" name="firstName" value="<c:out value="${firstName}" />"/>
                                 <input type="hidden" name="lastName" value="<c:out value="${lastName}" />"/>                          
                             </div>
                             <!-- /FIRSTNAME-LASTNAME -->
 
                             <!-- TIPO DE TARJETA -->
                             <div class="form-group">
-                                <label>Tipo de Tarjeta *</label>
+                                <label>Tipo de Tarjeta</label>
                                 <select class="form-control" required="true" name="cardType">
                                     <option value="1"  <c:if test="${cardType == 1}" > selected </c:if>> Basic</option>
                                     <option value="2" <c:if test="${cardType == 2}" > selected </c:if>> Silver</option>
@@ -194,19 +97,28 @@
                                 </div> 
                                 <!-- /TIPO DE TARJETA -->
 
-                                <!-- FECHA DE INICIO -->
+                                <!-- FECHA DE INICIO/TERMINO -->
+                            <c:if test="${msgErrorDateBegin == null && msgErrorDateEnd == null}">
                                 <div class="form-group">
                                     <label>Fecha de Inicio</label>
                                     <input class="form-control" type="datetime-local" required="true" name="dateBeginCard" value="<c:out value="${dateBegin}" />">
-                            </div>
-                            <!-- /FECHA DE INICIO -->
+                                </div>                                                      
+                                <div class="form-group">
+                                    <label>Fecha de Caducidad</label>
+                                    <input class="form-control" type="datetime-local" required="true" name="dateEndCard" value="<c:out value="${dateEnd}" />">
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorDateBegin != null || msgErrorDateEnd != null}">
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Fecha de Inicio</label>
+                                    <input class="form-control" type="datetime-local" required="true" name="dateBeginCard" id="inputError" value="<c:out value="${dateBegin}" />">
+                                </div>
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Fecha de Caducidad</label>
+                                    <input class="form-control" type="datetime-local" required="true" name="dateEndCard" id="inputError" value="<c:out value="${dateEnd}" />">
+                                </div>
+                            </c:if>
 
-                            <!-- FECHA DE TERMINO -->
-                            <div class="form-group">
-                                <label>Fecha de Caducidad</label>
-                                <input class="form-control" type="datetime-local" required="true" name="dateEndCard" value="<c:out value="${dateEnd}" />">
-                            </div>
-                            <!-- /FECHA DE TERMINO -->                            
                             <button type="submit" name="btnUpdate" class="btn btn-default" onclick="disabledButtonUpdate();"><strong><font size="1"><object name="btn1">ACTUALIZAR</object><object name="btn2" hidden="true">ACTUALIZANDO...</object></font></strong></button>
                         </form>
                         <!-- /FORMULARIO -->

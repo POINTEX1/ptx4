@@ -4,8 +4,12 @@
  */
 package city;
 
+import Helpers.Message;
+import Helpers.MessageList;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -43,18 +47,18 @@ public class CityGetServlet extends HttpServlet {
         Connection conexion = null;
 
         try {
-            //////////////////////////////////////////
+            //////////////////////////
             // ESTABLECER CONEXION
-            /////////////////////////////////////////
+            //////////////////////////
 
             conexion = ds.getConnection();
 
             CityDAO cityDAO = new CityDAO();
             cityDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            //////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            //////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -68,15 +72,14 @@ public class CityGetServlet extends HttpServlet {
                 request.setAttribute("userJsp", userJsp);
                 request.setAttribute("access", access);
 
-                /////////////////////////////////////////
+                /////////////////////////////////////
                 // RECIBIR Y COMPROBAR PARAMETROS
-                //////////////////////////////////////// 
+                /////////////////////////////////////
 
                 /* obtener atributos de PRG */
                 String nameCity = request.getParameter("nameCity");
 
                 /* obtener mensajes de PRG */
-                String msgErrorId = request.getParameter("msgErroId");
                 String msgErrorNameCity = request.getParameter("msgErrorNameCity");
                 String msgErrorDup = request.getParameter("msgErrorDup");
                 String msgOk = request.getParameter("msgOk");
@@ -84,15 +87,31 @@ public class CityGetServlet extends HttpServlet {
                 /* obtener atributos de busqueda */
                 String sidCity = request.getParameter("idCity");
 
+                /* instanciar ciudad */
                 City city = new City();
+
+                /* intanciar lista de mensajes */
+                Collection<Message> msgList = new ArrayList<Message>();
 
                 /* comprobar id city */
                 if (sidCity == null || sidCity.trim().equals("")) {
-                    request.setAttribute("msgErrorId", "Error al recibir id Ciudad.");
                 } else {
-                    city.setIdCity(Integer.parseInt(sidCity));
+                    /* establecer id */
+                    int idCity = 0;
+                    try {
+                        idCity = Integer.parseInt(sidCity);
+                    } catch (NumberFormatException n) {
+                    }
+                    city.setIdCity(idCity);
+
                     /* comprobar existencia */
-                    City aux = cityDAO.findbyIdCity(city);
+                    City aux = null;
+                    try {
+                        aux = cityDAO.findbyIdCity(city);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
                     if (aux != null) {
                         /* obtener atributos del dao */
                         request.setAttribute("idCity", aux.getIdCity());
@@ -102,15 +121,18 @@ public class CityGetServlet extends HttpServlet {
                             request.setAttribute("nameCity", aux.getNameCity());
                         } else {
                             request.setAttribute("nameCity", nameCity);
-                            request.setAttribute("msgErrorNameCity", msgErrorNameCity);
+                            request.setAttribute("msgErrorNameCity", true);
+                            msgList.add(MessageList.addMessage(msgErrorNameCity));
                         }
 
                         /* comprobar msgErrorDup */
                         if (msgErrorDup == null || msgErrorDup.trim().equals("")) {
                         } else {
                             request.setAttribute("msgErrorDup", msgErrorDup);
+                            msgList.add(MessageList.addMessage(msgErrorDup));
                         }
 
+                        /* comprobar mensaje de exito */
                         if (msgOk == null || msgOk.trim().equals("")) {
                             request.setAttribute("msg", "Se encontró el registro!");
                         } else {
@@ -118,10 +140,17 @@ public class CityGetServlet extends HttpServlet {
                         }
 
                     } else {
-                        request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
+                        request.setAttribute("msgErrorFound", true);
+                        msgList.add(MessageList.addMessage("El registro no ha sido encotrado."));
                     }
                 }
 
+                /* establecer lista de mensaje a la peticion */
+                if (!msgList.isEmpty()) {
+                    request.setAttribute("msgList", msgList);
+                }
+
+                /* despachar a la vista */
                 request.getRequestDispatcher("/city/cityUpdate.jsp").forward(request, response);
 
             } catch (Exception sessionException) {
@@ -132,6 +161,7 @@ public class CityGetServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

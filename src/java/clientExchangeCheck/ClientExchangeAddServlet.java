@@ -5,14 +5,14 @@
  */
 package clientExchangeCheck;
 
+import Helpers.Message;
+import Helpers.MessageList;
 import Helpers.Rut;
-import clientPromo.ClientPromo;
 import exchangeable.Exchangeable;
 import exchangeable.ExchangeableDAO;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -36,8 +36,9 @@ public class ClientExchangeAddServlet extends HttpServlet {
     private DataSource ds;
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Processes requests for both HTTP
+     * <code>GET</code> and
+     * <code>POST</code> methods.
      *
      * @param request servlet request
      * @param response servlet response
@@ -51,9 +52,9 @@ public class ClientExchangeAddServlet extends HttpServlet {
         Connection conexion = null;
 
         try {
-            //////////////////////////////////////////
+            /////////////////////////
             // ESTABLECER CONEXION
-            //////////////////////////////////////////
+            /////////////////////////
 
             conexion = ds.getConnection();
 
@@ -66,6 +67,9 @@ public class ClientExchangeAddServlet extends HttpServlet {
             UserCardDAO ucDAO = new UserCardDAO();
             ucDAO.setConexion(conexion);
 
+            /////////////////////////
+            // COMPROBAR SESSION
+            /////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -82,92 +86,110 @@ public class ClientExchangeAddServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-                    /////////////////////////////////////////
+                    ////////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETROS
-                    /////////////////////////////////////////
-                    try {
-                        String btnAdd = request.getParameter("add");
-                        String sidExchange = request.getParameter("idExchange");
-                        String srut = request.getParameter("rut");
+                    ////////////////////////////////////
 
-                        ClientExchangeCheck exchangeCheck = new ClientExchangeCheck();
-                        boolean error = false;
+                    String btnAdd = request.getParameter("add");
+                    String sidExchange = request.getParameter("idExchange");
+                    String srut = request.getParameter("rut");
 
-                        /* comprobar add button */
-                        if (btnAdd == null) {
-                            request.setAttribute("msg", "Ingrese una promoción para un cliente.");
+                    /* instanciar clientExchangeCheck*/
+                    ClientExchangeCheck exchangeCheck = new ClientExchangeCheck();
+
+                    /* instanciar lista de mensajes */
+                    Collection<Message> msgList = new ArrayList<Message>();
+
+                    boolean error = false;
+
+                    /* comprobar add button */
+                    if (btnAdd == null) {
+                        request.setAttribute("msg", "Ingrese una promoción para un cliente.");
+                    } else {
+
+                        /* comprobar id Exchangeable */
+                        if (sidExchange == null || sidExchange.trim().equals("")) {
+                            error = true;
                         } else {
-
-                            /* comprobar id Exchangeable */
-                            if (sidExchange == null || sidExchange.trim().equals("")) {
-                                request.setAttribute("msgErrorIdExchange", "Error al recibir id producto canjeable.");
+                            request.setAttribute("idExchangeable", sidExchange);
+                            try {
+                                exchangeCheck.setIdExchangeable(Integer.parseInt(sidExchange));
+                            } catch (NumberFormatException n) {
                                 error = true;
-                            } else {
-                                request.setAttribute("idExchangeable", sidExchange);
-                                try {
-                                    exchangeCheck.setIdExchangeable(Integer.parseInt(sidExchange));
-                                } catch (NumberFormatException n) {
-                                    System.out.println("Error de formato numerico idExchange");
-                                    error = true;
-                                }
                             }
+                        }
 
-                            /* comprobar rut */
-                            if (srut == null || srut.trim().equals("")) {
-                                request.setAttribute("msgErrorRut", "Error: Rut inválido. ");
-                                error = true;
-                            } else {
-                                request.setAttribute("rut", srut);
-                                try {
-                                    if (!Rut.validateRut(srut)) {
-                                        error = true;
-                                        request.setAttribute("msgErrorRut", "Error: Rut inválido. ");
-                                    } else {
-                                        exchangeCheck.setRut(Rut.getRut(srut));
-                                        exchangeCheck.setDv(Rut.getDv(srut));
-                                    }
-                                } catch (Exception ex) {
-                                    request.setAttribute("msgErrorRut", "Error: Rut inválido. ");
+                        /* comprobar rut */
+                        if (srut == null || srut.trim().equals("")) {
+                            request.setAttribute("msgErrorRut", true);
+                            msgList.add(MessageList.addMessage("Debe ingresar RUT."));
+                            error = true;
+                        } else {
+                            request.setAttribute("rut", srut);
+                            try {
+                                if (!Rut.validateRut(srut)) {
                                     error = true;
-                                }
-                            }
-
-                            if (!error) {
-                                /* comprobar si existe cliente */
-                                UserCard user = ucDAO.findByRut(exchangeCheck.getRut());
-                                if (user == null) {
-                                    request.setAttribute("msgErrorUserFound", "Error: Cliente no encontrado.");
+                                    request.setAttribute("msgErrorRut", true);
+                                    msgList.add(MessageList.addMessage("Rut inválido."));
                                 } else {
-                                    /* verificar si existe registro en ClientExchangeCheck */
-                                    ClientExchangeCheck aux = cecDAO.findByRutIdCheck(exchangeCheck);
-                                    if (aux == null) {
-                                        request.setAttribute("msgErrorFound", "Error: El cliente no posee asociada esta promoción.");
-                                    } else {
-                                        /* insertar registro */
-                                        try {
-                                            cecDAO.insert(exchangeCheck);
-                                            request.setAttribute("msgOk", "Registro ingresado exitosamente! ");
-                                        } catch (Exception sqlException) {
-                                            sqlException.printStackTrace();
-                                            request.setAttribute("msgErrorDup", "Error de inserción, verifique los campos.");
-                                        }
+                                    exchangeCheck.setRut(Rut.getRut(srut));
+                                    exchangeCheck.setDv(Rut.getDv(srut));
+                                }
+                            } catch (Exception ex) {
+                                request.setAttribute("msgErrorRut", true);
+                                msgList.add(MessageList.addMessage("Rut inválido."));
+                                error = true;
+                            }
+                        }
 
+                        if (!error) {
+                            /* comprobar si existe cliente */
+                            UserCard user = ucDAO.findByRut(exchangeCheck.getRut());
+                            if (user == null) {
+                                request.setAttribute("msgErrorUserFound", true);
+                                msgList.add(MessageList.addMessage("Cliente no encontrado."));
+                            } else {
+                                /* verificar si existe registro en ClientExchangeCheck */
+                                ClientExchangeCheck aux = null;
+                                try {
+                                    aux = cecDAO.findByRutIdCheck(exchangeCheck);
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
+                                if (aux == null) {
+                                    request.setAttribute("msgErrorUserFound", true);
+                                    msgList.add(MessageList.addMessage("El cliente no posee asociada esta promoción."));
+                                } else {
+                                    /* insertar registro */
+                                    try {
+                                        cecDAO.insert(exchangeCheck);
+                                        request.setAttribute("msgOk", "Registro ingresado exitosamente! ");
+                                    } catch (Exception sqlException) {
+                                        sqlException.printStackTrace();
+                                        request.setAttribute("msgErrorDup", true);
+                                        msgList.add(MessageList.addMessage("Error de inserción, verifique los campos."));
                                     }
                                 }
                             }
+                        }
 
-                        }
-                        /* obtener lista de canjeables */
-                        try {
-                            Collection<Exchangeable> listE = eDAO.getAll();
-                            request.setAttribute("list", listE);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("/clientExchangeCheck/clientExchangeCheckAdd.jsp").forward(request, response);
                     }
+
+                    /* establecer lista de mensajes a la peticion */
+                    if (!msgList.isEmpty()) {
+                        request.setAttribute("msgList", msgList);
+                    }
+
+                    /* obtener lista de canjeables */
+                    try {
+                        Collection<Exchangeable> listE = eDAO.getAll();
+                        request.setAttribute("list", listE);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                    /* despachar a la vista */
+                    request.getRequestDispatcher("/clientExchangeCheck/clientExchangeCheckAdd.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {
                 sessionException.printStackTrace();
@@ -189,7 +211,8 @@ public class ClientExchangeAddServlet extends HttpServlet {
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
-     * Handles the HTTP <code>GET</code> method.
+     * Handles the HTTP
+     * <code>GET</code> method.
      *
      * @param request servlet request
      * @param response servlet response
@@ -203,7 +226,8 @@ public class ClientExchangeAddServlet extends HttpServlet {
     }
 
     /**
-     * Handles the HTTP <code>POST</code> method.
+     * Handles the HTTP
+     * <code>POST</code> method.
      *
      * @param request servlet request
      * @param response servlet response
@@ -225,5 +249,4 @@ public class ClientExchangeAddServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }

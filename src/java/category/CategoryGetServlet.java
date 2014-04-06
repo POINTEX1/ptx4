@@ -4,8 +4,12 @@
  */
 package category;
 
+import Helpers.Message;
+import Helpers.MessageList;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -42,19 +46,18 @@ public class CategoryGetServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        ///////////////////////////
+        // ESTABLECER CONEXION
+        ///////////////////////////
         try {
-            //////////////////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////////////////
-
             conexion = ds.getConnection();
 
             CategoryDAO categoryDAO = new CategoryDAO();
             categoryDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            /////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            /////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -68,64 +71,77 @@ public class CategoryGetServlet extends HttpServlet {
                 request.setAttribute("userJsp", userJsp);
                 request.setAttribute("access", access);
 
-                /////////////////////////////////////////
+                ////////////////////////////////////
                 // RECIBIR Y COMPROBAR PARAMETROS
-                //////////////////////////////////////// 
-                try {
+                ////////////////////////////////////
 
-                    /* recibir atributos por PRG */
-                    String nameCategory = request.getParameter("nameCategory");
+                /* recibir atributos por PRG */
+                String nameCategory = request.getParameter("nameCategory");
 
-                    /* recibir mensajes por PRG */
-                    String msgErrorNameCategory = request.getParameter("msgErrorNameCategory");
-                    String msgErrorDup = request.getParameter("msgErrorDup");
-                    String msgOk = request.getParameter("msgOk");
+                /* recibir mensajes por PRG */
+                String msgErrorNameCategory = request.getParameter("msgErrorNameCategory");
+                String msgErrorDup = request.getParameter("msgErrorDup");
+                String msgOk = request.getParameter("msgOk");
 
-                    /* obtener atributos para busqueda */
-                    String sidCategory = request.getParameter("idCategory");
+                /* obtener atributos para busqueda */
+                String sidCategory = request.getParameter("idCategory");
 
-                    Category category = new Category();
+                /* instanciar categoria */
+                Category category = new Category();
 
-                    /* comprobar id category */
-                    if (sidCategory == null || sidCategory.trim().equals("")) {
-                        request.setAttribute("msgErrorId", "Error al recibir ID.");
-                    } else {
-                        category.setIdCategory(Integer.parseInt(sidCategory));
-                        /* buscar registro */
-                        Category aux = categoryDAO.findById(category.getIdCategory());
+                /* instanciar lista de mensajes */
+                Collection<Message> msgList = new ArrayList<Message>();
 
-                        if (aux != null) {
-                            /* obtener atributos del dao */
-                            request.setAttribute("idCategory", aux.getIdCategory());
+                /* comprobar id category */
+                if (sidCategory == null || sidCategory.trim().equals("")) {
+                    request.setAttribute("msgErrorId", true);
+                    msgList.add(MessageList.addMessage("Fallo al recibir ID Categoria."));
+                } else {
+                    category.setIdCategory(Integer.parseInt(sidCategory));
+                    /* buscar registro */
+                    Category aux = categoryDAO.findById(category.getIdCategory());
 
-                            /* comprobar msgErrorNameCategory */
-                            if (msgErrorNameCategory == null || msgErrorNameCategory.trim().equals("")) {
-                                request.setAttribute("nameCategory", aux.getNameCategory());
-                            } else {
-                                request.setAttribute("msgErrorNameCategory", msgErrorNameCategory);
-                                request.setAttribute("nameCategory", nameCategory);
-                            }
+                    if (aux != null) {
+                        /* obtener atributos del dao */
+                        request.setAttribute("idCategory", aux.getIdCategory());
 
-                            /* comprobar registro duplicado */
-                            if (msgErrorDup == null || msgErrorDup.trim().equals("")) {
-                            } else {
-                                request.setAttribute("msgErrorDup", msgErrorDup);
-                            }
-
-                            /* comprobar msgOk */
-                            if (msgOk == null || msgOk.trim().equals("")) {
-                                request.setAttribute("msg", "Se encontró el registro!");
-                            } else {
-                                request.setAttribute("msgOk", msgOk);
-                            }
+                        /* comprobar msgErrorNameCategory */
+                        if (msgErrorNameCategory == null || msgErrorNameCategory.trim().equals("")) {
+                            request.setAttribute("nameCategory", aux.getNameCategory());
                         } else {
-                            request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
+                            request.setAttribute("msgErrorNameCategory", true);
+                            msgList.add(MessageList.addMessage(msgErrorNameCategory));
+                            request.setAttribute("nameCategory", nameCategory);
                         }
+
+                        /* comprobar registro duplicado */
+                        if (msgErrorDup == null || msgErrorDup.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorDup", true);
+                            msgList.add(MessageList.addMessage(msgErrorDup));
+                        }
+
+                        /* comprobar msgOk */
+                        if (msgOk == null || msgOk.trim().equals("")) {
+                            request.setAttribute("msg", "Se encontró el registro!");
+                        } else {
+                            request.setAttribute("msgOk", msgOk);
+                        }
+                    } else {
+                        request.setAttribute("msgErrorFound", true);
+                        msgList.add(MessageList.addMessage("El registro no ha sido encontrado."));
+
                     }
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("category/categoryUpdate.jsp").forward(request, response);
                 }
+
+                /* establecer lista de mensajes a la peticion */
+                if (!msgList.isEmpty()) {
+                    request.setAttribute("msgList", msgList);
+                }
+
+                /* despachar a la vista */
+                request.getRequestDispatcher("category/categoryUpdate.jsp").forward(request, response);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");
@@ -134,6 +150,7 @@ public class CategoryGetServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

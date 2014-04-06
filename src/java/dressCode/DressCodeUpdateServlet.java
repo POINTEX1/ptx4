@@ -42,19 +42,18 @@ public class DressCodeUpdateServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        /////////////////////////
+        // ESTABLECER CONEXION
+        /////////////////////////
         try {
-            ///////////////////////////////////
-            // ESTABLECER CONEXION
-            ///////////////////////////////////
-
             conexion = ds.getConnection();
 
             DressCodeDAO dressCodeDAO = new DressCodeDAO();
             dressCodeDAO.setConexion(conexion);
 
-            ///////////////////////////////////
+            ///////////////////////
             // COMPROBAR SESSION
-            ///////////////////////////////////
+            ///////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -68,9 +67,9 @@ public class DressCodeUpdateServlet extends HttpServlet {
                 request.setAttribute("userJsp", userJsp);
                 request.setAttribute("access", access);
 
-                //////////////////////////////////////
+                ////////////////////////////////////
                 // RECIBIR Y COMPROBAR PARAMETROS
-                //////////////////////////////////////
+                ////////////////////////////////////
 
                 String sidDressCode = request.getParameter("idDressCode");
                 String nameDressCode = request.getParameter("nameDressCode");
@@ -78,78 +77,76 @@ public class DressCodeUpdateServlet extends HttpServlet {
                 String womenDetails = request.getParameter("womenDetails");
                 String urlImage = request.getParameter("urlImage");
 
+                /* instanciar string url */
+                String url = "?a=target";
+
+                url += "&idDressCode=" + sidDressCode;
+                url += "&nameDressCode=" + nameDressCode;
+                url += "&menDetails=" + menDetails;
+                url += "&womenDetails=" + womenDetails;
+                url += "&urlImage" + urlImage;
+
+                /* instanciar codigo vestir */
                 DressCode dressCode = new DressCode();
 
                 boolean error = false;
 
-                /* instanciar string url */
-                String url = "?a=target";
-
                 /* comprobar idDressCode */
-                url += "&idDressCode=" + sidDressCode;
                 if (sidDressCode == null || sidDressCode.trim().equals("")) {
-                    url += "&msgErrorId=Error al recibir ID.";
                     error = true;
                 } else {
                     try {
                         dressCode.setIdDressCode(Integer.parseInt(sidDressCode));
                     } catch (NumberFormatException n) {
-                        url += "&msgErrorId=Error al recibir ID.";
                         error = true;
                     }
                 }
 
                 /* comprobar name dress code */
-                url += "&nameDressCode=" + nameDressCode;
                 if (nameDressCode == null || nameDressCode.trim().equals("")) {
-                    url += "&msgErrorNameDressCode=Error: Debe ingresar un título de código de vestir.";
+                    url += "&msgErrorNameDressCode=Debe ingresar un título de código de vestir.";
                     error = true;
                 } else {
                     dressCode.setNameDressCode(nameDressCode);
                     /* comprobar duplicaciones */
                     boolean find = dressCodeDAO.findByIdName(dressCode.getIdDressCode(), dressCode.getNameDressCode());
                     if (find) {
-                        url += "&msgErrorNameDressCode=Error: ya existe un código de vestir con ese título.";
+                        url += "&msgErrorNameDressCode=Ya existe un código de vestir con ese título.";
                         error = true;
                     }
                 }
 
                 /* comprobar men details */
-                url += "&menDetails=" + menDetails;
                 if (menDetails == null || menDetails.trim().equals("")) {
-                    url += "&msgErrorMenDetails=Error: Debe ingresar detalles para hombres.";
+                    url += "&msgErrorMenDetails=Debe ingresar detalles para hombres.";
                     error = true;
                 } else {
                     dressCode.setMenDetails(menDetails);
                 }
 
                 /* comprobar women details */
-                url += "&womenDetails" + womenDetails;
                 if (womenDetails == null || womenDetails.trim().equals("")) {
-                    url += "&msgErrorWomenDetails=Error: Debe ingresar detalles para mujeres.";
+                    url += "&msgErrorWomenDetails=Debe ingresar detalles para mujeres.";
                     error = true;
                 } else {
                     dressCode.setWomenDetails(womenDetails);
                 }
 
                 /* comprobar url image */
-                url += "&urlImage=" + urlImage;
                 if (urlImage == null || urlImage.trim().equals("")) {
-                    url += "&msgErrorUrlImage=Error: Debe ingresar url de imagen.";
+                    url += "&msgErrorUrlImage=Debe ingresar url de imagen.";
                     error = true;
                 } else {
                     dressCode.setUrlImage(urlImage);
                 }
 
                 if (!error) {
-                    /* comprobar existencia */
-                    DressCode aux = dressCodeDAO.findById(dressCode.getIdDressCode());
-                    if (aux != null) {
+                    try {
                         /* actualizar datos */
                         dressCodeDAO.update(dressCode);
-                        url += "&msgOk=Registro actualizado exitosamente!";
-                    } else {
-                        url += "&msgErrorFound=Error: La ciudad no existe o ha sido eliminada mientras se actualizaba.";
+                        url += "&msgOk=Registro actualizado exitosamente.";
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                 }
 

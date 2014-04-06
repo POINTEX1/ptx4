@@ -5,8 +5,12 @@
 package city;
 
 import Helpers.Format;
+import Helpers.Message;
+import Helpers.MessageList;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -44,17 +48,17 @@ public class CityAddServlet extends HttpServlet {
         Connection conexion = null;
 
         try {
-            //////////////////////////////////////////
+            /////////////////////////
             // ESTABLECER CONEXION
-            /////////////////////////////////////////
+            /////////////////////////
             conexion = ds.getConnection();
 
             CityDAO cityDAO = new CityDAO();
             cityDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -68,42 +72,61 @@ public class CityAddServlet extends HttpServlet {
                 request.setAttribute("userJsp", userJsp);
                 request.setAttribute("access", access);
 
-                /////////////////////////////////////////
+                ////////////////////////////////////
                 // RECIBIR Y COMPROBAR PARAMETROS
-                ////////////////////////////////////////
-                try {
-                    String namecity = request.getParameter("nameCity");
-                    String btnAdd = request.getParameter("add");
+                ////////////////////////////////////
 
-                    City city = new City();
+                String namecity = request.getParameter("nameCity");
+                String btnAdd = request.getParameter("add");
 
-                    if (btnAdd == null) {
-                        request.setAttribute("msg", "Ingrese una ciudad.");
+                /* instanciar ciudad */
+                City city = new City();
+
+                /* instanciar lista de mensajes */
+                Collection<Message> msgList = new ArrayList<Message>();
+
+                if (btnAdd == null) {
+                    request.setAttribute("msg", "Ingrese una ciudad.");
+                } else {
+                    if (namecity == null || namecity.trim().equals("")) {
+                        request.setAttribute("msgErrorNameCity", true);
+                        msgList.add(MessageList.addMessage("Debe ingresar nombre de ciudad."));
                     } else {
-                        if (namecity == null || namecity.trim().equals("")) {
-                            request.setAttribute("msgErrorNameCity", "Error al recibir nombre de ciudad. ");
+                        city.setNameCity(Format.capital(namecity));
+
+                        /* comprobar ciudad duplicada */
+                        boolean find = false;
+                        try {
+                            find = cityDAO.validateDuplicateName(city);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        if (find) {
+                            request.setAttribute("msgErrorDup", true);
+                            msgList.add(MessageList.addMessage("Ya existe una ciudad con este nombre."));
                         } else {
-                            city.setNameCity(Format.capital(namecity));
-                            /* comprobar ciudad duplicada */
-                            boolean find = cityDAO.validateDuplicateName(city);
-                            if (find) {
-                                request.setAttribute("msgErrorDup", "Error: ya existe una ciudad con este nombre. ");
-                            } else {
-                                try {
-                                    cityDAO.insert(city);
-                                    request.setAttribute("msgOk", "Registro ingresado exitosamente! ");
-                                } catch (Exception sqlException) {
-                                }
+                            /* insertar registro en DB */
+                            try {
+                                cityDAO.insert(city);
+                                request.setAttribute("msgOk", "Registro ingresado exitosamente.");
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
                             }
                         }
                     }
-
-                    request.setAttribute("city", city);
-
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("/city/cityAdd.jsp").forward(request, response);
                 }
+
+                /* establecer lista de mensajes a la peticion */
+                if (!msgList.isEmpty()) {
+                    request.setAttribute("msgList", msgList);
+                }
+
+                /* establecer ciudad a la peticion */
+                request.setAttribute("city", city);
+
+                /* despachar a la vista */
+                request.getRequestDispatcher("/city/cityAdd.jsp").forward(request, response);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");
@@ -112,6 +135,7 @@ public class CityAddServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

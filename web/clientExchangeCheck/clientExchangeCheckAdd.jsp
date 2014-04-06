@@ -54,48 +54,10 @@
                             <li><a href="ClientExchangeCheckMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                             <li class="active"><i class="fa fa-edit"></i> Agregar</li>
                         </ol>
-                        <c:if test="${msg!= null }" >
-                            <div class="alert alert-dismissable alert-info">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msg}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgErrorCheckout != null }" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorCheckout}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgErrorRut != null }" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorRut}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgErrorUserFound != null }" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorUserFound}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgErrorFound != null }" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorFound}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <c:if test="${msgOk != null}" >
-                            <div class="alert alert-dismissable alert-success">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgOk}" /></strong>
-                            </div>
-                        </c:if>                     
-                        <c:if test="${msgErrorIdExchange!= null }" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorIdExchange}" /></strong></br>
-                            </div>
-                        </c:if>
+
+                        <!-- MENSAJES -->
+                        <c:import var="formMsg" url="/formMsg.jsp" />
+                        <c:out value="${formMsg}" escapeXml="false" />
                     </div>
                     <div class="col-lg-4">
                         <form role="form" action="ClientExchangeAddServlet" method="POST" id="formAdd" name="formAdd">                             
@@ -107,13 +69,13 @@
                                     </c:forEach>
                                 </select>                                
                             </div>
-                            <c:if test="${msgErrorRut == null}">
+                            <c:if test="${msgErrorRut == null && msgErrorUserFound == null}">
                                 <div class="form-group">
                                     <label>RUT</label>
                                     <input class="form-control" required="true" maxlength="12" name="rut" value="<c:out value="${rut}" />">
                                 </div>
                             </c:if>
-                            <c:if test="${msgErrorRut != null}">
+                            <c:if test="${msgErrorRut != null || msgErrorUserFound != null}">
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">RUT</label>
                                     <input class="form-control" required="true" maxlength="12" name="rut" id="inputError" value="<c:out value="${rut}" />">

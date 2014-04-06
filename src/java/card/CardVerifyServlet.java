@@ -44,9 +44,9 @@ public class CardVerifyServlet extends HttpServlet {
 
         try {
 
-            //////////////////////////////////////////
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);

@@ -37,73 +37,37 @@
     </head>
 
     <body>
-
         <div id="wrapper">
-
             <!-- Collect the nav links, forms, and other content for toggling -->
             <c:import var="menu" url="/mainMenu.jsp" />
             <c:out value="${menu}" escapeXml="false" />
             <!-- /.navbar-collapse -->
-
             <div id="page-wrapper">
-
                 <div class="row">
                     <div class="col-lg-12">
                         <!-- TITULO DE MANTENEDOR -->
-                        <h1>Mantenedor <small> Categorias</small></h1>
+                        <h1>Mantenedor <small> Categorías</small></h1>
                         <ol class="breadcrumb">
                             <li><a href="CategoryMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                             <li class="active"><i class="fa fa-edit"></i> Agregar</li>
                         </ol>
                         <!-- /TITULO DE MANTENEDOR -->
 
-                        <!-- MENSAJE INFORMATIVO -->
-                        <c:if test="${msg != null}" >
-                            <div class="alert alert-info alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <td><strong><c:out value="${msg}" /></strong></td>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE INFORMATIVO -->
-
-                        <!-- MENSAJE DE EXITO -->
-                        <c:if test="${msgOk != null}" >
-                            <div class="alert alert-dismissable alert-success">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgOk}" /></strong>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE EXITO -->
-
-                        <!-- MENSAJE DE ERROR DE NOMBRE DE CATEGORIA -->
-                        <c:if test="${msgErrorNameCategory != null }" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorNameCategory}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE NOMBRE DE CATEGORIA -->
-
-                        <!-- MENSAJE DE ERROR DE REGISTRO DUPLICADO -->
-                        <c:if test="${msgErrorDup != null }" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorDup}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE REGISTRO DUPLICADO -->
+                        <!-- MENSAJES -->
+                        <c:import var="formMsg" url="/formMsg.jsp" />
+                        <c:out value="${formMsg}" escapeXml="false" />
                     </div>
                     <div class="col-lg-4">
                         <!-- FORMULARIO -->
                         <form role="form" action="CategoryAddServlet" method="POST" id="formAdd" name="formAdd">   
                             <!-- NOMBRE DE CATEGORIA -->
-                            <c:if test="${msgErrorDup == null }" >
+                            <c:if test="${msgErrorDup == null && msgErrorNameCategory == null}" >
                                 <div class="form-group">
                                     <label>Nombre Categoría</label>
                                     <input class="form-control" required="true" maxlength="50" name="nameCategory" value="<c:out value="${category.nameCategory}" />">
                                 </div>
                             </c:if>
-                            <c:if test="${msgErrorDup != null }" >
+                            <c:if test="${msgErrorDup != null || msgErrorNameCategory != null}" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Nombre Categoría</label>
                                     <input class="form-control" required="true" maxlength="50" name="nameCategory" id="inputError" value="<c:out value="${category.nameCategory}" />">

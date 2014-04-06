@@ -5,6 +5,8 @@
 package card;
 
 import Helpers.Format;
+import Helpers.Message;
+import Helpers.MessageList;
 import java.io.IOException;
 import java.sql.Connection;
 import javax.annotation.Resource;
@@ -15,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import Services.CardService;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -45,18 +49,18 @@ public class CardAddServlet extends HttpServlet {
         Connection conexion = null;
 
         try {
-            /////////////////////////////////////
+            //////////////////////////
             // ESTABLECER CONEXION
-            /////////////////////////////////////
+            //////////////////////////
 
             conexion = ds.getConnection();
 
             CardDAO cardDAO = new CardDAO();
             cardDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            /////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            /////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -70,137 +74,142 @@ public class CardAddServlet extends HttpServlet {
                 request.setAttribute("userJsp", user);
                 request.setAttribute("access", access);
 
-                /////////////////////////////////////////
+                ////////////////////////////////////
                 // RECIBIR Y COMPROBAR PARAMETROS
-                /////////////////////////////////////////
-                try {
+                ////////////////////////////////////
 
-                    //Recibir rut de verify.jsp
-                    String srut = request.getParameter("rut");
-                    String sdv = request.getParameter("dv");
-                    String firstname = request.getParameter("firstName");
-                    String lastname = request.getParameter("lastName");
-                    String barcode = request.getParameter("barCode");
-                    String cardtype = request.getParameter("cardType");
-                    String btnAdd = request.getParameter("add");
+                //Recibir rut de verify.jsp
+                String srut = request.getParameter("rut");
+                String sdv = request.getParameter("dv");
+                String firstname = request.getParameter("firstname");
+                String lastname = request.getParameter("lastname");
+                String barcode = request.getParameter("barCode");
+                String cardtype = request.getParameter("cardType");
+                String btnAdd = request.getParameter("add");
 
-                    Card card = new Card();
+                /* instanciar url */
+                String url = "?redirect=ok";
 
-                    boolean error = false;
+                url += "&rut=" + srut;
+                url += "&dv=" + sdv;
+                url += "&firstname=" + firstname;
+                url += "&lastname=" + lastname;
+                url += "&barcode=" + barcode;
+                url += "&cardtype=" + cardtype;
 
-                    if (btnAdd != null) {
-                        /* comprobar rut */
-                        if (srut == null || srut.trim().equals("")) {
-                            request.setAttribute("msgErrorRut", "Error al recibir Rut.");
+                /* instanciar tarjeta */
+                Card card = new Card();
+
+                boolean error = false;
+
+                if (btnAdd != null) {
+                    /* comprobar rut */
+                    if (srut == null || srut.trim().equals("")) {
+                        url += "&msgErrorRut=Fallo al recibir Rut.";
+                        error = true;
+                    } else {
+                        try {
+                            card.setRut(Integer.parseInt(srut));
+                        } catch (NumberFormatException n) {
+                            url += "&msgErrorRut=Rut inválido.";
                             error = true;
-                        } else {
-                            try {
-                                card.setRut(Integer.parseInt(srut));
-                            } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorRut", "Error: Rut inválido.");
-                                error = true;
-                            }
-                        }
-
-                        /* comprobar dv */
-                        if (sdv == null || sdv.trim().equals("")) {
-                            request.setAttribute("msgErrorDV", "Error al recbir dv.");
-                            error = true;
-                        } else {
-                            card.setDv(sdv);
-                        }
-
-                        /* comprobar barcode */
-                        if (barcode == null || barcode.trim().equals("")) {
-                            request.setAttribute("msgErrorBarCode", "Error al recibir Codigo de Barra.");
-                            error = true;
-                        } else {
-                            try {
-                                card.setBarCode(Integer.parseInt(barcode));
-                                if (card.getBarCode() < 10000000) {
-                                    request.setAttribute("msgErrorBarCode", "Error: El código de barras debe poseer 8 dígitos.");
-                                    error = true;
-                                } else {
-                                    /* comprobar duplicados */
-                                    Card aux = cardDAO.findByBarCode(card.getBarCode());
-
-                                    if (aux != null) {
-                                        request.setAttribute("msgErrorBarCode", "Error: ya existe esta tarjeta asociada a un cliente.");
-                                        error = true;
-                                    }
-                                }
-                            } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorBarCode", "Error al recibir Codigo de Barra, los valores deben ser numericos.");
-                                error = true;
-                            }
-                        }
-
-                        /* comprobar firstname */
-                        if (firstname == null || firstname.trim().equals("")) {
-                            request.setAttribute("msgErrorFirstName", "Error al recibir nombre.");
-                            error = true;
-                        } else {
-                            card.setFirstName(firstname);
-                        }
-
-                        /* comprobar lastname */
-                        if (lastname == null || lastname.trim().equals("")) {
-                            request.setAttribute("msgErrorLastName", "Error al recibir apellido.");
-                            error = true;
-                        } else {
-                            card.setLastName(lastname);
-                        }
-
-                        /* comprobar cardtype */
-                        if (cardtype == null || cardtype.trim().equals("")) {
-                            request.setAttribute("msgErrorType", "Error al recibir tipo de tarjeta.");
-                            error = true;
-                        } else {
-                            try {
-                                int ct = Integer.parseInt(cardtype);
-                                switch (ct) {
-                                    case 1:
-                                        card.setCardType(ct);
-                                        card.setDateBeginCard(Format.currentDate());
-                                        card.setDateEndCard(CardService.currentDateCardType(card.getBasic()));
-                                        break;
-                                    case 2:
-                                        card.setCardType(ct);
-                                        card.setDateBeginCard(Format.currentDate());
-                                        card.setDateEndCard(CardService.currentDateCardType(card.getSilver()));
-                                        break;
-                                    case 3:
-                                        card.setCardType(ct);
-                                        card.setDateBeginCard(Format.currentDate());
-                                        card.setDateEndCard(CardService.currentDateCardType(card.getGold()));
-                                        break;
-                                }
-                            } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorType", "Error: Debe recibir un valor numérico.");
-                                error = true;
-                            }
-                        }
-
-                        ////////////////////////////////////////
-                        // INSERTAR REGISTRO
-                        ////////////////////////////////////////
-
-                        if (!error) {
-                            try {
-                                cardDAO.insert(card);
-                                request.setAttribute("msgOk", "Registro ingresado exitosamente! ");
-                            } catch (Exception sqlException) {
-                                sqlException.printStackTrace();
-                            }
                         }
                     }
 
-                    request.setAttribute("reg", card);
+                    /* comprobar dv */
+                    if (sdv == null || sdv.trim().equals("")) {
+                        url += "&msgErrorDv=Fallo al recibir dv.";
+                        error = true;
+                    } else {
+                        card.setDv(sdv);
+                    }
 
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("/card/cardAdd.jsp").forward(request, response);
+                    /* comprobar barcode */
+                    if (barcode == null || barcode.trim().equals("")) {
+                        url += "&msgErrorBarcode=Debe ingresar código de barras.";
+                        error = true;
+                    } else {
+                        try {
+                            card.setBarCode(Integer.parseInt(barcode));
+                            if (card.getBarCode() < 10000000) {
+                                url += "&msgErrorBarcode=El código de barras debe poseer 8 dígitos.";
+                                error = true;
+                            } else {
+                                /* comprobar duplicados */
+                                try {
+                                    Card aux = cardDAO.findByBarCode(card.getBarCode());
+                                    if (aux != null) {
+                                        url += "&msgErrorBarcode=Ya existe esta tarjeta asociada a un cliente.";
+                                        error = true;
+                                    }
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
+                            }
+                        } catch (NumberFormatException n) {
+                            url += "&msgErroBarcode=Fallo al recibir Codigo de Barra, los valores deben ser numéricos.";
+                            error = true;
+                        }
+                    }
+
+                    /* comprobar firstname */
+                    if (firstname == null || firstname.trim().equals("")) {
+                        error = true;
+                    } else {
+                        card.setFirstName(firstname);
+                    }
+
+                    /* comprobar lastname */
+                    if (lastname == null || lastname.trim().equals("")) {
+                        error = true;
+                    } else {
+                        card.setLastName(lastname);
+                    }
+
+                    /* comprobar cardtype */
+                    if (cardtype == null || cardtype.trim().equals("")) {
+                        error = true;
+                    } else {
+                        try {
+                            int ct = Integer.parseInt(cardtype);
+                            switch (ct) {
+                                case 1:
+                                    card.setCardType(ct);
+                                    card.setDateBeginCard(Format.currentDate());
+                                    card.setDateEndCard(CardService.currentDateCardType(card.getBasic()));
+                                    break;
+                                case 2:
+                                    card.setCardType(ct);
+                                    card.setDateBeginCard(Format.currentDate());
+                                    card.setDateEndCard(CardService.currentDateCardType(card.getSilver()));
+                                    break;
+                                case 3:
+                                    card.setCardType(ct);
+                                    card.setDateBeginCard(Format.currentDate());
+                                    card.setDateEndCard(CardService.currentDateCardType(card.getGold()));
+                                    break;
+                            }
+                        } catch (NumberFormatException n) {
+                            error = true;
+                        }
+                    }
+
+                    ///////////////////////
+                    // INSERTAR REGISTRO
+                    ///////////////////////
+                    if (!error) {
+                        try {
+                            cardDAO.insert(card);
+                            url += "&msgOk=Registro ingresado exitosamente.";
+                        } catch (Exception sqlException) {
+                            sqlException.printStackTrace();
+                        }
+                    }
                 }
+
+                /* send redirect */
+                response.sendRedirect("CardGetAddServlet" + url);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");
@@ -209,6 +218,7 @@ public class CardAddServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

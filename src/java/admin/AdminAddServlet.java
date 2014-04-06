@@ -43,19 +43,18 @@ public class AdminAddServlet extends HttpServlet {
 
         Connection conexion = null;
 
-        /////////////////////////////////////////
+        /////////////////////////
         // ESTABLECER CONEXION
-        /////////////////////////////////////////
+        /////////////////////////
         try {
-
             conexion = ds.getConnection();
 
             AdminDAO adminDAO = new AdminDAO();
             adminDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ///////////////////////
             // COMPROBAR SESSION
-            //////////////////////////////////////////
+            ///////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -72,118 +71,124 @@ public class AdminAddServlet extends HttpServlet {
                     request.setAttribute("userJsp", user); // username
                     request.setAttribute("access", access); // nivel de acceso
 
-                    /////////////////////////////////////////
+                    ////////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETROS
-                    //////////////////////////////////////// 
+                    ////////////////////////////////////
 
-                    String btnAdd = request.getParameter("add");
+                    /* obtener parametros de la vista */
                     String username = request.getParameter("username");
                     String email = request.getParameter("email");
                     String type = request.getParameter("type_admin");
                     String pwd1 = request.getParameter("pwd1");
                     String pwd2 = request.getParameter("pwd2");
 
+                    /* instanciar url */
+                    String url = "?target=get";
+
+                    url += "&redirect=ok";
+                    url += "&username=" + username;
+                    url += "&email=" + email;
+                    url += "&type=" + type;
+
+                    /* instanciar admin */
                     Admin admin = new Admin();
 
                     boolean error = false;
 
-                    /* comprobar boton agregar */
-                    if (btnAdd == null) {
-                        request.setAttribute("msg", "Ingrese un nuevo Administrador.");
-                    } else {
-                        /* comprobar username */
-                        if (username == null || username.trim().equals("")) {
-                            request.setAttribute("msgErrorUsername", "Error al recibir username.");
-                            error = true;
-                        } else {
-                            /* comprobar username duplicado */
-                            admin.setUsername(username);
-                            try {
-                                boolean find = adminDAO.validateDuplicateUsername(admin);
-                                if (find) {
-                                    request.setAttribute("msgErrorUsername", "Error: ya existe un administrador con ese username. ");
-                                    error = true;
-                                }
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                                error = true;
-                            }
-                        }
-                        /* comprobar email */
-                        if (email == null || email.trim().equals("")) {
-                            request.setAttribute("msgErrorEmail", "Error al recibir email.");
-                            error = true;
-                        } else {
-                            /* comprobar email duplicado */
-                            admin.setEmail(email);
-                            try {
-                                boolean find = adminDAO.validateDuplicateEmail(admin);
-                                if (find) {
-                                    request.setAttribute("msgErrorEmail", "Error: ya existe un administrador con ese email. ");
-                                    error = true;
-                                }
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                                error = true;
-                            }
-                        }
+                    /* establecer atributos a la vista */
+                    request.setAttribute("username", username);
+                    request.setAttribute("email", email);
+                    request.setAttribute("type", Integer.parseInt(type));
+                    request.setAttribute("pwd1", pwd1);
+                    request.setAttribute("pwd2", pwd2);
 
-                        /* comprobar type */
-                        if (type == null || type.trim().equals("")) {
-                            request.setAttribute("msgErrorType", "Error al recibir tipo.");
-                            error = true;
-                        } else {
-                            try {
-                                admin.setTypeAdmin(Integer.parseInt(type));
-                            } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorType", "Error: El tipo deber ser numérico.");
+                    /* comprobar username */
+                    if (username == null || username.trim().equals("")) {
+                        url += "&msgErrorUsername=Debe ingresar username.";
+                        error = true;
+                    } else {
+                        /* comprobar username duplicado */
+                        admin.setUsername(username);
+                        try {
+                            boolean find = adminDAO.validateDuplicateUsername(admin);
+                            if (find) {
+                                url += "&msgErrorUsername=El Username ingresado ya se encuentra registrado.";
                                 error = true;
                             }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            error = true;
                         }
-                        /* comprobar pwd1 */
-                        if (pwd1 == null || pwd1.trim().equals("")) {
-                            request.setAttribute("msgErrorPwd1", "Error al recibir password.");
+                    }
+                    /* comprobar email */
+                    if (email == null || email.trim().equals("")) {
+                        url += "&msgErrorEmail=Debe ingresar Email.";
+                        error = true;
+                    } else {
+                        /* comprobar email duplicado */
+                        admin.setEmail(email);
+                        try {
+                            boolean find = adminDAO.validateDuplicateEmail(admin);
+                            if (find) {
+                                url += "&msgErrorEmail=El Email ingresado ya se encuentra registrado.";
+                                error = true;
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            error = true;
+                        }
+                    }
+
+                    /* comprobar type */
+                    if (type == null || type.trim().equals("")) {
+                        error = true;
+                    } else {
+                        admin.setTypeAdmin(Integer.parseInt(type));
+                    }
+                    /* comprobar pwd1 */
+                    if (pwd1 == null || pwd1.trim().equals("")) {
+                        url += "&msgErrorPwd1=Debe ingresar password.";
+                        error = true;
+                    } else {
+                        admin.setPwd1(pwd1);
+                        /* comprobar pwd2 */
+                        if (pwd2 == null || pwd2.trim().equals("")) {
+                            url += "&msgErrorPwd1=Debe ingresar password.";
                             error = true;
                         } else {
-                            admin.setPwd1(pwd1);
-                            /* comprobar pwd2 */
-                            if (pwd2 == null || pwd2.trim().equals("")) {
-                                request.setAttribute("msgErrorPwd1", "Error al recibir password.");
+                            admin.setPwd2(pwd2);
+                            /* comprobar coincidencias */
+                            if (!pwd1.equals(pwd2)) {
+                                url += "&msgErrorPwd1=Las passwords no coinciden.";
                                 error = true;
-                            } else {
-                                admin.setPwd2(pwd2);
-                                /* comprobar coincidencias */
-                                if (!pwd1.equals(pwd2)) {
-                                    request.setAttribute("msgErrorPwd1", "Error: Las password's no coinciden.");
-                                    error = true;
-                                }
-                                /* comprobar largo de caracteres */
-                                if (pwd1.length() < 6 || pwd2.length() < 6) {
-                                    request.setAttribute("msgErrorPwd2", "Error: La password debe poseer al menos 6 caracteres.");
-                                    error = true;
-                                }
-                                /*encriptar password en hash MD5 */
-                                if (!error) {
-                                    admin.setPassword(StringMD.getStringMessageDigest(pwd1, StringMD.MD5));
-                                }
                             }
-                        }
-                        ////////////////////////////////////////
-                        // INSERTAR REGISTRO
-                        ////////////////////////////////////////
-                        if (!error) {
-                            try {
-                                adminDAO.insert(admin);
-                                request.setAttribute("msgOk", "Registro ingresado exitosamente! ");
-                            } catch (Exception duplicateException) {
-                                request.setAttribute("msgErrorDup", "Error: ya existe este registro. ");
+                            /* comprobar largo de caracteres */
+                            if (pwd1.length() < 6 || pwd2.length() < 6) {
+                                url += "&msgErrorPwd2=La password debe contener al menos 6 caracteres.";
+                                error = true;
+                            }
+                            /*encriptar password en hash MD5 */
+                            if (!error) {
+                                admin.setPassword(StringMD.getStringMessageDigest(pwd1, StringMD.MD5));
                             }
                         }
                     }
 
-                    request.setAttribute("admin", admin);
+                    ////////////////////////
+                    // LOGICA DE NEGOCIO
+                    ////////////////////////
+                    if (!error) {
+                        try {
+                            /* insertar registro */
+                            adminDAO.insert(admin);
+                            url += "&msgOk=Registro ingresado exitosamente.";
+                        } catch (Exception duplicateException) {
+                            url += "&msgErrorDup=Registro duplicado, verifique campos ingresados.";
+                        }
+                    }
 
-                    request.getRequestDispatcher("/admin/adminAdd.jsp").forward(request, response);
+                    /* send redirect */
+                    response.sendRedirect("AdminGetAddServlet" + url);
                 }
             } catch (Exception sesionException) {
                 /* enviar a la vista de login */
@@ -193,6 +198,7 @@ public class AdminAddServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

@@ -72,7 +72,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <!-- TITULO MANTENEDOR -->
-                        <h1>Mantenedor <small> Categorias</small></h1>
+                        <h1>Mantenedor <small> Categorías</small></h1>
                         <ol class="breadcrumb">
                             <li class="active"><a href="CategoryMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                         </ol>

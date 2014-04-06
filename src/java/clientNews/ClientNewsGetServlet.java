@@ -5,9 +5,12 @@
 package clientNews;
 
 import Helpers.Format;
-import Helpers.Rut;
+import Helpers.Message;
+import Helpers.MessageList;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -45,11 +48,10 @@ public class ClientNewsGetServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        ////////////////////////
+        // ESTABLECER CONEXION
+        ////////////////////////
         try {
-            //////////////////////////////////////////
-            // ESTABLECER CONEXION
-            //////////////////////////////////////////
-
             conexion = ds.getConnection();
 
             ClientNewsDAO cnewsDAO = new ClientNewsDAO();
@@ -57,9 +59,10 @@ public class ClientNewsGetServlet extends HttpServlet {
 
             UserCardDAO usercardDAO = new UserCardDAO();
             usercardDAO.setConexion(conexion);
-            //////////////////////////////////////////
+
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -78,109 +81,125 @@ public class ClientNewsGetServlet extends HttpServlet {
                     request.setAttribute("access", access);
                     request.setAttribute("su", 777); //superuser 
 
+                    ////////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETROS
+                    ////////////////////////////////////
 
-                    try {
-                        /////////////////////////////////////////
-                        // RECIBIR Y COMPROBAR PARAMETROS
-                        /////////////////////////////////////////
+                    /* obtener atributos de PRG */
+                    String tittle = request.getParameter("tittle");
+                    String dateBegin = request.getParameter("dateBegin");
+                    String dateEnd = request.getParameter("dateEnd");
 
-                        /* obtener atributos de PRG */
-                        String tittle = request.getParameter("tittle");
-                        String dateBegin = request.getParameter("dateBegin");
-                        String dateEnd = request.getParameter("dateEnd");
+                    /* obtener mensajes de PRG */
+                    String msgErrorTittle = request.getParameter("msgErrorTittle");
+                    String msgErrorDateBegin = request.getParameter("msgErrorDateBegin");
+                    String msgErrorDateEnd = request.getParameter("msgErrorDateEnd");
+                    String msgErrorDate = request.getParameter("msgErrorDate");
+                    String msgOk = request.getParameter("msgOk");
 
-                        /* obtener mensajes de PRG */
-                        String msgErrorTittle = request.getParameter("msgErrorTittle");
-                        String msgErrorDate = request.getParameter("msgErrorDate");
-                        String msgOk = request.getParameter("msgOk");
+                    /* parametros de busqueda */
+                    String sidClientNews = request.getParameter("idClientNews");
+                    String srut = request.getParameter("rut");
 
-                        /* parametros de busqueda */
-                        String sidClientNews = request.getParameter("idClientNews");
-                        String srut = request.getParameter("rut");
+                    /* instanciar client news */
+                    ClientNews cnews = new ClientNews();
 
-                        ClientNews cnews = new ClientNews();
+                    /* instanciar lista de mensajes */
+                    Collection<Message> msgList = new ArrayList<Message>();
 
-                        boolean error = false;
+                    boolean error = false;
 
-
-                        /* comprobar id client news */
-                        if (sidClientNews == null || sidClientNews.trim().equals("")) {
-                            request.setAttribute("msgErrorIdClientNews", "Error al recibir id cliente noticias.");
-                            error = true;
-                        } else {
-                            try {
-                                cnews.setIdClientNews(Integer.parseInt(sidClientNews));
-                            } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorIdClientNews", "Error: El id de cliente noticias no es numÃ©rico.");
-                            }
+                    /* comprobar id client news */
+                    if (sidClientNews == null || sidClientNews.trim().equals("")) {
+                        error = true;
+                    } else {
+                        try {
+                            cnews.setIdClientNews(Integer.parseInt(sidClientNews));
+                        } catch (NumberFormatException n) {
                         }
-
-                        /* comprobar rut */
-                        if (srut == null || srut.trim().equals("")) {
-                            request.setAttribute("msgErrorRut", "Error al recibir rut.");
-                            error = true;
-                        } else {
-                            try {
-                                cnews.setRut(Integer.parseInt(srut));
-                            } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorRut", "Error al recibir rut.");
-                                error = true;
-                            }
-                        }
-
-
-                        if (!error) {
-                            /* buscar noticia cliente */
-                            ClientNews reg = cnewsDAO.findByClientNews(cnews);
-                            if (reg != null) {
-                                reg.setDateBegin(Format.dateYYYYMMDD(reg.getDateBegin()));
-                                reg.setDateEnd(Format.dateYYYYMMDD(reg.getDateEnd()));
-
-                                /* obtener atributos del dao */
-                                request.setAttribute("rut", reg.getRut());
-                                request.setAttribute("dv", reg.getDv());
-                                request.setAttribute("idClientNews", reg.getIdClientNews());
-                                request.setAttribute("firstName", reg.getFirstName());
-                                request.setAttribute("lastName", reg.getLastName());
-                                request.setAttribute("newsType", reg.getNewsType());
-
-                                /*comprobar titulo */
-                                if (msgErrorTittle == null || msgErrorTittle.trim().equals("")) {
-                                    request.setAttribute("tittle", reg.getTittle());
-                                } else {
-                                    request.setAttribute("msgErrorTittle", msgErrorTittle);
-                                    request.setAttribute("tittle", tittle);
-                                }
-
-                                /* comprobar date */
-                                if (msgErrorDate == null || msgErrorDate.trim().equals("")) {
-                                } else {
-                                    request.setAttribute("msgErrorDate", msgErrorDate);
-                                }
-
-                                /* comprobar fecha inicio */
-                                if (msgErrorDate == null || msgErrorDate.trim().equals("")) {
-                                    request.setAttribute("dateBegin", reg.getDateBegin());
-                                    request.setAttribute("dateEnd", reg.getDateEnd());
-                                } else {
-                                    request.setAttribute("msgErrorDate", msgErrorDate);
-                                    request.setAttribute("dateBegin", dateBegin);
-                                    request.setAttribute("dateEnd", dateEnd);
-                                }
-
-                                if (msgOk == null || msgOk.trim().equals("")) {
-                                    request.setAttribute("msg", "El registro ha sido encontrado!");
-                                } else {
-                                    request.setAttribute("msgOk", msgOk);
-                                }
-                            } else {
-                                request.setAttribute("msgErrorFound", "Error: No se ha encontrado el registro.");
-                            }
-                        }
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("/clientNews/clientNewsUpdate.jsp").forward(request, response);
                     }
+
+                    /* comprobar rut */
+                    if (srut == null || srut.trim().equals("")) {
+                        error = true;
+                    } else {
+                        try {
+                            cnews.setRut(Integer.parseInt(srut));
+                        } catch (NumberFormatException n) {
+                            error = true;
+                        }
+                    }
+
+                    if (!error) {
+                        /* buscar noticia cliente */
+                        ClientNews reg = cnewsDAO.findByClientNews(cnews);
+                        if (reg != null) {
+                            reg.setDateBegin(Format.dateYYYYMMDD(reg.getDateBegin()));
+                            reg.setDateEnd(Format.dateYYYYMMDD(reg.getDateEnd()));
+
+                            /* obtener atributos del dao */
+                            request.setAttribute("rut", reg.getRut());
+                            request.setAttribute("dv", reg.getDv());
+                            request.setAttribute("idClientNews", reg.getIdClientNews());
+                            request.setAttribute("firstName", reg.getFirstName());
+                            request.setAttribute("lastName", reg.getLastName());
+                            request.setAttribute("newsType", reg.getNewsType());
+
+                            /*comprobar titulo */
+                            if (msgErrorTittle == null || msgErrorTittle.trim().equals("")) {
+                                request.setAttribute("tittle", reg.getTittle());
+                            } else {
+                                request.setAttribute("msgErrorTittle", true);
+                                msgList.add(MessageList.addMessage(msgErrorTittle));
+                                request.setAttribute("tittle", tittle);
+                            }
+
+                            /* comprobar fecha inicio */
+                            if (msgErrorDateBegin == null || msgErrorDateBegin.trim().equals("")) {
+                                request.setAttribute("dateBegin", reg.getDateBegin());
+                            } else {
+                                request.setAttribute("msgErrorDateBegin", true);
+                                msgList.add(MessageList.addMessage(msgErrorDateBegin));
+                                request.setAttribute("dateBegin", dateBegin);
+                            }
+
+                            /* comprobar fecha de termino */
+                            if (msgErrorDateEnd == null || msgErrorDateEnd.trim().equals("")) {
+                                request.setAttribute("dateEnd", reg.getDateEnd());
+                            } else {
+                                request.setAttribute("msgErrorDateEnd", true);
+                                msgList.add(MessageList.addMessage(msgErrorDateEnd));
+                                request.setAttribute("dateEnd", dateEnd);
+                            }
+
+                            /* comprobar date */
+                            if (msgErrorDate == null || msgErrorDate.trim().equals("")) {
+                            } else {
+                                request.setAttribute("dateBegin", dateBegin);
+                                request.setAttribute("dateEnd", reg.getDateEnd());
+                                request.setAttribute("msgErrorDate", true);
+                                msgList.add(MessageList.addMessage(msgErrorDate));
+                            }
+
+                            /* comprobar mensaje de exito */
+                            if (msgOk == null || msgOk.trim().equals("")) {
+                                request.setAttribute("msg", "El registro ha sido encontrado!");
+                            } else {
+                                request.setAttribute("msgOk", msgOk);
+                            }
+                        } else {
+                            request.setAttribute("msgErrorFound", "Error: No se ha encontrado el registro.");
+                        }
+                    }
+
+                    /* establecer lista de mensajes */
+                    if (!msgList.isEmpty()) {
+                        request.setAttribute("msgList", msgList);
+                    }
+
+                    /* despachar a la vista */
+                    request.getRequestDispatcher("/clientNews/clientNewsUpdate.jsp").forward(request, response);
+
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */

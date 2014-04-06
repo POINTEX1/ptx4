@@ -47,9 +47,9 @@ public class CardBrowserServlet extends HttpServlet {
 
         Connection conexion = null;
 
-        ////////////////////////////////////////
-        //      ESTABLECER CONEXION
-        ////////////////////////////////////////
+        /////////////////////////
+        // ESTABLECER CONEXION
+        /////////////////////////
         try {
             conexion = ds.getConnection();
 
@@ -59,9 +59,9 @@ public class CardBrowserServlet extends HttpServlet {
             CityDAO cityDAO = new CityDAO();
             cityDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
-            //        COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
+            // COMPROBAR SESSION
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -76,46 +76,52 @@ public class CardBrowserServlet extends HttpServlet {
 
                 /////////////////////////////////////////
                 //   RECIBIR Y COMPROBAR PARAMETROS
-                /////////////////////////////////////////
-                try {
-                    String rut = request.getParameter("rut"); // rut + dv
+                /////////////////////////////////////////                
+                String rut = request.getParameter("rut"); // rut + dv
 
-                    Card card = new Card();
+                Card card = new Card();
 
-                    boolean error = false;
+                boolean error = false;
 
-                    /* comprobar rut */
-                    if (rut == null || rut.trim().equals("")) {
-                        request.setAttribute("msgErrorRut", "Error: Debe ingresar RUT.");
-                        error = true;
-                    } else {
-                        /* establecer rut para mostrar en la vista */
-                        request.setAttribute("rut", rut);
-                        try {
-                            if (!Rut.validateRut(rut)) {
-                                request.setAttribute("msgErrorRut", "Error: RUT inválido.");
-                                error = true;
-                            } else {
-                                card.setRut(Rut.getRut(rut));
-                                card.setDv(Rut.getDv(rut));
-                            }
-                        } catch (Exception ex) {
+                /* comprobar rut */
+                if (rut == null || rut.trim().equals("")) {
+                    request.setAttribute("msgErrorRut", "Error: Debe ingresar RUT.");
+                    error = true;
+                } else {
+                    /* establecer rut para mostrar en la vista */
+                    request.setAttribute("rut", rut);
+                    try {
+                        if (!Rut.validateRut(rut)) {
                             request.setAttribute("msgErrorRut", "Error: RUT inválido.");
                             error = true;
+                        } else {
+                            card.setRut(Rut.getRut(rut));
+                            card.setDv(Rut.getDv(rut));
                         }
+                    } catch (Exception ex) {
+                        request.setAttribute("msgErrorRut", "Error: RUT inválido.");
+                        error = true;
                     }
+                }
 
-                    ////////////////////////////////////////
-                    //        LOGICA DE NEGOCIO
-                    ////////////////////////////////////////
+                ///////////////////////
+                // LOGICA DE NEGOCIO
+                ///////////////////////
 
-                    if (!error) {
-                        /* buscar card de usercard */
+                if (!error) {
+                    /* buscar card de usercard */
+                    try {
                         Card aux = cardDAO.findbyRutJoin(card);
 
                         if (aux != null) {
-                            request.setAttribute("msgAdd", "El usuario está registrado. ");
-                            request.setAttribute("reg", aux);
+                            request.setAttribute("msgAdd", "El usuario está registrado.");
+
+                            request.setAttribute("rut", aux.getRut());
+                            request.setAttribute("dv", aux.getDv());
+                            request.setAttribute("firstname", aux.getFirstName());
+                            request.setAttribute("lastname", aux.getLastName());
+
+                            /* despachar a la vista para agregar nueva tarjeta */
                             request.getRequestDispatcher("/card/cardAdd.jsp").forward(request, response);
                         } else {
                             /* obtener lista de ciudades */
@@ -127,19 +133,22 @@ public class CardBrowserServlet extends HttpServlet {
 
                             /* instanciar usercard */
                             UserCard usercard = new UserCard();
+
                             /* asignar rut */
                             usercard.setRut(card.getRut());
                             usercard.setDv(card.getDv());
 
                             request.setAttribute("reg", usercard);
 
+                            /* despachar a la vista para agregar usercard */
                             request.getRequestDispatcher("/userCard/userCardAdd.jsp").forward(request, response);
                         }
-                    } else {
-                        request.getRequestDispatcher("/card/cardVerify.jsp").forward(request, response);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
-                } catch (Exception parameterException) {
-                    System.out.println("Error al despachar a la vista");
+                } else {
+                    /* despachar a la vista para revalidar verificación */
+                    request.getRequestDispatcher("/card/cardVerify.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
@@ -149,6 +158,7 @@ public class CardBrowserServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

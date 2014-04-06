@@ -5,8 +5,12 @@
 package category;
 
 import Helpers.Format;
+import Helpers.Message;
+import Helpers.MessageList;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -44,17 +48,17 @@ public class CategoryAddServlet extends HttpServlet {
         Connection conexion = null;
 
         try {
-            //////////////////////////////////////////
+            /////////////////////////
             // ESTABLECER CONEXION
-            /////////////////////////////////////////
+            /////////////////////////
             conexion = ds.getConnection();
 
             CategoryDAO categoryDAO = new CategoryDAO();
             categoryDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -68,40 +72,51 @@ public class CategoryAddServlet extends HttpServlet {
                 request.setAttribute("userJsp", userJsp);
                 request.setAttribute("access", access);
 
-                ////////////////////////////////////////
+                ////////////////////////////////////
                 // RECIBIR Y COMPROBAR PARAMETROS
-                ////////////////////////////////////////
-                try {
+                ////////////////////////////////////
 
-                    String btnAdd = request.getParameter("add");
-                    String nameCategory = request.getParameter("nameCategory");
+                String btnAdd = request.getParameter("add");
+                String nameCategory = request.getParameter("nameCategory");
 
-                    Category category = new Category();
+                /* instanciar categoria */
+                Category category = new Category();
 
-                    if (btnAdd != null) {
-                        if (nameCategory == null || nameCategory.trim().equals("")) {
-                            request.setAttribute("msgErrorNameCategory", "Error al recibir nombre. ");
+                /* instanciar lista de mensajes */
+                Collection<Message> msgList = new ArrayList<Message>();
+
+                if (btnAdd == null) {
+                    request.setAttribute("msg", "Ingrese una categoría.");
+                } else {
+                    if (nameCategory == null || nameCategory.trim().equals("")) {
+                        request.setAttribute("msgErrorNameCategory", true);
+                        msgList.add(MessageList.addMessage("Debe ingresar nombre de categoría."));
+                    } else {
+                        category.setNameCategory(Format.capital(nameCategory));
+                        if (categoryDAO.findByName(0, category.getNameCategory())) {
+                            request.setAttribute("msgErrorDup", true);
+                            msgList.add(MessageList.addMessage("Registro duplicado."));
                         } else {
-                            category.setNameCategory(Format.capital(nameCategory));
-                            if (categoryDAO.findByName(0, category.getNameCategory())) {
-                                request.setAttribute("msgErrorDup", "Error: ya existe este registro.");
-                            } else {
-                                try {
-                                    categoryDAO.insert(category);
-                                    request.setAttribute("msgOk", "Registro ingresado exitosamente! ");
-                                } catch (Exception sqlException) {
-                                }
+                            try {
+                                categoryDAO.insert(category);
+                                request.setAttribute("msgOk", "Registro ingresado exitosamente! ");
+                            } catch (Exception sqlException) {
                             }
                         }
-                    } else {
-                        request.setAttribute("msg", "Ingrese una categoria.");
                     }
-
-                    request.setAttribute("category", category);
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("category/categoryAdd.jsp").forward(request, response);
                 }
+
+                /* establecer lista de mensajes a la peticion */
+                if (!msgList.isEmpty()) {
+                    request.setAttribute("msgList", msgList);
+                }
+                
+                /* establecer objeto a la peticion */
+                request.setAttribute("category", category);
+
+                /* despachar a la vista */
+                request.getRequestDispatcher("category/categoryAdd.jsp").forward(request, response);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");
@@ -110,14 +125,15 @@ public class CategoryAddServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {
             }
         }
     }
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP
      * <code>GET</code> method.

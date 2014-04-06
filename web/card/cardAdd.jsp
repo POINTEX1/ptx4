@@ -36,10 +36,10 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
-        
+
         <!-- disabledButton -->
         <script src="js/disabledButton.js"></script>
-        
+
     </head>
     <body>
         <div id="wrapper">
@@ -51,7 +51,6 @@
         </nav>
 
         <div id="page-wrapper">
-
             <div class="row">
                 <div class="col-lg-12">
                     <!-- TITULO MANTENEDOR -->
@@ -59,80 +58,11 @@
                     <ol class="breadcrumb">
                         <li><a href="CardMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                         <li class="active"><i class="fa fa-edit"></i> Agregar</li>
-                    </ol>
-                    <!-- /TITULO MANTENEDOR -->
+                    </ol>                    
 
-                    <!-- MENSAJE DE ERROR DE BARCODE -->
-                    <c:if test="${msgErrorBarCode != null}" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorBarCode}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <!-- /MENSAJE DE ERROR DE BARCODE -->
-
-                    <!-- MENSAJE DE ERROR DE RUT -->
-                    <c:if test="${msgErrorRut != null}" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorRut}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <!-- /MENSAJE DE ERROR DE RUT -->
-
-                    <!-- MENSAJE DE ERROR DE DV -->
-                    <c:if test="${msgErrorDV != null}" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorDV}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <!-- /MENSAJE DE ERROR DE DV -->
-
-                    <!-- MENSAJE DE ERROR DE FIRSTNAME -->
-                    <c:if test="${msgErrorFirstName != null}" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorFirstName}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <!-- /MENSAJE DE ERROR DE FIRSTNAME -->
-
-                    <!-- MENSAJE DE ERROR DE LASTNAME -->
-                    <c:if test="${msgErrorLastName != null}" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorLastName}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <!-- /MENSAJE DE ERROR DE LASTNAME -->
-
-                    <!-- MENSAJE DE ERROR DE TIPO DE TARJETA -->
-                    <c:if test="${msgErrorType != null}" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorType}" /></strong></br>
-                        </div>
-                    </c:if>
-                    <!-- /MENSAJE DE ERROR DE TIPO DE TARJETA -->
-
-                    <!-- MENSAJE DE ERROR DE REGISTRO DUPLICADO -->
-                    <c:if test="${msgErrorDup != null}" >
-                        <div class="alert alert-dismissable alert-danger">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgErrorDup}" /></strong></br>
-                        </div>
-                    </c:if>   
-                    <!-- /MENSAJE DE ERROR DE REGISTRO DUPLICADO -->
-
-                    <!-- MENSAJE DE EXITO -->
-                    <c:if test="${msgOk != null}" >
-                        <div class="alert alert-dismissable alert-success">
-                            <button type="button" class="close" data-dismiss="alert">&times;</button>
-                            <strong><c:out value="${msgOk}" /></strong>
-                        </div>
-                    </c:if>
-                    <!-- /MENSAJE DE EXITO -->
+                    <!-- MENSAJES -->
+                    <c:import var="formMsg" url="/formMsg.jsp" />
+                    <c:out value="${formMsg}" escapeXml="false" />
                 </div>
 
                 <div class="col-lg-4">
@@ -141,46 +71,42 @@
                         <!-- RUT-DV -->
                         <div class="form-group">
                             <label for="disabledSelect">RUT</label>
-                            <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${reg.rut}" />-<c:out value="${reg.dv}" />" disabled>
-                            <input type="hidden" name="rut" value="<c:out value="${reg.rut}" />"/>
-                            <input type="hidden" name="dv" value="<c:out value="${reg.dv}" />"/>
-                        </div>
-                        <!-- /RUT-DV -->
+                            <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${rut}" />-<c:out value="${dv}"/>" disabled>
+                            <input type="hidden" name="rut" value="<c:out value="${rut}" />"/>
+                            <input type="hidden" name="dv" value="<c:out value="${dv}" />"/>
+                        </div>                        
 
                         <!-- NOMBRE-APELLIDO -->
                         <div class="form-group">
                             <label for="disabledSelect">Nombre</label>
-                            <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${reg.firstName}" /> <c:out value="${reg.lastName}" />" disabled>
-                            <input type="hidden" name="firstName" value="<c:out value="${reg.firstName}" />"/>
-                            <input type="hidden" name="lastName" value="<c:out value="${reg.lastName}" />"/>
-                        </div>
-                        <!-- /NOMBRE-APELLIDO -->
+                            <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${firstname}" /><c:out value="${lastname}" />" disabled>
+                            <input type="hidden" name="firstname" value="<c:out value="${firstname}" />"/>
+                            <input type="hidden" name="lastname" value="<c:out value="${lastname}" />"/>
+                        </div>                        
 
                         <!-- BARCODE -->
-                        <c:if test="${msgErrorBarCode == null}">
+                        <c:if test="${msgErrorBarcode == null}">
                             <div class="form-group">
                                 <label>Codigo de Barra </label>
-                                <input class="form-control" required="true" maxlength="8" name="barCode" value="<c:out value="${reg.barCode}" />">
+                                <input class="form-control" required="true" maxlength="8" name="barCode" value="<c:out value="${barcode}" />">
                             </div>
                         </c:if>
-                        <c:if test="${msgErrorBarCode != null}">
+                        <c:if test="${msgErrorBarcode != null}">
                             <div class="form-group has-error">
                                 <label class="control-label" for="inputError">Codigo de Barra </label>
-                                <input class="form-control" required="true"  maxlength="8" name="barCode" id="inputError" value="<c:out value="${reg.barCode}" />">
+                                <input class="form-control" required="true"  maxlength="8" name="barCode" id="inputError" value="<c:out value="${barcode}" />">
                             </div>
-                        </c:if>
-                        <!-- /BARCODE -->
+                        </c:if>                        
 
                         <!-- TIPO TARJETA -->
                         <div class="form-group">
                             <label>Tipo de Tarjeta</label>
                             <select class="form-control" required="true" name="cardType">
-                                <option value="1"  <c:if test="${reg.cardType == 1}" > selected </c:if>> Basic</option>
-                                <option value="2" <c:if test="${reg.cardType == 2}" > selected </c:if>> Silver</option>
-                                <option value="3" <c:if test="${reg.cardType == 3}" > selected </c:if>> Gold</option>
+                                <option value="1"  <c:if test="${cardtype == 1}" > selected </c:if>> Basic</option>
+                                <option value="2" <c:if test="${cardtype == 2}" > selected </c:if>> Silver</option>
+                                <option value="3" <c:if test="${cardtype == 3}" > selected </c:if>> Gold</option>
                                 </select>
-                            </div>
-                            <!-- /TIPO TARJETA -->
+                            </div>                            
 
                             <!-- BOTONES -->
                             <input type="hidden" name="add" value="ok"/>

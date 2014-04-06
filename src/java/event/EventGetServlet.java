@@ -5,10 +5,13 @@
 package event;
 
 import Helpers.Format;
+import Helpers.Message;
+import Helpers.MessageList;
 import dressCode.DressCode;
 import dressCode.DressCodeDAO;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -48,11 +51,10 @@ public class EventGetServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        //////////////////////////
+        // ESTABLECER CONEXION
+        //////////////////////////
         try {
-            /////////////////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////////////////
-
             conexion = ds.getConnection();
 
             EventDAO eventDAO = new EventDAO();
@@ -64,9 +66,9 @@ public class EventGetServlet extends HttpServlet {
             DressCodeDAO dressCodeDAO = new DressCodeDAO();
             dressCodeDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -84,67 +86,79 @@ public class EventGetServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-
                     /////////////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETROS
                     /////////////////////////////////////////
-                    try {
-                        /* obtener atributos de PRG */
-                        String tittle = request.getParameter("tittle");
-                        String details = request.getParameter("details");
-                        String points = request.getParameter("points");
-                        String dateBegin = request.getParameter("dateBegin");
-                        String dateEnd = request.getParameter("dateEnd");
-                        String urlImage = request.getParameter("urlImage");
-                        String reason = request.getParameter("reason");
-                        String srequest = request.getParameter("srequest");
 
+                    /* obtener atributos de PRG */
+                    String tittle = request.getParameter("tittle");
+                    String details = request.getParameter("details");
+                    String points = request.getParameter("points");
+                    String dateBegin = request.getParameter("dateBegin");
+                    String dateEnd = request.getParameter("dateEnd");
+                    String urlImage = request.getParameter("urlImage");
+                    String reason = request.getParameter("reason");
+                    String srequest = request.getParameter("srequest");
 
-                        /* obtener mensajes de PRG */
-                        String msgOk = request.getParameter("msgOk");
-                        String msgErrorTittle = request.getParameter("msgErrorTittle");
-                        String msgErrorDetails = request.getParameter("msgErrorDetails");
-                        String msgErrorPoints = request.getParameter("msgErrorPoints");
-                        String msgErrorDate = request.getParameter("msgErrorDate");
-                        String msgErrorUrlImage = request.getParameter("msgErrorUrlImage");
-                        String msgErrorEvent = request.getParameter("msgErrorEvent");
-                        String msgErrorReason = request.getParameter("msgErrorReason");
+                    /* obtener mensajes de PRG */
+                    String msgOk = request.getParameter("msgOk");
+                    String msgErrorTittle = request.getParameter("msgErrorTittle");
+                    String msgErrorDetails = request.getParameter("msgErrorDetails");
+                    String msgErrorPoints = request.getParameter("msgErrorPoints");
+                    String msgErrorDate = request.getParameter("msgErrorDate");
+                    String msgErrorDateBegin = request.getParameter("msgErrorDateBegin");
+                    String msgErrorDateEnd = request.getParameter("msgErrorDateEnd");
+                    String msgErrorUrlImage = request.getParameter("msgErrorUrlImage");
+                    String msgErrorEvent = request.getParameter("msgErrorEvent");
+                    String msgErrorReason = request.getParameter("msgErrorReason");
 
-                        /* obtener atributos de busqueda */
-                        String sidPlace = request.getParameter("idPlace");
-                        String sidEvent = request.getParameter("idEvent");
+                    /* obtener atributos de busqueda */
+                    String sidPlace = request.getParameter("idPlace");
+                    String sidEvent = request.getParameter("idEvent");
 
-                        boolean error = false;
+                    /* instanciar evento */
+                    Event event = new Event();
 
-                        Event event = new Event();
+                    /* instanciar lista de mensajes */
+                    Collection<Message> msgList = new ArrayList<Message>();
 
-                        /* comprobar id place */
-                        if (sidPlace == null || sidPlace.trim().equals("")) {
-                            request.setAttribute("msgErrorIdPlace", "Error al recibir id Plaza.");
+                    boolean error = false;
+
+                    /* comprobar id place */
+                    if (sidPlace == null || sidPlace.trim().equals("")) {
+                        request.setAttribute("msgErrorIdPlace", true);
+                        msgList.add(MessageList.addMessage("Fallo al recibir id de lugar."));
+                        error = true;
+                    } else {
+                        try {
+                            event.setIdPlace(Integer.parseInt(sidPlace));
+                        } catch (NumberFormatException n) {
+                            request.setAttribute("msgErrorIdPlace", true);
+                            msgList.add(MessageList.addMessage("Fallo al recibir id de lugar."));
                             error = true;
-                        } else {
-                            try {
-                                event.setIdPlace(Integer.parseInt(sidPlace));
-                            } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorIdPlace", "Error: El id de plaza no es numérico.");
-                            }
                         }
+                    }
 
-                        /* comprobar id event */
-                        if (sidEvent == null || sidEvent.trim().equals("")) {
-                            request.setAttribute("msgErrorIdEvent", "Error al recibir id Evento.");
+                    /* comprobar id event */
+                    if (sidEvent == null || sidEvent.trim().equals("")) {
+                        request.setAttribute("msgErrorIdEvent", true);
+                        msgList.add(MessageList.addMessage("Fallo al recibir id de evento."));
+                        error = true;
+                    } else {
+                        try {
+                            event.setIdEvent(Integer.parseInt(sidEvent));
+                        } catch (NumberFormatException n) {
+                            request.setAttribute("msgErrorIdEvent", true);
+                            msgList.add(MessageList.addMessage("Fallo al recibir id de evento."));
                             error = true;
-                        } else {
-                            try {
-                                event.setIdEvent(Integer.parseInt(sidEvent));
-                            } catch (NumberFormatException n) {
-                                request.setAttribute("msgErrorIdEvent", "Error: El id de Evento no es numérico.");
-                            }
                         }
+                    }
 
-                        if (!error) {
-                            /* buscar Evento */
+                    if (!error) {
+                        /* buscar Evento */
+                        try {
                             Event reg = eventDAO.findByPlaceEvent(event);
+
                             if (reg != null) {
                                 /* obtener atributos del dao */
                                 request.setAttribute("idPlace", reg.getIdPlace());
@@ -163,7 +177,8 @@ public class EventGetServlet extends HttpServlet {
                                 if (msgErrorTittle == null || msgErrorTittle.trim().equals("")) {
                                     request.setAttribute("tittle", reg.getTittle());
                                 } else {
-                                    request.setAttribute("msgErrorTittle", msgErrorTittle);
+                                    request.setAttribute("msgErrorTittle", true);
+                                    msgList.add(MessageList.addMessage(msgErrorTittle));
                                     request.setAttribute("tittle", tittle);
                                 }
 
@@ -171,7 +186,8 @@ public class EventGetServlet extends HttpServlet {
                                 if (msgErrorDetails == null || msgErrorDetails.trim().equals("")) {
                                     request.setAttribute("details", reg.getDetails());
                                 } else {
-                                    request.setAttribute("msgErrorDetails", msgErrorDetails);
+                                    request.setAttribute("msgErrorDetails", true);
+                                    msgList.add(MessageList.addMessage(msgErrorDetails));
                                     request.setAttribute("details", details);
                                 }
 
@@ -179,7 +195,8 @@ public class EventGetServlet extends HttpServlet {
                                 if (msgErrorPoints == null || msgErrorPoints.trim().equals("")) {
                                     request.setAttribute("points", reg.getPoints());
                                 } else {
-                                    request.setAttribute("msgErrorPoints", msgErrorPoints);
+                                    request.setAttribute("msgErrorPoints", true);
+                                    msgList.add(MessageList.addMessage(msgErrorPoints));
                                     request.setAttribute("points", points);
                                 }
 
@@ -188,16 +205,25 @@ public class EventGetServlet extends HttpServlet {
                                     request.setAttribute("dateBegin", reg.getDateBegin());
                                     request.setAttribute("dateEnd", reg.getDateEnd());
                                 } else {
-                                    request.setAttribute("msgErrorDate", msgErrorDate);
+                                    request.setAttribute("msgErrorDate", true);
+                                    msgList.add(MessageList.addMessage(msgErrorDate));
                                     request.setAttribute("dateBegin", dateBegin);
                                     request.setAttribute("dateEnd", dateEnd);
+                                }
+                                
+                                /* comprobar date begin */
+                                if(msgErrorDateBegin == null || msgErrorDateBegin.trim().equals("")) {
+                                    
+                                } else {
+                                    
                                 }
 
                                 /* comprobar url image */
                                 if (msgErrorUrlImage == null || msgErrorUrlImage.trim().equals("")) {
                                     request.setAttribute("urlImage", reg.getUrlImage());
                                 } else {
-                                    request.setAttribute("msgErrorUrlImage", msgErrorUrlImage);
+                                    request.setAttribute("msgErrorUrlImage", true);
+                                    msgList.add(MessageList.addMessage(msgErrorUrlImage));
                                     request.setAttribute("urlImage", urlImage);
                                 }
 
@@ -206,9 +232,9 @@ public class EventGetServlet extends HttpServlet {
                                     request.setAttribute("reason", reg.getReason());
                                     request.setAttribute("request", reg.getRequest());
                                 } else {
-                                    request.setAttribute("msgErrorReason", msgErrorReason);
+                                    request.setAttribute("msgErrorReason", true);
+                                    msgList.add(MessageList.addMessage(msgErrorReason));
                                     request.setAttribute("reason", reason);
-                                    System.out.println(srequest);
                                     try {
                                         int rqst = Integer.parseInt(srequest);
                                         request.setAttribute("request", rqst);
@@ -219,7 +245,8 @@ public class EventGetServlet extends HttpServlet {
                                 /* comprobar error event */
                                 if (msgErrorEvent == null || msgErrorEvent.trim().equals("")) {
                                 } else {
-                                    request.setAttribute("msgErrorEvent", msgErrorEvent);
+                                    request.setAttribute("msgErrorEvent", true);
+                                    msgList.add(MessageList.addMessage(msgErrorEvent));
                                     request.setAttribute("tittle", tittle);
                                 }
 
@@ -230,30 +257,37 @@ public class EventGetServlet extends HttpServlet {
                                     request.setAttribute("msgOk", msgOk);
                                 }
                             } else {
-                                request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
+                                request.setAttribute("msgErrorFound", true);
+                                msgList.add(MessageList.addMessage("El registro no ha sido encontrado."));
                             }
-                        }
-
-                        /* obtener lista de lugares */
-                        try {
-                            Collection<Place> listPlace = placeDAO.getAll();
-                            request.setAttribute("listPlace", listPlace);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
-
-                        /* obtener lista de codigos de vestir */
-                        try {
-                            Collection<DressCode> listDressCode = dressCodeDAO.getAll();
-                            request.setAttribute("listDressCode", listDressCode);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("/event/eventUpdate.jsp").forward(request, response);
                     }
+
+                    /* obtener lista de lugares */
+                    try {
+                        Collection<Place> listPlace = placeDAO.getAll();
+                        request.setAttribute("listPlace", listPlace);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                    /* obtener lista de codigos de vestir */
+                    try {
+                        Collection<DressCode> listDressCode = dressCodeDAO.getAll();
+                        request.setAttribute("listDressCode", listDressCode);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                    /* establecer lista de mensajes */
+                    if (!msgList.isEmpty()) {
+                        request.setAttribute("msgList", msgList);
+                    }
+
+                    /* despachar a la vista */
+                    request.getRequestDispatcher("/event/eventUpdate.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */

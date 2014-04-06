@@ -5,10 +5,12 @@
 package clientNews;
 
 import Helpers.Format;
+import Helpers.Message;
+import Helpers.MessageList;
 import Helpers.Rut;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -48,11 +50,10 @@ public class ClientNewsAddServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        /////////////////////////
+        // ESTABLECER CONEXION
+        /////////////////////////
         try {
-            /////////////////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////////////////
-
             conexion = ds.getConnection();
 
             ClientNewsDAO cnewsDAO = new ClientNewsDAO();
@@ -61,9 +62,9 @@ public class ClientNewsAddServlet extends HttpServlet {
             UserCardDAO usercardDAO = new UserCardDAO();
             usercardDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -80,130 +81,157 @@ public class ClientNewsAddServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-                    /////////////////////////////////////////
-                    // RECIBIR PARAMETROS
-                    //////////////////////////////////////// 
-                    try {
+                    ///////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETROS
+                    ///////////////////////////////////
 
-                        String btnAdd = request.getParameter("add");
-                        String stittle = request.getParameter("tittle");
-                        String snewsType = request.getParameter("newsType");
-                        String srut = request.getParameter("rut");
-                        String sdateBegin = request.getParameter("dateBegin");
-                        String sdateEnd = request.getParameter("dateEnd");
+                    /* obtener atributos de la vista */
+                    String btnAdd = request.getParameter("add");
+                    String stittle = request.getParameter("tittle");
+                    String snewsType = request.getParameter("newsType");
+                    String srut = request.getParameter("rut");
+                    String sdateBegin = request.getParameter("dateBegin");
+                    String sdateEnd = request.getParameter("dateEnd");
 
-                        ClientNews cnews = new ClientNews();
+                    /* instanciar ClientNews */
+                    ClientNews cnews = new ClientNews();
 
-                        boolean error = false;
+                    /* instanciar lista de mensajes */
+                    Collection<Message> msgList = new ArrayList<Message>();
 
-                        /* comprobar si recibe formulario */
-                        if (btnAdd == null) {
-                            request.setAttribute("msg", "Ingrese Noticia.");
+                    boolean error = false;
+
+                    /* comprobar si recibe formulario */
+                    if (btnAdd == null) {
+                        request.setAttribute("msg", "Ingrese Noticia.");
+                    } else {
+                        /* establecer atributos a la vista */
+                        request.setAttribute("tittle", stittle);
+                        request.setAttribute("newsType", Integer.parseInt(snewsType));
+                        request.setAttribute("rut", srut);
+                        request.setAttribute("dateBegin", sdateBegin);
+                        request.setAttribute("dateEnd", sdateEnd);
+
+                        /* comprobar tittle */
+                        if (stittle == null || stittle.trim().equals("")) {
+                            request.setAttribute("msgErrorTittle", true);
+                            msgList.add(MessageList.addMessage("Debe ingresar título de la noticia."));
+                            error = true;
                         } else {
+                            cnews.setTittle(stittle);
+                        }
 
-                            /* comprobar tittle */
-                            if (stittle == null || stittle.trim().equals("")) {
-                                request.setAttribute("msgErrorTittle", "Error al recibir titulo.");
+                        /* comprobar type news */
+                        if (snewsType == null || snewsType.trim().equals("")) {
+                            error = true;
+                        } else {
+                            try {
+                                cnews.setNewsType(Integer.parseInt(snewsType));
+                            } catch (NumberFormatException n) {
                                 error = true;
-                            } else {
-                                cnews.setTittle(stittle);
                             }
+                        }
 
-                            /* comprobar type news */
-                            if (snewsType == null || snewsType.trim().equals("")) {
-                                request.setAttribute("msgErrorNewsType", "Error al recibir tipo de noticia.");
-                                error = true;
-                            } else {
-                                try {
-                                    cnews.setNewsType(Integer.parseInt(snewsType));
-                                } catch (NumberFormatException n) {
-                                    request.setAttribute("msgErrorNewsType", "Error: Debe recibir un valor numérico en tipo de noticias.");
-                                    error = true;
-                                }
-                            }
-
-                            /* comprobar rut */
-                            if (srut == null || srut.trim().equals("") || srut.length() < 3) {
-                                request.setAttribute("msgErrorRut", "Error: Debe ingresar RUT.");
-                                error = true;
-                            } else {
-                                request.setAttribute("rut", srut);
+                        /* comprobar rut */
+                        if (srut == null || srut.trim().equals("") || srut.length() < 3) {
+                            request.setAttribute("msgErrorRut", true);
+                            msgList.add(MessageList.addMessage("Debe ingresar RUT."));
+                            error = true;
+                        } else {
+                            try {
                                 if (!Rut.validateRut(srut)) {
-                                    request.setAttribute("msgErrorRut", "Error: RUT inválido.");
+                                    request.setAttribute("msgErrorRut", true);
+                                    msgList.add(MessageList.addMessage("RUT inválido."));
                                     error = true;
                                 } else {
                                     cnews.setRut(Rut.getRut(srut));
                                     cnews.setDv(Rut.getDv(srut));
+
+                                    /* buscar cliente por rut */
                                     try {
                                         UserCard aux = usercardDAO.findByRut(cnews.getRut());
                                         /* comprobar si existencia */
                                         if (aux == null) {
-                                            request.setAttribute("msgErrorRut", "Error: No existe un usuario con ese rut. ");
+                                            request.setAttribute("msgErrorRut", true);
+                                            msgList.add(MessageList.addMessage("No existe un usuario con ese RUT."));
                                             error = true;
                                         }
                                     } catch (Exception ex) {
-                                        request.setAttribute("msgErrorRut", "Error: Rut inválido. ");
+                                        request.setAttribute("msgErrorRut", true);
+                                        msgList.add(MessageList.addMessage("RUT inválido."));
                                         error = true;
                                     }
                                 }
-                            }
-
-                            /* comprobar date begin */
-                            if (sdateBegin == null || sdateBegin.trim().equals("")) {
-                                request.setAttribute("msgErrorDate", "Error al recibir fecha de inicio.");
+                            } catch (Exception ex) {
+                                request.setAttribute("msgErrorRut", true);
+                                msgList.add(MessageList.addMessage("RUT inválido."));
                                 error = true;
-                            } else {
-                                cnews.setDateBegin(sdateBegin);
-                                /* comprobar date end */
-                                if (sdateEnd == null || sdateEnd.trim().equals("")) {
-                                    request.setAttribute("msgErrorDate", "Error al recibir fecha de término.");
-                                    error = true;
-                                } else {
-                                    /* comparar fechas */
-                                    cnews.setDateBegin(sdateBegin);
-                                    cnews.setDateEnd(sdateEnd);
-                                    /* comparar con fecha actual */
-                                    if (cnews.getDateBegin().compareTo(Format.currentDate()) < 0) {
-                                        request.setAttribute("msgErrorDate", "Error: La noticia no puede poseer una fecha de inicio anterior a la fecha actual.");
-                                        error = true;
-                                    } else {
-                                        if (cnews.getDateBegin().compareTo(cnews.getDateEnd()) >= 0) {
-                                            request.setAttribute("msgErrorDate", "Error: La fecha de término deber ser mayor que la fecha de inicio.");
-                                            error = true;
-                                        }
-                                    }
-                                }
                             }
+                        }
 
-                            if (!error) {
-                                /* comprobar registros duplicados */
+                        /* comprobar date begin */
+                        cnews.setDateBegin(sdateBegin);
+                        if (sdateBegin == null || sdateBegin.trim().equals("")) {
+                            request.setAttribute("errorDateBegin", true);
+                            msgList.add(MessageList.addMessage("Debe ingresar fecha de inicio."));
+                            error = true;
+                        }
+
+                        /* comprobar date end */
+                        cnews.setDateEnd(sdateEnd);
+                        if (sdateEnd == null || sdateEnd.trim().equals("")) {
+                            request.setAttribute("errorDateEnd", true);
+                            msgList.add(MessageList.addMessage("Debe ingresar fecha de término."));
+                            error = true;
+                        }
+
+                        /* comparar con fecha actual */
+                        if (cnews.getDateBegin().compareTo(Format.currentDate()) < 0) {
+                            request.setAttribute("errorDateBegin", true);
+                            msgList.add(MessageList.addMessage("La fecha de inicio no puede ser menor o igual que la fecha actual."));
+                            error = true;
+                        }
+
+                        /* comparar fecha de inicio con fecha de término */
+                        if (cnews.getDateBegin().compareTo(cnews.getDateEnd()) >= 0) {
+                            request.setAttribute("errorDateBegin", true);
+                            request.setAttribute("errorDateEnd", true);
+                            msgList.add(MessageList.addMessage("La fecha de inicio no puede ser mayor o igual que la fecha de término."));
+                            error = true;
+                        }
+
+                        ////////////////////////
+                        // LOGICA DE NEGOCIO
+                        ////////////////////////
+                        if (!error) {
+                            /* comprobar registros duplicados */
+                            try {
                                 boolean find = cnewsDAO.validateDuplicate(cnews);
                                 if (find) {
-                                    error = true;
-                                    request.setAttribute("msgErrorDup", "Error: ya existe esta noticia. Compruebe utilizando otro título u otro rango de fechas.");
+                                    request.setAttribute("msgErrorDup", true);
+                                    msgList.add(MessageList.addMessage("Ya existe esta noticia. Compruebe utilizando otro título u otro rango de fechas."));
                                 } else {
                                     /* insertar nueva noticia */
                                     try {
                                         cnewsDAO.insert(cnews);
                                         request.setAttribute("msgOk", "Registro ingresado exitosamente! ");
-                                    } catch (Exception insertException) {
-                                        System.out.println("error no se pudo insertar news");
+                                    } catch (Exception ex) {
+                                        ex.printStackTrace();
                                     }
                                 }
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
                             }
-
                         }
-
-                        /////////////////////////////////////////
-                        // ESTABLECER ATRIBUTOS AL REQUEST
-                        /////////////////////////////////////////
-
-                        request.setAttribute("cnews", cnews);
-
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("/clientNews/clientNewsAdd.jsp").forward(request, response);
                     }
+
+                    /* establecer lista de mensajes */
+                    if (!msgList.isEmpty()) {
+                        request.setAttribute("msgList", msgList);
+                    }
+
+                    /* despachar a la vista */
+                    request.getRequestDispatcher("/clientNews/clientNewsAdd.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
@@ -213,6 +241,7 @@ public class ClientNewsAddServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

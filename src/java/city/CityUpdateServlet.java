@@ -44,18 +44,18 @@ public class CityUpdateServlet extends HttpServlet {
         Connection conexion = null;
 
         try {
-            /////////////////////////////////////////
+            //////////////////////////
             // ESTABLECER CONEXION
-            //////////////////////////////////////// 
+            //////////////////////////
 
             conexion = ds.getConnection();
 
             CityDAO cityDAO = new CityDAO();
             cityDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -69,29 +69,29 @@ public class CityUpdateServlet extends HttpServlet {
                 request.setAttribute("userJsp", userJsp);
                 request.setAttribute("access", access);
 
-                /////////////////////////////////////////
+                //////////////////////////////////////
                 // RECIBIR Y COMPROBAR PARAMETROS
-                //////////////////////////////////////// 
+                //////////////////////////////////////
 
                 String sidCity = request.getParameter("idCity");
                 String nameCity = request.getParameter("nameCity");
 
+                /* instanciar ciudad */
                 City city = new City();
 
                 boolean error = false;
 
+                /* instanciar url */
                 String url = "?a=target";
 
                 /* comprobar id city */
                 url += "&idCity=" + sidCity;
                 if (sidCity == null || sidCity.trim().equals("")) {
-                    url += "&msgErrorId=Error al recibir id Ciudad.";
                     error = true;
                 } else {
                     try {
                         city.setIdCity(Integer.parseInt(sidCity));
                     } catch (NumberFormatException n) {
-                        url += "&msgErrorId=Error al recibir id Ciudad.";
                         error = true;
                     }
 
@@ -99,7 +99,7 @@ public class CityUpdateServlet extends HttpServlet {
                 /* comprobar name city */
                 url += "&nameCity=" + nameCity;
                 if (nameCity == null || nameCity.trim().equals("")) {
-                    url += "&msgErrorNameCity=Error: Debe ingresar nombre Ciudad.";
+                    url += "&msgErrorNameCity=Debe ingresar nombre Ciudad.";
                     error = true;
                 } else {
                     city.setNameCity(Format.capital(nameCity));
@@ -109,7 +109,7 @@ public class CityUpdateServlet extends HttpServlet {
                     /* comprobar ciudad duplicada */
                     boolean find = cityDAO.validateDuplicateName(city);
                     if (find) {
-                        url += "&msgErrorDup=Error: ya existe una ciudad con este nombre.";
+                        url += "&msgErrorDup=El nombre de la ciudad ingresada ya existe.";
                     } else {
                         /* actualizar */
                         try {

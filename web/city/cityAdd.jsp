@@ -46,7 +46,6 @@
             <!-- /.navbar-collapse -->
 
             <div id="page-wrapper">
-
                 <div class="row">
                     <div class="col-lg-12">
                         <!-- TITULO DE MANTENEDOR -->
@@ -57,59 +56,26 @@
                         </ol>
                         <!-- /TITULO DE MANTENEDOR -->
 
-                        <!-- MENSAJE INFORMATIVO -->
-                        <c:if test="${msg != null}" >
-                            <div class="alert alert-info alert-dismissable">
-                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                <td><strong><c:out value="${msg}" /></strong></td>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE INFORMATIVO -->
-
-                        <!-- MENSAJE DE EXITO -->
-                        <c:if test="${msgOk != null}" >
-                            <div class="alert alert-dismissable alert-success">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgOk}" /></strong>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE EXITO -->
-
-                        <!-- MENSAJE DE ERROR DE NOMBRE DE CIUDAD -->
-                        <c:if test="${msgErrorNameCity != null }" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorNameCity}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE NOMBRE DE CIUDAD -->
-
-                        <!-- MENSAJE DE ERROR DE REGISTRO DUPLICADO -->
-                        <c:if test="${msgErrorDup != null }" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorDup}" /></strong></br>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE ERROR DE REGISTRO DUPLICADO -->
+                        <!-- MENSAJES -->
+                        <c:import var="formMsg" url="/formMsg.jsp" />
+                        <c:out value="${formMsg}" escapeXml="false" />
                     </div>
                     <div class="col-lg-4">
                         <!-- FORMULARIO -->
                         <form role="form" action="CityAddServlet" method="POST" id="formAdd" name="formAdd">   
                             <!-- CIUDAD -->
-                            <c:if test="${msgErrorDup == null }" >
+                            <c:if test="${msgErrorDup == null && msgErrorNameCity == null}" >
                                 <div class="form-group">
                                     <label>Nombre Ciudad</label>
                                     <input class="form-control" required="true" maxlength="50" name="nameCity" value="<c:out value="${city.nameCity}" />">
                                 </div>
                             </c:if>                            
-                            <c:if test="${msgErrorDup != null }" >
+                            <c:if test="${msgErrorDup != null || msgErrorNameCity != null}" >
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Nombre Ciudad</label>
                                     <input class="form-control" required="true" maxlength="50" name="nameCity" id="inputError" value="<c:out value="${city.nameCity}" />">
                                 </div>
                             </c:if>
-                            <!-- /CIUDAD -->
                             <input type="hidden" name="add" value="ok"/>
                             <button type="submit" name="btnAdd" class="btn btn-default" onclick="disabledButtonAdd();"><strong><font size="1"><object name="btn1">AGREGAR</object><object name="btn2" hidden="true">AGREGANDO...</object></font></strong></button>
                             <button type="reset" class="btn btn-default"><strong><font size="1">RESET</font></strong></button> 

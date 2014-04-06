@@ -39,7 +39,7 @@
 
         <!-- export excel -->
         <script src="js/export-excel.js"></script>
-        
+
         <script src="js/disabledButton.js"></script>
 
         <script>
@@ -53,7 +53,7 @@
                 {
                     return false;
                 }
-            }            
+            }
         </script>                 
 
     </head>
@@ -96,16 +96,30 @@
                                         <div class="box"> 
                                             <!-- TITULAR DEL DATATABLE -->
                                             <div class="box-title">
-                                                DataTable                                                
-                                                <object align="right">                                                     
+                                                DataTable                                                 
+                                                <object align="right">    
                                                     <!-- EXPORTAR A EXCEL -->
-                                                    <button class="btn btn-primary btn-mini" name="btnExportExcel" onclick="generate_excel('datatable');" ><font size="1"><strong>EXPORT XLS</strong></font></button>
-                                                    <!-- /EXPORTAR A EXCEL -->
+                                                    <button class="btn btn-primary btn-mini" name="btnExportExcel" onclick="generate_excel('datatable');" ><font size="1"><strong>EXPORT XLS</strong></font></button>                                                    
                                                     &nbsp;&nbsp;
                                                     <!-- AGREGAR REGISTRO -->
-                                                    <button class="btn btn-primary btn-mini" name="btnAddAdmin" type="button" onclick="location.href = 'AdminAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button>
-                                                    <!-- /AGREGAR REGISTRO -->
+                                                    <button class="btn btn-primary btn-mini" name="btnAddAdmin" type="button" onclick="location.href = 'AdminGetAddServlet';" ><font size="1"><strong>AGREGAR</strong></font></button>
+                                                </object>  
+                                                <object align="right">
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;
                                                 </object>
+                                                <object align="right">                                                                                                                                                             
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-default">Columnas</button>
+                                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                                                        <ul class="dropdown-menu">
+                                                            <li>&nbsp;&nbsp;<input type="checkbox">&nbsp; Username </li>
+                                                            <li> Another action</a></li>
+                                                            <li> Something else here</a></li>
+                                                            <li class="divider"></li>
+                                                            <li><a href="#">Separated link</a></li>
+                                                        </ul>
+                                                    </div><!-- /btn-group -->
+                                                </object>                                                
                                                 </br>DB
                                             </div>
                                             <!-- /TITULAR DEL DATATABLE -->
