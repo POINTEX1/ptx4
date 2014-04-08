@@ -4,8 +4,12 @@
  */
 package point;
 
+import Helpers.Message;
+import Helpers.MessageList;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -43,11 +47,10 @@ public class PointGetServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        //////////////////////////
+        // ESTABLECER CONEXION
+        //////////////////////////
         try {
-            /////////////////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////////////////
-
             conexion = ds.getConnection();
 
             PointDAO pointDAO = new PointDAO();
@@ -56,9 +59,9 @@ public class PointGetServlet extends HttpServlet {
             PlaceDAO placeDAO = new PlaceDAO();
             placeDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ///////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ///////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -71,95 +74,94 @@ public class PointGetServlet extends HttpServlet {
                 if (access != 555 && access != 777) {
                     request.getRequestDispatcher("/ForbiddenServlet").forward(request, response);
                 } else {
-
                     /* obtener los valores de session y asignar valores a la jsp */
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
+                    ///////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETROS
+                    ///////////////////////////////////
+
+                    /* obtener atributos de PRG */
+                    String redirect = request.getParameter("redirect");
+                    String sidPlace = request.getParameter("idPlace");
+                    String srut = request.getParameter("rut");
+                    String points = request.getParameter("points");
+
+                    /* obtner mensajes de PRG */
+                    String msgErrorPoints = request.getParameter("msgErrorPoints");
+                    String msgOk = request.getParameter("msgOk");
+
+                    /* instanciar lista de mensajes */
+                    Collection<Message> msgList = new ArrayList<Message>();
+
+                    /* establecer id place */
+                    int idPlace = 0;
                     try {
-                        ///////////////////////////////////////
-                        // RECIBIR Y COMPROBAR PARAMETROS
-                        ///////////////////////////////////////
-
-                        /* obtener atributos de PRG */
-                        String points = request.getParameter("points");
-
-                        /* obtner mensajes de PRG */
-                        String msgErrorPoints = request.getParameter("msgErrorPoints");
-                        String msgOk = request.getParameter("msgOk");
-
-                        /* obtener parametros de busqueda */
-                        String sidPlace = request.getParameter("idPlace");
-                        String srut = request.getParameter("rut");
-
-                        boolean error = false;
-
-                        Point point = new Point();
-
-                        /* comprobar id place */
-                        if (sidPlace == null || sidPlace.trim().equals("")) {
-                            error = true;
-                        } else {
-                            try {
-                                point.setIdPlace(Integer.parseInt(sidPlace));
-                            } catch (NumberFormatException n) {
-                                error = true;
-                            }
-                        }
-
-                        /* comprobar rut */
-                        if (srut == null || srut.trim().equals("")) {
-                            error = true;
-                        } else {
-                            try {
-                                point.setRut(Integer.parseInt(srut));
-                            } catch (NumberFormatException n) {
-                                error = true;
-                            }
-                        }
-
-                        if (!error) {
-                            /* obtener valores de point */
-                            try {
-                                Point reg = pointDAO.findByPoint(point);
-                                if (reg != null) {
-                                    /* obtener atributos del dao */
-                                    request.setAttribute("idPlace", reg.getIdPlace());
-                                    request.setAttribute("namePlace", reg.getNamePlace());
-                                    request.setAttribute("rut", reg.getRut());
-                                    request.setAttribute("dv", reg.getDv());
-
-                                    //////////////////////////////
-                                    // COMPROBAR VALIDACIONES
-                                    //////////////////////////////
-
-                                    /* comprobar points */
-                                    if (msgErrorPoints == null || msgErrorPoints.trim().equals("")) {
-                                        request.setAttribute("points", reg.getPoints());
-                                    } else {
-                                        request.setAttribute("msgErrorPoints", msgErrorPoints);
-                                        request.setAttribute("points", points);
-                                    }
-
-                                    /* comprobar mensaje de exito */
-                                    if (msgOk == null || msgOk.trim().equals("")) {
-                                        request.setAttribute("msg", "Se encontró el registro!");
-                                    } else {
-                                        request.setAttribute("msgOk", msgOk);
-                                    }
-
-                                } else {
-                                    request.setAttribute("msgErrorFound", "Error: No se encontró el Evento.");
-                                }
-                            } catch (Exception ex) {
-                                request.setAttribute("msgErrorFound", "Ocurrió un error inesperado.");
-                            }
-                        }
-                    } catch (Exception parameterException) {
-                        parameterException.printStackTrace();
-                    } finally {
-                        request.getRequestDispatcher("/point/pointUpdate.jsp").forward(request, response);
+                        idPlace = Integer.parseInt(sidPlace);
+                    } catch (NumberFormatException n) {
                     }
+
+                    /* establecer rut */
+                    int rut = 0;
+                    try {
+                        rut = Integer.parseInt(srut);
+                    } catch (NumberFormatException n) {
+                    }
+
+                    /* obtener valores de point */
+                    try {
+                        Point reg = pointDAO.findByPoint(idPlace, rut);
+
+                        if (reg != null) {
+                            /* establecer atributos de reg */
+                            request.setAttribute("idPlace", reg.getIdPlace());
+                            request.setAttribute("namePlace", reg.getNamePlace());
+                            request.setAttribute("rut", reg.getRut());
+                            request.setAttribute("dv", reg.getDv());
+
+                            /* comprobar redirect */
+                            if (redirect == null || redirect.trim().equals("")) {
+                                /* establecer atributos de reg */
+                                request.setAttribute("points", reg.getPoints());
+                            } else {
+                                /* establecer atributos de PRG */
+                                request.setAttribute("points", points);
+                            }
+
+                            ////////////////////////
+                            // COMPROBAR ERRORES
+                            ////////////////////////
+
+                            /* comprobar points */
+                            if (msgErrorPoints == null || msgErrorPoints.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorPoints", true);
+                                msgList.add(MessageList.addMessage(msgErrorPoints));
+                            }
+
+                            /* comprobar mensaje de exito */
+                            if (msgOk == null || msgOk.trim().equals("")) {
+                                request.setAttribute("msg", "Se encontró el registro!");
+                            } else {
+                                request.setAttribute("msgOk", msgOk);
+                            }
+
+                        } else {
+                            request.setAttribute("msgErrorFound", true);
+                            msgList.add(MessageList.addMessage("El registro no ha sido encontrado."));
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                    /* establecer lista de mensajes */
+                    if (!msgList.isEmpty()) {
+                        request.setAttribute("msgList", msgList);
+                    }
+
+                    /* despachar a la vista */
+                    request.getRequestDispatcher("/point/pointUpdate.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
@@ -169,6 +171,7 @@ public class PointGetServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

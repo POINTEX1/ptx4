@@ -83,9 +83,7 @@ public class AdminAddServlet extends HttpServlet {
                     String pwd2 = request.getParameter("pwd2");
 
                     /* instanciar url */
-                    String url = "?target=get";
-
-                    url += "&redirect=ok";
+                    String url = "?redirect=ok";
                     url += "&username=" + username;
                     url += "&email=" + email;
                     url += "&type=" + type;
@@ -93,14 +91,8 @@ public class AdminAddServlet extends HttpServlet {
                     /* instanciar admin */
                     Admin admin = new Admin();
 
+                    /* flag de error */
                     boolean error = false;
-
-                    /* establecer atributos a la vista */
-                    request.setAttribute("username", username);
-                    request.setAttribute("email", email);
-                    request.setAttribute("type", Integer.parseInt(type));
-                    request.setAttribute("pwd1", pwd1);
-                    request.setAttribute("pwd2", pwd2);
 
                     /* comprobar username */
                     if (username == null || username.trim().equals("")) {

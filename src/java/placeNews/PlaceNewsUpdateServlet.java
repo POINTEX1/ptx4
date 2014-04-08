@@ -40,25 +40,22 @@ public class PlaceNewsUpdateServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        /* establecer set de caracteres */
         request.setCharacterEncoding("UTF-8");
 
-        /* definir conexion */
         Connection conexion = null;
 
-        /////////////////////////////////////////
+        //////////////////////////
         // ESTABLECER CONEXION
-        /////////////////////////////////////////
+        //////////////////////////
         try {
             conexion = ds.getConnection();
 
             PlaceNewsDAO pnewsDAO = new PlaceNewsDAO();
             pnewsDAO.setConexion(conexion);
 
-
-            //////////////////////////////////////////
+            /////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            /////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);

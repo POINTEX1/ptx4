@@ -21,7 +21,7 @@ import javax.sql.DataSource;
  */
 @WebServlet(name = "PromoUpdateServlet", urlPatterns = {"/PromoUpdateServlet"})
 public class PromoUpdateServlet extends HttpServlet {
-    
+
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
 
@@ -37,24 +37,23 @@ public class PromoUpdateServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        request.setCharacterEncoding("UTF-8");
-        
-        Connection conexion = null;
-        
-        try {
-            /////////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////////
 
+        request.setCharacterEncoding("UTF-8");
+
+        Connection conexion = null;
+
+        /////////////////////////
+        // ESTABLECER CONEXION
+        /////////////////////////
+        try {
             conexion = ds.getConnection();
-            
+
             PromoDAO promoDAO = new PromoDAO();
             promoDAO.setConexion(conexion);
 
-            //////////////////////////////////
+            ///////////////////////
             // COMPROBAR SESSION
-            //////////////////////////////////
+            ///////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -88,8 +87,7 @@ public class PromoUpdateServlet extends HttpServlet {
                     String reason = request.getParameter("reason");
 
                     /* instanciar string url */
-                    String url = "?a=target";
-                    
+                    String url = "?redirect=ok";
                     url += "&idPromo=" + sidPromo;
                     url += "&tittle=" + tittle;
                     url += "&details=" + details;
@@ -99,12 +97,12 @@ public class PromoUpdateServlet extends HttpServlet {
                     url += "&points=" + spoints;
                     url += "&request=" + srequest;
                     url += "&reason=" + reason;
-                    
+
+                    /* instanciar promo */
                     Promo promo = new Promo();
-                    
+
+                    /* flag de error */
                     boolean error = false;
-                    
-                    System.out.println("promoupdate" + tittle);
 
                     /* comprobar id promo */
                     if (sidPromo == null || sidPromo.trim().equals("")) {
@@ -130,7 +128,7 @@ public class PromoUpdateServlet extends HttpServlet {
 
                     /* comprobar tittle */
                     if (tittle == null || tittle.trim().equals("")) {
-                        url += "&msgErrorTittle=Error: Debe ingresar un título para la promoción.";
+                        url += "&msgErrorTittle=Debe ingresar un título para la promoción.";
                         error = true;
                     } else {
                         promo.setTittle(tittle);
@@ -138,7 +136,7 @@ public class PromoUpdateServlet extends HttpServlet {
 
                     /* comprobar details */
                     if (details == null || details.trim().equals("")) {
-                        url += "&msgErrorDetails=Error: Debe ingresar un título para la promoción.";
+                        url += "&msgErrorDetails=Debe ingresar detalle para la promoción.";
                         error = true;
                     } else {
                         promo.setDetails(details);
@@ -146,43 +144,41 @@ public class PromoUpdateServlet extends HttpServlet {
 
                     /* comprobar url image */
                     if (urlImage == null || urlImage.trim().equals("")) {
-                        url += "&msgErrorUrlImage=Error: Debe ingresar url de imagen.";
+                        url += "&msgErrorUrlImage=Debe ingresar url de imagen.";
                         error = true;
                     } else {
                         promo.setUrlImage(urlImage);
                     }
 
                     /* comprobar date begin */
+                    promo.setDateBegin(date1);
                     if (date1 == null || date1.trim().equals("")) {
-                        url += "&msgErrorDate=Error: Debe ingresar fecha de inicio.";
+                        url += "&msgErrorDateBegin=Debe ingresar fecha de inicio.";
                         error = true;
-                    } else {
-                        promo.setDateBegin(date1);
-                        /* comprobar date end */
-                        if (date2 == null || date2.trim().equals("")) {
-                            url += "msgErrorDate=Error: Debe ingresar fecha de término.";
-                            error = true;
-                        } else {
-                            /* comparar fechas */
-                            promo.setDateBegin(date1);
-                            promo.setDateEnd(date2);
-                            //System.out.println("comparar fecha inicio fecha fin: " + promo.getDateBegin().compareTo(promo.getDateEnd()));
-                            if (promo.getDateBegin().compareTo(promo.getDateEnd()) >= 0) {
-                                url += "&msgErrorDate=Error: La fecha de término deber ser mayor que la fecha de inicio.";
-                                error = true;
-                            }
-                        }
+                    }
+
+                    /* comprobar date end */
+                    promo.setDateEnd(date2);
+                    if (date2 == null || date2.trim().equals("")) {
+                        url += "&msgErrorDateEnd=Debe ingresar fecha de término.";
+                        error = true;
+                    }
+
+                    /* comparar fechas */
+                    if (promo.getDateBegin().compareTo(promo.getDateEnd()) >= 0) {
+                        url += "&msgErrorDate=La fecha de inicio no puede ser mayor o igual que la fecha de término.";
+                        error = true;
                     }
 
                     /* comprobar points */
                     if (spoints == null || spoints.trim().equals("")) {
-                        url += "&msgErrorPoints=Error: Debe ingresar puntos que acumula esta promoción.";
+                        url += "&msgErrorPoints=Debe ingresar puntos que acumula esta promoción.";
                         error = true;
                     } else {
                         try {
                             promo.setPoints(Integer.parseInt(spoints));
                         } catch (NumberFormatException n) {
-                            url += "&msgErrorPoints=Error: Los puntos deben ser numéricos.";
+                            url += "&msgErrorPoints=Los puntos deben ser numéricos.";
                             error = true;
                         }
                     }
@@ -200,22 +196,23 @@ public class PromoUpdateServlet extends HttpServlet {
 
                     /* comprobar reason */
                     if ((reason == null || reason.trim().equals("")) && promo.getRequest() == 2) {
-                        url += "&msgErrorReason=Error: Debe ingresar razón de rechazo.";
+                        url += "&msgErrorReason=Debe ingresar razón de rechazo.";
+                        error = true;
                     } else {
                         promo.setReason(reason);
                     }
-                    
+
                     if (!error) {
                         /* comprobar registros duplicados */
                         try {
                             boolean find = promoDAO.validateDuplicate(promo);
                             if (find) {
-                                url += "&msgErrorDup=Error: ya existe esta promoción. Compruebe utilizando otro título u otro rango de fechas.";
+                                url += "&msgErrorDup=Ya existe esta promoción. Compruebe utilizando otro título u otro rango de fechas.";
                             } else {
                                 /* actualizar registro */
                                 try {
                                     promoDAO.update(promo);
-                                    url += "&msgOk=Registro actualizado exitosamente!";
+                                    url += "&msgOk=Registro actualizado exitosamente.";
                                 } catch (Exception ex) {
                                     ex.printStackTrace();
                                 }
@@ -226,10 +223,8 @@ public class PromoUpdateServlet extends HttpServlet {
                     }
 
                     /* send redirect */
-                    response.setContentType("UTF-8");
-                    response.setCharacterEncoding("UTF-8");
                     response.sendRedirect("PromoGetServlet" + url);
-                    
+
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */

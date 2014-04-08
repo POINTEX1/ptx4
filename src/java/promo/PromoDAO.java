@@ -130,63 +130,8 @@ public class PromoDAO {
             }
         }
         return find;
-    }
-
-    public Promo findbyPromo(Promo promo) {
-
-        PreparedStatement sentence = null;
-        ResultSet result = null;
-
-        Promo reg = null;
-
-        try {
-            String sql = "select * from promo pr, place pl where pr.id_place = pl.id_place and pr.id_promo = ?";
-
-            sentence = conexion.prepareStatement(sql);
-
-            sentence.setInt(1, promo.getIdPromo());
-
-            result = sentence.executeQuery();
-
-            while (result.next()) {
-                /* instanciar objeto */
-                reg = new Promo();
-                /* obtener resultSet */
-                reg.setIdPromo(result.getInt("id_promo"));
-                reg.setIdPlace(result.getInt("id_place"));
-                reg.setNamePlace(result.getString("name_place"));
-                reg.setTittle(result.getString("tittle"));
-                reg.setDetails(result.getString("details"));
-                reg.setDateBegin(result.getString("date_begin"));
-                reg.setDateEnd(result.getString("date_end"));
-                reg.setUrlImage(result.getString("pr.url_image"));
-                reg.setPoints(result.getInt("points"));
-                reg.setRequest(result.getInt("request"));
-            }
-
-        } catch (MySQLSyntaxErrorException ex) {
-            System.out.println("Error de sintaxis en PromoDAO, findbyPromo() : " + ex);
-            throw new RuntimeException("MySQL Syntax Exception en PromoDAO, findbyPromo() : " + ex);
-        } catch (MySQLIntegrityConstraintViolationException ex) {
-            System.out.println("MySQL Excepción de integridad en PromoDAO, findbyPromo() : " + ex);
-            throw new RuntimeException("MySQL Excepción de integridad en PromoDAO, findbyPromo() : " + ex);
-        } catch (SQLException ex) {
-            System.out.println("MySQL Excepción inesperada en PromoDAO, findbyPromo() : " + ex);
-            throw new RuntimeException("MySQL Excepción inesperada en PromoDAO, findbyPromo() : " + ex);
-        } finally {
-            /* liberar recursos */
-            try {
-                result.close();
-            } catch (Exception noGestionar) {
-            }
-            try {
-                sentence.close();
-            } catch (Exception noGestionar) {
-            }
-        }
-        return reg;
-    }
-
+    }    
+    
     public Promo findbyIdPromo(int id) {
 
         PreparedStatement sentence = null;
@@ -240,7 +185,7 @@ public class PromoDAO {
             }
         }
         return reg;
-    }
+    }   
 
     public void insert(Promo promo, Collection<UserCard> listUC) {
 

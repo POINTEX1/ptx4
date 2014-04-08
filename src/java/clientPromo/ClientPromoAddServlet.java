@@ -167,7 +167,7 @@ public class ClientPromoAddServlet extends HttpServlet {
                                 }
 
                                 /* verificar si existe promo */
-                                Promo pgReg = promoDAO.findbyPromo(promoReg);
+                                Promo pgReg = promoDAO.findbyIdPromo(promoReg.getIdPromo());
                                 if (pgReg != null) {
                                     /* verificar si esta duplicada en tabla client_promo */
                                     ClientPromo aux = pglDAO.findbyRutIdPromo(pglReg.getRut(), pglReg.getIdPromo());

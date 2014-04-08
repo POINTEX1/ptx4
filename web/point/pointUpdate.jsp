@@ -30,7 +30,7 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>
-        
+
         <!-- disabledButton -->
         <script src="js/disabledButton.js"></script>
 
@@ -39,14 +39,12 @@
     <body>
 
         <div id="wrapper">
-
             <!-- Collect the nav links, forms, and other content for toggling -->
             <c:import var="menu" url="/mainMenu.jsp" />
             <c:out value="${menu}" escapeXml="false" />
             <!-- /.navbar-collapse -->
 
             <div id="page-wrapper">
-
                 <div class="row">
                     <div class="col-lg-12">
                         <h1>Mantenedor <small> Puntos</small></h1>
@@ -55,34 +53,9 @@
                             <li class="active"><i class="fa fa-edit"></i> Actualizar</li>
                         </ol>
 
-                        <c:if test="${msg != null}" >
-                            <div class="alert alert-dismissable alert-info">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msg}" /></strong>
-                            </div>
-                        </c:if>  
-
-                        <c:if test="${msgOk != null}" >
-                            <div class="alert alert-dismissable alert-success">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgOk}" /></strong>
-                            </div>
-                        </c:if>
-
-                        <c:if test="${msgErrorFound != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorFound}" /></strong></br>
-                            </div>
-                        </c:if>
-
-                        <c:if test="${msgErrorPoints != null }" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorPoints}" /></strong></br>
-                            </div>
-                        </c:if> 
-
+                        <!-- MENSAJES -->
+                        <c:import var="formMsg" url="/formMsg.jsp" />
+                        <c:out value="${formMsg}" escapeXml="false" />
                     </div>
                     <div class="col-lg-4">
                         <form role="form" action="PointUpdateServlet" method="POST" id="formUpdate" name="formUpdate">
@@ -93,7 +66,7 @@
                                 <input type="hidden" name="idPlace" value="<c:out value="${idPlace}" />"/>
                             </div>
                             <div class="form-group">
-                                <label for="disabledSelect">Rut</label>
+                                <label for="disabledSelect">RUT</label>
                                 <input class="form-control" id="disabledInput" type="text" placeholder="<c:out value="${rut}" />-<c:out value="${dv}" />" disabled>
                                 <input type="hidden" name="rut" value="<c:out value="${rut}" />"/>                                
                             </div>                                             

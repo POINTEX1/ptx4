@@ -5,8 +5,12 @@
 package promo;
 
 import Helpers.Format;
+import Helpers.Message;
+import Helpers.MessageList;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -43,20 +47,18 @@ public class PromoGetServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        /////////////////////////
+        // ESTABLECER CONEXION
+        /////////////////////////
         try {
-            //////////////////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////////////////
-
             conexion = ds.getConnection();
 
             PromoDAO promoDAO = new PromoDAO();
             promoDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ///////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
-
+            ///////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -74,142 +76,171 @@ public class PromoGetServlet extends HttpServlet {
                 request.setAttribute("userJsp", username);
                 request.setAttribute("access", access);
 
+                /////////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                /////////////////////////////////////////
+
+                /* obtener atributos de PRG */
+                String redirect = request.getParameter("redirect");
+                String sidPromo = request.getParameter("idPromo");
+                String tittle = request.getParameter("tittle");
+                String details = request.getParameter("details");
+                String dateBegin = request.getParameter("date1");
+                String dateEnd = request.getParameter("date2");
+                String urlImage = request.getParameter("urlImage");
+                String points = request.getParameter("points");
+                String srequest = request.getParameter("request");
+                String reason = request.getParameter("reason");
+
+                /* obtener mensajes de PRG */
+                String msgErrorTittle = request.getParameter("msgErrorTittle");
+                String msgErrorDetails = request.getParameter("msgErrorDetails");
+                String msgErrorDateBegin = request.getParameter("msgErrorDateBegin");
+                String msgErrorDateEnd = request.getParameter("msgErrorDateEnd");
+                String msgErrorDate = request.getParameter("msgErrorDate");
+                String msgErrorUrlImage = request.getParameter("msgErrorUrlImage");
+                String msgErrorPoints = request.getParameter("msgErrorPoints");
+                String msgErrorReason = request.getParameter("msgErrorReason");
+                String msgErrorDup = request.getParameter("msgErrorDup");
+                String msgOk = request.getParameter("msgOk");
+
+                /* instanciar lista de mensajes */
+                Collection<Message> msgList = new ArrayList<Message>();
+
+                /* establecer id promo */
+                int idPromo = 0;
                 try {
-                    /////////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    /////////////////////////////////////////
+                    idPromo = Integer.parseInt(sidPromo);
+                } catch (NumberFormatException n) {
+                }
 
-                    /* obtener atributos de PRG */
-                    String tittle = request.getParameter("tittle");
-                    String details = request.getParameter("details");
-                    String dateBegin = request.getParameter("date1");
-                    String dateEnd = request.getParameter("date2");
-                    String urlImage = request.getParameter("urlImage");
-                    String points = request.getParameter("points");
-                    String srequest = request.getParameter("request");
-                    String reason = request.getParameter("reason");
+                /* buscar promo por id */
+                try {
+                    Promo reg = promoDAO.findbyIdPromo(idPromo);
 
-                    /* obtener mensajes de PRG */
-                    String msgErrorTittle = request.getParameter("msgErrorTittle");
-                    String msgErrorDetails = request.getParameter("msgErrorDetails");
-                    String msgErrorDate = request.getParameter("msgErrorDate");
-                    String msgErrorUrlImage = request.getParameter("msgErrorUrlImage");
-                    String msgErrorPoints = request.getParameter("msgErrorPoints");
-                    String msgErrorReason = request.getParameter("msgErrorReason");
-                    String msgErrorDup = request.getParameter("msgErrorDup");
-                    String msgOk = request.getParameter("msgOk");
+                    if (reg != null) {
+                        /* obtener atributos del dao */
+                        request.setAttribute("idPromo", reg.getIdPromo());
+                        request.setAttribute("idPlace", reg.getIdPlace());
+                        request.setAttribute("namePlace", reg.getNamePlace());
 
-                    System.out.println("promoget" + tittle);
-
-                    /* obtener parametros de busqueda */
-                    String sidPromo = request.getParameter("idPromo");
-
-                    Promo promo = new Promo();
-
-                    boolean error = false;
-
-                    /* comprobar id promo */
-                    if (sidPromo == null || sidPromo.trim().equals("")) {
-                        error = true;
-                    } else {
-                        try {
-                            promo.setIdPromo(Integer.parseInt(sidPromo));
-                        } catch (NumberFormatException n) {
-                            error = true;
-                        }
-                    }
-
-                    if (!error) {
-                        /* buscar promo */
-                        Promo reg = promoDAO.findbyPromo(promo);
-                        if (reg != null) {
-                            /* obtener atributos del dao */
-                            request.setAttribute("idPromo", reg.getIdPromo());
-                            request.setAttribute("idPlace", reg.getIdPlace());
-                            request.setAttribute("namePlace", reg.getNamePlace());
-
-                            reg.setDateBegin(Format.dateYYYYMMDD(reg.getDateBegin()));
-                            reg.setDateEnd(Format.dateYYYYMMDD(reg.getDateEnd()));
-
-                            /////////////////////////////
-                            // COMPROBAR ERRORES
-                            /////////////////////////////
-
-                            /* comprobar tittle */
-                            if (msgErrorTittle == null || msgErrorTittle.trim().equals("")) {
-                                request.setAttribute("tittle", reg.getTittle());
-                            } else {
-                                request.setAttribute("msgErrorTittle", msgErrorTittle);
-                            }
-
-                            /* comprobar details */
-                            if (msgErrorDetails == null || msgErrorDetails.trim().equals("")) {
-                                request.setAttribute("details", reg.getDetails());
-                            } else {
-                                request.setAttribute("msgErrorDetails", msgErrorDetails);
-                            }
-
-                            /* comprobar date */
-                            if (msgErrorDate == null || msgErrorDate.trim().equals("")) {
-                                request.setAttribute("dateBegin", reg.getDateBegin());
-                                request.setAttribute("dateEnd", reg.getDateEnd());
-                            } else {
-                                request.setAttribute("dateBegin", dateBegin);
-                                request.setAttribute("dateEnd", dateEnd);
-                                request.setAttribute("msgErrorDate", msgErrorDate);
-                            }
-
-                            /* comprobar urlImage */
-                            if (msgErrorUrlImage == null || msgErrorUrlImage.trim().equals("")) {
-                                request.setAttribute("urlImage", reg.getUrlImage());
-                            } else {
-                                request.setAttribute("urlImage", reg.getUrlImage());
-                                request.setAttribute("msgErrorUrlImage", urlImage);
-                            }
-
-                            /* comprobar points */
-                            if (msgErrorPoints == null || msgErrorPoints.trim().equals("")) {
-                                request.setAttribute("points", reg.getPoints());
-                            } else {
-                                request.setAttribute("points", points);
-                                request.setAttribute("msgErrorPoints", msgErrorPoints);
-                            }
-
-                            /* comprobar reason */
-                            if (msgErrorReason == null || msgErrorReason.trim().equals("")) {
-                                request.setAttribute("request", reg.getRequest());
-                                request.setAttribute("reason", reg.getReason());
-                            } else {
-                                try {
-                                    request.setAttribute("request", Integer.parseInt(srequest));
-                                } catch (NumberFormatException n) {
-                                }
-                                request.setAttribute("reason", reason);
-                            }
-
-                            /* comprobar duplicaciones */
-                            if (msgErrorDup == null || msgErrorDup.trim().equals("")) {
-                            } else {
-                                request.setAttribute("msgErrorDup", msgErrorDup);
-                                request.setAttribute("dateBegin", dateBegin);
-                                request.setAttribute("dateEnd", dateEnd);
-                            }
-
-                            /* comprobar mensaje de exito */
-                            if (msgOk == null || msgOk.trim().equals("")) {
-                                request.setAttribute("msg", "Se encontró el registro!");
-                            } else {
-                                request.setAttribute("msgOk", msgOk);
-                            }
+                        /* comprobar redirect */
+                        if (redirect == null || redirect.trim().equals("")) {
+                            /* establecer atributos de reg */
+                            request.setAttribute("tittle", reg.getTittle());
+                            request.setAttribute("details", reg.getDetails());
+                            request.setAttribute("dateBegin", Format.dateYYYYMMDD(reg.getDateBegin()));
+                            request.setAttribute("dateEnd", Format.dateYYYYMMDD(reg.getDateEnd()));
+                            request.setAttribute("urlImage", reg.getUrlImage());
+                            request.setAttribute("points", reg.getPoints());
+                            request.setAttribute("request", reg.getRequest());
+                            request.setAttribute("reason", reg.getReason());
 
                         } else {
-                            request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
+                            /* establecer atributos de PRG */
+                            request.setAttribute("tittle", tittle);
+                            request.setAttribute("details", details);
+                            request.setAttribute("dateBegin", dateBegin);
+                            request.setAttribute("dateEnd", dateEnd);
+                            request.setAttribute("urlImage", urlImage);
+                            request.setAttribute("points", points);
+                            try {
+                                request.setAttribute("request", Integer.parseInt(srequest));
+                            } catch (NumberFormatException n) {
+                            }
+                            request.setAttribute("reason", reason);
                         }
+
+                        /////////////////////////////
+                        // COMPROBAR ERRORES
+                        /////////////////////////////
+
+                        /* comprobar tittle */
+                        if (msgErrorTittle == null || msgErrorTittle.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorTittle", true);
+                            msgList.add(MessageList.addMessage(msgErrorTittle));
+                        }
+
+                        /* comprobar details */
+                        if (msgErrorDetails == null || msgErrorDetails.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorDetails", true);
+                            msgList.add(MessageList.addMessage(msgErrorDetails));
+                        }
+
+                        /* comprobar date begin */
+                        if (msgErrorDateBegin == null || msgErrorDateBegin.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorDateBegin", true);
+                            msgList.add(MessageList.addMessage(msgErrorDateBegin));
+                        }
+
+                        /* comprobar date end */
+                        if (msgErrorDateEnd == null || msgErrorDateEnd.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorDateEnd", true);
+                            msgList.add(MessageList.addMessage(msgErrorDateEnd));
+                        }
+
+                        /* comprobar date */
+                        if (msgErrorDate == null || msgErrorDate.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorDate", true);
+                            msgList.add(MessageList.addMessage(msgErrorDate));
+                        }
+
+                        /* comprobar urlImage */
+                        if (msgErrorUrlImage == null || msgErrorUrlImage.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorUrlImage", true);
+                            msgList.add(MessageList.addMessage(msgErrorUrlImage));
+                        }
+
+                        /* comprobar points */
+                        if (msgErrorPoints == null || msgErrorPoints.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorPoints", true);
+                            msgList.add(MessageList.addMessage(msgErrorPoints));
+                        }
+
+                        /* comprobar reason */
+                        if (msgErrorReason == null || msgErrorReason.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorReason", true);
+                            msgList.add(MessageList.addMessage(msgErrorReason));
+                        }
+
+                        /* comprobar duplicaciones */
+                        if (msgErrorDup == null || msgErrorDup.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorDup", true);
+                            msgList.add(MessageList.addMessage(msgErrorDup));
+                        }
+
+                        /* comprobar mensaje de exito */
+                        if (msgOk == null || msgOk.trim().equals("")) {
+                            request.setAttribute("msg", "Se encontró el registro!");
+                        } else {
+                            request.setAttribute("msgOk", msgOk);
+                        }
+
+                    } else {
+                        request.setAttribute("msgErrorFound", true);
+                        msgList.add(MessageList.addMessage("El registro no ha sido encontrado."));
                     }
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("/promo/promoUpdate.jsp").forward(request, response);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
+
+                /* establecer lista de mensajes */
+                if (!msgList.isEmpty()) {
+                    request.setAttribute("msgList", msgList);
+                }
+
+                /* despachar a la vista */
+                request.getRequestDispatcher("/promo/promoUpdate.jsp").forward(request, response);
+
             } catch (Exception sesionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");

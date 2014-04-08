@@ -44,18 +44,18 @@ public class PointUpdateServlet extends HttpServlet {
         /* definir conexion */
         Connection conexion = null;
 
-        /////////////////////////////////////////
+        //////////////////////////
         // ESTABLECER CONEXION
-        ///////////////////////////////////////// 
+        //////////////////////////
         try {
             conexion = ds.getConnection();
 
             PointDAO pointDAO = new PointDAO();
             pointDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -82,13 +82,14 @@ public class PointUpdateServlet extends HttpServlet {
                     String srut = request.getParameter("rut");
                     String spoints = request.getParameter("points");
 
+                    /* instanciar puntos */
                     Point point = new Point();
 
+                    /* flag de error */
                     boolean error = false;
 
                     /* instanciar string url */
-                    String url = "?a=target";
-
+                    String url = "?redirect=ok";
                     url += "&idPlace=" + sidPlace;
                     url += "&namePlace=" + namePlace;
                     url += "&rut=" + srut;
@@ -118,20 +119,24 @@ public class PointUpdateServlet extends HttpServlet {
 
                     /* comprobar points */
                     if (spoints == null || spoints.trim().equals("")) {
-                        url += "&msgErrorPoints=Error: Debe ingresar puntos.";
+                        url += "&msgErrorPoints=Debe ingresar puntos.";
                         error = true;
                     } else {
                         try {
                             point.setPoints(Integer.parseInt(spoints));
                             if (point.getPoints() < 0) {
-                                url += "&msgErrorPoints=Error: Los puntos no pueden ser negativos.";
+                                url += "&msgErrorPoints=Los puntos no pueden ser negativos.";
                                 error = true;
                             }
                         } catch (NumberFormatException n) {
-                            url += "&msgErrorPoints=Error: Los puntos deben ser numéricos.";
+                            url += "&msgErrorPoints=Los puntos deben ser numéricos.";
                             error = true;
                         }
                     }
+
+                    ///////////////////////
+                    // LOGICA DE NEGOCIO
+                    ///////////////////////
 
                     if (!error) {
                         /* comprobar existencia */
@@ -142,6 +147,7 @@ public class PointUpdateServlet extends HttpServlet {
                             ex.printStackTrace();
                         }
                     }
+                    
                     /* send redirect */
                     response.sendRedirect("PointGetServlet" + url);
                 }

@@ -85,7 +85,7 @@ public class PointDAO {
         return list;
     }
 
-    public Point findByPoint(Point point) {
+    public Point findByPoint(int idPlace, int rut) {
 
         PreparedStatement sentence = null;
         ResultSet result = null;
@@ -97,8 +97,8 @@ public class PointDAO {
 
             sentence = conexion.prepareStatement(sql);
 
-            sentence.setInt(1, point.getIdPlace());
-            sentence.setInt(2, point.getRut());
+            sentence.setInt(1, idPlace);
+            sentence.setInt(2, rut);
 
             result = sentence.executeQuery();
 
