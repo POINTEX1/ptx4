@@ -86,9 +86,12 @@ public class ClientNewsGetServlet extends HttpServlet {
                     ////////////////////////////////////
 
                     /* obtener atributos de PRG */
+                    String redirect = request.getParameter("redirect");
+                    String sidClientNews = request.getParameter("idClientNews");
                     String tittle = request.getParameter("tittle");
                     String dateBegin = request.getParameter("dateBegin");
                     String dateEnd = request.getParameter("dateEnd");
+                    String newsType = request.getParameter("newsType");
 
                     /* obtener mensajes de PRG */
                     String msgErrorTittle = request.getParameter("msgErrorTittle");
@@ -97,86 +100,74 @@ public class ClientNewsGetServlet extends HttpServlet {
                     String msgErrorDate = request.getParameter("msgErrorDate");
                     String msgOk = request.getParameter("msgOk");
 
-                    /* parametros de busqueda */
-                    String sidClientNews = request.getParameter("idClientNews");
-                    String srut = request.getParameter("rut");
-
-                    /* instanciar client news */
-                    ClientNews cnews = new ClientNews();
-
                     /* instanciar lista de mensajes */
                     Collection<Message> msgList = new ArrayList<Message>();
 
-                    boolean error = false;
-
-                    /* comprobar id client news */
-                    if (sidClientNews == null || sidClientNews.trim().equals("")) {
-                        error = true;
-                    } else {
-                        try {
-                            cnews.setIdClientNews(Integer.parseInt(sidClientNews));
-                        } catch (NumberFormatException n) {
-                        }
+                    /* establecer id client news */
+                    int idCnews = 0;
+                    try {
+                        idCnews = Integer.parseInt(sidClientNews);
+                    } catch (NumberFormatException n) {
                     }
 
-                    /* comprobar rut */
-                    if (srut == null || srut.trim().equals("")) {
-                        error = true;
-                    } else {
-                        try {
-                            cnews.setRut(Integer.parseInt(srut));
-                        } catch (NumberFormatException n) {
-                            error = true;
-                        }
-                    }
+                    /* buscar por idClientNews */
+                    try {
+                        ClientNews reg = cnewsDAO.findByIdClientNews(idCnews);
 
-                    if (!error) {
-                        /* buscar noticia cliente */
-                        ClientNews reg = cnewsDAO.findByClientNews(cnews);
                         if (reg != null) {
-                            reg.setDateBegin(Format.dateYYYYMMDD(reg.getDateBegin()));
-                            reg.setDateEnd(Format.dateYYYYMMDD(reg.getDateEnd()));
-
-                            /* obtener atributos del dao */
+                            /* establecer atributos de reg */
+                            request.setAttribute("idClientNews", reg.getIdClientNews());
                             request.setAttribute("rut", reg.getRut());
                             request.setAttribute("dv", reg.getDv());
-                            request.setAttribute("idClientNews", reg.getIdClientNews());
                             request.setAttribute("firstName", reg.getFirstName());
                             request.setAttribute("lastName", reg.getLastName());
-                            request.setAttribute("newsType", reg.getNewsType());
+
+                            /* comprobar redirect */
+                            if (redirect == null || redirect.trim().equals("")) {
+                                /* establecer atributos de reg */
+                                request.setAttribute("tittle", reg.getTittle());
+
+                                /* formatear fechas */
+                                reg.setDateBegin(Format.dateYYYYMMDD(reg.getDateBegin()));
+                                reg.setDateEnd(Format.dateYYYYMMDD(reg.getDateEnd()));
+
+                                request.setAttribute("dateBegin", reg.getDateBegin());
+                                request.setAttribute("dateEnd", reg.getDateEnd());
+                            } else {
+                                /* establecer atributos de PRG */
+                                request.setAttribute("tittle", tittle);
+                                request.setAttribute("dateBegin", dateBegin);
+                                request.setAttribute("dateEnd", dateEnd);
+                                try {
+                                    request.setAttribute("newsType", Integer.parseInt(newsType));
+                                } catch (NumberFormatException n) {
+                                }
+                            }
 
                             /*comprobar titulo */
                             if (msgErrorTittle == null || msgErrorTittle.trim().equals("")) {
-                                request.setAttribute("tittle", reg.getTittle());
                             } else {
                                 request.setAttribute("msgErrorTittle", true);
                                 msgList.add(MessageList.addMessage(msgErrorTittle));
-                                request.setAttribute("tittle", tittle);
                             }
 
                             /* comprobar fecha inicio */
                             if (msgErrorDateBegin == null || msgErrorDateBegin.trim().equals("")) {
-                                request.setAttribute("dateBegin", reg.getDateBegin());
                             } else {
                                 request.setAttribute("msgErrorDateBegin", true);
                                 msgList.add(MessageList.addMessage(msgErrorDateBegin));
-                                request.setAttribute("dateBegin", dateBegin);
                             }
 
                             /* comprobar fecha de termino */
                             if (msgErrorDateEnd == null || msgErrorDateEnd.trim().equals("")) {
-                                request.setAttribute("dateEnd", reg.getDateEnd());
                             } else {
                                 request.setAttribute("msgErrorDateEnd", true);
                                 msgList.add(MessageList.addMessage(msgErrorDateEnd));
-                                request.setAttribute("dateEnd", dateEnd);
                             }
 
                             /* comprobar date */
                             if (msgErrorDate == null || msgErrorDate.trim().equals("")) {
                             } else {
-                                request.setAttribute("dateBegin", dateBegin);
-                                request.setAttribute("dateEnd", reg.getDateEnd());
                                 request.setAttribute("msgErrorDate", true);
                                 msgList.add(MessageList.addMessage(msgErrorDate));
                             }
@@ -188,8 +179,11 @@ public class ClientNewsGetServlet extends HttpServlet {
                                 request.setAttribute("msgOk", msgOk);
                             }
                         } else {
-                            request.setAttribute("msgErrorFound", "Error: No se ha encontrado el registro.");
+                            request.setAttribute("msgErrorFound", true);
+                            msgList.add(MessageList.addMessage("No se ha encontrado el registro."));
                         }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
 
                     /* establecer lista de mensajes */
@@ -209,6 +203,7 @@ public class ClientNewsGetServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

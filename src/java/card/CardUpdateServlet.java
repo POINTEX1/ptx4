@@ -42,10 +42,10 @@ public class CardUpdateServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        //////////////////////////
+        // ESTABLECER CONEXION
+        //////////////////////////
         try {
-            //////////////////////////
-            // ESTABLECER CONEXION
-            //////////////////////////
             conexion = ds.getConnection();
 
             CardDAO cardDAO = new CardDAO();
@@ -80,9 +80,7 @@ public class CardUpdateServlet extends HttpServlet {
                 String dateEnd = request.getParameter("dateEndCard");
 
                 /* instanciar string url */
-                String url = "?a=target";
-
-                /* establecer parametros para PRG */
+                String url = "?redirect=ok";
                 url += "&rut=" + srut;
                 url += "&dv=" + sdv;
                 url += "&firstName=" + firstname;
@@ -92,6 +90,7 @@ public class CardUpdateServlet extends HttpServlet {
                 url += "&dateBegin=" + dateBegin;
                 url += "&dateEnd=" + dateEnd;
 
+                /* instanciar tarjeta */
                 Card card = new Card();
 
                 boolean error = false;
@@ -151,26 +150,25 @@ public class CardUpdateServlet extends HttpServlet {
                 }
 
                 /* comprobar date begin */
+                card.setDateBeginCard(dateBegin);
                 if (dateBegin == null || dateBegin.trim().equals("")) {
-                    url = url + "&msgErrorDateBegin=Debe ingresar fecha de inicio.";
+                    url = url + "&msgErrorDateBegin=Debe ingresar fecha y hora de inicio.";
                     error = true;
-                } else {
-                    card.setDateBeginCard(dateBegin);
-                    /* comprobar date end */
-                    if (dateEnd == null || dateEnd.trim().equals("")) {
-                        url = url + "&msgErrorDateEnd=Debe ingresar fecha de término.";
-                        error = true;
-                    } else {
-                        /* comparar fechas */
-                        card.setDateBeginCard(dateBegin);
-                        card.setDateEndCard(dateEnd);
-                        //System.out.println("comparar fecha inicio fecha fin: " + card.getDateBeginCard().compareTo(card.getDateEndCard()));
-                        if (card.getDateBeginCard().compareTo(card.getDateEndCard()) >= 0) {
-                            url = url + "&msgErrorDateBegin=La fecha de término deber ser mayor que la fecha de inicio.";
-                            error = true;
-                        }
-                    }
                 }
+
+                /* comprobar date end */
+                card.setDateEndCard(dateEnd);
+                if (dateEnd == null || dateEnd.trim().equals("")) {
+                    url += "&msgErrorDateEnd=Debe ingresar fecha y hora de término.";
+                    error = true;
+                }
+
+                /* comparar fechas */
+                if (card.getDateBeginCard().compareTo(card.getDateEndCard()) >= 0) {
+                    url = url + "&msgErrorDate=La fecha y hora de inicio no puede ser mayor o igual que la fecha y hora de término.";
+                    error = true;
+                }
+
 
                 ////////////////////////
                 // INSERTAR REGISTRO

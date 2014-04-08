@@ -4,10 +4,13 @@
  */
 package place;
 
+import Helpers.Message;
+import Helpers.MessageList;
 import city.City;
 import city.CityDAO;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -45,11 +48,10 @@ public class PlaceGetServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        ///////////////////////////
+        // ESTABLECER CONEXION
+        ///////////////////////////
         try {
-            //////////////////////////////////////////
-            // ESTABLECER CONEXION
-            //////////////////////////////////////////
-
             conexion = ds.getConnection();
 
             PlaceDAO placeDAO = new PlaceDAO();
@@ -58,9 +60,9 @@ public class PlaceGetServlet extends HttpServlet {
             CityDAO cityDAO = new CityDAO();
             cityDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -84,8 +86,14 @@ public class PlaceGetServlet extends HttpServlet {
                     /////////////////////////////////////////
 
                     /* obtener atributos de PRG */
+                    String redirect = request.getParameter("redirect");
+                    String sidPlace = request.getParameter("idPlace");
+                    String sidCity = request.getParameter("idCity");
                     String namePlace = request.getParameter("namePlace");
+                    String address = request.getParameter("address");
                     String contact = request.getParameter("contact");
+                    String description = request.getParameter("description");
+                    String status = request.getParameter("status");
                     String urlImage = request.getParameter("urlImage");
                     String urlLogo = request.getParameter("urlLogo");
 
@@ -99,102 +107,115 @@ public class PlaceGetServlet extends HttpServlet {
                     String msgErrorUrlLogo = request.getParameter("msgErrorUrlLogo");
                     String msgErrorDup = request.getParameter("msgErrorDup");
 
-                    /* obtener parametros de busqueda */
-                    String sidPlace = request.getParameter("idPlace");
+                    /* instanciar lista de mensajes */
+                    Collection<Message> msgList = new ArrayList<Message>();
 
-                    boolean error = false;
-
-                    /* comprobar id place */
+                    /* establecer id place */
                     int id = 0;
-                    if (sidPlace == null || sidPlace.trim().equals("")) {
-                        error = true;
-                    } else {
-                        try {
-                            id = Integer.parseInt(sidPlace);
-                        } catch (NumberFormatException n) {
-                            error = true;
-                        }
+                    try {
+                        id = Integer.parseInt(sidPlace);
+                    } catch (NumberFormatException n) {
                     }
 
-                    if (!error) {
-                        /* buscar place */
-                        try {
-                            Place reg = placeDAO.findById(id);
-                            if (reg != null) {
-                                /* obtener atributos del dao */
-                                request.setAttribute("idPlace", reg.getIdPlace());
+                    /* buscar place por id */
+                    try {
+                        Place reg = placeDAO.findById(id);
+
+                        if (reg != null) {
+                            /* obtener atributos de reg */
+                            request.setAttribute("idPlace", reg.getIdPlace());
+
+                            /* comprobar redirect */
+                            if (redirect == null || redirect.trim().equals("")) {
+                                /* establecer atributos de reg */
                                 request.setAttribute("idCity", reg.getIdCity());
                                 request.setAttribute("status", reg.getStatus());
-
-                                /////////////////////////////
-                                // COMPROBAR PARAMETROS
-                                /////////////////////////////
-
-                                /* comprobar name place */
-                                if (msgErrorNamePlace == null || msgErrorNamePlace.trim().equals("")) {
-                                    request.setAttribute("namePlace", reg.getNamePlace());
-                                } else {
-                                    request.setAttribute("msgErrorNamePlace", msgErrorNamePlace);
-                                }
-
-                                /* comprobar address */
-                                if (msgErrorAddress == null || msgErrorAddress.trim().equals("")) {
-                                    request.setAttribute("address", reg.getAddress());
-                                } else {
-                                    request.setAttribute("msgErrorAddress", msgErrorAddress);
-                                }
-
-                                /* comprobar contact */
-                                if (msgErrorContact == null || msgErrorContact.trim().equals("")) {
-                                    request.setAttribute("contact", reg.getContact());
-                                } else {
-                                    request.setAttribute("msgErrorContact", msgErrorContact);
-                                    request.setAttribute("contact", contact);
-                                }
-
-                                /* comprobar description */
-                                if (msgErrorDes == null || msgErrorDes.trim().equals("")) {
-                                    request.setAttribute("description", reg.getDescription());
-                                } else {
-                                    request.setAttribute("msgErrorDes", msgErrorDes);
-                                }
-
-                                /* comprobar urlImage */
-                                if (msgErrorUrlImage == null || msgErrorUrlImage.trim().equals("")) {
-                                    request.setAttribute("urlImage", reg.getUrlImage());
-                                } else {
-                                    request.setAttribute("msgErrorUrlImage", msgErrorUrlImage);
-                                    request.setAttribute("urlImage", urlImage);
-                                }
-
-                                /* comprobar url Logo */
-                                if (msgErrorUrlLogo == null || msgErrorUrlLogo.trim().equals("")) {
-                                    request.setAttribute("urlLogo", reg.getUrlLogo());
-                                } else {
-                                    request.setAttribute("msgErrorUrlLogo", msgErrorUrlLogo);
-                                    request.setAttribute("urlLogo", urlLogo);
-                                }
-
-                                if (msgErrorDup == null || msgErrorDup.trim().equals("")) {
-                                } else {
-                                    request.setAttribute("msgErrorDup", msgErrorDup);
-                                    request.setAttribute("namePlace", namePlace);
-                                }
-
-                                /* comprobar msgOk y msg */
-                                if (msgOk == null || msgOk.trim().equals("")) {
-                                    request.setAttribute("msg", "Se encontró el registro!");
-                                } else {
-                                    request.setAttribute("msgOk", msgOk);
-                                }
-
+                                request.setAttribute("namePlace", reg.getNamePlace());
+                                request.setAttribute("address", reg.getAddress());
+                                request.setAttribute("contact", reg.getContact());
+                                request.setAttribute("description", reg.getDescription());
+                                request.setAttribute("urlImage", reg.getUrlImage());
+                                request.setAttribute("urlLogo", reg.getUrlLogo());
                             } else {
-                                request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
+                                /* estblecer atributos de PRG */
+                                request.setAttribute("idCity", Integer.parseInt(sidCity));
+                                request.setAttribute("status", Integer.parseInt(status));
+                                request.setAttribute("namePlace", namePlace);
+                                request.setAttribute("address", address);
+                                request.setAttribute("contact", contact);
+                                request.setAttribute("description", description);
+                                request.setAttribute("urlImage", urlImage);
+                                request.setAttribute("urlLogo", urlLogo);
                             }
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
+
+                            /* comprobar name place */
+                            if (msgErrorNamePlace == null || msgErrorNamePlace.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorNamePlace", true);
+                                msgList.add(MessageList.addMessage(msgErrorNamePlace));
+                            }
+
+                            /* comprobar address */
+                            if (msgErrorAddress == null || msgErrorAddress.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorAddress", true);
+                                msgList.add(MessageList.addMessage(msgErrorAddress));
+                            }
+
+                            /* comprobar contact */
+                            if (msgErrorContact == null || msgErrorContact.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorContact", true);
+                                msgList.add(MessageList.addMessage(msgErrorContact));
+                            }
+
+                            /* comprobar description */
+                            if (msgErrorDes == null || msgErrorDes.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorDes", true);
+                                msgList.add(MessageList.addMessage(msgErrorDes));
+                            }
+
+                            /* comprobar urlImage */
+                            if (msgErrorUrlImage == null || msgErrorUrlImage.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorUrlImage", true);
+                                msgList.add(MessageList.addMessage(msgErrorUrlImage));
+                            }
+
+                            /* comprobar url Logo */
+                            if (msgErrorUrlLogo == null || msgErrorUrlLogo.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorUrlLogo", true);
+                                msgList.add(MessageList.addMessage(msgErrorUrlLogo));
+                            }
+
+                            /* comprobar duplicados */
+                            if (msgErrorDup == null || msgErrorDup.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorDup", true);
+                                msgList.add(MessageList.addMessage(msgErrorDup));
+                            }
+
+                            /* comprobar msgOk y msg */
+                            if (msgOk == null || msgOk.trim().equals("")) {
+                                request.setAttribute("msg", "Se encontró el registro!");
+                            } else {
+                                request.setAttribute("msgOk", msgOk);
+                            }
+
+                        } else {
+                            request.setAttribute("msgErrorFound", true);
+                            msgList.add(MessageList.addMessage("El registro no ha sido encontrado."));
                         }
-                    }                
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                    /* establecer lista de mensajes */
+                    if (!msgList.isEmpty()) {
+                        request.setAttribute("msgList", msgList);
+                    }
 
                     /* obtener listado de ciudades */
                     try {
@@ -203,7 +224,7 @@ public class PlaceGetServlet extends HttpServlet {
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
-
+                    /* despachar a la vista */
                     request.getRequestDispatcher("/place/placeUpdate.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {
@@ -214,6 +235,7 @@ public class PlaceGetServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

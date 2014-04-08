@@ -97,22 +97,28 @@
                                 </div> 
                                 <!-- /TIPO DE TARJETA -->
 
-                                <!-- FECHA DE INICIO/TERMINO -->
-                            <c:if test="${msgErrorDateBegin == null && msgErrorDateEnd == null}">
+                                <!-- FECHA DE INICIO -->
+                            <c:if test="${msgErrorDateBegin == null && msgErrorDate == null}">
                                 <div class="form-group">
                                     <label>Fecha de Inicio</label>
                                     <input class="form-control" type="datetime-local" required="true" name="dateBeginCard" value="<c:out value="${dateBegin}" />">
-                                </div>                                                      
+                                </div>
+                            </c:if>                            
+                            <c:if test="${msgErrorDateBegin != null || msgErrorDate != null}">
+                                <div class="form-group has-error">
+                                    <label class="control-label" for="inputError">Fecha de Inicio</label>
+                                    <input class="form-control" type="datetime-local" required="true" name="dateBeginCard" id="inputError" value="<c:out value="${dateBegin}" />">
+                                </div>
+                            </c:if>
+                                
+                            <!-- FECHA DE TERMINO -->
+                            <c:if test="${msgErrorDateEnd == null && msgErrorDate == null}">    
                                 <div class="form-group">
                                     <label>Fecha de Caducidad</label>
                                     <input class="form-control" type="datetime-local" required="true" name="dateEndCard" value="<c:out value="${dateEnd}" />">
                                 </div>
                             </c:if>
-                            <c:if test="${msgErrorDateBegin != null || msgErrorDateEnd != null}">
-                                <div class="form-group has-error">
-                                    <label class="control-label" for="inputError">Fecha de Inicio</label>
-                                    <input class="form-control" type="datetime-local" required="true" name="dateBeginCard" id="inputError" value="<c:out value="${dateBegin}" />">
-                                </div>
+                            <c:if test="${msgErrorDateEnd != null || msgErrorDate != null}">
                                 <div class="form-group has-error">
                                     <label class="control-label" for="inputError">Fecha de Caducidad</label>
                                     <input class="form-control" type="datetime-local" required="true" name="dateEndCard" id="inputError" value="<c:out value="${dateEnd}" />">

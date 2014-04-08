@@ -153,7 +153,7 @@
                                                         <tr>
                                                             <th><button class="btn btn-danger btn-mini delete" name="btnDelCol" type="submit"><font size="1">ELIMINAR</font></button></th>
                                                             <th>Id </th>
-                                                            <th>Nombre de Plaza </th>
+                                                            <th>Nombre </th>
                                                             <th>Dirección </th>
                                                             <th>Estado Servicio </th>
                                                             <th>Contacto </th>

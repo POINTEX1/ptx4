@@ -30,7 +30,7 @@
         <!-- Page Specific Plugins -->
         <script src="js/tablesorter/jquery.tablesorter.js"></script>
         <script src="js/tablesorter/tables.js"></script>    
-        
+
         <!-- disabledButton -->
         <script src="js/disabledButton.js"></script>
 
@@ -55,7 +55,6 @@
             <!-- /.navbar-collapse -->
 
             <div id="page-wrapper">
-
                 <div class="row">
                     <div class="col-lg-12">
                         <!-- TITUTLO MANTENEDOR -->
@@ -64,46 +63,11 @@
                             <li><a href="OrderCardMainServlet"><i class="fa fa-table"></i> DataTable</a></li>
                             <li class="active"><i class="fa fa-edit"></i> Actualizar</li>
                         </ol>
-                        <!-- /TITUTLO MANTENEDOR -->
 
-                        <!-- MENSAJE INFORMATIVO -->
-                        <c:if test="${msg != null}" >
-                            <div class="alert alert-dismissable alert-info">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msg}" /></strong>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE INFORMATIVO -->
-
-                        <!-- MENSAJE DE EXITO -->
-                        <c:if test="${msgOk != null}" >
-                            <div class="alert alert-dismissable alert-success">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgOk}" /></strong>
-                            </div>
-                        </c:if>
-                        <!-- /MENSAJE DE EXITO -->
-
-                        <!-- MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
-                        <c:if test="${msgErrorFound != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorFound}" /></strong></br>
-                            </div>
-                        </c:if> 
-                        <!-- /MENSAJE DE ERROR DE REGISTRO NO ENCONTRADO -->
-
-                        <!-- MENSAJE DE ERROR DE RAZON -->
-                        <c:if test="${msgErrorReason != null}" >
-                            <div class="alert alert-dismissable alert-danger">
-                                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                                <strong><c:out value="${msgErrorReason}" /></strong></br>
-                            </div>
-                        </c:if> 
-                        <!-- /MENSAJE DE ERROR DE RAZON -->
+                        <!-- MENSAJES -->
+                        <c:import var="formMsg" url="/formMsg.jsp" />
+                        <c:out value="${formMsg}" escapeXml="false" />
                     </div>
-
-
 
                     <div class="col-lg-4">
                         <!-- FORMULARIO --->
@@ -139,11 +103,19 @@
                                 <!-- /SOLICITUD TARJETA -->
 
                                 <!-- RAZON RECHAZO -->
+                            <c:if test="${msgErrorReason == null}">
                                 <div class="form-group" id="reason">
                                     <label>Razón de rechazo</label>
                                     <textarea class="form-control" name="reason" maxlength="255" rows="4"><c:out value="${reason}" /></textarea>
-                            </div>
-                            <!-- /RAZON RECHAZO -->
+                                </div>
+                            </c:if>
+                            <c:if test="${msgErrorReason != null}">
+                                <div class="form-group has-error" id="reason">
+                                    <label class="control-label" for="inputError">Razón de rechazo</label>
+                                    <textarea class="form-control" name="reason" maxlength="255" rows="4" id="inputError"><c:out value="${reason}" /></textarea>
+                                </div>
+                            </c:if>
+
                             <button type="submit" name="btnUpdate" class="btn btn-default" onclick="disabledButtonUpdate();"><strong><font size="1"><object name="btn1">ACTUALIZAR</object><object name="btn2" hidden="true">ACTUALIZANDO...</object></font></strong></button>
                         </form>
                         <!-- /FORMULARIO --->
@@ -157,7 +129,6 @@
                 <!-- /FOOTER -->
 
             </div><!-- /#page-wrapper -->
-
         </div><!-- /#wrapper -->
     </body>
 </html>

@@ -81,6 +81,9 @@ public class CardGetServlet extends HttpServlet {
                 ////////////////////////////////////
 
                 /* recibir atributos por PRG */
+                String redirect = request.getParameter("redirect");
+                String sbarcode = request.getParameter("barCode");
+                String srut = request.getParameter("rut");
                 String dateBegin = request.getParameter("dateBegin");
                 String dateEnd = request.getParameter("dateEnd");
 
@@ -88,64 +91,86 @@ public class CardGetServlet extends HttpServlet {
                 String msgOk = request.getParameter("msgOk");
                 String msgErrorDateBegin = request.getParameter("msgErrorDateBegin");
                 String msgErrorDateEnd = request.getParameter("msgErrorDateEnd");
+                String msgErrorDate = request.getParameter("msgErrorDate");
 
-                /* recibir parametros por busqueda */
-                Card card = new Card();
-                try {
-                    card.setBarCode(Integer.parseInt(request.getParameter("barCode")));
-                    card.setRut(Integer.parseInt(request.getParameter("rut")));
-                } catch (NumberFormatException n) {
-                }
-
-                /* buscar registro */
-                Card reg = null;
-                try {
-                    reg = cardDAO.findbyBarCodeJoin(card);
-                } catch (Exception ex) {
-                    request.setAttribute("msgErrorFound", "Error: La función no se pudo ejecutar.");
-                }
 
                 /* instanciar lista de mensajes */
                 Collection<Message> msgList = new ArrayList<Message>();
 
-                /* comprobar si se encontro */
-                if (reg != null) {
-                    /* establecer atributos de reg */
-                    request.setAttribute("barCode", reg.getBarCode());
-                    request.setAttribute("rut", reg.getRut());
-                    request.setAttribute("dv", reg.getDv());
-                    request.setAttribute("firstName", reg.getFirstName());
-                    request.setAttribute("lastName", reg.getLastName());
-                    request.setAttribute("cardType", reg.getCardType());
+                /* comprobar rut */
+                int rut = 0;
+                try {
+                    rut = Integer.parseInt(srut);
+                } catch (NumberFormatException n) {
+                }
 
-                    /* comprobar date begin */
-                    if (msgErrorDateBegin == null || msgErrorDateBegin.trim().equals("")) {
-                        request.setAttribute("dateBegin", Format.dateYYYYMMDD(reg.getDateBeginCard()));
+                /* comprobar barcode */
+                int barcode = 0;
+                try {
+                    barcode = Integer.parseInt(sbarcode);
+                } catch (NumberFormatException n) {
+                }
+
+                /* buscar registro */
+                try {
+                    Card reg = cardDAO.findbyRutBarcode(barcode, rut);
+
+                    if (reg != null) {
+                        /* establecer atributos de reg */
+                        request.setAttribute("barCode", reg.getBarCode());
+                        request.setAttribute("rut", reg.getRut());
+                        request.setAttribute("dv", reg.getDv());
+                        request.setAttribute("firstName", reg.getFirstName());
+                        request.setAttribute("lastName", reg.getLastName());
+                        request.setAttribute("cardType", reg.getCardType());
+
+                        /* comprobar redirect */
+                        if (redirect == null || redirect.trim().equals("")) {
+                            /* establecer atributos de reg */
+                            request.setAttribute("dateBegin", Format.dateYYYYMMDD(reg.getDateBeginCard()));
+                            request.setAttribute("dateEnd", Format.dateYYYYMMDD(reg.getDateEndCard()));
+                        } else {
+                            /* establecer atributos de PRG */
+                            request.setAttribute("dateBegin", dateBegin);
+                            request.setAttribute("dateEnd", dateEnd);
+                        }
+
+                        /* comprobar date begin */
+                        if (msgErrorDateBegin == null || msgErrorDateBegin.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorDateBegin", true);
+                            msgList.add(MessageList.addMessage(msgErrorDateBegin));
+                        }
+
+                        /* comprobar date end */
+                        if (msgErrorDateEnd == null || msgErrorDateEnd.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorDateEnd", true);
+                            msgList.add(MessageList.addMessage(msgErrorDateEnd));
+
+                        }
+
+                        /* comprobar date */
+                        if (msgErrorDate == null || msgErrorDate.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorDate", true);
+                            msgList.add(MessageList.addMessage(msgErrorDate));
+                        }
+
+
+                        /* comprobar mensaje de exito */
+                        if (msgOk == null || msgOk.trim().equals("")) {
+                            request.setAttribute("msg", "Se encontró el registro!");
+                        } else {
+                            request.setAttribute("msgOk", msgOk);
+                        }
+
                     } else {
-                        request.setAttribute("msgErrorDateBegin", true);
-                        msgList.add(MessageList.addMessage(msgErrorDateBegin));
-                        request.setAttribute("dateBegin", dateBegin);
+                        request.setAttribute("msgErrorFound", true);
+                        msgList.add(MessageList.addMessage("El registro no ha sido encontrado."));
                     }
-
-                    /* comprobar date end */
-                    if (msgErrorDateEnd == null || msgErrorDateEnd.trim().equals("")) {
-                        request.setAttribute("dateEnd", Format.dateYYYYMMDD(reg.getDateEndCard()));
-                    } else {
-                        request.setAttribute("msgErrorDateEnd", true);
-                        msgList.add(MessageList.addMessage(msgErrorDateEnd));
-                        request.setAttribute("dateEnd", dateEnd);
-                    }
-
-                    /* comprobar mensaje de exito */
-                    if (msgOk == null || msgOk.trim().equals("")) {
-                        request.setAttribute("msg", "Se encontró el registro!");
-                    } else {
-                        request.setAttribute("msgOk", msgOk);
-                    }
-
-                } else {
-                    request.setAttribute("msgErrorFound", true);
-                    msgList.add(MessageList.addMessage("El registro no ha sido encontrado."));
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
 
                 /* establecer lista de mensajes a la petición */

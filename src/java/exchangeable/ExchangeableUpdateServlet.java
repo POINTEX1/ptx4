@@ -42,19 +42,18 @@ public class ExchangeableUpdateServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        //////////////////////////
+        // ESTABLECER CONEXION
+        //////////////////////////
         try {
-            //////////////////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////////////////
-
             conexion = ds.getConnection();
 
             ExchangeableDAO exDAO = new ExchangeableDAO();
             exDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            /////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            /////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -72,9 +71,9 @@ public class ExchangeableUpdateServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-                    /////////////////////////////////////////
+                    /////////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETROS
-                    /////////////////////////////////////////                    
+                    /////////////////////////////////////
 
                     String sidExchangeable = request.getParameter("idExchangeable");
                     String tittle = request.getParameter("tittle");
@@ -83,14 +82,21 @@ public class ExchangeableUpdateServlet extends HttpServlet {
                     String srequest = request.getParameter("exchangeRequest");
                     String reason = request.getParameter("reason");
 
+                    String url = "?redirect=ok";
+                    url += "&idExchangeable=" + sidExchangeable;
+                    url += "&tittle=" + tittle;
+                    url += "&urlImage=" + urlImage;
+                    url += "&points=" + spoints;
+                    url += "&reason=" + reason;
+                    url += "&request=" + srequest;
+
+                    /* instanciar exchangeable */
                     Exchangeable exchange = new Exchangeable();
 
+                    /* flag de error */
                     boolean error = false;
 
-                    String url = "?a=target";
-
                     /* comprobar id exchangeable */
-                    url += "&idExchangeable=" + sidExchangeable;
                     if (sidExchangeable == null || sidExchangeable.trim().equals("")) {
                         error = true;
                     } else {
@@ -102,39 +108,35 @@ public class ExchangeableUpdateServlet extends HttpServlet {
                     }
 
                     /* comprobar tittle */
-                    url += "&tittle=" + tittle;
                     if (tittle == null || tittle.trim().equals("")) {
-                        url += "&msgErrorTittle=Error: Debe ingresar un título para el producto canjeable.";
+                        url += "&msgErrorTittle=Debe ingresar un título para el producto canjeable.";
                         error = true;
                     } else {
                         exchange.setTittle(tittle);
                     }
 
                     /* comprobar url image */
-                    url += "&urlImage=" + urlImage;
                     if (urlImage == null || urlImage.trim().equals("")) {
-                        url += "&msgErrorUrlImage=Error: Debe ingresar url de imagen.";
+                        url += "&msgErrorUrlImage=Debe ingresar url de imagen.";
                         error = true;
                     } else {
                         exchange.setUrlImage(urlImage);
                     }
 
                     /* comprobar points */
-                    url += "&points=" + spoints;
                     if (spoints == null || spoints.trim().equals("")) {
-                        url += "&msgErrorPoints=Error: Debe ingresar puntos que acumula esta promoción.";
+                        url += "&msgErrorPoints=Debe ingresar puntos requeridos para este producto.";
                         error = true;
                     } else {
                         try {
                             exchange.setPoints(Integer.parseInt(spoints));
                         } catch (NumberFormatException n) {
-                            url += "&msgErrorPoints=Error: Los puntos deben ser numéricos.";
+                            url += "&msgErrorPoints=Los puntos deben ser numéricos.";
                             error = true;
                         }
                     }
 
                     /* comprobar request */
-                    url += "&request=" + srequest;
                     if (srequest == null || srequest.trim().equals("")) {
                         error = true;
                     } else {
@@ -146,30 +148,35 @@ public class ExchangeableUpdateServlet extends HttpServlet {
                     }
 
                     /* comprobar reason */
-                    url += "&reason=" + reason;
                     if ((reason == null || reason.trim().equals("")) && exchange.getRequest() == 2) {
-                        url += "&msgErrorReason=Error: Debe ingresar razón de rechazo.";
+                        url += "&msgErrorReason=Debe ingresar razón de rechazo.";
                         error = true;
                     } else {
                         exchange.setReason(reason);
                     }
 
-                    /////////////////////////////////////////
-                    // EJECUTAR LOGICA DE NEGOCIO
-                    /////////////////////////////////////////
+                    /////////////////////////
+                    // LOGICA DE NEGOCIO
+                    /////////////////////////
 
-                    if (!error) {
-                        /* verificar registro duplicado */
+                    /* verificar registro duplicado */
+                    try {
                         boolean find = exDAO.validateDuplicate(exchange);
                         if (find) {
                             url += "&msgErrorDup=Error: ya existe este producto canjeable.";
-                        } else {
-                            try {
-                                exDAO.update(exchange);
-                                url += "&msgOk=Registro actualizado exitosamente!";
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                            }
+                            error = true;
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                    /* actualizar registro */
+                    if (!error) {
+                        try {
+                            exDAO.update(exchange);
+                            url += "&msgOk=Registro actualizado exitosamente!";
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
                     }
                     /* send redirect */
@@ -183,6 +190,7 @@ public class ExchangeableUpdateServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

@@ -74,15 +74,13 @@ public class AdminGetServlet extends HttpServlet {
                     request.setAttribute("userJsp", user);
                     request.setAttribute("access", access);
 
-
                     ////////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETROS
-                    ////////////////////////////////////
-
-                    /* recibir parametro de busqueda */
-                    String sid = request.getParameter("id");
+                    ////////////////////////////////////                    
 
                     /* recibir atributos por PRG */
+                    String redirect = request.getParameter("redirect");
+                    String sid = request.getParameter("id");
                     String username = request.getParameter("username");
                     String email = request.getParameter("email");
 
@@ -97,27 +95,31 @@ public class AdminGetServlet extends HttpServlet {
                     /* instanciar lista de mensajes */
                     Collection<Message> msgList = new ArrayList<Message>();
 
-                    /* comprobar id admin */
-                    if (sid == null || sid.trim().equals("")) {
-                    } else {
-                        /* establecer id */
-                        int id = 0;
-                        try {
-                            id = Integer.parseInt(sid);
-                        } catch (NumberFormatException n) {
-                        }
+                    /* comprobar id */
+                    int id = 0;
+                    try {
+                        id = Integer.parseInt(sid);
+                    } catch (NumberFormatException n) {
+                    }
 
-                        /* buscar admin por id */
-                        Admin reg = null;
-                        try {
-                            reg = adminDAO.findById(id);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
+                    /* buscar admin por id */
+                    try {
+                        Admin reg = adminDAO.findById(id);
 
                         if (reg != null) {
-                            /* obtener atributos */
-                            request.setAttribute("id", id);
+                            /* establecer atributos de reg */
+                            request.setAttribute("id", reg.getIdAdmin());
+
+                            /* comprobar redirect */
+                            if (redirect == null || redirect.trim().equals("")) {
+                                /* establecer atributos de reg */
+                                request.setAttribute("username", reg.getUsername());
+                                request.setAttribute("email", reg.getEmail());
+                            } else {
+                                /* establecer atributos de PRG */
+                                request.setAttribute("username", username);
+                                request.setAttribute("email", email);
+                            }
 
                             /* mensajes de error por id */
                             if (msgErrorId == null || msgErrorId.trim().equals("")) {
@@ -128,18 +130,14 @@ public class AdminGetServlet extends HttpServlet {
 
                             /* mensaje de error por username */
                             if (msgErrorUsername == null || msgErrorUsername.trim().equals("")) {
-                                request.setAttribute("username", reg.getUsername());
                             } else {
-                                request.setAttribute("username", username);
                                 request.setAttribute("msgErrorUsername", true);
                                 msgList.add(MessageList.addMessage(msgErrorUsername));
                             }
 
                             /* mensaje de error por email */
                             if (msgErrorEmail == null || msgErrorEmail.trim().equals("")) {
-                                request.setAttribute("email", reg.getEmail());
                             } else {
-                                request.setAttribute("email", email);
                                 request.setAttribute("msgErrorEmail", true);
                                 msgList.add(MessageList.addMessage(msgErrorEmail));
                             }
@@ -168,6 +166,8 @@ public class AdminGetServlet extends HttpServlet {
                             request.setAttribute("msgErrorFound", true);
                             msgList.add(MessageList.addMessage("No se encontró el registro."));
                         }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
 
                     /* establecer lista a la petición */

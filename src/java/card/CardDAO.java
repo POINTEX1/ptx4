@@ -131,7 +131,7 @@ public class CardDAO {
         return reg;
     }
 
-    public Card findbyBarCodeJoin(Card card) {
+    public Card findbyRutBarcode(int barcode, int rut) {
 
         PreparedStatement sentence = null;
         ResultSet result = null;
@@ -143,8 +143,8 @@ public class CardDAO {
 
             sentence = conexion.prepareStatement(sql);
 
-            sentence.setInt(1, card.getBarCode());
-            sentence.setInt(2, card.getRut());
+            sentence.setInt(1, barcode);
+            sentence.setInt(2, rut);
 
             result = sentence.executeQuery();
 

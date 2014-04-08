@@ -91,8 +91,7 @@ public class EventUpdateServlet extends HttpServlet {
                     String sidDressCode = request.getParameter("idDressCode");
                     String reason = request.getParameter("reason");
 
-                    String url = "?a=target";
-
+                    String url = "?redirect=ok";
                     url += "&idPlace=" + sidPlace;
                     url += "&idEvent=" + sidEvent;
                     url += "&tittle=" + tittle;
@@ -166,7 +165,6 @@ public class EventUpdateServlet extends HttpServlet {
                         event.setUrlImage(urlImage);
                     }
 
-
                     /* comprobar date begin */
                     event.setDateBegin(dateBegin);
                     if (dateBegin == null || dateBegin.trim().equals("")) {
@@ -200,10 +198,12 @@ public class EventUpdateServlet extends HttpServlet {
 
                     /*comprobar request */
                     if (srequest == null || srequest.trim().equals("")) {
+                        error = true;
                     } else {
                         try {
                             event.setRequest(Integer.parseInt(srequest));
                         } catch (NumberFormatException n) {
+                            error = true;
                         }
                     }
 
@@ -215,21 +215,27 @@ public class EventUpdateServlet extends HttpServlet {
                         event.setReason(reason);
                     }
 
+                    ////////////////////////
+                    // LOGICA DE NEGOCIO
+                    ////////////////////////
+
+                    /* comprobar registros duplicados */
+                    try {
+                        boolean find = eventDAO.findDuplicate(event);
+                        if (find) {
+                            url += "&msgErrorEvent=Ya existe este evento. Compruebe utilizando otro título u otro rango de fechas.";
+                            error = true;
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        error = true;
+                    }
+
+                    /* actualizar el evento */
                     if (!error) {
-                        /* comprobar registros duplicados */
                         try {
-                            boolean find = eventDAO.findDuplicate(event);
-                            if (find) {
-                                url += "&msgErrorEvent=Ya existe este evento. Compruebe utilizando otro título u otro rango de fechas.";
-                            } else {
-                                /* actualizar el evento */
-                                try {
-                                    eventDAO.update(event);
-                                    url += "&msgOk=Registro actualizado exitosamente.";
-                                } catch (Exception ex) {
-                                    ex.printStackTrace();
-                                }
-                            }
+                            eventDAO.update(event);
+                            url += "&msgOk=Registro actualizado exitosamente.";
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }

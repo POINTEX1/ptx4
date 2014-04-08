@@ -75,7 +75,9 @@ public class CategoryGetServlet extends HttpServlet {
                 // RECIBIR Y COMPROBAR PARAMETROS
                 ////////////////////////////////////
 
-                /* recibir atributos por PRG */
+                /* recibir parametros por PRG */
+                String redirect = request.getParameter("redirect");
+                String sidCategory = request.getParameter("idCategory");
                 String nameCategory = request.getParameter("nameCategory");
 
                 /* recibir mensajes por PRG */
@@ -83,35 +85,38 @@ public class CategoryGetServlet extends HttpServlet {
                 String msgErrorDup = request.getParameter("msgErrorDup");
                 String msgOk = request.getParameter("msgOk");
 
-                /* obtener atributos para busqueda */
-                String sidCategory = request.getParameter("idCategory");
-
-                /* instanciar categoria */
-                Category category = new Category();
-
                 /* instanciar lista de mensajes */
                 Collection<Message> msgList = new ArrayList<Message>();
 
-                /* comprobar id category */
-                if (sidCategory == null || sidCategory.trim().equals("")) {
-                    request.setAttribute("msgErrorId", true);
-                    msgList.add(MessageList.addMessage("Fallo al recibir ID Categoria."));
-                } else {
-                    category.setIdCategory(Integer.parseInt(sidCategory));
-                    /* buscar registro */
-                    Category aux = categoryDAO.findById(category.getIdCategory());
+                /* comprobar id */
+                int idCategory = 0;
+                try {
+                    idCategory = Integer.parseInt(sidCategory);
+                } catch (NumberFormatException n) {
+                }
+
+                /* buscar registro por id */
+                try {
+                    Category aux = categoryDAO.findById(idCategory);
 
                     if (aux != null) {
-                        /* obtener atributos del dao */
-                        request.setAttribute("idCategory", aux.getIdCategory());
+                        /* establecer atributos */
+                        request.setAttribute("idCategory", idCategory);
+
+                        /* comprobar redirect */
+                        if (redirect == null || redirect.trim().equals("")) {
+                            /* establecer atributos de reg */
+                            request.setAttribute("nameCategory", aux.getNameCategory());
+                        } else {
+                            /* establecer atributos de PRG */
+                            request.setAttribute("nameCategory", nameCategory);
+                        }
 
                         /* comprobar msgErrorNameCategory */
                         if (msgErrorNameCategory == null || msgErrorNameCategory.trim().equals("")) {
-                            request.setAttribute("nameCategory", aux.getNameCategory());
                         } else {
                             request.setAttribute("msgErrorNameCategory", true);
                             msgList.add(MessageList.addMessage(msgErrorNameCategory));
-                            request.setAttribute("nameCategory", nameCategory);
                         }
 
                         /* comprobar registro duplicado */
@@ -130,8 +135,9 @@ public class CategoryGetServlet extends HttpServlet {
                     } else {
                         request.setAttribute("msgErrorFound", true);
                         msgList.add(MessageList.addMessage("El registro no ha sido encontrado."));
-
                     }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
 
                 /* establecer lista de mensajes a la peticion */

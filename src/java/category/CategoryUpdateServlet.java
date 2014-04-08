@@ -43,11 +43,10 @@ public class CategoryUpdateServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        ///////////////////////////
+        // ESTABLECER CONEXION
+        ///////////////////////////
         try {
-            ///////////////////////////
-            // ESTABLECER CONEXION
-            ///////////////////////////
-
             conexion = ds.getConnection();
 
             CategoryDAO categoryDAO = new CategoryDAO();
@@ -69,7 +68,6 @@ public class CategoryUpdateServlet extends HttpServlet {
                 request.setAttribute("userJsp", userJsp);
                 request.setAttribute("access", access);
 
-
                 ////////////////////////////////////
                 // RECIBIR Y COMPROBAR PARAMETROS
                 ////////////////////////////////////
@@ -77,11 +75,12 @@ public class CategoryUpdateServlet extends HttpServlet {
                 String sidCategory = request.getParameter("idCategory");
                 String nameCategory = request.getParameter("nameCategory");
 
-                String url = "?a=target";
-
+                /* instanciar url */
+                String url = "?redirect=ok";
                 url += "&idCategory=" + sidCategory;
                 url += "&nameCategory=" + nameCategory;
 
+                /* instanciar category */
                 Category category = new Category();
 
                 boolean error = false;
@@ -104,17 +103,29 @@ public class CategoryUpdateServlet extends HttpServlet {
                     category.setNameCategory(Format.capital(nameCategory));
                 }
 
-                if (!error) {
-                    /* comprobar duplicados */
-                    if (categoryDAO.findByName(category.getIdCategory(), category.getNameCategory())) {
+                ///////////////////////
+                // LOGICA DE NEGOCIO
+                ///////////////////////
+
+                /* comprobar duplicados */
+                try {
+                    boolean find = categoryDAO.findByName(category.getIdCategory(), category.getNameCategory());
+                    if (find) {
                         url += "&msgErrorDup=Ya existe una categoría con ese nombre.";
-                    } else {
-                        try {
-                            categoryDAO.update(category);
-                            url += "&msgOk=Registro actualizado exitosamente.";
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
+                        error = true;
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    error = true;
+                }
+
+                /* actualizar registro */
+                if (!error) {
+                    try {
+                        categoryDAO.update(category);
+                        url += "&msgOk=Registro actualizado exitosamente.";
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                 }
                 /* send redirect */

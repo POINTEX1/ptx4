@@ -91,6 +91,9 @@ public class EventGetServlet extends HttpServlet {
                     /////////////////////////////////////////
 
                     /* obtener atributos de PRG */
+                    String redirect = request.getParameter("redirect");
+                    String sidPlace = request.getParameter("idPlace");
+                    String sidEvent = request.getParameter("idEvent");
                     String tittle = request.getParameter("tittle");
                     String details = request.getParameter("details");
                     String points = request.getParameter("points");
@@ -112,157 +115,140 @@ public class EventGetServlet extends HttpServlet {
                     String msgErrorEvent = request.getParameter("msgErrorEvent");
                     String msgErrorReason = request.getParameter("msgErrorReason");
 
-                    /* obtener atributos de busqueda */
-                    String sidPlace = request.getParameter("idPlace");
-                    String sidEvent = request.getParameter("idEvent");
-
-                    /* instanciar evento */
-                    Event event = new Event();
-
                     /* instanciar lista de mensajes */
                     Collection<Message> msgList = new ArrayList<Message>();
 
-                    boolean error = false;
-
-                    /* comprobar id place */
-                    if (sidPlace == null || sidPlace.trim().equals("")) {
+                    /* establecer idPlace */
+                    int idPlace = 0;
+                    try {
+                        idPlace = Integer.parseInt(sidPlace);
+                    } catch (NumberFormatException n) {
                         request.setAttribute("msgErrorIdPlace", true);
                         msgList.add(MessageList.addMessage("Fallo al recibir id de lugar."));
-                        error = true;
-                    } else {
-                        try {
-                            event.setIdPlace(Integer.parseInt(sidPlace));
-                        } catch (NumberFormatException n) {
-                            request.setAttribute("msgErrorIdPlace", true);
-                            msgList.add(MessageList.addMessage("Fallo al recibir id de lugar."));
-                            error = true;
-                        }
                     }
 
-                    /* comprobar id event */
-                    if (sidEvent == null || sidEvent.trim().equals("")) {
-                        request.setAttribute("msgErrorIdEvent", true);
-                        msgList.add(MessageList.addMessage("Fallo al recibir id de evento."));
-                        error = true;
-                    } else {
-                        try {
-                            event.setIdEvent(Integer.parseInt(sidEvent));
-                        } catch (NumberFormatException n) {
-                            request.setAttribute("msgErrorIdEvent", true);
-                            msgList.add(MessageList.addMessage("Fallo al recibir id de evento."));
-                            error = true;
-                        }
+                    /* establecer idEvent */
+                    int idEvent = 0;
+                    try {
+                        idEvent = Integer.parseInt(sidEvent);
+                    } catch (NumberFormatException n) {
+                        request.setAttribute("msgErrorIdPlace", true);
+                        msgList.add(MessageList.addMessage("Fallo al recibir id de lugar."));
                     }
 
-                    if (!error) {
-                        /* buscar Evento */
-                        try {
-                            Event reg = eventDAO.findByPlaceEvent(event);
+                    /* buscar Evento */
+                    try {
+                        Event reg = eventDAO.findByPlaceEvent(idPlace, idEvent);
 
-                            if (reg != null) {
-                                /* obtener atributos del dao */
-                                request.setAttribute("idPlace", reg.getIdPlace());
-                                request.setAttribute("namePlace", reg.getNamePlace());
-                                request.setAttribute("idEvent", reg.getIdEvent());
-                                request.setAttribute("idDressCode", reg.getIdDressCode());
+                        if (reg != null) {
+                            /* obtener atributos de reg */
+                            request.setAttribute("idPlace", reg.getIdPlace());
+                            request.setAttribute("namePlace", reg.getNamePlace());
+                            request.setAttribute("idEvent", reg.getIdEvent());
+                            request.setAttribute("idDressCode", reg.getIdDressCode());
 
-                                reg.setDateBegin(Format.dateYYYYMMDD(reg.getDateBegin()));
-                                reg.setDateEnd(Format.dateYYYYMMDD(reg.getDateEnd()));
-
-                                /////////////////////////////
-                                // COMPROBAR ATRIBUTOS
-                                /////////////////////////////
-
-                                /* comprobar titulo evento */
-                                if (msgErrorTittle == null || msgErrorTittle.trim().equals("")) {
-                                    request.setAttribute("tittle", reg.getTittle());
-                                } else {
-                                    request.setAttribute("msgErrorTittle", true);
-                                    msgList.add(MessageList.addMessage(msgErrorTittle));
-                                    request.setAttribute("tittle", tittle);
-                                }
-
-                                /* comprobar detalles */
-                                if (msgErrorDetails == null || msgErrorDetails.trim().equals("")) {
-                                    request.setAttribute("details", reg.getDetails());
-                                } else {
-                                    request.setAttribute("msgErrorDetails", true);
-                                    msgList.add(MessageList.addMessage(msgErrorDetails));
-                                    request.setAttribute("details", details);
-                                }
-
-                                /* comprobar puntos */
-                                if (msgErrorPoints == null || msgErrorPoints.trim().equals("")) {
-                                    request.setAttribute("points", reg.getPoints());
-                                } else {
-                                    request.setAttribute("msgErrorPoints", true);
-                                    msgList.add(MessageList.addMessage(msgErrorPoints));
-                                    request.setAttribute("points", points);
-                                }
-
-                                /* comprobar fechas */
-                                if (msgErrorDate == null || msgErrorDate.trim().equals("")) {
-                                    request.setAttribute("dateBegin", reg.getDateBegin());
-                                    request.setAttribute("dateEnd", reg.getDateEnd());
-                                } else {
-                                    request.setAttribute("msgErrorDate", true);
-                                    msgList.add(MessageList.addMessage(msgErrorDate));
-                                    request.setAttribute("dateBegin", dateBegin);
-                                    request.setAttribute("dateEnd", dateEnd);
-                                }
-                                
-                                /* comprobar date begin */
-                                if(msgErrorDateBegin == null || msgErrorDateBegin.trim().equals("")) {
-                                    
-                                } else {
-                                    
-                                }
-
-                                /* comprobar url image */
-                                if (msgErrorUrlImage == null || msgErrorUrlImage.trim().equals("")) {
-                                    request.setAttribute("urlImage", reg.getUrlImage());
-                                } else {
-                                    request.setAttribute("msgErrorUrlImage", true);
-                                    msgList.add(MessageList.addMessage(msgErrorUrlImage));
-                                    request.setAttribute("urlImage", urlImage);
-                                }
-
-                                /* comprobar reason */
-                                if (msgErrorReason == null || msgErrorReason.trim().equals("")) {
-                                    request.setAttribute("reason", reg.getReason());
-                                    request.setAttribute("request", reg.getRequest());
-                                } else {
-                                    request.setAttribute("msgErrorReason", true);
-                                    msgList.add(MessageList.addMessage(msgErrorReason));
-                                    request.setAttribute("reason", reason);
-                                    try {
-                                        int rqst = Integer.parseInt(srequest);
-                                        request.setAttribute("request", rqst);
-                                    } catch (NumberFormatException n) {
-                                    }
-                                }
-
-                                /* comprobar error event */
-                                if (msgErrorEvent == null || msgErrorEvent.trim().equals("")) {
-                                } else {
-                                    request.setAttribute("msgErrorEvent", true);
-                                    msgList.add(MessageList.addMessage(msgErrorEvent));
-                                    request.setAttribute("tittle", tittle);
-                                }
-
-                                /* comprobar mensaje de exito */
-                                if (msgOk == null || msgOk.trim().equals("")) {
-                                    request.setAttribute("msg", "Se encontró el registro!");
-                                } else {
-                                    request.setAttribute("msgOk", msgOk);
-                                }
+                            /* comprobar redirect */
+                            if (redirect == null || redirect.trim().equals("")) {
+                                /* establecer atributos de reg */
+                                request.setAttribute("tittle", reg.getTittle());
+                                request.setAttribute("details", reg.getDetails());
+                                request.setAttribute("points", reg.getPoints());
+                                request.setAttribute("dateBegin", Format.dateYYYYMMDD(reg.getDateBegin()));
+                                request.setAttribute("dateEnd", Format.dateYYYYMMDD(reg.getDateEnd()));
+                                request.setAttribute("urlImage", reg.getUrlImage());
+                                request.setAttribute("reason", reg.getReason());
+                                request.setAttribute("request", reg.getRequest());
                             } else {
-                                request.setAttribute("msgErrorFound", true);
-                                msgList.add(MessageList.addMessage("El registro no ha sido encontrado."));
+                                /* establecer atributos de PRG */
+                                request.setAttribute("tittle", tittle);
+                                request.setAttribute("details", details);
+                                request.setAttribute("points", points);
+                                request.setAttribute("dateBegin", dateBegin);
+                                request.setAttribute("dateEnd", dateEnd);
+                                request.setAttribute("urlImage", urlImage);
+                                request.setAttribute("reason", reason);
+                                try {
+                                    int rqst = Integer.parseInt(srequest);
+                                    request.setAttribute("request", rqst);
+                                } catch (NumberFormatException n) {
+                                }
                             }
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
+
+                            /* comprobar titulo evento */
+                            if (msgErrorTittle == null || msgErrorTittle.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorTittle", true);
+                                msgList.add(MessageList.addMessage(msgErrorTittle));
+                            }
+
+                            /* comprobar detalles */
+                            if (msgErrorDetails == null || msgErrorDetails.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorDetails", true);
+                                msgList.add(MessageList.addMessage(msgErrorDetails));
+                            }
+
+                            /* comprobar puntos */
+                            if (msgErrorPoints == null || msgErrorPoints.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorPoints", true);
+                                msgList.add(MessageList.addMessage(msgErrorPoints));
+                            }
+
+                            /* comprobar fechas */
+                            if (msgErrorDate == null || msgErrorDate.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorDate", true);
+                                msgList.add(MessageList.addMessage(msgErrorDate));
+                            }
+
+                            /* comprobar date begin */
+                            if (msgErrorDateBegin == null || msgErrorDateBegin.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorDateBegin", true);
+                                msgList.add(MessageList.addMessage(msgErrorDateBegin));
+                            }
+
+                            /* comprobar date end */
+                            if (msgErrorDateEnd == null || msgErrorDateEnd.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorDateEnd", true);
+                                msgList.add(MessageList.addMessage(msgErrorDateEnd));
+                            }
+
+                            /* comprobar url image */
+                            if (msgErrorUrlImage == null || msgErrorUrlImage.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorUrlImage", true);
+                                msgList.add(MessageList.addMessage(msgErrorUrlImage));
+                            }
+
+                            /* comprobar reason */
+                            if (msgErrorReason == null || msgErrorReason.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorReason", true);
+                                msgList.add(MessageList.addMessage(msgErrorReason));
+                            }
+
+                            /* comprobar error event */
+                            if (msgErrorEvent == null || msgErrorEvent.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorEvent", true);
+                                msgList.add(MessageList.addMessage(msgErrorEvent));
+                            }
+
+                            /* comprobar mensaje de exito */
+                            if (msgOk == null || msgOk.trim().equals("")) {
+                                request.setAttribute("msg", "Se encontró el registro!");
+                            } else {
+                                request.setAttribute("msgOk", msgOk);
+                            }
+                        } else {
+                            request.setAttribute("msgErrorFound", true);
+                            msgList.add(MessageList.addMessage("El registro no ha sido encontrado."));
                         }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
 
                     /* obtener lista de lugares */
@@ -297,6 +283,7 @@ public class EventGetServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

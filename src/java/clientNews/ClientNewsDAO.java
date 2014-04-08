@@ -30,7 +30,7 @@ public class ClientNewsDAO {
         this.conexion = conexion;
     }
 
-    public ClientNews findByClientNews(ClientNews cnews) {
+    public ClientNews findByIdClientNews(int id) {
 
         PreparedStatement sentence = null;
         ResultSet result = null;
@@ -42,7 +42,7 @@ public class ClientNewsDAO {
 
             sentence = conexion.prepareStatement(sql);
 
-            sentence.setInt(1, cnews.getIdClientNews());
+            sentence.setInt(1, id);
 
             result = sentence.executeQuery();
 

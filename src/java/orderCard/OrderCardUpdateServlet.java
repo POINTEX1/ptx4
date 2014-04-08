@@ -42,19 +42,18 @@ public class OrderCardUpdateServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        /////////////////////////
+        // ESTABLECER CONEXION
+        /////////////////////////
         try {
-            /////////////////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////////////////
-
             conexion = ds.getConnection();
 
             OrderCardDAO orderCardDAO = new OrderCardDAO();
             orderCardDAO.setConexion(conexion);
 
-            /////////////////////////////////////////
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -72,24 +71,30 @@ public class OrderCardUpdateServlet extends HttpServlet {
                 request.setAttribute("userJsp", username);
                 request.setAttribute("access", access);
 
-                /////////////////////////////////////////
+                /////////////////////////////////////
                 // RECIBIR Y COMPROBAR PARAMETROS
-                /////////////////////////////////////////
+                /////////////////////////////////////
 
                 String sidOrderCard = request.getParameter("idOrder");
                 String sCardType = request.getParameter("cardType");
                 String srequest = request.getParameter("orderCardRequest");
                 String reason = request.getParameter("reason");
 
+                /* instanciar orderCard */
                 OrderCard orderCard = new OrderCard();
 
+                /* flag de error */
                 boolean error = false;
 
                 /* instanciar string url */
-                String url = "?a=target";
+                String url = "?redirect=ok";
+                url += "&idOrder=" + sidOrderCard;
+                url += "&cardType=" + sCardType;
+                url += "&request=" + srequest;
+                url += "&reason=" + reason;
+
 
                 /* comprobar idOrder */
-                url += "&idOrder=" + sidOrderCard;
                 if (sidOrderCard == null || sidOrderCard.trim().equals("")) {
                     error = true;
                 } else {
@@ -101,7 +106,6 @@ public class OrderCardUpdateServlet extends HttpServlet {
                 }
 
                 /* comprobar card type */
-                url += "&cardType=" + sCardType;
                 if (sCardType == null || sCardType.trim().equals("")) {
                     error = true;
                 } else {
@@ -113,7 +117,6 @@ public class OrderCardUpdateServlet extends HttpServlet {
                 }
 
                 /* comprobar request */
-                url += "&request=" + srequest;
                 if (srequest == null || srequest.trim().equals("")) {
                     error = true;
                 } else {
@@ -125,25 +128,24 @@ public class OrderCardUpdateServlet extends HttpServlet {
                 }
 
                 /* comprobar reason*/
-                url += "&reason=" + reason;
                 if ((reason == null || reason.trim().equals("")) && orderCard.getRequest() == 2) {
-                    url += "&msgErrorReason=Error: Debe ingresar razón de rechazo.";
+                    url += "&msgErrorReason=Debe ingresar razón de rechazo.";
                     error = true;
                 } else {
                     orderCard.setReason(reason);
                 }
 
-                ////////////////////////////////
-                // EJECUTAR LOGICA DE NEGOCIO
-                ////////////////////////////////
+                ///////////////////////
+                // LOGICA DE NEGOCIO
+                ///////////////////////
 
                 if (!error) {
                     /* actualizar datos */
                     try {
                         orderCardDAO.update(orderCard);
-                        url += "&msgOk=Registro actualizado exitosamente!";
+                        url += "&msgOk=Registro actualizado exitosamente.";
                     } catch (Exception ex) {
-                        url += "&msgErrorFound=Error al actualizar, el registro ya no existe.";
+                        ex.printStackTrace();
                     }
                 }
                 /* send redirect */

@@ -46,11 +46,10 @@ public class CityGetServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        //////////////////////////
+        // ESTABLECER CONEXION
+        //////////////////////////
         try {
-            //////////////////////////
-            // ESTABLECER CONEXION
-            //////////////////////////
-
             conexion = ds.getConnection();
 
             CityDAO cityDAO = new CityDAO();
@@ -77,6 +76,8 @@ public class CityGetServlet extends HttpServlet {
                 /////////////////////////////////////
 
                 /* obtener atributos de PRG */
+                String redirect = request.getParameter("redirect");
+                String sidCity = request.getParameter("idCity");
                 String nameCity = request.getParameter("nameCity");
 
                 /* obtener mensajes de PRG */
@@ -84,43 +85,36 @@ public class CityGetServlet extends HttpServlet {
                 String msgErrorDup = request.getParameter("msgErrorDup");
                 String msgOk = request.getParameter("msgOk");
 
-                /* obtener atributos de busqueda */
-                String sidCity = request.getParameter("idCity");
-
-                /* instanciar ciudad */
-                City city = new City();
-
                 /* intanciar lista de mensajes */
                 Collection<Message> msgList = new ArrayList<Message>();
 
-                /* comprobar id city */
-                if (sidCity == null || sidCity.trim().equals("")) {
-                } else {
-                    /* establecer id */
-                    int idCity = 0;
-                    try {
-                        idCity = Integer.parseInt(sidCity);
-                    } catch (NumberFormatException n) {
-                    }
-                    city.setIdCity(idCity);
+                /* establecer id */
+                int idCity = 0;
+                try {
+                    idCity = Integer.parseInt(sidCity);
+                } catch (NumberFormatException n) {
+                }
 
-                    /* comprobar existencia */
-                    City aux = null;
-                    try {
-                        aux = cityDAO.findbyIdCity(city);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
+                /* buscar ciudad por id */
+                try {
+                    City aux = cityDAO.findbyIdCity(idCity);
 
                     if (aux != null) {
-                        /* obtener atributos del dao */
+                        /* establecer atributos */
                         request.setAttribute("idCity", aux.getIdCity());
+
+                        /* comprobar redirect */
+                        if (redirect == null || redirect.trim().equals("")) {
+                            /* establecer atributos de reg */
+                            request.setAttribute("nameCity", aux.getNameCity());
+                        } else {
+                            /* establecer atributos de PRG */
+                            request.setAttribute("nameCity", nameCity);
+                        }
 
                         /* comprobar msgErrorNameCity */
                         if (msgErrorNameCity == null || msgErrorNameCity.trim().equals("")) {
-                            request.setAttribute("nameCity", aux.getNameCity());
                         } else {
-                            request.setAttribute("nameCity", nameCity);
                             request.setAttribute("msgErrorNameCity", true);
                             msgList.add(MessageList.addMessage(msgErrorNameCity));
                         }
@@ -143,7 +137,10 @@ public class CityGetServlet extends HttpServlet {
                         request.setAttribute("msgErrorFound", true);
                         msgList.add(MessageList.addMessage("El registro no ha sido encotrado."));
                     }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
+
 
                 /* establecer lista de mensaje a la peticion */
                 if (!msgList.isEmpty()) {

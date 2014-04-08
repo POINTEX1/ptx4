@@ -42,11 +42,10 @@ public class ClientNewsUpdateServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        /////////////////////////
+        // ESTABLECER CONEXION
+        /////////////////////////
         try {
-            /////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////
-
             conexion = ds.getConnection();
 
             ClientNewsDAO cnewsDAO = new ClientNewsDAO();
@@ -79,20 +78,20 @@ public class ClientNewsUpdateServlet extends HttpServlet {
                 String sdateBegin = request.getParameter("dateBegin");
                 String sdateEnd = request.getParameter("dateEnd");
 
-                /* instanciar clientNews */
-                ClientNews cnews = new ClientNews();
-
-                boolean error = false;
-
                 /* instanciar string url */
-                String url = "?a=target";
-
+                String url = "?redirect=ok";
                 url += "&idClientNews=" + sidClientNews;
                 url += "&tittle=" + stittle;
                 url += "&newsType=" + snewsType;
                 url += "&rut=" + srut;
                 url += "&dateBegin=" + sdateBegin;
                 url += "&dateEnd=" + sdateEnd;
+
+                /* instanciar clientNews */
+                ClientNews cnews = new ClientNews();
+
+                /* flag de error */
+                boolean error = false;
 
                 /* comprobar id news */
                 if (sidClientNews == null || sidClientNews.trim().equals("")) {
@@ -103,6 +102,19 @@ public class ClientNewsUpdateServlet extends HttpServlet {
                         cnews.setIdClientNews(Integer.parseInt(sidClientNews));
                     } catch (NumberFormatException n) {
                         url += "&msgErrorIdClientNews=Error al recibir id cliente noticias.";
+                        error = true;
+                    }
+                }
+
+                /* comprobar rut */
+                if (srut == null || srut.trim().equals("") || srut.length() < 2) {
+                    url += "&msgErrorRut=Error al recibir RUT.";
+                    error = true;
+                } else {
+                    try {
+                        cnews.setRut(Integer.parseInt(srut));
+                    } catch (NumberFormatException n) {
+                        url += "&msgErrorRut=Error: RUT inválido.";
                         error = true;
                     }
                 }
@@ -128,19 +140,6 @@ public class ClientNewsUpdateServlet extends HttpServlet {
                     }
                 }
 
-                /* comprobar rut */
-                if (srut == null || srut.trim().equals("") || srut.length() < 2) {
-                    url += "&msgErrorRut=Error al recibir RUT.";
-                    error = true;
-                } else {
-                    try {
-                        cnews.setRut(Integer.parseInt(srut));
-                    } catch (NumberFormatException n) {
-                        url += "&msgErrorRut=Error: RUT inválido.";
-                        error = true;
-                    }
-                }
-
                 /* comprobar date begin */
                 cnews.setDateBegin(sdateBegin);
                 if (sdateBegin == null || sdateBegin.trim().equals("")) {
@@ -161,20 +160,27 @@ public class ClientNewsUpdateServlet extends HttpServlet {
                     error = true;
                 }
 
+                ///////////////////////
+                // LOGICA DE NEGOCIO
+                ///////////////////////
+
+                /* comprobar registros duplicados */
+                try {
+                    boolean find = cnewsDAO.validateDuplicate(cnews);
+                    if (find) {
+                        url += "&msgErrorDup=Ya existe esta noticia. Compruebe utilizando otro título u otro rango de fechas.";
+                        error = true;
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    error = true;
+                }
+
+                /* actualizar registro */
                 if (!error) {
-                    /* comprobar registros duplicados */
                     try {
-                        boolean find = cnewsDAO.validateDuplicate(cnews);
-                        if (find) {
-                            url += "&msgErrorDup=Ya existe esta noticia. Compruebe utilizando otro título u otro rango de fechas.";
-                        } else {
-                            try {
-                                cnewsDAO.update(cnews);
-                                url += "&msgOk=Registro actualizado exitosamente.";
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                            }
-                        }
+                        cnewsDAO.update(cnews);
+                        url += "&msgOk=Registro actualizado exitosamente.";
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }

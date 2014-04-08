@@ -90,18 +90,20 @@ public class PlaceNewsUpdateServlet extends HttpServlet {
                     String urlImage = request.getParameter("urlImage");
 
                     /* instanciar string url */
-                    String url = "?a=target";
-
-                    /* retornar atributos por PRG */
+                    String url = "?redirect=ok";
                     url += "&idPlaceNews=" + sidPlaceNews;
+                    url += "&idPlace=" + sidPlace;
+                    url += "&newsType=" + snewsType;
                     url += "&tittle=" + tittle;
                     url += "&details=" + details;
-                    url += "&urlImage=" + urlImage;
                     url += "&dateBegin=" + dateBegin;
                     url += "&dateEnd=" + dateEnd;
+                    url += "&urlImage=" + urlImage;
 
+                    /* instanciar place news */
                     PlaceNews pnews = new PlaceNews();
 
+                    /* flag de error */
                     boolean error = false;
 
                     /* comprobar id place news */
@@ -139,7 +141,7 @@ public class PlaceNewsUpdateServlet extends HttpServlet {
 
                     /* comprobar tittle */
                     if (tittle == null || tittle.trim().equals("")) {
-                        url += "&msgErrorTittle=Error al recibir título.";
+                        url += "&msgErrorTittle=Debe ingresar título.";
                         error = true;
                     } else {
                         pnews.setTittle(tittle);
@@ -147,58 +149,62 @@ public class PlaceNewsUpdateServlet extends HttpServlet {
 
                     /* comprobar details */
                     if (details == null || details.trim().equals("")) {
-                        url += "&msgErrorDetails=Error al recibir detalles.";
+                        url += "&msgErrorDetails=Debe ingresar detalles.";
                         error = true;
                     } else {
                         pnews.setDetails(details);
                     }
 
-                    /* comprobar url image*/
+                    /* comprobar url image */
                     if (urlImage == null || urlImage.trim().equals("")) {
-                        url += "&msgErrorUrlImage=Error: Debe ingresar url de imagen.";
+                        url += "&msgErrorUrlImage=Debe ingresar url de imagen.";
                         error = true;
                     } else {
                         pnews.setUrlImage(urlImage);
                     }
 
                     /* comprobar dateBegin */
+                    pnews.setDateBegin(dateBegin);
                     if (dateBegin == null || dateBegin.trim().equals("")) {
-                        url += "&msgErrorDate=Error: Debe ingresar fecha de inicio.";
+                        url += "&msgErrorDateBegin=Debe ingresar fecha de inicio.";
                         error = true;
-                    } else {
-                        /* comprobar dateEnd */
-                        if (dateEnd == null || dateEnd.trim().equals("")) {
-                            url += "&msgErrorDate=Error: Debe ingresar fecha de término.";
-                            error = true;
-                        } else {
-                            /* comparar fechas */
-                            pnews.setDateBegin(dateBegin);
-                            pnews.setDateEnd(dateEnd);
-                            //System.out.println("Comparar fecha 1 y fecha 2: " + event.getDateBegin().compareTo(event.getDateEnd()));
-                            if (pnews.getDateBegin().compareTo(pnews.getDateEnd()) >= 0) {
-                                url += "&msgErrorDate=Error: La fecha de inicio no puede ser mayo que la de término.";
-                                error = true;
-                            }
-                        }
                     }
 
-                    /////////////////////////////////////
-                    // EJECUTAR LOGICA DE NEGOCIO
-                    /////////////////////////////////////
+                    /* comprobar dateEnd */
+                    pnews.setDateEnd(dateEnd);
+                    if (dateEnd == null || dateEnd.trim().equals("")) {
+                        url += "&msgErrorDateEnd=Debe ingresar fecha de término.";
+                        error = true;
+                    }
+                    /* comparar fechas */
+                    if (pnews.getDateBegin().compareTo(pnews.getDateEnd()) >= 0) {
+                        url += "&msgErrorDate=Error: La fecha de inicio no puede ser mayor o igual que la fecha de término.";
+                        error = true;
+                    }
 
-                    if (!error) {
-                        /* comprobar registros duplicados */
+                    ///////////////////////
+                    // LOGICA DE NEGOCIO
+                    ///////////////////////
+
+                    /* comprobar registros duplicados */
+                    try {
                         boolean find = pnewsDAO.validateDuplicate(pnews);
                         if (find) {
                             url += "&msgErrorDup=Error: ya existe esta noticia. Compruebe utilizando otro título u otro rango de fechas.";
-                        } else {
-                            /* actualizar registro */
-                            try {
-                                pnewsDAO.update(pnews);
-                                url += "&msgOk=Registro actualizado exitosamente!";
-                            } catch (Exception ex) {
-                                ex.printStackTrace();
-                            }
+                            error = true;
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        error = true;
+                    }
+
+                    /* actualizar registro */
+                    if (!error) {
+                        try {
+                            pnewsDAO.update(pnews);
+                            url += "&msgOk=Registro actualizado exitosamente!";
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
                     }
 

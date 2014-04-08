@@ -77,18 +77,18 @@ public class DressCodeUpdateServlet extends HttpServlet {
                 String womenDetails = request.getParameter("womenDetails");
                 String urlImage = request.getParameter("urlImage");
 
-                /* instanciar string url */
-                String url = "?a=target";
-
+                /* instanciar url */
+                String url = "?redirect=ok";
                 url += "&idDressCode=" + sidDressCode;
                 url += "&nameDressCode=" + nameDressCode;
                 url += "&menDetails=" + menDetails;
                 url += "&womenDetails=" + womenDetails;
-                url += "&urlImage" + urlImage;
+                url += "&urlImage=" + urlImage;
 
                 /* instanciar codigo vestir */
                 DressCode dressCode = new DressCode();
 
+                /* flag de error */
                 boolean error = false;
 
                 /* comprobar idDressCode */
@@ -108,12 +108,6 @@ public class DressCodeUpdateServlet extends HttpServlet {
                     error = true;
                 } else {
                     dressCode.setNameDressCode(nameDressCode);
-                    /* comprobar duplicaciones */
-                    boolean find = dressCodeDAO.findByIdName(dressCode.getIdDressCode(), dressCode.getNameDressCode());
-                    if (find) {
-                        url += "&msgErrorNameDressCode=Ya existe un código de vestir con ese título.";
-                        error = true;
-                    }
                 }
 
                 /* comprobar men details */
@@ -140,9 +134,25 @@ public class DressCodeUpdateServlet extends HttpServlet {
                     dressCode.setUrlImage(urlImage);
                 }
 
+                ///////////////////////
+                // LOGICA DE NEGOCIO
+                ///////////////////////
+
+                /* comprobar duplicaciones */
+                try {
+                    boolean find = dressCodeDAO.findByIdName(dressCode.getIdDressCode(), dressCode.getNameDressCode());
+                    if (find) {
+                        url += "&msgErrorNameDressCode=Ya existe un código de vestir con ese título.";
+                        error = true;
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    error = true;
+                }
+
+                /* actualizar datos */
                 if (!error) {
                     try {
-                        /* actualizar datos */
                         dressCodeDAO.update(dressCode);
                         url += "&msgOk=Registro actualizado exitosamente.";
                     } catch (Exception ex) {

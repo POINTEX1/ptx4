@@ -134,7 +134,7 @@ public class EventDAO {
         return find;
     }
 
-    public Event findByPlaceEvent(Event event) {
+    public Event findByPlaceEvent(int idPlace, int idEvent) {
 
         PreparedStatement sentence = null;
         ResultSet result = null;
@@ -146,8 +146,8 @@ public class EventDAO {
 
             sentence = conexion.prepareStatement(sql);
 
-            sentence.setInt(1, event.getIdPlace());
-            sentence.setInt(2, event.getIdEvent());
+            sentence.setInt(1, idPlace);
+            sentence.setInt(2, idEvent);
 
             result = sentence.executeQuery();
 

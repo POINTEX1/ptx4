@@ -81,7 +81,7 @@ public class ExchangeableDAO {
         return list;
     }
 
-    public Exchangeable findByExchange(Exchangeable exchange) {
+    public Exchangeable findByIdExchange(int id) {
 
         PreparedStatement sentence = null;
         ResultSet result = null;
@@ -93,7 +93,7 @@ public class ExchangeableDAO {
 
             sentence = conexion.prepareStatement(sql);
 
-            sentence.setInt(1, exchange.getIdExchangeable());
+            sentence.setInt(1, id);
 
             result = sentence.executeQuery();
 
@@ -149,7 +149,7 @@ public class ExchangeableDAO {
             sentence.setInt(1, exchange.getIdExchangeable());
             sentence.setString(2, exchange.getTittle());
 
-            result = sentence.executeQuery(sql);
+            result = sentence.executeQuery();
 
             while (result.next()) {
                 find = true;

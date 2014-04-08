@@ -37,11 +37,11 @@ public class CityDAO {
 
         Collection<City> list = new ArrayList<City>();
 
-        try {            
+        try {
             String sql = "select * from city order by name_city asc";
-            
+
             sentence = conexion.prepareStatement(sql);
-            
+
             result = sentence.executeQuery();
 
             while (result.next()) {
@@ -121,7 +121,7 @@ public class CityDAO {
         return find;
     }
 
-    public City findbyIdCity(City city) {
+    public City findbyIdCity(int id) {
 
         PreparedStatement sentence = null;
         ResultSet result = null;
@@ -133,7 +133,7 @@ public class CityDAO {
 
             sentence = conexion.prepareStatement(sql);
 
-            sentence.setInt(1, city.getIdCity());
+            sentence.setInt(1, id);
 
             result = sentence.executeQuery();
 

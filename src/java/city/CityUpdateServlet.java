@@ -43,11 +43,10 @@ public class CityUpdateServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        //////////////////////////
+        // ESTABLECER CONEXION
+        //////////////////////////
         try {
-            //////////////////////////
-            // ESTABLECER CONEXION
-            //////////////////////////
-
             conexion = ds.getConnection();
 
             CityDAO cityDAO = new CityDAO();
@@ -76,16 +75,18 @@ public class CityUpdateServlet extends HttpServlet {
                 String sidCity = request.getParameter("idCity");
                 String nameCity = request.getParameter("nameCity");
 
+                /* instanciar url */
+                String url = "?redirect=ok";
+                url += "&idCity=" + sidCity;
+                url += "&nameCity=" + nameCity;
+
                 /* instanciar ciudad */
                 City city = new City();
 
+                /* flag de error */
                 boolean error = false;
 
-                /* instanciar url */
-                String url = "?a=target";
-
                 /* comprobar id city */
-                url += "&idCity=" + sidCity;
                 if (sidCity == null || sidCity.trim().equals("")) {
                     error = true;
                 } else {
@@ -97,7 +98,6 @@ public class CityUpdateServlet extends HttpServlet {
 
                 }
                 /* comprobar name city */
-                url += "&nameCity=" + nameCity;
                 if (nameCity == null || nameCity.trim().equals("")) {
                     url += "&msgErrorNameCity=Debe ingresar nombre Ciudad.";
                     error = true;
@@ -105,18 +105,28 @@ public class CityUpdateServlet extends HttpServlet {
                     city.setNameCity(Format.capital(nameCity));
                 }
 
-                if (!error) {
-                    /* comprobar ciudad duplicada */
+                ////////////////////////
+                // LOGICA DE NEGOCIO
+                ////////////////////////
+
+                /* comprobar ciudad duplicada */
+                try {
                     boolean find = cityDAO.validateDuplicateName(city);
                     if (find) {
                         url += "&msgErrorDup=El nombre de la ciudad ingresada ya existe.";
-                    } else {
-                        /* actualizar */
-                        try {
-                            cityDAO.update(city);
-                            url += "&msgOk=Registro actualizado exitosamente!";
-                        } catch (Exception ex) {
-                        }
+                        error = true;
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    error = true;
+                }
+
+                /* actualizar */
+                if (!error) {
+                    try {
+                        cityDAO.update(city);
+                        url += "&msgOk=Registro actualizado exitosamente!";
+                    } catch (Exception ex) {
                     }
                 }
                 /* send redirect */

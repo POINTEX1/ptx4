@@ -82,12 +82,16 @@ public class AdminUpdateServlet extends HttpServlet {
                     String pwd1 = request.getParameter("pwd1");
                     String pwd2 = request.getParameter("pwd2");
 
+                    /* instanciar string url */
+                    String url = "?redirect=ok";
+                    url += "&id=" + sid;
+                    url += "&username=" + username;
+                    url += "&email=" + email;
+
+                    /* instanciar admin */
                     Admin admin = new Admin();
 
                     boolean error = false;
-
-                    /* instanciar string url */
-                    String url = "";
 
                     /* comprobar id admin */
                     if (sid == null || sid.trim().equals("")) {
@@ -101,48 +105,49 @@ public class AdminUpdateServlet extends HttpServlet {
                     }
 
                     /* comprobar username */
-                    url = url + "&username=" + username;
                     if (username == null || username.trim().equals("")) {
                         url = url + "&msgErrorUsername=Debe ingresar username.";
                         error = true;
                     } else {
                         admin.setUsername(username);
-                        /* comprobar username duplicado */
-                        try {
-                            boolean find = adminDAO.validateDuplicateUsername(admin);
-                            if (find) {
-                                url = url + "&msgErrorUsername=El username ingresado ya se encuentra registrado.";
-                                error = true;
-                            }
-                        } catch (Exception ex) {
-                            url = url + "msgErrorUsername=No se pudo llevar a cabo la instrucción, consulte con soporte técnico.";
-                            error = true;
-                        }
                     }
 
                     /* comprobar email */
-                    url = url + "&email=" + email;
                     if (email == null || email.trim().equals("")) {
                         url = url + "&msgErrorEmail=Debe ingresar email.";
                         error = true;
                     } else {
-                        /* comprobar email duplicado */
                         admin.setEmail(email);
-                        try {
-                            boolean find = adminDAO.validateDuplicateEmail(admin);
-                            if (find) {
-                                url = url + "&msgErrorEmail=El Email ingresado ya se encuentra registrado.";
-                                error = true;
-                            }
-                        } catch (Exception ex) {
-                            url = url + "&msgErrorEmail=No se pudo llevar a cabo la instrucción, consulte con soporte técnico.";
-                            error = true;
-                        }
                     }
                     ///////////////////////
-                    // LÓGICA DE NEGOCIO
-                    ///////////////////////                    
+                    // LOGICA DE NEGOCIO
+                    /////////////////////// 
 
+                    /* comprobar username duplicado */
+                    try {
+                        boolean find = adminDAO.validateDuplicateUsername(admin);
+                        if (find) {
+                            url = url + "&msgErrorUsername=El username ingresado ya se encuentra registrado.";
+                            error = true;
+                        }
+                    } catch (Exception ex) {
+                        url = url + "msgErrorUsername=No se pudo llevar a cabo la instrucción, consulte con soporte técnico.";
+                        error = true;
+                    }
+
+                    /* comprobar email duplicado */
+                    try {
+                        boolean find = adminDAO.validateDuplicateEmail(admin);
+                        if (find) {
+                            url = url + "&msgErrorEmail=El Email ingresado ya se encuentra registrado.";
+                            error = true;
+                        }
+                    } catch (Exception ex) {
+                        url = url + "&msgErrorEmail=No se pudo llevar a cabo la instrucción, consulte con soporte técnico.";
+                        error = true;
+                    }
+
+                    /* comprobar actualizar password */
                     if (chk != null) {
                         /* comprobar pwd1 */
                         if (pwd1 == null || pwd1.trim().equals("")) {
@@ -187,8 +192,8 @@ public class AdminUpdateServlet extends HttpServlet {
                             }
                         }
                     }
-
-                    response.sendRedirect("/POINTEX1/AdminGetServlet?id=" + admin.getIdAdmin() + url);
+                    /* send redirect */
+                    response.sendRedirect("/POINTEX1/AdminGetServlet" + url);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */

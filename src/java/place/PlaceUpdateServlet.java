@@ -43,11 +43,10 @@ public class PlaceUpdateServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        /////////////////////////
+        // ESTABLECER CONEXION
+        /////////////////////////
         try {
-            /////////////////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////////////////
-
             conexion = ds.getConnection();
 
             PlaceDAO placeDAO = new PlaceDAO();
@@ -56,9 +55,9 @@ public class PlaceUpdateServlet extends HttpServlet {
             CityDAO cityDAO = new CityDAO();
             cityDAO.setConexion(conexion);
 
-            /////////////////////////////////////////
+            ///////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ///////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -76,9 +75,9 @@ public class PlaceUpdateServlet extends HttpServlet {
                 request.setAttribute("userJsp", username);
                 request.setAttribute("access", access);
 
-                /////////////////////////////////////////
+                ////////////////////////////////////
                 // RECIBIR Y COMPROBAR PARAMETROS
-                /////////////////////////////////////////
+                ////////////////////////////////////
 
                 String sidPlace = request.getParameter("idPlace");
                 String sidCity = request.getParameter("idCity");
@@ -90,15 +89,25 @@ public class PlaceUpdateServlet extends HttpServlet {
                 String urlImage = request.getParameter("urlImage");
                 String urlLogo = request.getParameter("urlLogo");
 
+                /* instanciar place */
                 Place place = new Place();
 
+                /* flag de error */
                 boolean error = false;
 
-                /* instanciar string url */
-                String url = "?a=target";
+                /* instanciar url */
+                String url = "?redirect=ok";
+                url += "&idPlace=" + sidPlace;
+                url += "&idCity=" + sidCity;
+                url += "&namePlace=" + snamePlace;
+                url += "&address=" + sadress;
+                url += "&status=" + status;
+                url += "&contact=" + contact;
+                url += "&description=" + description;
+                url += "&urlImage=" + urlImage;
+                url += "&urlLogo=" + urlLogo;
 
                 /* comprobar id place */
-                url += "&idPlace=" + sidPlace;
                 if (sidPlace == null || sidPlace.trim().equals("")) {
                     error = true;
                 } else {
@@ -110,7 +119,6 @@ public class PlaceUpdateServlet extends HttpServlet {
                 }
 
                 /* comprobar id city */
-                url += "&idCity=" + sidCity;
                 if (sidCity == null || sidCity.trim().equals("")) {
                     error = true;
                 } else {
@@ -122,25 +130,22 @@ public class PlaceUpdateServlet extends HttpServlet {
                 }
 
                 /* comprobar name place */
-                url += "&namePlace=" + snamePlace;
                 if (snamePlace == null || snamePlace.trim().equals("")) {
-                    url += "&msgErrorNamePlace=Error: Debe ingresar un nombre para el lugar.";
+                    url += "&msgErrorNamePlace=Debe ingresar un nombre para el lugar.";
                     error = true;
                 } else {
                     place.setNamePlace(snamePlace);
                 }
 
                 /* comprobar address */
-                url += "&address=" + sadress;
                 if (sadress == null || sadress.trim().equals("")) {
-                    url += "&msgErrorAddress=Error: Debe ingresar dirección del lugar.";
+                    url += "&msgErrorAddress=Debe ingresar dirección del lugar.";
                     error = true;
                 } else {
                     place.setAddress(sadress);
                 }
 
                 /* comprobar status */
-                url += "&status=" + status;
                 if (status == null || status.trim().equals("")) {
                     error = true;
                 } else {
@@ -152,37 +157,33 @@ public class PlaceUpdateServlet extends HttpServlet {
                 }
 
                 /* comprobar contact */
-                url += "&contact=" + contact;
                 if (contact == null || contact.trim().equals("")) {
                 } else {
                     try {
                         place.setContact(Integer.parseInt(contact));
                     } catch (NumberFormatException n) {
-                        url += "&msgErrorContact=Error: El número de contacto debe ser numérico.";
+                        url += "&msgErrorContact=El número de contacto debe ser numérico.";
                         error = true;
                     }
                 }
 
                 /* comprobar description */
-                url += "&description=" + description;
                 if (description == null || description.trim().equals("")) {
-                    url += "&msgErrorDes=Error: Debe ingresar descripción del lugar.";
+                    url += "&msgErrorDes=Debe ingresar descripción del lugar.";
                     error = true;
                 } else {
                     place.setDescription(description);
                 }
 
                 /* comprobar url image */
-                url += "&urlImage=" + urlImage;
                 if (urlImage == null || urlImage.trim().equals("")) {
-                    url += "&msgErrorUrlImage=Error: Debe ingresar la url de la imagen.";
+                    url += "&msgErrorUrlImage=Debe ingresar la url de la imagen.";
                     error = true;
                 } else {
                     place.setUrlImage(urlImage);
                 }
 
                 /* comprobar url logo */
-                url += "&urlLogo=" + urlLogo;
                 if (urlLogo == null || urlLogo.trim().equals("")) {
                     url += "&msgErrorUrlLogo=Error: Debe ingresar la url del logo.";
                     error = true;
@@ -190,23 +191,29 @@ public class PlaceUpdateServlet extends HttpServlet {
                     place.setUrlLogo(urlLogo);
                 }
 
-                ///////////////////////////////////
+                ///////////////////////
                 // LOGICA DE NEGOCIO
-                ///////////////////////////////////
+                ///////////////////////
 
-                if (!error) {
-                    /* comprobar duplicaciones */
+                /* comprobar duplicaciones */
+                try {
                     boolean find = placeDAO.validateDuplicate(place);
                     if (find) {
-                        url += "&msgErrorDup=Error: ya existe este registro.";
-                    } else {
-                        /* actualizar registro */
-                        try {
-                            placeDAO.update(place);
-                            url += "&msgOk=Registro actualizado exitosamente!";
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
+                        url += "&msgErrorDup=Ya existe este registro.";
+                        error = true;
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    error = true;
+                }
+
+                /* actualizar registro */
+                if (!error) {
+                    try {
+                        placeDAO.update(place);
+                        url += "&msgOk=Registro actualizado exitosamente.";
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                 }
 

@@ -4,8 +4,12 @@
  */
 package exchangeable;
 
+import Helpers.Message;
+import Helpers.MessageList;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -43,18 +47,18 @@ public class ExchangeableGetServlet extends HttpServlet {
         Connection conexion = null;
 
         try {
-            //////////////////////////////////////////
+            //////////////////////////
             // ESTABLECER CONEXION
-            /////////////////////////////////////////
+            //////////////////////////
 
             conexion = ds.getConnection();
 
             ExchangeableDAO exDAO = new ExchangeableDAO();
             exDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -75,106 +79,124 @@ public class ExchangeableGetServlet extends HttpServlet {
                 /////////////////////////////////////////
                 // RECIBIR Y COMPROBAR PARAMETROS
                 /////////////////////////////////////////
+
+                /* obtener atributos de PRG */
+                String redirect = request.getParameter("redirect");
+                String sidExchangeable = request.getParameter("idExchangeable");
+                String tittle = request.getParameter("tittle");
+                String urlImage = request.getParameter("urlImage");
+                String points = request.getParameter("points");
+                String srequest = request.getParameter("request");
+                String reason = request.getParameter("reason");
+
+                /* obtener mensajes de PRG */
+                String msgErrorTittle = request.getParameter("msgErrorTittle");
+                String msgErrorUrlImage = request.getParameter("msgErrorUrlImage");
+                String msgErrorPoints = request.getParameter("msgErrorPoints");
+                String msgErrorReason = request.getParameter("msgErrorReason");
+                String msgErrorDup = request.getParameter("msgErrorDup");
+                String msgOk = request.getParameter("msgOk");
+
+                /* instanciar lista de mensajes */
+                Collection<Message> msgList = new ArrayList<Message>();
+
+                /* establecer id exchangeable */
+                int id = 0;
                 try {
-                    /* obtener atributos de PRG */
-                    String tittle = request.getParameter("tittle");
-                    String urlImage = request.getParameter("urlImage");
-                    String points = request.getParameter("points");
-                    String srequest = request.getParameter("request");
-                    String reason = request.getParameter("reason");
-
-                    /* obtener mensajes de PRG */
-                    String msgErrorTittle = request.getParameter("msgErrorTittle");
-                    String msgErrorUrlImage = request.getParameter("msgErrorUrlImage");
-                    String msgErrorPoints = request.getParameter("msgErrorPoints");
-                    String msgErrorReason = request.getParameter("msgErrorReason");
-                    String msgErrorDup = request.getParameter("msgErrorDup");
-                    String msgOk = request.getParameter("msgOk");
-
-                    /* parametros de busqueda */
-                    String sidExchangeable = request.getParameter("idExchangeable");
-
-                    Exchangeable exchange = new Exchangeable();
-
-                    boolean error = false;
-
-                    /* comprobar id exchangeable */
-                    if (sidExchangeable == null || sidExchangeable.trim().equals("")) {
-                        error = true;
-                    } else {
-                        try {
-                            exchange.setIdExchangeable(Integer.parseInt(sidExchangeable));
-                        } catch (NumberFormatException n) {
-                            error = true;
-                        }
-                    }
-
-                    if (!error) {
-                        /* buscar producto */
-                        Exchangeable reg = exDAO.findByExchange(exchange);
-                        if (reg != null) {
-                            /* obtener atributos del dao */
-                            request.setAttribute("idExchangeable", reg.getIdExchangeable());
-                            request.setAttribute("namePlace", reg.getNamePlace());
-
-                            //////////////////////////
-                            /// COMPROBAR ATRIBUTOS
-                            //////////////////////////
-
-                            /* comprobar tittle */
-                            if (msgErrorTittle == null || msgErrorTittle.trim().equals("")) {
-                                request.setAttribute("tittle", reg.getTittle());
-                            } else {
-                                request.setAttribute("msgErrorTittle", msgErrorTittle);
-                                request.setAttribute("tittle", tittle);
-                            }
-
-                            /* comprobar url image */
-                            if (msgErrorUrlImage == null || msgErrorUrlImage.trim().equals("")) {
-                                request.setAttribute("urlImage", reg.getUrlImage());
-                            } else {
-                                request.setAttribute("msgErrorUrlImage", msgErrorUrlImage);
-                                request.setAttribute("urlImage", urlImage);
-                            }
-
-                            /* comprobar points */
-                            if (msgErrorPoints == null || msgErrorPoints.trim().equals("")) {
-                                request.setAttribute("points", reg.getPoints());
-                            } else {
-                                request.setAttribute("msgErrorPoints", msgErrorPoints);
-                                request.setAttribute("points", points);
-                            }
-
-                            /* comprobar reason */
-                            if (msgErrorReason == null || msgErrorReason.trim().equals("")) {
-                                request.setAttribute("reason", reg.getReason());
-                                request.setAttribute("request", reg.getRequest());
-                            } else {
-                                request.setAttribute("msgErrorReason", msgErrorReason);
-                                request.setAttribute("reason", reason);
-                                request.setAttribute("request", Integer.parseInt(srequest));
-                            }
-
-                            /* comprobar registro duplicado */
-                            if (msgErrorDup == null || msgErrorDup.trim().equals("")) {
-                            } else {
-                                request.setAttribute("msgErrorDup", msgErrorDup);
-                            }
-
-                            /* comprobar mensaje de exito */
-                            if (msgOk == null || msgOk.trim().equals("")) {
-                                request.setAttribute("msg", "Se encontró el registro!");
-                            } else {
-                                request.setAttribute("msgOk", msgOk);
-                            }
-                        } else {
-                            request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
-                        }
-                    }
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("/exchangeable/exchangeableUpdate.jsp").forward(request, response);
+                    id = Integer.parseInt(sidExchangeable);
+                } catch (NumberFormatException n) {
                 }
+
+                /* buscar exchangeable por id */
+                try {
+                    Exchangeable reg = exDAO.findByIdExchange(id);
+
+                    if (reg != null) {
+                        /* obtener atributos de reg */
+                        request.setAttribute("idExchangeable", reg.getIdExchangeable());
+                        request.setAttribute("namePlace", reg.getNamePlace());
+
+                        /* comprobar redirect */
+                        if (redirect == null || redirect.trim().equals("")) {
+                            /* establecer atributos de reg */
+                            request.setAttribute("tittle", reg.getTittle());
+                            request.setAttribute("urlImage", reg.getUrlImage());
+                            request.setAttribute("points", reg.getPoints());
+                            request.setAttribute("reason", reg.getReason());
+                            request.setAttribute("request", reg.getRequest());
+                        } else {
+                            /* estableccer atributos de PRG */
+                            request.setAttribute("tittle", tittle);
+                            request.setAttribute("urlImage", urlImage);
+                            request.setAttribute("points", points);
+                            request.setAttribute("reason", reason);
+                            try {
+                                request.setAttribute("request", Integer.parseInt(srequest));
+                            } catch (NumberFormatException n) {
+                            }
+                        }
+
+                        /////////////////////////////////
+                        // COMPROBAR MENSAJES DE ERROR
+                        /////////////////////////////////
+
+                        /* comprobar tittle */
+                        if (msgErrorTittle == null || msgErrorTittle.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorTittle", true);
+                            msgList.add(MessageList.addMessage(msgErrorTittle));
+                        }
+
+                        /* comprobar url image */
+                        if (msgErrorUrlImage == null || msgErrorUrlImage.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorUrlImage", true);
+                            msgList.add(MessageList.addMessage(msgErrorUrlImage));
+                        }
+
+                        /* comprobar points */
+                        if (msgErrorPoints == null || msgErrorPoints.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorPoints", true);
+                            msgList.add(MessageList.addMessage(msgErrorPoints));
+                        }
+
+                        /* comprobar reason */
+                        if (msgErrorReason == null || msgErrorReason.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorReason", true);
+                            msgList.add(MessageList.addMessage(msgErrorReason));
+                        }
+
+                        /* comprobar registro duplicado */
+                        if (msgErrorDup == null || msgErrorDup.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorDup", true);
+                            msgList.add(MessageList.addMessage(msgErrorDup));
+                        }
+
+                        /* comprobar mensaje de exito */
+                        if (msgOk == null || msgOk.trim().equals("")) {
+                            request.setAttribute("msg", "Se encontró el registro!");
+                        } else {
+                            request.setAttribute("msgOk", msgOk);
+                        }
+                    } else {
+                        request.setAttribute("msgErrorFound", true);
+                        msgList.add(MessageList.addMessage("El registro no ha sido encontrado."));
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                /* establecer lista de mensajes */
+                if (!msgList.isEmpty()) {
+                    request.setAttribute("msgList", msgList);
+                }
+
+                /* despachar a la vista */
+                request.getRequestDispatcher("/exchangeable/exchangeableUpdate.jsp").forward(request, response);
+
             } catch (Exception sesionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");
@@ -183,6 +205,7 @@ public class ExchangeableGetServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

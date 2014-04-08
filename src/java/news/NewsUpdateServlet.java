@@ -42,18 +42,18 @@ public class NewsUpdateServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        //////////////////////////
+        // ESTABLECER CONEXION
+        //////////////////////////
         try {
-            /////////////////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////////////////
-
             conexion = ds.getConnection();
 
             NewsDAO newsDAO = new NewsDAO();
             newsDAO.setConexion(conexion);
-            /////////////////////////////////////////
+
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -83,15 +83,23 @@ public class NewsUpdateServlet extends HttpServlet {
                 String sdateBegin = request.getParameter("dateBegin");
                 String sdateEnd = request.getParameter("dateEnd");
 
+                /* instanciar url */
+                String url = "?redirect=ok";
+                url += "&idNews=" + sidNews;
+                url += "&tittle=" + stittle;
+                url += "&details=" + sdetails;
+                url += "&urlImage=" + surlImage;
+                url += "&dateBegin=" + sdateBegin;
+                url += "&dateEnd=" + sdateEnd;
+                url += "&newsType=" + snewsType;
+
+                /* instanciar news */
                 News news = new News();
 
+                /* flag de error */
                 boolean error = false;
 
-                /* instanciar string url */
-                String url = "?a=target";
-
                 /* comprobar id news */
-                url += "&idNews=" + sidNews;
                 if (sidNews == null || sidNews.trim().equals("")) {
                     error = true;
                 } else {
@@ -103,18 +111,16 @@ public class NewsUpdateServlet extends HttpServlet {
                 }
 
                 /* comprobar tittle */
-                url += "&tittle=" + stittle;
                 if (stittle == null || stittle.trim().equals("")) {
-                    url += "&msgErrorTittle=Error: Debe ingresar un titulo para la noticia.";
+                    url += "&msgErrorTittle=Debe ingresar un titulo para la noticia.";
                     error = true;
                 } else {
                     news.setTittle(stittle);
                 }
 
                 /* comprobar details */
-                url += "&details=" + sdetails;
                 if (sdetails == null || sdetails.trim().equals("")) {
-                    url += "&msgErrorDetails=Error: Debe ingresar detalle de la noticia.";
+                    url += "&msgErrorDetails=Debe ingresar detalle de la noticia.";
                     error = true;
                 } else {
                     news.setDetails(sdetails);
@@ -132,52 +138,60 @@ public class NewsUpdateServlet extends HttpServlet {
                 }
 
                 /* comprobar url image */
-                url += "&urlImage=" + surlImage;
                 if (surlImage == null || surlImage.trim().equals("")) {
-                    url += "&msgErrorUrlImage=Error: Debe ingresar la url de la imagen.";
+                    url += "&msgErrorUrlImage=Debe ingresar la url de la imagen.";
                     error = true;
                 } else {
                     news.setUrlImage(surlImage);
                 }
 
                 /* comprobar dateBegin */
-                url += "&dateBegin=" + sdateBegin;
-                url += "&dateEnd=" + sdateEnd;
+                news.setDateBegin(sdateBegin);
                 if (sdateBegin == null || sdateBegin.trim().equals("")) {
-                    url += "&msgErrorDate=Error al recibir feha de inicio.";
+                    url += "&msgErrorDateBegin=Debe ingresar fecha de inicio.";
                     error = true;
-                } else {
-                    /* comprobar dateEnd */
-                    if (sdateEnd == null || sdateEnd.trim().equals("")) {
-                        url += "&msgErrorDate=Error al recibir feha de término.";
+                }
+
+                /* comprobar dateEnd */
+                news.setDateEnd(sdateEnd);
+                if (sdateEnd == null || sdateEnd.trim().equals("")) {
+                    url += "&msgErrorDateEnd=Debe ingresar fecha de término.";
+                    error = true;
+                }
+
+                /* comparar fechas */
+                if (news.getDateBegin().compareTo(news.getDateEnd()) >= 0) {
+                    url += "&msgErrorDate=La fecha de inicio no puede ser mayor o igual que la fecha de término.";
+                    error = true;
+                }
+
+                ////////////////////////
+                // LOGICA DE NEGOCIO
+                ////////////////////////
+
+
+                /* comprobar registros duplicados */
+                try {
+                    boolean find = newsDAO.validateDuplicate(news);
+                    if (find) {
+                        url += "&msgErrorDup=Ya existe esta noticia. Compruebe utilizando otro título u otro rango de fechas.";
                         error = true;
-                    } else {
-                        /* comparar fechas */
-                        news.setDateBegin(sdateBegin);
-                        news.setDateEnd(sdateEnd);
-                        //System.out.println("Comparar fecha 1 y fecha 2: " + event.getDateBegin().compareTo(event.getDateEnd()));
-                        if (news.getDateBegin().compareTo(news.getDateEnd()) >= 0) {
-                            url += "&msgErrorDate=Error: La fecha de término debe ser mayor que la fecha de inicio.";
-                            error = true;
-                        }
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    error = true;
+                }
+
+                /* actualizar registro */
+                if (!error) {
+                    try {
+                        newsDAO.update(news);
+                        url += "&msgOk=Registro actualizado exitosamente.";
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                 }
 
-                if (!error) {
-                    /* comprobar registros duplicados */
-                    boolean find = newsDAO.validateDuplicate(news);
-                    if (find) {
-                        url += "&msgErrorDup=Error: ya existe esta noticia. Compruebe utilizando otro título u otro rango de fechas.";
-                    } else {
-                        try {
-                            newsDAO.update(news);
-                            request.setAttribute("msgOk", "Registro actualizado exitosamente! ");
-                            url += "&msgOk=Registro actualizado exitosamente!";
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                }
                 /* send redirect */
                 response.sendRedirect("NewsGetServlet" + url);
 
@@ -189,14 +203,15 @@ public class NewsUpdateServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {
             }
         }
     }
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP
      * <code>GET</code> method.

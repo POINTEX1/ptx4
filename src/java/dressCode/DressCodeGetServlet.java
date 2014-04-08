@@ -76,6 +76,8 @@ public class DressCodeGetServlet extends HttpServlet {
                 ////////////////////////////////////
 
                 /* recibir parametros de PRG */
+                String redirect = request.getParameter("redirect");
+                String sidDressCode = request.getParameter("idDressCode");
                 String nameDressCode = request.getParameter("nameDressCode");
                 String menDetails = request.getParameter("menDetails");
                 String womenDetails = request.getParameter("womenDetails");
@@ -88,80 +90,79 @@ public class DressCodeGetServlet extends HttpServlet {
                 String msgErrorUrlImage = request.getParameter("msgErrorUrlImage");
                 String msgOk = request.getParameter("msgOk");
 
-                /* parametros de busqueda */
-                String sidDressCode = request.getParameter("idDressCode");
-
-                /* instanciar codigo de vestir */
-                DressCode dressCode = new DressCode();
-
                 /* instanciar lista de mensajes */
                 Collection<Message> msgList = new ArrayList<Message>();
 
-                /* comprobar id dressCode */
-                if (sidDressCode == null || sidDressCode.trim().equals("")) {
-                } else {
-                    /*establecer id */
-                    try {
-                        dressCode.setIdDressCode(Integer.parseInt(sidDressCode));
-                    } catch (NumberFormatException n) {
-                    }
-                    /* buscar dressCode */
-                    try {
-                        DressCode reg = dressCodeDAO.findById(dressCode.getIdDressCode());
+                /*establecer id */
+                int idDressCode = 0;
+                try {
+                    idDressCode = Integer.parseInt(sidDressCode);
+                } catch (NumberFormatException n) {
+                }
 
-                        if (reg != null) {
-                            /* obtener atributos del dao */
-                            request.setAttribute("idDressCode", reg.getIdDressCode());
+                /* buscar dressCode por id */
+                try {
+                    DressCode reg = dressCodeDAO.findById(idDressCode);
 
-                            /* comprobar nameDressCode */
-                            if (msgErrorNameDressCode == null || msgErrorNameDressCode.trim().equals("")) {
-                                request.setAttribute("nameDressCode", reg.getNameDressCode());
-                            } else {
-                                request.setAttribute("msgErrorNameDressCode", true);
-                                msgList.add(MessageList.addMessage(msgErrorNameDressCode));
-                                request.setAttribute("nameDressCode", nameDressCode);
-                            }
+                    if (reg != null) {
+                        /* establecer atributos de reg */
+                        request.setAttribute("idDressCode", reg.getIdDressCode());
 
-                            /* comprobar men Details */
-                            if (msgErrorMenDetails == null || msgErrorMenDetails.trim().equals("")) {
-                                request.setAttribute("menDetails", reg.getMenDetails());
-                            } else {
-                                request.setAttribute("msgErrorMenDetails", true);
-                                msgList.add(MessageList.addMessage(msgErrorMenDetails));
-                                request.setAttribute("menDetails", menDetails);
-                            }
-
-                            /* comprobar woman details */
-                            if (msgErrorWomenDetails == null || msgErrorWomenDetails.trim().equals("")) {
-                                request.setAttribute("womenDetails", reg.getWomenDetails());
-                            } else {
-                                request.setAttribute("msgErrorWomenDetails", true);
-                                msgList.add(MessageList.addMessage(msgErrorWomenDetails));
-                                request.setAttribute("womenDetails", womenDetails);
-                            }
-
-                            /* comprobar url */
-                            if (msgErrorUrlImage == null || msgErrorUrlImage.trim().equals("")) {
-                                request.setAttribute("urlImage", reg.getUrlImage());
-                            } else {
-                                request.setAttribute("msgErrorUrlImage", true);
-                                msgList.add(MessageList.addMessage(msgErrorUrlImage));
-                                request.setAttribute("urlImage", urlImage);
-                            }
-
-                            if (msgOk == null || msgOk.trim().equals("")) {
-                                request.setAttribute("msg", "Se encontró el registro!");
-                            } else {
-                                request.setAttribute("msgOk", msgOk);
-                            }
-
+                        /* comprobar redirect */
+                        if (redirect == null || redirect.trim().equals("")) {
+                            /* estableer atributos de reg */
+                            request.setAttribute("nameDressCode", reg.getNameDressCode());
+                            request.setAttribute("menDetails", reg.getMenDetails());
+                            request.setAttribute("womenDetails", reg.getWomenDetails());
+                            request.setAttribute("urlImage", reg.getUrlImage());
                         } else {
-                            request.setAttribute("msgErrorFound", true);
-                            msgList.add(MessageList.addMessage("El registro no ha sido encontrado."));
+                            /* establecer atributos de PRG */
+                            request.setAttribute("nameDressCode", nameDressCode);
+                            request.setAttribute("menDetails", menDetails);
+                            request.setAttribute("womenDetails", womenDetails);
+                            request.setAttribute("urlImage", urlImage);
                         }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+
+                        /* comprobar nameDressCode */
+                        if (msgErrorNameDressCode == null || msgErrorNameDressCode.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorNameDressCode", true);
+                            msgList.add(MessageList.addMessage(msgErrorNameDressCode));
+                        }
+
+                        /* comprobar men Details */
+                        if (msgErrorMenDetails == null || msgErrorMenDetails.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorMenDetails", true);
+                            msgList.add(MessageList.addMessage(msgErrorMenDetails));
+                        }
+
+                        /* comprobar woman details */
+                        if (msgErrorWomenDetails == null || msgErrorWomenDetails.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorWomenDetails", true);
+                            msgList.add(MessageList.addMessage(msgErrorWomenDetails));
+                        }
+
+                        /* comprobar url */
+                        if (msgErrorUrlImage == null || msgErrorUrlImage.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorUrlImage", true);
+                            msgList.add(MessageList.addMessage(msgErrorUrlImage));
+                        }
+
+                        if (msgOk == null || msgOk.trim().equals("")) {
+                            request.setAttribute("msg", "Se encontró el registro!");
+                        } else {
+                            request.setAttribute("msgOk", msgOk);
+                        }
+
+                    } else {
+                        request.setAttribute("msgErrorFound", true);
+                        msgList.add(MessageList.addMessage("El registro no ha sido encontrado."));
                     }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
 
                 /* establecer lista de mensajes a la peticion */

@@ -29,7 +29,7 @@ public class PlaceNewsDAO {
         this.conexion = conexion;
     }
 
-    public PlaceNews findByPlaceNews(int id) {
+    public PlaceNews findByIdPlaceNews(int id) {
 
         PreparedStatement sentence = null;
         ResultSet result = null;

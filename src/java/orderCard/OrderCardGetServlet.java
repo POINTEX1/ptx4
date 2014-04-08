@@ -4,8 +4,12 @@
  */
 package orderCard;
 
+import Helpers.Message;
+import Helpers.MessageList;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -42,19 +46,18 @@ public class OrderCardGetServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        /////////////////////////
+        // ESTABLECER CONEXION
+        /////////////////////////
         try {
-            //////////////////////////////////////////
-            // ESTABLECER CONEXION
-            //////////////////////////////////////////
-
             conexion = ds.getConnection();
 
             OrderCardDAO orderCardDAO = new OrderCardDAO();
             orderCardDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -73,11 +76,14 @@ public class OrderCardGetServlet extends HttpServlet {
                     request.setAttribute("access", access);
                     request.setAttribute("su", 777); //superuser                    
 
-                    /////////////////////////////////////////
+                    ////////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETROS
-                    /////////////////////////////////////////
+                    ////////////////////////////////////
 
                     /* obtener atributos de PRG */
+                    String redirect = request.getParameter("redirect");
+                    String sidOrder = request.getParameter("idOrder");
+                    String cardType = request.getParameter("cardType");
                     String srequest = request.getParameter("request");
                     String reason = request.getParameter("reason");
 
@@ -85,61 +91,68 @@ public class OrderCardGetServlet extends HttpServlet {
                     String msgOk = request.getParameter("msgOk");
                     String msgErrorReason = request.getParameter("msgErrorReason");
 
-                    /* obtener parametros de busqueda */
-                    String sidOrder = request.getParameter("idOrder");
+                    /* instanciar lista de mensajes */
+                    Collection<Message> msgList = new ArrayList<Message>();
 
-                    boolean error = false;
-
-                    /* comprobar id order */
+                    /* establecer id order */
                     int id = 0;
-                    if (sidOrder == null || sidOrder.trim().equals("")) {
-                        error = true;
-                    } else {
-                        try {
-                            id = Integer.parseInt(sidOrder);
-                        } catch (NumberFormatException n) {
-                            error = true;
-                        }
+                    try {
+                        id = Integer.parseInt(sidOrder);
+                    } catch (NumberFormatException n) {
                     }
 
-                    if (!error) {
-                        /* buscar order */
-                        try {
-                            OrderCard reg = orderCardDAO.findById(id);
-                            if (reg != null) {
-                                /* obtener atributos del dao */
-                                request.setAttribute("idOrder", reg.getIdOrder());
+                    /* buscar order por id */
+                    try {
+                        OrderCard reg = orderCardDAO.findById(id);
+
+                        if (reg != null) {
+                            /* establecer atributos de reg */
+                            request.setAttribute("idOrder", reg.getIdOrder());
+
+                            /* comprobar redirect */
+                            if (redirect == null || redirect.trim().equals("")) {
+                                /* establecer atributos de reg */
                                 request.setAttribute("cardType", reg.getCardType());
-
-                                ////////////////////////////
-                                // COMPROBAR ATRIBUTOS
-                                ////////////////////////////
-
-                                /* comprobar reason */
-                                if (msgErrorReason == null || msgErrorReason.trim().equals("")) {
-                                    request.setAttribute("request", reg.getRequest());
-                                    request.setAttribute("reason", reg.getReason());
-                                } else {
-                                    request.setAttribute("msgErrorReason", msgErrorReason);
-                                    request.setAttribute("request", Integer.parseInt(srequest));
-                                    request.setAttribute("reason", reason);
-                                }
-
-                                /* comprobar mensaje de actualizacion */
-                                if (msgOk == null || msgOk.trim().equals("")) {
-                                    request.setAttribute("msg", "Se encontró el registro!");
-                                } else {
-                                    request.setAttribute("msgOk", msgOk);
-                                }
-
+                                request.setAttribute("request", reg.getRequest());
+                                request.setAttribute("reason", reg.getReason());
                             } else {
-                                request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
+                                /* establecer atributos de PRG */
+                                request.setAttribute("cardType", cardType);
+                                try {
+                                    request.setAttribute("request", Integer.parseInt(srequest));
+                                } catch (NumberFormatException n) {
+                                }
+                                request.setAttribute("reason", reason);
                             }
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
+
+                            /* comprobar reason */
+                            if (msgErrorReason == null || msgErrorReason.trim().equals("")) {
+                            } else {
+                                request.setAttribute("msgErrorReason", true);
+                                msgList.add(MessageList.addMessage(msgErrorReason));
+                            }
+
+                            /* comprobar mensaje de actualizacion */
+                            if (msgOk == null || msgOk.trim().equals("")) {
+                                request.setAttribute("msg", "Se encontró el registro!");
+                            } else {
+                                request.setAttribute("msgOk", msgOk);
+                            }
+
+                        } else {
+                            request.setAttribute("msgErrorFound", true);
+                            msgList.add(MessageList.addMessage("El registro no ha sido encontrado."));
                         }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
 
+                    /* establecer lista de mensajes */
+                    if (!msgList.isEmpty()) {
+                        request.setAttribute("msgList", msgList);
+                    }
+
+                    /* despachar a la vista */
                     request.getRequestDispatcher("/orderCard/orderCardUpdate.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {
@@ -150,6 +163,7 @@ public class OrderCardGetServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {
