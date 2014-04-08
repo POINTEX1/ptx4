@@ -44,6 +44,7 @@
                 }
             }
         </script>
+        <!-- hola -->
     </head>
 
     <body onload="changeDisplay()">
