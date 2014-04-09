@@ -4,10 +4,14 @@
  */
 package univesity;
 
+import Helpers.Message;
+import Helpers.MessageList;
 import city.City;
 import city.CityDAO;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -44,19 +48,18 @@ public class UniversityGetServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        ///////////////////////////
+        // ESTABLECER CONEXION
+        ///////////////////////////
         try {
-            //////////////////////////////////////
-            // ESTABLECER CONEXION
-            //////////////////////////////////////
-
             conexion = ds.getConnection();
 
             UniversityDAO universityDAO = new UniversityDAO();
             universityDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -70,71 +73,88 @@ public class UniversityGetServlet extends HttpServlet {
                 request.setAttribute("userJsp", userJsp);
                 request.setAttribute("access", access);
 
-                /////////////////////////////////////////
+                ////////////////////////////////////////
                 // RECIBIR Y COMPROBAR PARAMETROS
                 //////////////////////////////////////// 
+
+                /* obtener atributos del PRG */
+                String redirect = request.getParameter("redirect");
+                String sidUniversity = request.getParameter("idUniversity");
+                String nameUniversity = request.getParameter("nameUniversity");
+
+                /* obtener mensajes de PRG */
+                String msgErrorNameUniversity = request.getParameter("msgErrorNameUniversity");
+                String msgErrorDup = request.getParameter("msgErrorDup");
+                String msgOk = request.getParameter("msgOk");
+
+                /* instanciar lista de mensajes */
+                Collection<Message> msgList = new ArrayList<Message>();
+
+                /* establecer id ciudad */
+                int idUniversity = 0;
                 try {
-                    /* obtener atributos del PRG */
-                    String nameUniversity = request.getParameter("nameUniversity");
-
-                    /* obtener mensajes de PRG */
-                    String msgErrorNameUniversity = request.getParameter("msgErrorNameUniversity");
-                    String msgErrorDup = request.getParameter("msgErrorDup");
-                    String msgOk = request.getParameter("msgOk");
-
-                    /* obtener parametros de busqueda */
-                    String sidUniversity = request.getParameter("idUniversity");
-
-                    University university = new University();
-
-                    /* comprobar id city */
-                    if (sidUniversity == null || sidUniversity.trim().equals("")) {
-                        request.setAttribute("msgErrorId", "Error al recibir ID de Universidad.");
-                    } else {
-                        try {
-                            university.setIdUniversity(Integer.parseInt(sidUniversity));
-                            /* comprobar existencia */
-                            University reg = universityDAO.findById(university.getIdUniversity());
-                            if (reg != null) {
-                                /* obtener atributos del dao */
-                                request.setAttribute("idUniversity", reg.getIdUniversity());
-
-                                ///////////////////////////////
-                                // COMPROBAR ERRORES
-                                ///////////////////////////////
-
-                                /* comprobar nameUniversity */
-                                if (msgErrorNameUniversity == null || msgErrorNameUniversity.trim().equals("")) {
-                                    request.setAttribute("nameUniversity", reg.getNameUniversity());
-                                } else {
-                                    request.setAttribute("msgErrorNameUniversity", msgErrorNameUniversity);
-                                }
-
-                                /* comprobar duplicaciones */
-                                if (msgErrorDup == null || msgErrorDup.trim().equals("")) {
-                                } else {
-                                    request.setAttribute("msgErrorDup", msgErrorDup);
-                                    request.setAttribute("nameUniversity", nameUniversity);
-                                }
-
-                                /* comprobar mensajes de exito */
-                                if (msgOk == null || msgOk.trim().equals("")) {
-                                    request.setAttribute("msg", "Se encontró el registro!");
-                                } else {
-                                    request.setAttribute("msgOk", msgOk);
-                                }
-
-                            } else {
-                                request.setAttribute("msgErrorFound", "Error: No se encontró el registro.");
-                            }
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("/university/universityUpdate.jsp").forward(request, response);
+                    idUniversity = Integer.parseInt(sidUniversity);
+                } catch (NumberFormatException n) {
                 }
+
+                /* buscar university por id */
+                try {
+                    University reg = universityDAO.findById(idUniversity);
+
+                    if (reg != null) {
+                        /* obtener atributos de reg */
+                        request.setAttribute("idUniversity", reg.getIdUniversity());
+
+                        /* comprobar redirect */
+                        if (redirect == null || redirect.trim().equals("")) {
+                            /* establecer atributos por reg */
+                            request.setAttribute("nameUniversity", reg.getNameUniversity());
+                        } else {
+                            /* establecer atributos por PRG */
+                            request.setAttribute("nameUniversity", nameUniversity);
+                        }
+
+                        ///////////////////////////////
+                        // COMPROBAR ERRORES
+                        ///////////////////////////////                                                
+
+                        /* comprobar nameUniversity */
+                        if (msgErrorNameUniversity == null || msgErrorNameUniversity.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorNameUniversity", true);
+                            msgList.add(MessageList.addMessage(msgErrorNameUniversity));
+                        }
+
+                        /* comprobar duplicaciones */
+                        if (msgErrorDup == null || msgErrorDup.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorDup", true);
+                            msgList.add(MessageList.addMessage(msgErrorDup));
+                        }
+
+                        /* comprobar mensajes de exito */
+                        if (msgOk == null || msgOk.trim().equals("")) {
+                            request.setAttribute("msg", "Se encontró el registro!");
+                        } else {
+                            request.setAttribute("msgOk", msgOk);
+                        }
+
+                    } else {
+                        request.setAttribute("msgErrorFound", true);
+                        msgList.add(MessageList.addMessage("El registro no ha sido encontrado."));
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                /* establecer lista de mensajes */
+                if (!msgList.isEmpty()) {
+                    request.setAttribute("msgList", msgList);
+                }
+
+                /* despachar a la vista */
+                request.getRequestDispatcher("/university/universityUpdate.jsp").forward(request, response);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");
@@ -143,14 +163,15 @@ public class UniversityGetServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {
             }
         }
     }
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP
      * <code>GET</code> method.

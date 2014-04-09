@@ -43,19 +43,18 @@ public class UniversityUpdateServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        //////////////////////////
+        // ESTABLECER CONEXION
+        //////////////////////////
         try {
-            /////////////////////////////////////////
-            // ESTABLECER CONEXION
-            //////////////////////////////////////// 
-
             conexion = ds.getConnection();
 
             UniversityDAO universityDAO = new UniversityDAO();
             universityDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ///////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ///////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -77,13 +76,14 @@ public class UniversityUpdateServlet extends HttpServlet {
                 String nameUniversity = request.getParameter("nameUniversity");
 
                 /* instanciar string url */
-                String url = "?a=target";
-
+                String url = "?redirect=ok";
                 url += "&idUniversity=" + sidUniversity;
                 url += "&nameUniversity=" + nameUniversity;
 
+                /* instanciar university */
                 University university = new University();
 
+                /* flag de error */
                 boolean error = false;
 
                 /* comprobar id */
@@ -98,25 +98,35 @@ public class UniversityUpdateServlet extends HttpServlet {
                 }
                 /* comprobar name */
                 if (nameUniversity == null || nameUniversity.trim().equals("")) {
-                    url += "&msgErrorNameUniversity=Error: Debe ingresar nombre de universidad.";
+                    url += "&msgErrorNameUniversity=Debe ingresar nombre de universidad.";
                     error = true;
                 } else {
                     university.setNameUniversity(Format.capital(nameUniversity));
                 }
 
-                if (!error) {
-                    /* comprobar duplicados */
+                ////////////////////////
+                // LOGICA DE NEGOCIO 
+                ////////////////////////
+
+                /* comprobar duplicados */
+                try {
                     boolean find = universityDAO.validateDuplicate(university);
                     if (find) {
-                        url += "&msgErrorDup=Error: ya existe un registro con este nombre.";
-                    } else {
-                        /* actualizar registro */
-                        try {
-                            universityDAO.update(university);
-                            url += "&msgOk=Registro actualizado exitosamente!";
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
+                        url += "&msgErrorDup=Ya existe un registro con este nombre.";
+                        error = true;
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    error = true;
+                }
+
+                if (!error) {
+                    /* actualizar registro */
+                    try {
+                        universityDAO.update(university);
+                        url += "&msgOk=Registro actualizado exitosamente.";
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                 }
                 /* send redirect */

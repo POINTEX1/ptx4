@@ -4,10 +4,13 @@
  */
 package userCard;
 
+import Helpers.Message;
+import Helpers.MessageList;
 import city.City;
 import city.CityDAO;
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Collection;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
@@ -48,11 +51,10 @@ public class UserCardGetServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        /////////////////////////
+        // ESTABLECER CONEXION
+        /////////////////////////
         try {
-            /////////////////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////////////////
-
             conexion = ds.getConnection();
 
             UserCardDAO userCardDAO = new UserCardDAO();
@@ -64,9 +66,9 @@ public class UserCardGetServlet extends HttpServlet {
             UniversityDAO universityDAO = new UniversityDAO();
             universityDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -82,143 +84,175 @@ public class UserCardGetServlet extends HttpServlet {
                 ////////////////////////////////////////
                 // RECIBIR Y COMPROBAR PARAMETROS
                 ////////////////////////////////////////
+
+                /* obtener atributos de PRG */
+                String redirect = request.getParameter("redirect");
+                String srut = request.getParameter("rut");
+                String firstName = request.getParameter("firstName");
+                String lastName = request.getParameter("lastName");
+                String gender = request.getParameter("gender");
+                String sidCity = request.getParameter("idCity");
+                String sidUniversity = request.getParameter("idUniversity");
+                String telephone = request.getParameter("telephone");
+                String email = request.getParameter("email");
+                String facebook = request.getParameter("facebook");
+                String dateBirth = request.getParameter("dateBirth");
+
+                /* obtener mensajes de PRG */
+                String msgErrorFirstName = request.getParameter("msgErrorFirstName");
+                String msgErrorLastName = request.getParameter("msgErrorLastName");
+                String msgErrorTelephone = request.getParameter("msgErrorTelephone");
+                String msgErrorEmail = request.getParameter("msgErrorEmail");
+                String msgErrorFacebook = request.getParameter("msgErrorFacebook");
+                String msgErrorDateBirth = request.getParameter("msgErrorDateBirth");
+                String msgErrorPwd1 = request.getParameter("msgErrorPwd1");
+                String msgErrorPwd2 = request.getParameter("msgErrorPwd2");
+                String msgOk = request.getParameter("msgOk");
+
+                /* instanciar lista de mensajes */
+                Collection<Message> msgList = new ArrayList<Message>();
+
+                /* establecer rut */
+                int rut = 0;
                 try {
-                    /* obtener atributos de PRG */
-                    String firstName = request.getParameter("firstName");
-                    String lastName = request.getParameter("lastName");
-                    String telephone = request.getParameter("telephone");
-                    String email = request.getParameter("email");
-                    String facebook = request.getParameter("facebook");
-                    String dateBirth = request.getParameter("dateBirth");
-                    String pwd1 = request.getParameter("pwd1");
-                    String pwd2 = request.getParameter("pwd2");
-
-                    /* obtener mensajes de PRG */
-                    String msgErrorFirstName = request.getParameter("msgErrorFirstName");
-                    String msgErrorLastName = request.getParameter("msgErrorLastName");
-                    String msgErrorTelephone = request.getParameter("msgErrorTelephone");
-                    String msgErrorEmail = request.getParameter("msgErrorEmail");
-                    String msgErrorFacebook = request.getParameter("msgErrorFacebook");
-                    String msgErrorDateBirth = request.getParameter("msgErrorDateBirth");
-                    String msgErrorPwd1 = request.getParameter("msgErrorPwd1");
-                    String msgErrorPwd2 = request.getParameter("msgErrorPwd2");
-                    String msgOk = request.getParameter("msgOk");
-
-                    /* obtener parametros de busqueda */
-                    String rut = request.getParameter("rut");
-
-                    /* comprobar rut */
-                    if (rut == null || rut.trim().equals("")) {
-                    } else {
-                        /* buscar cliente */
-                        try {
-                            UserCard reg = userCardDAO.findByRut(Integer.parseInt(rut));
-                            if (reg != null) {
-                                /* obtener atributos del dao */
-                                request.setAttribute("rut", reg.getRut());
-                                request.setAttribute("dv", reg.getDv());
-                                request.setAttribute("facebook", reg.getFacebook());
-                                request.setAttribute("gender", reg.getGender());
-                                request.setAttribute("idCity", reg.getIdCity());
-                                request.setAttribute("idUniversity", reg.getIdUniversity());
-                                /* obtener password desde la vista */
-                                request.setAttribute("pwd1", pwd1);
-                                request.setAttribute("pwd2", pwd2);
-
-                                ///////////////////////////
-                                // COMPROBAR ERRORES
-                                ///////////////////////////
-
-                                /* comprobar firstName */
-                                if (msgErrorFirstName == null || msgErrorFirstName.trim().equals("")) {
-                                    request.setAttribute("firstName", reg.getFirstName());
-                                } else {
-                                    request.setAttribute("msgErrorFirstName", msgErrorFirstName);
-                                }
-
-                                /* comprobar lastName */
-                                if (msgErrorLastName == null || msgErrorLastName.trim().equals("")) {
-                                    request.setAttribute("lastName", reg.getLastName());
-                                } else {
-                                    request.setAttribute("msgErrorLastName", msgErrorLastName);
-                                }
-
-                                /* comprobar telephone */
-                                if (msgErrorTelephone == null || msgErrorTelephone.trim().equals("")) {
-                                    request.setAttribute("telephone", reg.getTelephone());
-                                } else {
-                                    request.setAttribute("msgErrorTelephone", msgErrorTelephone);
-                                    request.setAttribute("telephone", telephone);
-                                }
-
-                                /* comprobar email */
-                                if (msgErrorEmail == null || msgErrorEmail.trim().equals("")) {
-                                    request.setAttribute("email", reg.getEmail());
-                                } else {
-                                    request.setAttribute("msgErrorEmail", msgErrorEmail);
-                                }
-
-                                /* comprobar facebook */
-                                if (msgErrorFacebook == null || msgErrorFacebook.trim().equals("")) {
-                                    request.setAttribute("facebook", reg.getFacebook());
-                                } else {
-                                    request.setAttribute("msgErrorFacebook", msgErrorFacebook);
-                                }
-
-                                /* comprobar mensajes de exito */
-                                if (msgOk == null || msgOk.trim().equals("")) {
-                                    request.setAttribute("msg", "Se encontró el registro!");
-                                } else {
-                                    request.setAttribute("msgOk", msgOk);
-                                }
-
-                                /* comprobar dateBirth */
-                                if (msgErrorDateBirth == null || msgErrorDateBirth.trim().equals("")) {
-                                    request.setAttribute("dateBirth", reg.getDateBirth());
-                                } else {
-                                    request.setAttribute("dateBirth", dateBirth);
-                                    request.setAttribute("msgErrorDateBirth", msgErrorDateBirth);
-                                }
-
-                                if (msgErrorPwd1 == null || msgErrorPwd1.trim().equals("")) {
-                                } else {
-                                    request.setAttribute("msgErrorPwd1", msgErrorPwd1);
-                                }
-
-                                if (msgErrorPwd2 == null || msgErrorPwd2.trim().equals("")) {
-                                } else {
-                                    request.setAttribute("msgErrorPwd2", msgErrorPwd2);
-                                }
-
-                            } else {
-                                request.setAttribute("msgError1", "Error: No se encontró el registro.");
-                            }
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-
-                    /* obtener lista de ciudades */
-                    try {
-                        Collection<City> listCity = cityDAO.getAll();
-                        request.setAttribute("listCity", listCity);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-
-                    /* obtener lista de universidades */
-                    try {
-                        Collection<University> listUniversity = universityDAO.getAll();
-                        request.setAttribute("listUniversity", listUniversity);
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-
-                } catch (Exception parameterException) {
-                    request.setAttribute("msgError1", "Error: No se recibió ningún parámetro.");
-                } finally {
-                    request.getRequestDispatcher("/userCard/userCardUpdate.jsp").forward(request, response);
+                    rut = Integer.parseInt(srut);
+                } catch (NumberFormatException n) {
                 }
+
+                /* buscar cliente por rut */
+                try {
+                    UserCard reg = userCardDAO.findByRut(rut);
+
+                    if (reg != null) {
+                        /* obtener atributos de reg */
+                        request.setAttribute("rut", reg.getRut());
+                        request.setAttribute("dv", reg.getDv());
+
+                        /* comprobar redirect */
+                        if (redirect == null || redirect.trim().equals("")) {
+                            /* establecer atributos de reg */
+                            request.setAttribute("firstName", reg.getFirstName());
+                            request.setAttribute("lastName", reg.getLastName());
+                            request.setAttribute("gender", reg.getGender());
+                            request.setAttribute("idCity", reg.getIdCity());
+                            request.setAttribute("idUniversity", reg.getIdUniversity());
+                            request.setAttribute("telephone", reg.getTelephone());
+                            request.setAttribute("email", reg.getEmail());
+                            request.setAttribute("facebook", reg.getFacebook());
+                            request.setAttribute("dateBirth", reg.getDateBirth());
+                        } else {
+                            /* establecer atributos de PRG */
+                            request.setAttribute("firstName", firstName);
+                            request.setAttribute("lastName", lastName);
+                            request.setAttribute("gender", Integer.parseInt(gender));
+                            request.setAttribute("idCity", Integer.parseInt(sidCity));
+                            request.setAttribute("idUniversity", Integer.parseInt(sidUniversity));
+                            request.setAttribute("telephone", telephone);
+                            request.setAttribute("email", email);
+                            request.setAttribute("facebook", facebook);
+                            request.setAttribute("dateBirth", dateBirth);
+                        }
+
+                        ///////////////////////////
+                        // COMPROBAR ERRORES
+                        ///////////////////////////
+
+                        /* comprobar firstName */
+                        if (msgErrorFirstName == null || msgErrorFirstName.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorFirstName", true);
+                            msgList.add(MessageList.addMessage(msgErrorFirstName));
+                        }
+
+                        /* comprobar lastName */
+                        if (msgErrorLastName == null || msgErrorLastName.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorLastName", true);
+                            msgList.add(MessageList.addMessage(msgErrorLastName));
+                        }
+
+                        /* comprobar dateBirth */
+                        if (msgErrorDateBirth == null || msgErrorDateBirth.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorDateBirth", true);
+                            msgList.add(MessageList.addMessage(msgErrorDateBirth));
+                        }
+
+                        /* comprobar email */
+                        if (msgErrorEmail == null || msgErrorEmail.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorEmail", true);
+                            msgList.add(MessageList.addMessage(msgErrorEmail));
+                        }
+
+                        /* comprobar telephone */
+                        if (msgErrorTelephone == null || msgErrorTelephone.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorTelephone", true);
+                            msgList.add(MessageList.addMessage(msgErrorTelephone));
+                        }
+
+                        /* comprobar facebook */
+                        if (msgErrorFacebook == null || msgErrorFacebook.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorFacebook", true);
+                            msgList.add(MessageList.addMessage(msgErrorFacebook));
+                        }
+
+                        /* comprobar pwd1 */
+                        if (msgErrorPwd1 == null || msgErrorPwd1.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorPwd1", true);
+                            msgList.add(MessageList.addMessage(msgErrorPwd1));
+                        }
+
+                        /* comprobar pwd2 */
+                        if (msgErrorPwd2 == null || msgErrorPwd2.trim().equals("")) {
+                        } else {
+                            request.setAttribute("msgErrorPwd2", true);
+                            msgList.add(MessageList.addMessage(msgErrorPwd2));
+                        }
+
+                        /* comprobar mensajes de exito */
+                        if (msgOk == null || msgOk.trim().equals("")) {
+                            request.setAttribute("msg", "Se encontró el registro!");
+                        } else {
+                            request.setAttribute("msgOk", msgOk);
+                        }
+
+                    } else {
+                        request.setAttribute("msgErrorFound", true);
+                        msgList.add(MessageList.addMessage("El registro no ha sido encontrado."));
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+
+                /* obtener lista de ciudades */
+                try {
+                    Collection<City> listCity = cityDAO.getAll();
+                    request.setAttribute("listCity", listCity);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                /* obtener lista de universidades */
+                try {
+                    Collection<University> listUniversity = universityDAO.getAll();
+                    request.setAttribute("listUniversity", listUniversity);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                /* establecer lista de mensajes */
+                if (!msgList.isEmpty()) {
+                    request.setAttribute("msgList", msgList);
+                }
+
+                /* despachar a la vista */
+                request.getRequestDispatcher("/userCard/userCardUpdate.jsp").forward(request, response);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");
@@ -233,9 +267,10 @@ public class UserCardGetServlet extends HttpServlet {
             } catch (Exception noGestionar) {
             }
         }
-    }
 
+    }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
     /**
      * Handles the HTTP
      * <code>GET</code> method.
@@ -261,8 +296,7 @@ public class UserCardGetServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);
     }
 

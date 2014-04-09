@@ -43,8 +43,7 @@
                     document.formUpdate.reason.style.display = 'none';
                 }
             }
-        </script>
-        <!-- hola -->
+        </script>        
     </head>
 
     <body onload="changeDisplay()">
@@ -156,7 +155,7 @@
                                     <input class="form-control" type="datetime-local" required="true" name="dateEnd" id="inputError" value="<c:out value="${dateEnd}" />">
                                 </div>
                             </c:if>
-                            
+
                             <div class="form-group">
                                 <label>Solicitud: </label>
                                 <select class="form-control" id="promoRequest" name="promoRequest" onchange="changeDisplay();">                                

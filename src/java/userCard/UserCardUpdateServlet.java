@@ -50,11 +50,10 @@ public class UserCardUpdateServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        ///////////////////////////
+        // ESTABLECER CONEXION
+        ///////////////////////////
         try {
-            /////////////////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////////////////
-
             conexion = ds.getConnection();
 
             UserCardDAO usercardDAO = new UserCardDAO();
@@ -66,9 +65,9 @@ public class UserCardUpdateServlet extends HttpServlet {
             UniversityDAO universityDAO = new UniversityDAO();
             universityDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -102,8 +101,7 @@ public class UserCardUpdateServlet extends HttpServlet {
                 String pwd2 = request.getParameter("pwd2");
 
                 /* instanciar string url */
-                String url = "?a=target";
-
+                String url = "?redirect=ok";
                 url += "&rut=" + srut;
                 url += "&firstName=" + firstname;
                 url += "&lastName=" + lastname;
@@ -113,10 +111,12 @@ public class UserCardUpdateServlet extends HttpServlet {
                 url += "&gender=" + gender;
                 url += "&facebook=" + facebook;
                 url += "&dateBirth=" + dateBirth;
-                url += "&idUniversity=" + sidUniversity;                
+                url += "&idUniversity=" + sidUniversity;
 
+                /* instanciar usercard */
                 UserCard userCardReg = new UserCard();
 
+                /* flag de error */
                 boolean error = false;
 
                 /* comprobar rut */
@@ -132,7 +132,7 @@ public class UserCardUpdateServlet extends HttpServlet {
 
                 /* comprobar firstname */
                 if (firstname == null || firstname.trim().equals("")) {
-                    url += "&msgErrorFirstName= Error: Debe ingresar nombres.";
+                    url += "&msgErrorFirstName=Debe ingresar nombres.";
                     error = true;
                 } else {
                     userCardReg.setFirstName(Format.capital(firstname));
@@ -140,7 +140,7 @@ public class UserCardUpdateServlet extends HttpServlet {
 
                 /* comprobar lastname */
                 if (lastname == null || lastname.trim().equals("")) {
-                    url += "&msgErrorLastName=Error: Debe ingresar apellidos.";
+                    url += "&msgErrorLastName=Debe ingresar apellidos.";
                     error = true;
                 } else {
                     userCardReg.setLastName(Format.capital(lastname));
@@ -148,13 +148,13 @@ public class UserCardUpdateServlet extends HttpServlet {
 
                 /* comprobar email */
                 if (email == null || email.trim().equals("")) {
-                    url += "&msgErrorEmail=Error: Debe ingresar email.";
+                    url += "&msgErrorEmail=Debe ingresar email.";
                     error = true;
                 } else {
                     userCardReg.setEmail(email);
                     boolean find = usercardDAO.validateDuplicateEmail(userCardReg);
                     if (find) {
-                        url += "&msgErrorEmail=Error: ya existe un usuario con ese email.";
+                        url += "&msgErrorEmail=Ya existe un usuario con ese email.";
                         error = true;
                     }
                 }
@@ -183,20 +183,20 @@ public class UserCardUpdateServlet extends HttpServlet {
 
                 /* comprobar telefono */
                 if (telephone == null || telephone.trim().equals("")) {
-                    url += "&msgErrorTelephone=Error: Debe ingresar teléfono celular.";
+                    url += "&msgErrorTelephone=Debe ingresar teléfono celular.";
                     error = true;
                 } else {
                     try {
                         userCardReg.setTelephone(Integer.parseInt(telephone));
                     } catch (NumberFormatException n) {
-                        url += "&msgErrorTelephone=Error: El campo teléfono celular debe contener valores numéricos.";
+                        url += "&msgErrorTelephone=El teléfono celular debe contener valores numéricos.";
                         error = true;
                     }
                 }
 
                 /* comprobar facebook */
                 if (facebook == null || facebook.trim().equals("")) {
-                    url += "&msgErrorFacebook=Error: Debe ingresar facebook.";
+                    url += "&msgErrorFacebook=Debe ingresar facebook.";
                     error = true;
                 } else {
                     userCardReg.setFacebook(facebook);
@@ -204,13 +204,13 @@ public class UserCardUpdateServlet extends HttpServlet {
 
                 /* comprobar fecha de nacimiento */
                 if (dateBirth == null || dateBirth.trim().equals("")) {
-                    url += "&msgErrorDateBirth=Error: Debe ingresar fecha de nacimiento.";
+                    url += "&msgErrorDateBirth=Debe ingresar fecha de nacimiento.";
                     error = true;
                 } else {
                     userCardReg.setDateBirth(dateBirth);
                     /* validar que la fecha de nacimiento no sea mayor que la fecha actual */
-                    if (dateBirth.compareTo(Format.currentDate()) > -1) {
-                        url += "&msgErrorDateBirth=Error: La fecha de nacimiento no puede ser mayor que la fecha actual.";
+                    if (dateBirth.compareTo(Format.currentDate()) >= 0) {
+                        url += "&msgErrorDateBirth=La fecha de nacimiento no puede ser mayor o igual que la fecha actual.";
                         error = true;
                     }
                 }
@@ -226,46 +226,44 @@ public class UserCardUpdateServlet extends HttpServlet {
                     }
                 }
 
-                /////////////////////////////////////////
-                // EJECUTAR LOGICA DE NEGOCIO
-                ////////////////////////////////////////
+                //////////////////////
+                // LOGICA DE NEGOCIO
+                //////////////////////
 
                 /* comprobar checkbox password */
                 if (chkPwd != null) {
                     /* comprobar pwd1 */
                     if (pwd1 == null || pwd1.trim().equals("")) {
-                        request.setAttribute("msgErrorPwd1", "Error: Debe ingresar password.");
-                        url += "&msgErrorPwd1=Error: Debe ingresar password.";
+                        url += "&msgErrorPwd1=Debe ingresar password.";
                     } else {
                         userCardReg.setPwd1(pwd1);
                         /* comprobar pwd2 */
                         if (pwd2 == null || pwd2.trim().equals("")) {
-                            request.setAttribute("msgErrorPwd1", "Error: Debe ingresar password.");
-                            url += "&msgErrorPwd1=Error: Debe ingresar password.";
+                            url += "&msgErrorPwd1=Debe ingresar password.";
                         } else {
                             userCardReg.setPwd2(pwd2);
                             /* comprobar coincidencias */
                             if (!pwd1.equals(pwd2)) {
-                                url += "&msgErrorPwd1=Error: Las passwords no coinciden.";
+                                url += "&msgErrorPwd1=Las passwords no coinciden.";
                                 error = true;
                             }
                             if (pwd1.length() < 6 || pwd2.length() < 6) {
-                                url += "&msgErrorPwd2=Error: La password debe poseer al menos 6 caracteres.";
+                                url += "&msgErrorPwd2= La password debe poseer al menos 6 caracteres.";
                                 error = true;
                             }
-                                                        
+
                             if (!error) {
                                 /* encriptar password */
                                 userCardReg.setPassword(StringMD.getStringMessageDigest(pwd1, StringMD.MD5));
-                                usercardDAO.updatePassword(userCardReg);                                
-                                url += "&msgOk=Registro actualizado exitosamente!";
+                                usercardDAO.updatePassword(userCardReg);
+                                url += "&msgOk=Registro actualizado exitosamente.";
                             }
                         }
                     }
                 } else {
                     if (!error) {
                         usercardDAO.update(userCardReg);
-                        url += "&msgOk=Registro actualizado exitosamente!";
+                        url += "&msgOk=Registro actualizado exitosamente.";
                     }
                 }
 
@@ -295,6 +293,7 @@ public class UserCardUpdateServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {
