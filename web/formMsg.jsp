@@ -9,26 +9,31 @@
 
 <!-- MENSAJE INFORMATIVO -->
 <c:if test="${msg != null}" >
-    <div class="alert alert-dismissable alert-info">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong><c:out value="${msg}" /></strong>
+    <div class="alert alert-block alert-info">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        <h4 class="alert-heading"><i class="fa fa-info-circle"></i> Info!</h4>
+        <p>
+            <c:out value="${msg}" />
+        </p>
     </div>
-</c:if>                        
+</c:if>
 
-<!-- MENSAJE DE EXITO -->
+<!-- MENSAJES DE EXITO -->
 <c:if test="${msgOk != null}" >
-    <div class="alert alert-dismissable alert-success">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Correcto!</strong>
-        <c:out value="${msgOk}" />
+    <div class="alert alert-block alert-success">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        <h4 class="alert-heading"><i class="fa fa-ok"></i> Correcto!</h4>
+        <p>
+            <c:out value="${msgOk}" />
+        </p>
     </div>
-</c:if> 
+</c:if>
 
-<!-- LISTA DE ERRORES -->
-<c:if test="${msgList != null}">                            
-    <div class="alert alert-dismissable alert-danger">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>                                    
-        <strong>ERROR!</strong>
+<!-- MENSAJE DE ERROR -->
+<c:if test="${msgList != null}" >
+    <div class="alert alert-block alert-danger">
+        <a class="close" data-dismiss="alert" href="#">×</a>
+        <h4 class="alert-heading"><i class="fa fa-times-circle"></i> Error!</h4>
         <ul class="list-style">                                                                          
             <c:forEach var="msgList" items="${msgList}">
                 <li><c:out value="${msgList.msg}" /></li>
