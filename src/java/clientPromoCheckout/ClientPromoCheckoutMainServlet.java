@@ -46,11 +46,10 @@ public class ClientPromoCheckoutMainServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        /////////////////////////
+        // ESTABLECER CONEXION
+        /////////////////////////
         try {
-            //////////////////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////////////////
-
             conexion = ds.getConnection();
 
             ClientPromoDAO pglDAO = new ClientPromoDAO();
@@ -65,9 +64,9 @@ public class ClientPromoCheckoutMainServlet extends HttpServlet {
             ClientPromoCheckoutDAO clientPromoCheckoutDAO = new ClientPromoCheckoutDAO();
             clientPromoCheckoutDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ///////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ///////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -110,13 +109,8 @@ public class ClientPromoCheckoutMainServlet extends HttpServlet {
                         Collection<ClientPromoCheckout> list = clientPromoCheckoutDAO.getAll();
                         request.setAttribute("list", list);
 
-                        if (list.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (list.size() > 1) {
-                            request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
-                        } else if (list.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
-                        }
+                        /* contador de registros */
+                        request.setAttribute("regCount", list.size());
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }

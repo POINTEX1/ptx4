@@ -16,7 +16,7 @@
             <a href="javascript:void(0);" id="show-shortcut">
                 <img src="img/avatars/sunny.png" alt="me" class="online" /> 
                 <span>
-                    patricio.castro 
+                    <c:out value="${userJsp}"/>                    
                 </span>
                 <i class="fa fa-angle-down"></i>
             </a> 
@@ -41,9 +41,11 @@
             <li>
                 <a href="index.html" title="Dashboard"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Dashboard (*)</span></a>
             </li>
+
             <li>
                 <a href="inbox.html"><i class="fa fa-lg fa-fw fa-inbox"></i> <span class="menu-item-parent">Inbox (*)</span><span class="badge pull-right inbox-badge">14</span></a>
             </li>
+
             <li>
                 <a href="#"><i class="fa fa-lg fa-fw fa-bar-chart-o"></i> <span class="menu-item-parent">Estadísticas (*)</span></a>
                 <ul>
@@ -57,6 +59,10 @@
                         <a href="inline-charts.html">Inline Charts</a>
                     </li>
                 </ul>
+            </li>
+
+            <li>
+                <a href="AdminMainServlet"><i class="fa fa-lg fa-fw fa-user"></i> <span class="menu-item-parent">Administradores</span></a>
             </li>
 
             <li>
@@ -75,10 +81,10 @@
                         <a href="OrderCardMainServlet">Solicitud Tarjetas</a>
                     </li>
                     <li>
-                        <a href="ClientPromoMainServlet">Promociones Cliente</a>
+                        <a href="ClientPromoMainServlet">Promociones</a>
                     </li>
                     <li>
-                        <a href="ClientPromoCheckoutMainServlet">Compras Clientes</a>
+                        <a href="ClientPromoCheckoutMainServlet">Promociones Compradas</a>
                     </li>
                     <li>
                         <a href="ClientExchangeCheckMainServlet">Productos Canjeados</a>
@@ -137,70 +143,9 @@
                 </ul>
             </li>
 
-
             <li>
-                <a href="#"><i class="fa fa-lg fa-fw fa-pencil-square-o"></i> <span class="menu-item-parent">Forms</span></a>
-                <ul>
-                    <li>
-                        <a href="form-elements.html">Smart Form Elements</a>
-                    </li>
-                    <li>
-                        <a href="form-templates.html">Smart Form Layouts</a>
-                    </li>
-                    <li>
-                        <a href="validation.html">Smart Form Validation</a>
-                    </li>
-                    <li>
-                        <a href="bootstrap-forms.html">Bootstrap Form Elements</a>
-                    </li>
-                    <li>
-                        <a href="plugins.html">Form Plugins</a>
-                    </li>
-                    <li>
-                        <a href="wizard.html">Wizards</a>
-                    </li>
-                    <li>
-                        <a href="other-editors.html">Bootstrap Editors</a>
-                    </li>
-                    <li>
-                        <a href="dropzone.html">Dropzone <span class="badge pull-right inbox-badge bg-color-yellow">new</span></a>
-                    </li>
-                </ul>
+                <a href="ParameterGetServlet"><i class="fa fa-lg fa-fw fa-cogs"></i> <span class="menu-item-parent">Configuración (*)</span></a>
             </li>
-            <li>
-                <a href="#"><i class="fa fa-lg fa-fw fa-desktop"></i> <span class="menu-item-parent">UI Elements</span></a>
-                <ul>
-                    <li>
-                        <a href="general-elements.html">General Elements</a>
-                    </li>
-                    <li>
-                        <a href="buttons.html">Buttons</a>
-                    </li>
-                    <li>
-                        <a href="#">Icons</a>
-                        <ul>
-                            <li>
-                                <a href="fa.html"><i class="fa fa-plane"></i> Font Awesome</a>
-                            </li>	
-                            <li>
-                                <a href="glyph.html"><i class="glyphicon glyphicon-plane"></i> Glyph Icons </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="grid.html">Grid</a>
-                    </li>
-                    <li>
-                        <a href="treeview.html">Tree View</a>
-                    </li>
-                    <li>
-                        <a href="nestable-list.html">Nestable Lists</a>
-                    </li>
-                    <li>
-                        <a href="jqui.html">JQuery UI</a>
-                    </li>
-                </ul>
-            </li>                                           
         </ul>
     </nav>
     <span class="minifyme"> <i class="fa fa-arrow-circle-left hit"></i> </span>

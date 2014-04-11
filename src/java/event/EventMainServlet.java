@@ -43,18 +43,18 @@ public class EventMainServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        /////////////////////////
+        // ESTABLECER CONEXION
+        /////////////////////////
         try {
-            /////////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////////
             conexion = ds.getConnection();
 
             EventDAO eventDAO = new EventDAO();
             eventDAO.setConexion(conexion);
 
-            /////////////////////////////////
+            ///////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////
+            ///////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -93,17 +93,16 @@ public class EventMainServlet extends HttpServlet {
 
                     /* obtener lista de eventos */
                     try {
-                        Collection<Event> listEvent = eventDAO.getAll();
-                        request.setAttribute("list", listEvent);
+                        Collection<Event> list = eventDAO.getAll();
+                        request.setAttribute("list", list);
 
-                        if (listEvent.size() > 1) {
-                            request.setAttribute("msg", listEvent.size() + " registros encontrados en la base de datos.");
-                        } else if (listEvent.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
-                        }
+                        /* contador de registros */
+                        request.setAttribute("regCount", list.size());
                     } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
 
+                    /* despachar a la vista */
                     request.getRequestDispatcher("/event/event.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {

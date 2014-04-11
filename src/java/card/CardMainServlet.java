@@ -43,19 +43,18 @@ public class CardMainServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        /////////////////////////
+        // ESTABLECER CONEXION
+        /////////////////////////
         try {
-            /////////////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////////////
-
             conexion = ds.getConnection();
 
             CardDAO cardDAO = new CardDAO();
             cardDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ///////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ///////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -68,46 +67,39 @@ public class CardMainServlet extends HttpServlet {
                 request.setAttribute("userJsp", user);
                 request.setAttribute("access", access);
 
-                try {
-                    //////////////////////////////////////////
-                    // RECIBIR Y COMPROBAR PARAMETROS
-                    //////////////////////////////////////////
+                ////////////////////////////////////
+                // RECIBIR Y COMPROBAR PARAMETROS
+                ////////////////////////////////////
 
-                    String msgDel = request.getParameter("msgDel");
-                    String msgErrorConstraint = request.getParameter("msgErrorConstraint");
+                String msgDel = request.getParameter("msgDel");
+                String msgErrorConstraint = request.getParameter("msgErrorConstraint");
 
-                    /* comprobar mensajes de eliminacion */
-                    if (msgDel == null || msgDel.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgDel", msgDel);
-                    }
-
-                    /* comprobar error de eliminacion */
-                    if (msgErrorConstraint == null || msgErrorConstraint.trim().equals("")) {
-                    } else {
-                        request.setAttribute("msgErrorConstraint", msgErrorConstraint);
-                    }
-
-                    /* obtener todos los registros */
-                    try {
-                        Collection<Card> listCard = cardDAO.getAll();
-                        request.setAttribute("list", listCard);
-
-                        /* mensajes de entradas */
-                        if (listCard.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (listCard.size() > 1) {
-                            request.setAttribute("msg", listCard.size() + " registros encontrados en la base de datos.");
-                        } else if (listCard.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
-                        }
-                    } catch (Exception ex) {
-                    }
-
-                } catch (Exception parameterException) {
-                } finally {
-                    request.getRequestDispatcher("/card/card.jsp").forward(request, response);
+                /* comprobar mensajes de eliminacion */
+                if (msgDel == null || msgDel.trim().equals("")) {
+                } else {
+                    request.setAttribute("msgDel", msgDel);
                 }
+
+                /* comprobar error de eliminacion */
+                if (msgErrorConstraint == null || msgErrorConstraint.trim().equals("")) {
+                } else {
+                    request.setAttribute("msgErrorConstraint", msgErrorConstraint);
+                }
+
+                /* obtener todos los registros */
+                try {
+                    Collection<Card> listCard = cardDAO.getAll();
+                    request.setAttribute("list", listCard);
+
+                    /* contador de registros */
+                    request.setAttribute("regCount", listCard.size());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+                /* despachar a la vista */
+                request.getRequestDispatcher("/card/card.jsp").forward(request, response);
+
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */
                 System.out.println("no ha iniciado session");
@@ -116,6 +108,7 @@ public class CardMainServlet extends HttpServlet {
         } catch (Exception connectionException) {
             connectionException.printStackTrace();
         } finally {
+            /* cerrar conexion */
             try {
                 conexion.close();
             } catch (Exception noGestionar) {

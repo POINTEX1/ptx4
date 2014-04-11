@@ -43,18 +43,18 @@ public class ClientNewsMainServlet extends HttpServlet {
 
         Connection conexion = null;
 
-        /////////////////////////////////////////
+        /////////////////////////
         // ESTABLECER CONEXION
-        /////////////////////////////////////////
+        /////////////////////////
         try {
             conexion = ds.getConnection();
 
             ClientNewsDAO cnewsDAO = new ClientNewsDAO();
             cnewsDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ///////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ///////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -69,16 +69,11 @@ public class ClientNewsMainServlet extends HttpServlet {
                     /* ACCESO PROHIBIDO */
                     request.getRequestDispatcher("/ForbiddenServlet").forward(request, response);
                 } else {
-                    /* ACCESO PERMITIDO */
 
                     /* asginar nombre de usuario */
                     request.setAttribute("userJsp", username);
                     /* asignar nivel de acceso */
                     request.setAttribute("access", access);
-
-                    ////////////////////////////////////////
-                    //  MOSTRAR VALORES
-                    ////////////////////////////////////////
 
                     /* obtener mensajes de PRG */
                     String msgDel = request.getParameter("msgDel");
@@ -101,17 +96,14 @@ public class ClientNewsMainServlet extends HttpServlet {
                         Collection<ClientNews> cnewsList = cnewsDAO.getAll();
                         request.setAttribute("list", cnewsList);
 
-                        /* obtener en numero de registros encontrados */
-                        if (cnewsList.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (cnewsList.size() > 1) {
-                            request.setAttribute("msg", cnewsList.size() + " registros encontrados en la base de datos.");
-                        } else if (cnewsList.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
-                        }
+                        /* contador de registros */
+                        request.setAttribute("regCount", cnewsList.size());
+                        
                     } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
-
+                    
+                    /* despachar a la vista */
                     request.getRequestDispatcher("/clientNews/clientNews.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {

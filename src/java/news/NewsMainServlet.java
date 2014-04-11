@@ -97,21 +97,17 @@ public class NewsMainServlet extends HttpServlet {
 
                     /* obtener lista de noticias */
                     try {
-                        Collection<News> newsList = newsDAO.getAll();
-                        request.setAttribute("list", newsList);
+                        Collection<News> list = newsDAO.getAll();
+                        request.setAttribute("list", list);
 
-                        /* obtener en numero de registros encontrados */
-                        if (newsList.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (newsList.size() > 1) {
-                            request.setAttribute("msg", newsList.size() + " registros encontrados en la base de datos.");
-                        } else if (newsList.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
-                        }
+                        /* contador de registros */
+                        request.setAttribute("regCount", list.size());
+                        
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
 
+                    /* despachar a la vista */
                     request.getRequestDispatcher("/news/news.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {

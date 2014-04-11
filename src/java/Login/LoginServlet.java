@@ -41,43 +41,27 @@ public class LoginServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        ///////////////////////////
+        // ESTABLECER CONEXION
+        ///////////////////////////
         try {
-            //////////////////////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////////////////////
-
             conexion = ds.getConnection();
 
             AdminDAO adminDAO = new AdminDAO();
             adminDAO.setConexion(conexion);
 
-            //////////////////////////////////////////////
+            ///////////////////////////////////
             // RECIBIR Y COMPROBAR PARAMETROS
-            /////////////////////////////////////////////
+            ///////////////////////////////////
 
             String btnLogin = request.getParameter("btnLogin");
+            String username = request.getParameter("username");
+            String password = request.getParameter("password");
 
             if (btnLogin == null) {
                 /* mostrar login por 1° vez */
                 request.getRequestDispatcher("/login/login.jsp").forward(request, response);
             } else {
-                /* recibir parametros desde formulario login */
-                String username = request.getParameter("username");
-                String password = request.getParameter("password");
-
-                boolean error = false;
-
-                /* comprobar username */
-                if (username == null || username.trim().equals("")) {
-                    error = true;
-                }
-
-                /* comprobar password */
-                if (password == null || password.trim().equals("")) {
-                    error = true;
-                }
-
-
                 /* encriptar password */
                 String pwdCrypted = StringMD.getStringMessageDigest(password, StringMD.MD5);
 
@@ -101,7 +85,8 @@ public class LoginServlet extends HttpServlet {
                         session.setAttribute("access", access);
                         session.setAttribute("idUser", "" + admin.getIdAdmin());
 
-                        request.getRequestDispatcher("/AdminMainServlet").forward(request, response);
+                        /* send redirect */
+                        response.sendRedirect("CityMainServlet");                        
                     } else {
                         System.out.println("error username o password");
                         request.setAttribute("msgErrorLogin", "ERROR AL INGRESAR USERNAME O PASSWORD.");
