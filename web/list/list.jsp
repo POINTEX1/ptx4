@@ -12,7 +12,7 @@
     <head>       
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->       
-        <title> POINTEX | Categorías </title>
+        <title> POINTEX | Lista </title>
         <meta name="description" content="">
         <meta name="author" content="">
 
@@ -138,10 +138,10 @@
                 <!-- breadcrumb -->
                 <ol class="breadcrumb">
                     <li>
-                        Características
+                        Lugares
                     </li>
                     <li>
-                        Categorías
+                        Lista
                     </li>
                 </ol>
                 <!-- end breadcrumb -->
@@ -169,7 +169,7 @@
                             <i class="fa fa-table fa-fw "></i> 
                             Mantenedor 
                             <span>
-                                Categorías
+                                Lista de Asistencia
                             </span>
                         </h1>
                     </div>
@@ -249,7 +249,7 @@
                                                     <font size="1"><strong>EXPORT XLS</strong></font>
                                                 </button>
                                                 &nbsp;&nbsp;
-                                                <button class="btn btn-labeled btn-default" name="btnAdd" type="button" onclick="location.href = 'CategoryAddServlet';" >
+                                                <button class="btn btn-labeled btn-default" name="btnAdd" type="button" onclick="location.href = 'ListAddServlet';" >
                                                     <span class="btn-label">
                                                         <i class="glyphicon glyphicon-plus-sign"></i>
                                                     </span>
@@ -266,8 +266,14 @@
                                             <thead>
                                                 <tr>
                                                     <th> </th>
-                                                    <th>ID Categoría</th>
-                                                    <th>Nombre de Categoría</th>                                                   
+                                                    <th>Lugar </th>
+                                                    <th>ID Ev. </th>
+                                                    <th>Título Evento </th>
+                                                    <th>RUT </th>
+                                                    <th>Barcode </th>
+                                                    <th>Nombres </th>
+                                                    <th>Apellidos </th>
+                                                    <th>Fecha/Hora Ingreso </th>                                                  
                                                     <th><object align="right">Acciones 
                                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -281,18 +287,18 @@
                                             <tbody>
                                                 <c:forEach var="list" items="${list}">
                                                     <tr>
-                                                        <th><input type="checkbox" name="chk" value="<c:out value="${list.idCategory}" />"/></th>
-                                                        <td><c:out value="${list.idCategory}" /></td>                                                       
-                                                        <td><c:out value="${list.nameCategory}" /></td>                                                        
+                                                        <td><input type="checkbox" name="chk" value="<c:out value="${list.idEvent}" />-<c:out value="${list.rut}" />-<c:out value="${list.barCode}" />"/></td>
+                                                        <td><c:out value="${list.namePlace}" /></td>
+                                                        <td><c:out value="${list.idEvent}" /></td>
+                                                        <td><c:out value="${list.nameEvent}" /></td>
+                                                        <td><c:out value="${list.rut}" />-<c:out value="${list.dv}" /></td>
+                                                        <td><c:out value="${list.barCode}" /></td>
+                                                        <td><c:out value="${list.firstName}" /></td>
+                                                        <td><c:out value="${list.lastName}" /></td>
+                                                        <td><c:out value="${list.createTime}" /></td>                                                       
                                                         <td>
-                                                            <object align="right">
-                                                                <a href="CategoryGetServlet?idCategory=<c:out value="${list.idCategory}" />">
-                                                                    <button class="btn btn-labeled btn-primary" name="btnUpOne" type="button">
-                                                                        <span class="btn-label"><i class="glyphicon glyphicon-edit"></i></span>
-                                                                        <strong><font size="1">VER / ACTUALIZAR</font></strong>
-                                                                    </button>
-                                                                </a> 
-                                                                <button class="btn btn-labeled btn-danger" name="btnDelRow" onclick="confirmar('CategoryDeleteServlet?btnDelRow=x&idCategory=<c:out value="${list.idCategory}" />');">
+                                                            <object align="right">                                                                                                                                
+                                                                <button class="btn btn-labeled btn-danger" name="btnDelRow" onclick="confirmar('ListDeleteServlet?btnDelRow=x&idEvent=<c:out value="${list.idEvent}" />&rut=<c:out value="${list.rut}" />&barCode=<c:out value="${list.barCode}" />');">
                                                                     <span class="btn-label"><i class="glyphicon glyphicon-trash"></i></span>
                                                                     <strong><font size="1">ELIMINAR</font></strong>
                                                                 </button>                                                                                                                                

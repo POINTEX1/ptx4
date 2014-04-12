@@ -43,9 +43,9 @@ public class UniversityMainServlet extends HttpServlet {
 
         Connection conexion = null;
 
-        /////////////////////////////////////////
+        /////////////////////////
         // ESTABLECER CONEXION
-        /////////////////////////////////////////
+        /////////////////////////
         try {
             conexion = ds.getConnection();
 
@@ -92,16 +92,14 @@ public class UniversityMainServlet extends HttpServlet {
                     Collection<University> list = universityDAO.getAll();
                     request.setAttribute("list", list);
 
-                    if (list.size() == 1) {
-                        request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                    } else if (list.size() > 1) {
-                        request.setAttribute("msg", list.size() + " registros encontrados en la base de datos.");
-                    } else if (list.isEmpty()) {
-                        request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
-                    }
+                    /* obtener numero de registros */
+                    request.setAttribute("regCount", list.size());
+
                 } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
 
+                /* despachar a la vista */
                 request.getRequestDispatcher("/university/university.jsp").forward(request, response);
 
             } catch (Exception sessionException) {

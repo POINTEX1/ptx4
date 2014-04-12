@@ -43,19 +43,18 @@ public class OrderCardMainServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        //////////////////////////
+        // ESTABLECER CONEXION
+        //////////////////////////
         try {
-            //////////////////////////////////////////
-            // ESTABLECER CONEXION
-            //////////////////////////////////////////
-
             conexion = ds.getConnection();
 
             OrderCardDAO orderCardDAO = new OrderCardDAO();
             orderCardDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -93,19 +92,17 @@ public class OrderCardMainServlet extends HttpServlet {
 
                     /* obtener lista de order card */
                     try {
-                        Collection<OrderCard> listOrderCard = orderCardDAO.getAll();
-                        request.setAttribute("list", listOrderCard);
+                        Collection<OrderCard> list = orderCardDAO.getAll();
+                        request.setAttribute("list", list);
 
-                        if (listOrderCard.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (listOrderCard.size() > 1) {
-                            request.setAttribute("msg", listOrderCard.size() + " registros encontrados en la base de datos.");
-                        } else if (listOrderCard.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
-                        }
+                        /* comtador de registros */
+                        request.setAttribute("regCount", list.size());
+
                     } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
 
+                    /* despachar a la vista */
                     request.getRequestDispatcher("/orderCard/orderCard.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {

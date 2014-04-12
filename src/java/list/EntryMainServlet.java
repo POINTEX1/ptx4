@@ -44,10 +44,10 @@ public class EntryMainServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        ///////////////////////////
+        // ESTABLECER CONEXION
+        ///////////////////////////
         try {
-            //////////////////////////////////////////
-            // ESTABLECER CONEXION
-            //////////////////////////////////////////
             conexion = ds.getConnection();
 
             ListDAO entryDAO = new ListDAO();
@@ -56,9 +56,9 @@ public class EntryMainServlet extends HttpServlet {
             PlaceDAO placeDAO = new PlaceDAO();
             placeDAO.setConexion(conexion);
 
-            //////////////////////////////////////////
+            ////////////////////////
             // COMPROBAR SESSION
-            //////////////////////////////////////////
+            ////////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -96,14 +96,17 @@ public class EntryMainServlet extends HttpServlet {
 
                     /* obtener collection de listas */
                     try {
-                        Collection<List> listEntry = entryDAO.getAll();
-                        request.setAttribute("msg", listEntry.size() + " registros encontrados en la base de datos.");
+                        Collection<List> list = entryDAO.getAll();
+                        request.setAttribute("list", list);
 
-                        request.setAttribute("list", listEntry);
+                        /* contador de registros */
+                        request.setAttribute("regCount", list.size());
+
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
 
+                    /* despachar a la vista */
                     request.getRequestDispatcher("list/list.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {

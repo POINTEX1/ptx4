@@ -22,7 +22,7 @@ import javax.sql.DataSource;
  */
 @WebServlet(name = "ParameterUpdateServlet", urlPatterns = {"/ParameterUpdateServlet"})
 public class ParameterUpdateServlet extends HttpServlet {
-    
+
     @Resource(name = "jdbc/POINTEX1")
     private DataSource ds;
 
@@ -44,14 +44,13 @@ public class ParameterUpdateServlet extends HttpServlet {
 
         /* definir conexion */
         Connection conexion = null;
-        
-        try {
-            //////////////////////////
-            // ESTABLECER CONEXION
-            //////////////////////////
 
+        //////////////////////////
+        // ESTABLECER CONEXION
+        //////////////////////////
+        try {
             conexion = ds.getConnection();
-            
+
             ParameterDAO parameterDAO = new ParameterDAO();
             parameterDAO.setConexion(conexion);
 
@@ -78,7 +77,7 @@ public class ParameterUpdateServlet extends HttpServlet {
                     /////////////////////////////////////////
                     // RECIBIR Y COMPROBAR PARAMETROS
                     ////////////////////////////////////////
-                    
+
                     String swaitingCard = request.getParameter("waitingCard");
                     String snumberEvent = request.getParameter("numberEvent");
                     String snumberPromo = request.getParameter("numberPromo");
@@ -95,8 +94,7 @@ public class ParameterUpdateServlet extends HttpServlet {
                     String sbanerTsocial = request.getParameter("banerTopSocialNetworks");
 
                     /* instanciar url */
-                    String url = "?target=get";
-                    
+                    String url = "?redirect=ok";
                     url += "&watingCard=" + swaitingCard;
                     url += "&numberEvent=" + snumberEvent;
                     url += "&numberPromo=" + snumberPromo;
@@ -111,21 +109,24 @@ public class ParameterUpdateServlet extends HttpServlet {
                     url += "&banerTopFindMyPlace=" + sbanerTfindplace;
                     url += "&banerTopConfiguration=" + sbanerTconfiguration;
                     url += "&banerTopSocialNetworks=" + sbanerTsocial;
-                    
+
+                    /* instanciar parametros */
                     Parameter parameter = new Parameter();
+                                        
                     Format format = new Format();
-                    
+
+                    /* flag de error */
                     boolean error = false;
 
                     /* comprobar waiting card*/
                     if (swaitingCard == null || swaitingCard.trim().equals("")) {
-                        url += "&msgErrorWaitingCard=Error: Debe Ingresar día para solicitud de tarjeta.";
+                        url += "&msgErrorWaitingCard=Debe Ingresar día para solicitud de tarjeta.";
                         error = true;
                     } else {
                         try {
                             parameter.setWaitingCard(Integer.parseInt(swaitingCard));
                             if (parameter.getWaitingCard() < 0) {
-                                url += "&msgErrorWaitingCard=Error: Los días no pueden ser negativos.";
+                                url += "&msgErrorWaitingCard=Los días no pueden ser negativos.";
                                 error = true;
                             }
                         } catch (NumberFormatException n) {
@@ -269,7 +270,7 @@ public class ParameterUpdateServlet extends HttpServlet {
                             url += "&msgErrorBanerTopMyPlace=Error: Debe ingresar formato correcto para baner de cabecera de mis lugares.";
                             error = true;
                         }
-                        
+
                     }/* comprobar baner top find place*/
                     if (sbanerTfindplace == null || sbanerTfindplace.trim().equals("")) {
                         url += "&msgErrorBanerTopFindPlace=Error: Debe ingresar url del baner top para buscar lugares.";
@@ -281,7 +282,7 @@ public class ParameterUpdateServlet extends HttpServlet {
                             url += "&msgErrorBanerTopFindPlace=Error: Debe ingresar formato correcto para baner de cabecera de buscar lugares.";
                             error = true;
                         }
-                        
+
                     }
 
                     /* comprobar baner top configuration*/
@@ -309,18 +310,18 @@ public class ParameterUpdateServlet extends HttpServlet {
                             error = true;
                         }
                     }
-                    
+
                     /////////////////////////////
                     // LOGICA DE NEGOCIO
                     /////////////////////////////
-                    
+
                     if (!error) {
                         try {
                             parameterDAO.update(parameter);
                             url += "&msgOk=Registro actualizado exitosamente!";
                         } catch (Exception ex) {
                             url += "&msgErrorUpdate=Error: No se pudo actualizar, verifique los datos.";
-                            
+
                         }
                     }
 

@@ -43,20 +43,18 @@ public class PlaceMainServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        ////////////////////////
+        // ESTABLECER CONEXION
+        ////////////////////////
         try {
-            /////////////////////////////
-            // ESTABLECER CONEXION
-            /////////////////////////////
-
             conexion = ds.getConnection();
 
-            /* definir, instanciar y pasar la conexion a placeDAO */
             PlaceDAO placeDAO = new PlaceDAO();
             placeDAO.setConexion(conexion);
 
-            /////////////////////////////
+            ///////////////////////
             // COMPROBAR SESSION
-            /////////////////////////////
+            ///////////////////////
             try {
                 /* recuperar sesion */
                 HttpSession session = request.getSession(false);
@@ -73,45 +71,39 @@ public class PlaceMainServlet extends HttpServlet {
                     request.setAttribute("userJsp", username);
                     request.setAttribute("access", access);
 
-                    try {
-                        ////////////////////////////////////
-                        // RECIBIR Y COMPROBAR PARAMETROS
-                        ////////////////////////////////////
+                    ////////////////////////////////////
+                    // RECIBIR Y COMPROBAR PARAMETROS
+                    ////////////////////////////////////
 
-                        String msgDel = request.getParameter("msgDel");
-                        String msgErrorConstraint = request.getParameter("msgErrorConstraint");
+                    String msgDel = request.getParameter("msgDel");
+                    String msgErrorConstraint = request.getParameter("msgErrorConstraint");
 
-                        /* comprobar eliminacion */
-                        if (msgDel == null || msgDel.trim().equals("")) {
-                        } else {
-                            request.setAttribute("msgDel", msgDel);
-                        }
-
-                        /* comprobar error de eliminacion */
-                        if (msgErrorConstraint == null || msgErrorConstraint.trim().equals("")) {
-                        } else {
-                            request.setAttribute("msgErrorConstraint", msgErrorConstraint);
-                        }
-
-                        /* obtener lista de lugares */
-                        try {
-                            Collection<Place> listPlace = placeDAO.getAll();
-                            request.setAttribute("list", listPlace);
-
-                            if (listPlace.size() == 1) {
-                                request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                            } else if (listPlace.size() > 1) {
-                                request.setAttribute("msg", listPlace.size() + " registros encontrados en la base de datos.");
-                            } else if (listPlace.isEmpty()) {
-                                request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
-                            }
-                        } catch (Exception ex) {
-                        }
-
-                    } catch (Exception parameterException) {
-                    } finally {
-                        request.getRequestDispatcher("/place/place.jsp").forward(request, response);
+                    /* comprobar eliminacion */
+                    if (msgDel == null || msgDel.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgDel", msgDel);
                     }
+
+                    /* comprobar error de eliminacion */
+                    if (msgErrorConstraint == null || msgErrorConstraint.trim().equals("")) {
+                    } else {
+                        request.setAttribute("msgErrorConstraint", msgErrorConstraint);
+                    }
+
+                    /* obtener lista de lugares */
+                    try {
+                        Collection<Place> list = placeDAO.getAll();
+                        request.setAttribute("list", list);
+
+                        /* obtener n° de registros */
+                        request.setAttribute("regCount", list.size());
+
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+
+                    /* despachar a la vista */
+                    request.getRequestDispatcher("/place/place.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {
                 /* enviar a la vista de login */

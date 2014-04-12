@@ -43,11 +43,10 @@ public class PlaceCategoryMainServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        //////////////////////////
+        // ESTABLECER CONEXION
+        //////////////////////////
         try {
-            //////////////////////////
-            // ESTABLECER CONEXION
-            //////////////////////////
-
             conexion = ds.getConnection();
 
             PlaceCategoryDAO placeCategoryDAO = new PlaceCategoryDAO();
@@ -93,18 +92,17 @@ public class PlaceCategoryMainServlet extends HttpServlet {
 
                     /* obtener lista de placeCategory */
                     try {
-                        Collection<PlaceCategory> placeCategoryList = placeCategoryDAO.getAll();
-                        request.setAttribute("list", placeCategoryList);
-                        if (placeCategoryList.size() == 1) {
-                            request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                        } else if (placeCategoryList.size() > 1) {
-                            request.setAttribute("msg", placeCategoryList.size() + " registros encontrados en la base de datos.");
-                        } else if (placeCategoryList.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
-                        }
+                        Collection<PlaceCategory> list = placeCategoryDAO.getAll();
+                        request.setAttribute("list", list);
+
+                        /* obtener n° de registros */
+                        request.setAttribute("regCount", list.size());
+                        
                     } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
 
+                    /* despachar a la vista */
                     request.getRequestDispatcher("/placeCategory/placeCategory.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {

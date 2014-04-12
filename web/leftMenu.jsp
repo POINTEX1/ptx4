@@ -77,9 +77,11 @@
                     <li>
                         <a href="CardMainServlet">Tarjetas</a>
                     </li>
+                    <!--
                     <li>
                         <a href="OrderCardMainServlet">Solicitud Tarjetas</a>
                     </li>
+                    -->
                     <li>
                         <a href="ClientPromoMainServlet">Promociones</a>
                     </li>
@@ -89,9 +91,11 @@
                     <li>
                         <a href="ClientExchangeCheckMainServlet">Productos Canjeados</a>
                     </li>
+                    <!--
                     <li>
                         <a href="ClientNewsMainServlet">Noticias Clientes</a>
                     </li>
+                    -->
                 </ul>
             </li>
 
@@ -113,11 +117,13 @@
                     <li>
                         <a href="EntryMainServlet">Lista</a>
                     </li>
+                    <!--
                     <li>
                         <a href="PlaceNewsMainServlet">Noticias Lugar</a>
                     </li>
+                    -->
                     <li>
-                        <a href="PlaceMainServlet">Categorías Lugar</a>
+                        <a href="PlaceCategoryMainServlet">Categorías Lugar</a>
                     </li>                            
                 </ul>
             </li>

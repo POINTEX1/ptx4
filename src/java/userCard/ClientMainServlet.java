@@ -43,11 +43,10 @@ public class ClientMainServlet extends HttpServlet {
 
         Connection conexion = null;
 
+        ////////////////////////////
+        // ESTABLECER CONEXION
+        ////////////////////////////
         try {
-            ////////////////////////////
-            // ESTABLECER CONEXION
-            ////////////////////////////
-
             conexion = ds.getConnection();
 
             UserCardDAO usercardDAO = new UserCardDAO();
@@ -89,19 +88,17 @@ public class ClientMainServlet extends HttpServlet {
 
                 /* obtener el total de registros */
                 try {
-                    Collection<UserCard> listClient = usercardDAO.getAll();
-                    request.setAttribute("list", listClient);
+                    Collection<UserCard> list = usercardDAO.getAll();
+                    request.setAttribute("list", list);
 
-                    if (listClient.size() == 1) {
-                        request.setAttribute("msg", "1 registro encontrado en la base de datos.");
-                    } else if (listClient.size() > 1) {
-                        request.setAttribute("msg", listClient.size() + " registros encontrados en la base de datos.");
-                    } else if (listClient.isEmpty()) {
-                        request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
-                    }
+                    /* obtener numero de registros */
+                    request.setAttribute("regCount", list.size());
+
                 } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
 
+                /* despachar a la vista */
                 request.getRequestDispatcher("/userCard/userCard.jsp").forward(request, response);
 
             } catch (Exception sessionException) {

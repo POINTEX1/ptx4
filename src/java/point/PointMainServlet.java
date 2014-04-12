@@ -93,17 +93,17 @@ public class PointMainServlet extends HttpServlet {
 
                     /* obtener lista de points */
                     try {
-                        Collection<Point> pointList = pointDAO.getAll();
-                        request.setAttribute("list", pointList);
+                        Collection<Point> list = pointDAO.getAll();
+                        request.setAttribute("list", list);
 
-                        if (pointList.size() > 1) {
-                            request.setAttribute("msg", pointList.size() + " registros encontrados en la base de datos.");
-                        } else if (pointList.isEmpty()) {
-                            request.setAttribute("msg", "No hay registros encontrado en la base de datos.");
-                        }
+                        /* obtener n° de registros */
+                        request.setAttribute("regCount", list.size());
+                        
                     } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
 
+                    /* despachar a la vista */
                     request.getRequestDispatcher("/point/point.jsp").forward(request, response);
                 }
             } catch (Exception sessionException) {
